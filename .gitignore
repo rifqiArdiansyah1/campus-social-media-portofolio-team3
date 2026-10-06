@@ -1,0 +1,58 @@
+# General
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+
+# Environment & Secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# IDEs & Editors
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Node / Web / Mobile Dependencies
+node_modules/
+dist/
+build/
+coverage/
+.next/
+out/
+.turbo/
+
+# Python / AI / Virtualenv
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+env/
+.pytest_cache/
+
+# Mobile (Flutter / React Native / Android / iOS)
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+android/.gradle
+android/captures/
+android/app/build
+ios/Pods/
+ios/.symlinks/
+*.ipa
+*.apk
+*.aab

@@ -1,0 +1,60 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CollaboratorRecommendationOutput",
+  "description": "Skema output JSON untuk rekomendasi kolaborator mahasiswa",
+  "type": "object",
+  "required": [
+    "query_user_id",
+    "recommendations"
+  ],
+  "properties": {
+    "query_user_id": {
+      "type": "string",
+      "description": "ID unik pengguna yang meminta rekomendasi"
+    },
+    "recommendations": {
+      "type": "array",
+      "description": "Daftar kandidat kolaborator yang direkomendasikan",
+      "items": {
+        "type": "object",
+        "required": [
+          "user_id",
+          "score",
+          "matched_terms",
+          "complementary_skills",
+          "reason"
+        ],
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "description": "ID calon rekan kolaborator"
+          },
+          "score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Skor kemiripan/kecocokan (0.0 sampai 1.0)"
+          },
+          "matched_terms": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Istilah keahlian atau minat yang memiliki irisan"
+          },
+          "complementary_skills": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Keahlian kandidat yang melengkapi kekurangan pengguna"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Penjelasan bahasa alami mengenai alasan mengapa profil ini cocok"
+          }
+        }
+      }
+    }
+  }
+}
