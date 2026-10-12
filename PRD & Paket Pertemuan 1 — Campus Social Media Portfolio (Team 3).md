@@ -36,7 +36,7 @@ Menggunakan pola dari kelas:
 
 **Problem statement (versi paragraf):**
 
-> "Mahasiswa yang ingin membentuk tim proyek membutuhkan cara yang lebih mudah untuk menemukan teman dengan skill dan minat yang saling melengkapi, karena keahlian dan portofolio mereka tersebar di berbagai tempat dan sulit ditelusuri. Kondisi tersebut membuat tim terbentuk tanpa komposisi kemampuan yang sesuai dengan kebutuhan proyek. Aplikasi akan menyediakan profil, portofolio, posting, dan pencarian, serta rekomendasi kolaborator berbasis teks agar mahasiswa menemukan rekan yang relevan dengan lebih cepat."
+> "Mahasiswa yang ingin membentuk tim proyek membutuhkan cara yang lebih mudah untuk menemukan teman se-universitas dengan skill dan minat yang saling melengkapi, karena keahlian dan portofolio mereka tersebar di berbagai tempat dan sulit ditelusuri contohnya linkedin jangkauannya luas (global). Kondisi tersebut membuat tim terbentuk tanpa komposisi kemampuan yang sesuai dengan kebutuhan proyek. Aplikasi akan menyediakan profil, portofolio, posting, dan pencarian, serta rekomendasi kolaborator berbasis teks agar mahasiswa menemukan rekan yang relevan dengan lebih cepat."
 
 Pengingat dari dosen: tulis masalah dari **sudut pandang pengguna**, bukan dari teknologi. Fitur dan kebutuhan AI diputuskan setelah masalah jelas.
 
@@ -192,9 +192,9 @@ Peran mengikuti model Hacker–Hipster–Hustler. Isi nama anggota pada kolom ke
 
 | Peran | Nama | Ruang lingkup utama |
 | --- | --- | --- |
-| **Hacker** | \[ISI\] | GitHub repository (README, docs, issue, branch, commit), arsitektur, backend/autentikasi, integrasi AI |
-| **Hipster** | \[ISI\] | Riset pengguna, UI/UX, wireframe, alur layar, konsistensi desain |
-| **Hustler** | \[ISI\] | Problem statement, nilai produk, prioritas backlog, AI hypothesis, metrik, presentasi |
+| **Hacker** | Rifqi | GitHub repository (README, docs, issue, branch, commit), arsitektur, backend/autentikasi, integrasi AI |
+| **Hipster** | Hakim | Riset pengguna, UI/UX, wireframe, alur layar, konsistensi desain |
+| **Hustler** | Ramadhan | Problem statement, nilai produk, prioritas backlog, AI hypothesis, metrik, presentasi |
 | Seluruh tim | — | Project brief, product goal, initial backlog, role assignment |
 
 Jika tim berisi empat orang, tambahkan satu **Project Manager/Scrum Master** untuk memantau backlog, jadwal sprint, dan kelengkapan artefak.
@@ -248,11 +248,11 @@ mobile-campus-portfolio-team3/
 ## Problem Statement (sementara)
 [tempel paragraf problem statement]
 ## Anggota Tim
-- [Nama] — Hacker
-- [Nama] — Hipster
-- [Nama] — Hustler
+- Rifqi — Hacker
+- Hakim — Hipster
+- Rama — Hustler
 ## Teknologi yang Direncanakan
-[ISI: framework, backend, database, layanan AI]
+framework Flutter / React Native Expo, backend, database PostgreSQL, layanan AI TF-IDF + Cosine Similarity / Text Embedding (NLP)
 ## Dokumentasi
 Lihat folder docs/
 ```

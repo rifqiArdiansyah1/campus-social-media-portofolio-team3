@@ -21,7 +21,7 @@ Mengikuti formula standar pengembangan produk berbasis sudut pandang pengguna (*
 
 ## 2. Problem Statement (Paragraf Resmi)
 
-> *"Mahasiswa yang ingin membentuk tim proyek membutuhkan cara yang lebih mudah untuk menemukan teman dengan skill dan minat yang saling melengkapi, karena keahlian dan portofolio mereka saat ini tersebar di berbagai tempat dan sulit ditelusuri. Kondisi tersebut membuat tim terbentuk tanpa komposisi kemampuan yang sesuai dengan kebutuhan proyek. Aplikasi **CampusFolio** hadir menyediakan wadah profil, portofolio, feed posting, dan pencarian, serta rekomendasi kolaborator berbasis AI teks agar mahasiswa dapat menemukan rekan yang relevan secara cepat, tepat, dan dalam ruang interaksi kampus yang aman."*
+> *"Mahasiswa yang ingin membentuk tim proyek membutuhkan cara yang lebih mudah untuk menemukan teman se-universitas dengan skill dan minat yang saling melengkapi, karena keahlian dan portofolio mereka tersebar di berbagai tempat dan sulit ditelusuri contohnya linkedin jangkauannya luas (global). Kondisi tersebut membuat tim terbentuk tanpa komposisi kemampuan yang sesuai dengan kebutuhan proyek. Aplikasi **CampusFolio** hadir menyediakan wadah profil, portofolio, feed posting, dan pencarian, serta rekomendasi kolaborator berbasis AI teks agar mahasiswa dapat menemukan rekan yang relevan secara cepat, tepat, dan dalam ruang interaksi kampus yang aman."*
 
 ---
 
