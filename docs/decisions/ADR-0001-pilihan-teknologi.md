@@ -35,9 +35,14 @@ Tim secara bulat memutuskan tumpukan teknologi berikut:
   - *Auto-generated Documentation:* Otomatis menghasilkan Swagger UI interaktif di `/docs`, memudahkan Hipster (Hakim) menguji payload request/response JSON secara mandiri.
   - Asynchronous murni (`async/await`) dengan performa tinggi.
 
-### C. Database: PostgreSQL
-- **RDBMS:** **PostgreSQL**
-- **ORM:** `SQLAlchemy` / `SQLModel` dengan migrasi skema tabel via `Alembic`.
+### C. Database: PostgreSQL (via Supabase Cloud Free Tier)
+- **RDBMS:** **PostgreSQL (Hosted di Supabase Cloud)**
+- **Justifikasi Utama:**
+  - *Zero Resource Overhead:* Tidak membebani RAM/CPU laptop pengembang (tidak membutuhkan instalasi lokal maupun Docker Desktop).
+  - *Database Kolaboratif Terpusat:* Hacker (Rifqi) dan Hipster (Hakim) terhubung ke basis data cloud yang sama secara real-time.
+  - *Spreadsheet GUI:* Memudahkan tim memasukkan dan meninjau data dummy mahasiswa via browser Table Editor.
+  - *Storage Terintegrasi:* Mendukung upload berkas gambar portofolio dan avatar pengguna secara gratis.
+- **ORM & Koneksi:** `SQLAlchemy` / `asyncpg` dengan connection string standar PostgreSQL.
 - **Ekstensi:** Siap mendukung ekstensi `pgvector` jika diperlukan pencarian embedding vektor di level database.
 
 ### D. Layanan AI (NLP & Moderasi Teks)
