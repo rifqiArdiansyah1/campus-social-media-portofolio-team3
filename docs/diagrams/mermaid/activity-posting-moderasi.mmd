@@ -1,0 +1,26 @@
+flowchart TB
+    subgraph MHS["Mahasiswa"]
+        M0(["Mulai"]) --> M1["Tulis posting (teks), pilih tipe: umum / cari anggota"]
+        M1 --> M2["Kirim posting"]
+        M9["Terima notifikasi; revisi posting (opsional)"] --> MF(["Selesai"])
+    end
+    subgraph SIS["Sistem CampusFolio"]
+        S1["Validasi input dan simpan sebagai draft"] --> S2["Kirim teks posting ke Layanan AI"]
+        D1{"Aman dan confidence tinggi?"}
+        S3["Masuk antrean moderasi (status: direview)"]
+        S4["Tayangkan posting (status: tayang)"] --> SF(["Posting tayang"])
+        S5["Kirim notifikasi hasil moderasi"]
+    end
+    subgraph AIL["Layanan AI (Text)"]
+        A1["Klasifikasi teks: label, kategori, confidence"]
+    end
+    subgraph ADM["Admin / Moderator"]
+        AD1["Tinjau konten + penjelasan AI"] --> D2{"Keputusan admin?"}
+        AD2["Isi catatan; status ditolak / minta revisi"]
+    end
+    M2 --> S1
+    S2 --> A1 --> D1
+    D1 -- "Ya" --> S4
+    D1 -- "Tidak / perlu review / AI gagal" --> S3 --> AD1
+    D2 -- "Setujui" --> S4
+    D2 -- "Tolak / Minta revisi" --> AD2 --> S5 --> M9

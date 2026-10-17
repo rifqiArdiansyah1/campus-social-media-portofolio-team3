@@ -1,0 +1,95 @@
+erDiagram
+    users ||--o{ portfolio_items : memiliki
+    users ||--o{ posts : menulis
+    users ||--o{ user_skills : memiliki
+    users ||--o{ moderation_records : "admin_id"
+    users ||--o{ reports : "pelapor_id"
+    users ||--o{ recommendation_logs : "pemohon_id"
+    users ||--o{ recommendation_logs : "kandidat_id"
+    skills ||--o{ user_skills : ""
+    skills ||--o{ portfolio_skills : ""
+    skills ||--o{ post_skills : ""
+    portfolio_items ||--o{ portfolio_skills : "diberi tag"
+    posts ||--o{ post_skills : "diberi tag"
+    posts ||--o{ moderation_records : ditinjau
+    posts ||--o{ reports : dilaporkan
+
+    users {
+        bigint user_id PK
+        varchar(20) nim UK
+        varchar(100) nama
+        varchar(100) email UK
+        varchar(255) password_hash
+        varchar(100) jurusan
+        int angkatan
+        text bio
+        varchar(255) kontak_url
+        enum role
+        timestamp created_at
+    }
+    skills {
+        bigint skill_id PK
+        varchar(60) nama UK
+        enum tipe
+    }
+    user_skills {
+        bigint user_id PK, FK
+        bigint skill_id PK, FK
+        enum level
+    }
+    portfolio_items {
+        bigint portfolio_id PK
+        bigint user_id FK
+        varchar(150) judul
+        text deskripsi
+        varchar(255) tautan_url
+        varchar(255) gambar_url
+        timestamp created_at
+    }
+    portfolio_skills {
+        bigint portfolio_id PK, FK
+        bigint skill_id PK, FK
+    }
+    posts {
+        bigint post_id PK
+        bigint user_id FK
+        text isi
+        enum tipe
+        enum status
+        timestamp created_at
+    }
+    post_skills {
+        bigint post_id PK, FK
+        bigint skill_id PK, FK
+    }
+    moderation_records {
+        bigint moderation_id PK
+        bigint post_id FK
+        bigint admin_id FK
+        enum label_ai
+        varchar(60) kategori_ai
+        float confidence
+        text penjelasan_ai
+        enum keputusan_admin
+        text catatan_admin
+        timestamp created_at
+        timestamp decided_at
+    }
+    reports {
+        bigint report_id PK
+        bigint post_id FK
+        bigint pelapor_id FK
+        text alasan
+        enum status
+        timestamp created_at
+    }
+    recommendation_logs {
+        bigint rec_id PK
+        bigint pemohon_id FK
+        bigint kandidat_id FK
+        text kebutuhan_teks
+        float skor
+        text alasan
+        enum umpan_balik
+        timestamp created_at
+    }

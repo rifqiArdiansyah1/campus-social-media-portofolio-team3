@@ -1,3 +1,6 @@
-# Source Code — CampusFolio
+# Source Code — CampusFolio (Team 3)
 
-Direktori ini dipersiapkan untuk implementasi kode aplikasi (Frontend & Backend), yang akan mulai dikembangkan pada **Sprint 1** sesuai kesepakatan tech stack tim (lihat [ADR-0001](../docs/decisions/ADR-0001-pilihan-teknologi.md)).
+Arsitektur kode aplikasi dibagi menjadi dua modul utama sesuai kesepakatan pada [ADR-0001: Pilihan Teknologi](../docs/decisions/ADR-0001-pilihan-teknologi.md):
+
+1. **[`backend/`](backend/)**: Backend API menggunakan **FastAPI (Python)**, **PostgreSQL**, serta engine pemrosesan teks AI (TF-IDF & Moderasi).
+2. **[`mobile/`](mobile/)**: Frontend klien menggunakan **Flutter (Dart)** dengan pendekatan **Flutter Web-First** untuk pengujian dan demo instan sebelum rilis APK Android.

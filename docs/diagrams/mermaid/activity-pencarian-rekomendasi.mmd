@@ -1,0 +1,28 @@
+flowchart TB
+    subgraph MHS["Mahasiswa"]
+        M0(["Mulai"]) --> M1["Buka Cari / Rekomendasi; isi kata kunci atau kebutuhan proyek"]
+        M2["Lihat detail profil dan portofolio"] --> D3{"Relevan dan sesuai kebutuhan?"}
+        M3["Hubungi / ajak kolaborasi lewat kontak di profil"] --> MF1(["Kolaborasi dimulai"])
+    end
+    subgraph SIS["Sistem CampusFolio"]
+        S1["Terima dan validasi permintaan"] --> D1{"Jenis permintaan?"}
+        S2["Cari di profil, portofolio, dan posting (basis data)"]
+        S3["Ambil skill/minat pemohon dan kandidat"]
+        D2{"Skor di atas ambang dan AI berhasil?"}
+        S4["Susun daftar rekomendasi + alasan"]
+        S5["Tampilkan hasil (+ alasan jika rekomendasi)"]
+        S6["Simpan umpan balik tidak relevan (evaluasi AI)"] --> MF2(["Selesai"])
+    end
+    subgraph AIL["Layanan AI (Text)"]
+        A1["Hitung kemiripan dan skill pelengkap; susun alasan"]
+    end
+    M1 --> S1
+    D1 -- "Kata kunci" --> S2
+    D1 -- "Rekomendasi" --> S3 --> A1 --> D2
+    D2 -- "Ya" --> S4
+    D2 -- "Tidak / AI gagal" --> S2
+    S2 --> S5
+    S4 --> S5
+    S5 --> M2
+    D3 -- "Ya" --> M3
+    D3 -- "Tidak" --> S6
