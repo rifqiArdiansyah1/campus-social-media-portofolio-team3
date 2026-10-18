@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_tab" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{width:100vw;margin:0;padding:0;background-color:#faf8ff;}body{overscroll-behavior-y:none;-webkit-tap-highlight-color:transparent;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "surface": "#faf8ff", "surface-card": "#FFFFFF", "on-secondary-fixed": "#00201d", "surface-dim": "#d2d9f4", "outline-variant": "#c7c4d7", "inverse-on-surface": "#eef0ff", "secondary-fixed-dim": "#6bd8cb", "on-secondary-container": "#006f66", "error": "#ba1a1a", "primary-fixed": "#e3dfff", "surface-container-low": "#f2f3ff", "on-primary": "#ffffff", "error-container": "#ffdad6", "match-emerald": "#10B981", "on-error": "#ffffff", "tertiary-fixed": "#ffddb8", "on-tertiary": "#ffffff", "on-surface": "#131b2e", "surface-container-highest": "#dae2fd", "on-tertiary-fixed": "#2a1700", "tertiary-container": "#744800", "secondary-container": "#86f2e4", "primary": "#2a14b4", "surface-container-high": "#e2e7ff", "on-tertiary-fixed-variant": "#653e00", "tertiary-fixed-dim": "#ffb95f", "secondary-fixed": "#89f5e7", "tertiary": "#553300", "surface-container-lowest": "#ffffff", "on-secondary-fixed-variant": "#005049", "border-subtle": "#E2E8F0", "on-primary-fixed": "#100069", "recruiting-coral": "#F43F5E", "primary-fixed-dim": "#c3c0ff", "background": "#faf8ff", "surface-variant": "#dae2fd", "outline": "#777586", "inverse-surface": "#283044", "on-primary-fixed-variant": "#372abf", "inverse-primary": "#c3c0ff", "on-surface-variant": "#464554", "on-primary-container": "#c1beff", "primary-container": "#4338ca", "surface-container": "#eaedff", "on-secondary": "#ffffff", "on-error-container": "#93000a", "surface-canvas": "#F8FAFC", "surface-tint": "#5148d7", "surface-bright": "#faf8ff", "secondary": "#006a61", "on-background": "#131b2e", "on-tertiary-container": "#ffb759" }, borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, spacing: { "margin": "1.5rem", "space-sm": "0.5rem", "gutter-mobile": "0.75rem", "gutter": "1rem", "space-md": "1rem", "space-lg": "1.5rem", "space-xl": "2rem", "space-xs": "0.25rem", "margin-mobile": "1rem" }, fontFamily: { "label-lg": ["Inter"], "label-md": ["Inter"], "body-md": ["Plus Jakarta Sans"], "headline-lg": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "label-sm": ["Inter"], "headline-md": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"], "display": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"], "headline-lg-mobile": ["Plus Jakarta Sans"], "code": ["Inter"] }, fontSize: { "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.015em", "fontWeight": "700" }], "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }], "label-sm": ["10px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "600" }], "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "display": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800" }], "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }], "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "code": ["12px", { "lineHeight": "16px", "fontWeight": "500" }] } } } };</script><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface font-body-md text-body-md text-on-surface flex flex-col min-h-screen"><header class="fixed top-0 inset-x-0 z-50 bg-surface/85 backdrop-blur-xl pt-safe shadow-[0_1px_8px_rgba(0,0,0,0.03)]"><div class="h-16 px-margin-mobile flex items-center justify-between gap-space-sm"><div class="flex items-center gap-space-sm min-w-0 flex-1"><img alt="CampusFolio Logo" class="h-8 w-auto object-contain flex-shrink-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkg6zzGm41_8JVYyStEYmGgpyysV-bYXDR8NmLwWt2WujVE1ayMVqiyZzvqjf-5PaExPglCdPFT4bhJX57i_dJKY_BlNSZ1XrPz5CmZxbD1WVxFXvqu8osTK4rpyiUJJMnAJmOOzmKXzo22zxK_dZtYJYxbadnj_CXehXGbePlQlS1w4kebXrj-COdUTMDqO-07YPVNmaRIQ1BucuQDFPePUdDMAlpZtI4SchEnGwzw03wQza7OQfW7Q"/><div class="flex flex-col min-w-0"><span class="font-headline-sm text-headline-sm text-on-surface tracking-tight truncate leading-tight">CampusFolio</span><span class="font-label-sm text-label-sm text-on-surface-variant truncate hidden min-[360px]:block">Jelajah &amp; Rekomendasi</span></div></div><div class="flex items-center gap-space-xs"><button aria-label="Cari Proyek &amp; Mahasiswa" class="w-11 h-11 flex items-center justify-center rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container active:scale-95 transition-all"><span class="material-symbols-outlined">search</span></button><button aria-label="Notifikasi Kampus" class="relative w-11 h-11 flex items-center justify-center rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container active:scale-95 transition-all"><span class="material-symbols-outlined">notifications</span><span class="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-recruiting-coral ring-2 ring-surface"></span></button><a aria-label="Profil Pengguna" class="ml-space-xs flex items-center justify-center rounded-full p-0.5 hover:ring-2 hover:ring-primary-container transition-all" data-path="profil" href="#"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-Q3EvJ4ieNoNpNluoVF08b1cmOq2qG2inQMvuwN8t9KKfhoTjWnZat0O7-qbRrqoSj-g9mKHCEuFY4-oJOeBgiCeTCvfx9d8-Ln41XQtBUV_UlPgnzgsLdTSFFmxbmoMVOrkg2l8e16ElDa2HgkNpYpjOURFS7uIg2ELSo_ret87XZvkZ5rPheWR7AJ9GzH1ZItnyB7HJrIZ7fkqxZIkZRglDlXZF6TSzapCiWPe0OrYbVwc6h0--xg"/></a></div></div></header><main class="flex-1 flex flex-col relative w-full pt-16 pb-28 bg-surface"><div class="flex flex-col w-full space-y-space-md px-margin-mobile">
+<!-- Search & Filter Controls -->
+<section class="flex flex-col space-y-space-xs mt-space-sm">
+<div class="relative flex items-center w-full">
+<div class="absolute left-space-md flex items-center pointer-events-none text-outline">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="w-full bg-surface-container-lowest text-on-surface placeholder:text-outline font-body-md text-body-md rounded-xl pl-11 pr-12 py-3 shadow-sm focus:outline-none focus:bg-surface-container-lowest transition-all" id="collaborator-search" placeholder="Cari mahasiswa, keahlian, topik proyek..." type="text"/>
+<button aria-label="Filter Rekomendasi" class="absolute right-2 w-9 h-9 flex items-center justify-center rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface active:scale-95 transition-transform" id="filter-trigger">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+</button>
+</div>
+<!-- Quick Pill Badges for Filter Presets -->
+<div class="flex items-center gap-space-xs overflow-x-auto py-1 no-scrollbar">
+<button class="flex items-center gap-1 bg-surface-container-high text-on-surface px-space-sm py-1 rounded-full font-label-md text-label-md whitespace-nowrap active:scale-95 transition-all">
+<span>Jurusan: Semua</span>
+<span class="material-symbols-outlined text-[14px]">arrow_drop_down</span>
+</button>
+<button class="flex items-center gap-1 bg-surface-container text-on-surface-variant px-space-sm py-1 rounded-full font-label-md text-label-md whitespace-nowrap active:scale-95 transition-all">
+<span>Angkatan '23-'24</span>
+<span class="material-symbols-outlined text-[14px]">arrow_drop_down</span>
+</button>
+<button class="flex items-center gap-1 bg-surface-container text-on-surface-variant px-space-sm py-1 rounded-full font-label-md text-label-md whitespace-nowrap active:scale-95 transition-all">
+<span>Kategori Skill</span>
+<span class="material-symbols-outlined text-[14px]">arrow_drop_down</span>
+</button>
+</div>
+</section>
+<!-- Banner AI Matchmaker Spotlight -->
+<section class="relative overflow-hidden bg-primary text-on-primary rounded-xl p-space-md shadow-md">
+<div class="absolute -right-8 -bottom-8 w-32 h-32 rounded-full bg-primary-container/40 blur-2xl pointer-events-none"></div>
+<div class="absolute top-2 right-2 text-primary-fixed-dim/20 pointer-events-none">
+<span class="material-symbols-outlined text-[72px]">auto_awesome</span>
+</div>
+<div class="relative z-10 flex flex-col space-y-space-xs">
+<div class="inline-flex items-center gap-1.5 self-start bg-on-primary/15 text-primary-fixed px-2.5 py-0.5 rounded-full font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<span>AI MATCHMAKER ENGINE</span>
+</div>
+<h2 class="font-headline-sm text-headline-sm text-on-primary tracking-tight">
+        Rekomendasi Kolaborator Cerdas untuk Kamu
+      </h2>
+<p class="font-body-sm text-body-sm text-primary-fixed font-normal leading-relaxed">
+        Berdasarkan skill <span class="text-on-primary font-semibold">UI/UX &amp; React</span> kamu yang melengkapi kebutuhan mahasiswa berbakat lainnya.
+      </p>
+</div>
+</section>
+<!-- Filter Kategori Tab Horizontal -->
+<section class="w-full">
+<div class="flex items-center gap-space-xs overflow-x-auto no-scrollbar pb-0.5" id="category-tabs">
+<button class="cat-pill active-tab bg-primary-container text-on-primary px-space-md py-1.5 rounded-full font-label-md text-label-md whitespace-nowrap shadow-sm transition-all">
+        Semua Rekomendasi
+      </button>
+<button class="cat-pill bg-surface-container-lowest text-on-surface-variant hover:text-on-surface px-space-md py-1.5 rounded-full font-label-md text-label-md whitespace-nowrap shadow-sm transition-all">
+        Backend
+      </button>
+<button class="cat-pill bg-surface-container-lowest text-on-surface-variant hover:text-on-surface px-space-md py-1.5 rounded-full font-label-md text-label-md whitespace-nowrap shadow-sm transition-all">
+        AI / ML
+      </button>
+<button class="cat-pill bg-surface-container-lowest text-on-surface-variant hover:text-on-surface px-space-md py-1.5 rounded-full font-label-md text-label-md whitespace-nowrap shadow-sm transition-all">
+        Creative Design
+      </button>
+<button class="cat-pill bg-surface-container-lowest text-on-surface-variant hover:text-on-surface px-space-md py-1.5 rounded-full font-label-md text-label-md whitespace-nowrap shadow-sm transition-all">
+        Mobile Dev
+      </button>
+</div>
+</section>
+<!-- Kartu Rekomendasi 1 (Rian Pratama) -->
+<article class="relative flex flex-col bg-surface-card rounded-xl p-space-md shadow-sm space-y-space-md">
+<!-- Header Profil & Match Score -->
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="relative">
+<img class="w-12 h-12 rounded-full object-cover shadow-sm" data-alt="Close up warm candid portrait of Indonesian male tech student in casual navy jacket looking forward friendly smile clean modern campus library backdrop natural soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTu9DmrqZp3Ap-gXFmpV4zhgWMRBaP-YtG1NP_5l03mwx1opVV9ej5CIf6tnIbB1gx9EdQklp96bEfa07cAAeEZqqnT5Ej-lWidAB8hXKBz-wgdkjlQ6sxYbpJdHYx5TKqkMa7iaVW0BoboulFJBijHjW6sUDAqUpa-fakUWmB3DZmv9Ss9cZoNAjoP-SRljWTcTrxP22RCZgzFSD7jKqffKUamMFuOQOtJZHMTb5x5sRmQFLAuHg-YQ"/>
+<span class="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-match-emerald ring-2 ring-surface-card"></span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1">
+<h3 class="font-headline-sm text-headline-sm text-on-surface truncate">Rian Pratama</h3>
+<span class="material-symbols-outlined text-match-emerald text-[16px]" style="font-variation-settings: 'FILL' 1;" title="Mahasiswa Terverifikasi">verified</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Sistem Informasi • Angkatan '23</span>
+</div>
+</div>
+<!-- AI Score Pill -->
+<div class="flex items-center gap-1 bg-surface-container-lowest text-match-emerald px-2.5 py-1 rounded-full shadow-sm flex-shrink-0">
+<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">bolt</span>
+<span class="font-label-lg text-label-lg font-bold">92% Match</span>
+</div>
+</div>
+<!-- Status Badge -->
+<div class="flex items-center gap-1.5 self-start bg-recruiting-coral/10 text-recruiting-coral px-space-sm py-1 rounded-full">
+<span class="w-2 h-2 rounded-full bg-recruiting-coral animate-pulse"></span>
+<span class="font-label-sm text-label-sm font-semibold">Tersedia untuk proyek lomba</span>
+</div>
+<!-- AI Match Reasoning (PRD AI-1) -->
+<div class="bg-surface-container-low rounded-lg p-space-sm space-y-1">
+<div class="flex items-center gap-1 text-primary-container">
+<span class="material-symbols-outlined text-[15px]">psychology</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider">AI Complementary Reason</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface">
+        Memiliki skill backend solid yang melengkapi keahlian <span class="font-semibold text-primary-container">UI Design</span> kamu untuk platform ujung-ke-ujung.
+      </p>
+</div>
+<!-- Matched Terms Tags -->
+<div class="flex flex-col space-y-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Matched Terms</span>
+<div class="flex flex-wrap gap-1.5">
+<span class="bg-surface-container text-on-surface px-2.5 py-1 rounded-full font-label-md text-label-md">Flutter</span>
+<span class="bg-surface-container text-on-surface px-2.5 py-1 rounded-full font-label-md text-label-md">Backend Python</span>
+<span class="bg-surface-container text-on-surface px-2.5 py-1 rounded-full font-label-md text-label-md">FastAPI</span>
+</div>
+</div>
+<!-- Mini Portofolio Preview -->
+<div class="flex flex-col space-y-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Cuplikan Portofolio Unggulan</span>
+<div class="grid grid-cols-2 gap-space-xs">
+<div class="group flex flex-col bg-surface-container-low rounded-lg overflow-hidden shadow-xs hover:bg-surface-container transition-colors">
+<img class="w-full h-18 object-cover group-hover:scale-105 transition-transform" data-alt="Minimalist smartphone mock-up of an Indonesian university food court e-canteen mobile interface clean colorful dishes UI dashboard high quality product photography" src="https://lh3.googleusercontent.com/aida-public/AB6AXuATe5osS7p7ORw6x7Up5ukuJm8osZqKBqfXw2zqJMAit5s0Hdl29I87qOEq3a2nCD8_N9p5EuUUzjass909O7z11AjDComuxFrT59f8zWkIqPD7nh5rtKqJAmzMx8oPDiVZjl9JpwdRsecmspaPZYVqVwV9rGuwQxtVroSUYLqhkMn3kDE7CjBDrIuC8UWCPmujsJoXalYGbn40vqugcmEo5vVe2bWljHfp-WAHduFixGlPPjmxM40Jrw"/>
+<div class="p-2">
+<span class="font-label-md text-label-md text-on-surface line-clamp-1">E-Kantin Campus App</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Flutter &amp; Dart</span>
+</div>
+</div>
+<div class="group flex flex-col bg-surface-container-low rounded-lg overflow-hidden shadow-xs hover:bg-surface-container transition-colors">
+<img class="w-full h-18 object-cover group-hover:scale-105 transition-transform" data-alt="Abstract dark mode cloud infrastructure architecture diagram showing microservices API gateway REST data flows with glowing cyan neon nodes" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEanxxnp0xYwN5-TiXlBQydq_iOJA8Xg_A-sbvhhdvxw5Y2DVLsanI0jwWBODdcTjJV31a0nH7DU0uUcnmanNrsYkV7rITRX0aPpqz-lpyGn4tBfye3EMxhMn02JFCX0wWc0LjXZjzfHa9Gh7s-ZqJLVGbuV1_lYEpNTkBjUJFnvQDtpzN3bb0lM_9LlMpqG9W96vX6MoifND2C09unXMKHkkZcO7BNUulSz9_gFGG8v_2XJyhcaCe2A"/>
+<div class="p-2">
+<span class="font-label-md text-label-md text-on-surface line-clamp-1">Rest API Microservices</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">FastAPI Python</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Action CTA Group -->
+<div class="flex items-center gap-space-xs pt-1">
+<button class="flex-1 bg-primary-container text-on-primary py-2.5 px-space-md rounded-lg font-label-lg text-label-lg flex items-center justify-center gap-1.5 shadow-sm active:scale-98 transition-all" onclick="inviteCollaborator('Rian Pratama')">
+<span class="material-symbols-outlined text-[18px]">group_add</span>
+<span>Ajak Kolaborasi</span>
+</button>
+<a class="bg-surface-container text-on-surface hover:bg-surface-container-high py-2.5 px-space-md rounded-lg font-label-lg text-label-lg flex items-center justify-center gap-1 active:scale-98 transition-all" href="#">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+<span>Portofolio</span>
+</a>
+</div>
+</article>
+<!-- Kartu Rekomendasi 2 (Sarah Amanda) -->
+<article class="relative flex flex-col bg-surface-card rounded-xl p-space-md shadow-sm space-y-space-md">
+<!-- Header Profil & Match Score -->
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="relative">
+<img class="w-12 h-12 rounded-full object-cover shadow-sm" data-alt="Portrait of young Southeast Asian female university student with stylish wire glasses smiling at modern innovation lab computer screen in background soft ambient blue light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4oPjaJUjdD5MWzm5qeDRKAMvfKtsv4KpwN037C2TU-ee1MMAu12y0-NKEMbbHSHT9Ww8cUCKCE-JcWhiC5xITV2tt6vXY7WDyOH7Fkkp9RQWTMQTBC8o1Tzo9NIheAh3rV0D7uwWtCi6tE5aL-LFYbeqrtTj82DnvoqPpCzIXnG7vwRCnwbALmyZth1A9hugJAY5ywJLjw0QipdHG2h5gp-olNfEjwy5ssN-k4zLE-a_KCRRB1coJwA"/>
+<span class="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-secondary-fixed ring-2 ring-surface-card"></span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1">
+<h3 class="font-headline-sm text-headline-sm text-on-surface truncate">Sarah Amanda</h3>
+<span class="material-symbols-outlined text-primary text-[16px]">stars</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Teknik Informatika • Angkatan '24</span>
+</div>
+</div>
+<!-- AI Score Pill -->
+<div class="flex items-center gap-1 bg-surface-container-lowest text-secondary px-2.5 py-1 rounded-full shadow-sm flex-shrink-0">
+<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<span class="font-label-lg text-label-lg font-bold">84% Match</span>
+</div>
+</div>
+<!-- Complementary & Recruiting Reason Chip -->
+<div class="flex flex-wrap gap-1.5">
+<div class="flex items-center gap-1 bg-surface-container-low text-secondary-container px-2.5 py-1 rounded-full">
+<span class="material-symbols-outlined text-[14px]">pie_chart</span>
+<span class="font-label-sm text-label-sm font-medium">Cocok untuk proyek AI &amp; Analytics</span>
+</div>
+<div class="flex items-center gap-1 bg-tertiary-container/15 text-tertiary px-2.5 py-1 rounded-full">
+<span class="material-symbols-outlined text-[14px]">person_search</span>
+<span class="font-label-sm text-label-sm font-medium">Mencari rekan UI dashboard ML</span>
+</div>
+</div>
+<!-- AI Match Reasoning (PRD AI-1) -->
+<div class="bg-surface-container-low rounded-lg p-space-sm space-y-1">
+<div class="flex items-center gap-1 text-secondary">
+<span class="material-symbols-outlined text-[15px]">tips_and_updates</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider">Potensi Sinergi Tim</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface">
+        Sarah membutuhkan pengembang frontend React untuk visualisasi data model machine learning yang sedang dia teliti.
+      </p>
+</div>
+<!-- Matched Terms Tags -->
+<div class="flex flex-col space-y-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Matched Terms</span>
+<div class="flex flex-wrap gap-1.5">
+<span class="bg-surface-container text-on-surface px-2.5 py-1 rounded-full font-label-md text-label-md">Data Science</span>
+<span class="bg-surface-container text-on-surface px-2.5 py-1 rounded-full font-label-md text-label-md">Machine Learning</span>
+<span class="bg-surface-container text-on-surface px-2.5 py-1 rounded-full font-label-md text-label-md">Python</span>
+</div>
+</div>
+<!-- Single Action CTA -->
+<div class="pt-1">
+<button class="w-full bg-primary-container text-on-primary py-2.5 px-space-md rounded-lg font-label-lg text-label-lg flex items-center justify-center gap-1.5 shadow-sm active:scale-98 transition-all" onclick="inviteCollaborator('Sarah Amanda')">
+<span class="material-symbols-outlined text-[18px]">group_add</span>
+<span>Ajak Kolaborasi</span>
+</button>
+</div>
+</article>
+<!-- Empty state / Friendly Guidance Footer -->
+<section class="flex flex-col items-center justify-center text-center p-space-lg rounded-xl bg-surface-container-low space-y-space-xs mt-space-sm mb-space-md">
+<div class="w-12 h-12 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[24px]">travel_explore</span>
+</div>
+<div class="flex flex-col max-w-[280px]">
+<h4 class="font-headline-sm text-headline-sm text-on-surface">Belum Menemukan yang Cocok?</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed mt-1">
+        Coba ubah kata kunci minat di profilmu atau ketik langsung topik skripsi/lomba di kolom pencarian.
+      </p>
+</div>
+<button class="mt-space-xs bg-surface-card text-primary-container px-space-md py-2 rounded-full font-label-md text-label-md shadow-xs active:scale-95 transition-all flex items-center gap-1" onclick="document.getElementById('collaborator-search').focus();">
+<span class="material-symbols-outlined text-[16px]">edit_note</span>
+<span>Perbarui Kriteria Pencarian</span>
+</button>
+</section>
+<!-- Toast Feedback Drawer Container (Hidden by default) -->
+<div class="fixed top-20 left-4 right-4 z-50 transform -translate-y-24 opacity-0 transition-all duration-300 pointer-events-none" id="collab-toast">
+<div class="bg-inverse-surface text-inverse-on-surface px-space-md py-3 rounded-xl shadow-xl flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-match-emerald text-[20px]">check_circle</span>
+<div class="flex flex-col min-w-0 flex-1">
+<span class="font-label-md text-label-md truncate" id="toast-title">Undangan Dikirim!</span>
+<span class="font-body-sm text-body-sm text-inverse-on-surface/80 truncate" id="toast-desc">Mahasiswa akan menerima notifikasi kolaborasi kamu.</span>
+</div>
+</div>
+</div>
+</div>
+<script>
+  // Tab switching interaction
+  const tabs = document.querySelectorAll('#category-tabs .cat-pill');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => {
+        t.classList.remove('bg-primary-container', 'text-on-primary');
+        t.classList.add('bg-surface-container-lowest', 'text-on-surface-variant');
+      });
+      tab.classList.remove('bg-surface-container-lowest', 'text-on-surface-variant');
+      tab.classList.add('bg-primary-container', 'text-on-primary');
+    });
+  });
+
+  // Collaboration Invitation Micro-Interaction
+  function inviteCollaborator(studentName) {
+    const toast = document.getElementById('collab-toast');
+    const toastTitle = document.getElementById('toast-title');
+    const toastDesc = document.getElementById('toast-desc');
+
+    if (!toast) return;
+
+    toastTitle.textContent = `Undangan untuk ${studentName}`;
+    toastDesc.textContent = 'Permintaan kolaborasi berhasil dikirim ke kotak masuk!';
+
+    // Animate in
+    toast.classList.remove('-translate-y-24', 'opacity-0', 'pointer-events-none');
+    toast.classList.add('translate-y-0', 'opacity-100');
+
+    // Auto dismiss after 2.6s
+    setTimeout(() => {
+      toast.classList.remove('translate-y-0', 'opacity-100');
+      toast.classList.add('-translate-y-24', 'opacity-0', 'pointer-events-none');
+    }, 2600);
+  }
+</script></main><div class="fixed bottom-24 right-4 z-40"><a class="flex items-center gap-space-xs bg-primary-container text-on-primary px-space-md py-3 rounded-full shadow-[0_10px_20px_-4px_rgba(67,56,202,0.35)] active:scale-95 transition-all" data-path="buat-konten" href="#"><span class="material-symbols-outlined text-[20px]">add</span><span class="font-label-lg text-label-lg pr-1">Buat</span></a></div><nav class="fixed bottom-0 inset-x-0 z-50 pb-safe bg-surface/85 backdrop-blur-xl shadow-[0_-4px_16px_rgba(0,0,0,0.04)]" data-active-classes="text-primary-container font-semibold"><div class="flex justify-around items-center h-16 px-space-xs"><a class="flex flex-col items-center justify-center flex-1 h-full py-1 text-on-surface-variant hover:text-on-surface transition-all active:scale-95" data-path="beranda" href="#"><span class="material-symbols-outlined text-[24px]">dynamic_feed</span><span class="font-label-sm text-label-sm mt-0.5">Beranda</span></a><a class="flex flex-col items-center justify-center flex-1 h-full py-1 text-on-surface-variant hover:text-on-surface transition-all active:scale-95" data-path="jelajah-rekomendasi" href="#"><span class="material-symbols-outlined text-[24px]">hub</span><span class="font-label-sm text-label-sm mt-0.5 truncate max-w-[84px]">Jelajah</span></a><a class="flex flex-col items-center justify-center flex-1 h-full py-1 text-on-surface-variant hover:text-on-surface transition-all active:scale-95" data-path="portofolio" href="#"><span class="material-symbols-outlined text-[24px]">folder_shared</span><span class="font-label-sm text-label-sm mt-0.5">Portofolio</span></a><a class="flex flex-col items-center justify-center flex-1 h-full py-1 text-on-surface-variant hover:text-on-surface transition-all active:scale-95" data-path="profil" href="#"><span class="material-symbols-outlined text-[24px]">account_circle</span><span class="font-label-sm text-label-sm mt-0.5">Profil</span></a></div></nav></body></html>
