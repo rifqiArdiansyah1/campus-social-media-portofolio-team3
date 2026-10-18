@@ -1,58 +1,46 @@
-# CampusFolio Frontend (Flutter Client)
+# CampusFolio Mobile App (Expo / React Native)
 
-Aplikasi klien frontend untuk **CampusFolio** dibangun menggunakan framework **Flutter (Dart)** dengan strategi **Flutter Web-First** untuk pengujian dan demo instan sebelum kompilasi ke Android APK.
-
----
-
-## 🎨 Strategi Pengembangan: *Flutter Web-First*
-1. **Fase 1 (Web App Demo):**
-   - Aplikasi dijalankan langsung di browser Google Chrome (`flutter run -d chrome`).
-   - Digunakan untuk pengujian oleh 5 responden mahasiswa serta demonstrasi kepada dosen tanpa perlu instalasi file `.apk`.
-2. **Fase 2 (Mobile Release):**
-   - Kode yang sama persis dikompilasi menjadi paket aplikasi Android (`flutter build apk`).
+Aplikasi klien mobile untuk **CampusFolio** dibangun menggunakan framework **Expo (React Native)** untuk pengalaman native smartphone dengan kemudahan pengujian instan via **Expo Go**.
 
 ---
 
-## 🚀 Panduan Menjalankan Frontend
+## 🎨 Strategi Pengembangan: *Expo Go Instant Demo*
+1. **Pengujian Tanpa Build APK:**
+   - Dosen dan mahasiswa cukup menginstal aplikasi **Expo Go** dari Google Play Store atau Apple App Store.
+   - Jalankan `npx expo start`, lalu scan QR code yang muncul di terminal untuk membuka aplikasi langsung di smartphone!
+2. **Kompilasi Standalone APK (Tahap Rilis):**
+   - Menggunakan EAS Build (`npx eas build -p android --profile preview`) jika dosen memerlukan file `.apk` mandiri.
 
-### 1. Inisialisasi Proyek Flutter (Jika baru pertama kali):
+---
+
+## 🚀 Panduan Menjalankan Mobile App
+
+### 1. Inisialisasi Proyek Expo (Pertama Kali):
 ```bash
 cd src/mobile
-flutter create . --org com.campusfolio.team3 --platforms=web,android
+npx create-expo-app@latest . --template blank-typescript
 ```
 
-### 2. Menjalankan di Mode Web (Rekomendasi untuk Sprint 1):
+### 2. Menjalankan Server Pengembangan Expo:
 ```bash
-flutter run -d chrome --web-port=3000
+npx expo start
 ```
+- Tekan `a` untuk membuka Android Emulator.
+- Atau scan QR code menggunakan kamera ponsel / aplikasi **Expo Go**.
 
-### 3. Menjalankan di Mode Mobile Emulator / Device Fisik:
-```bash
-flutter run
-```
+---
 
-### 4. Build APK Android untuk Rilis/Demo Mobile:
+## 📦 Rekomendasi Library Penting
 ```bash
-flutter build apk --release
+npx expo install @react-navigation/native @react-navigation/bottom-tabs @react-navigation/native-stack react-native-screens react-native-safe-area-context
+npx expo install axios @tanstack/react-query expo-secure-store lucide-react-native
 ```
 
 ---
 
-## 📦 Rekomendasi Package Penting
-Tambahkan ke `pubspec.yaml`:
-```yaml
-dependencies:
-  flutter:
-    sdk: flutter
-  dio: ^5.4.1                 # HTTP client dengan interceptor JWT
-  flutter_bloc: ^8.1.4        # State Management
-  flutter_secure_storage: ^9.0.0 # Penyimpanan aman token login
-  google_fonts: ^6.1.0        # Tipografi UI
-  cached_network_image: ^3.3.1 # Render gambar portofolio/avatar
+## 🌐 Koneksi ke Backend FastAPI
+Konfigurasikan URL API pada file `.env` atau config client:
+```typescript
+// Ganti dengan IP lokal laptop saat menguji dengan HP fisik di jaringan WiFi yang sama
+export const API_BASE_URL = "http://192.168.1.xxx:8000/api/v1"; 
 ```
-
----
-
-## 🖼️ Referensi Desain UI
-Desain antarmuka merujuk pada wireframe dan mockup yang disiapkan oleh Hakim (Hipster) pada file:
-[`ui/Model UI.webp`](../../ui/Model%20UI.webp)

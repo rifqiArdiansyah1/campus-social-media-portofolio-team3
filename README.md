@@ -26,13 +26,15 @@ Aplikasi sosial media dan portofolio terpadu mahasiswa untuk memamerkan karya, m
 
 ## 🛠️ Rencana Tumpukan Teknologi (Tech Stack)
 
-Berdasarkan usulan pada [ADR-0001: Pilihan Teknologi](docs/decisions/ADR-0001-pilihan-teknologi.md):
-- **Frontend / Client:** Mobile App (Flutter / React Native Expo) atau Web PWA
-- **Backend / API:** RESTful API (Node.js / Python FastAPI / Supabase)
-- **Database:** PostgreSQL (Relational schema + Full-text search / pgvector)
+Berdasarkan kesepakatan pada [ADR-0001: Pilihan Teknologi](docs/decisions/ADR-0001-pilihan-teknologi.md):
+- **Frontend Web:** Next.js (React 18/19 + TailwindCSS)
+- **Frontend Mobile:** Expo (React Native dengan Expo Go)
+- **Backend / API:** Python FastAPI (RESTful API dengan Swagger Docs di `/docs`)
+- **Database:** PostgreSQL (Supabase Cloud Free Tier dengan 10 tabel aktif)
+- **Media Storage:** Supabase Storage (Gambar portofolio & avatar)
 - **Modul AI:** 
-  - *Baseline Rekomendasi:* TF-IDF + Cosine Similarity / Text Embedding (NLP)
-  - *Moderasi Teks:* Contextual Text Classifier / LLM API dengan format output JSON terstruktur
+  - *Baseline Rekomendasi (AI-1):* TF-IDF + Cosine Similarity (Scikit-Learn)
+  - *Moderasi Teks (AI-2):* Triage klasifikasi konten kontekstual (*Human-in-the-Loop*)
 
 ---
 
@@ -60,6 +62,7 @@ campus-social-media-portofolio-team3/
 │   │   └── bug-report.md              # Template pelaporan bug
 │   └── PULL_REQUEST_TEMPLATE.md       # Standar deskripsi Pull Request
 ├── docs/                              # Artefak resmi perkuliahan
+│   ├── 00-checklist-pertemuan-1.md    # Pelacak status Definition of Done
 │   ├── 01-project-brief.md            # Brief proyek, scope, dan batasan
 │   ├── 02-problem-statement.md        # Formula analisis masalah pengguna
 │   ├── 03-product-goal.md             # Tujuan produk & pilar keberhasilan
@@ -67,15 +70,21 @@ campus-social-media-portofolio-team3/
 │   ├── 05-initial-backlog.md          # 12 User Story dengan prioritas MoSCoW
 │   ├── 06-role-assignment.md          # Pembagian peran & tanggung jawab tim
 │   ├── 07-ai-hypothesis.md            # Hipotesis, why not if-else, & output schema
+│   ├── 08-system-design.md            # Desain Sistem: Use Case, Activity, ERD
+│   ├── schema.sql                     # Skema SQL DDL PostgreSQL (10 tabel)
 │   ├── decisions/
 │   │   └── ADR-0001-pilihan-teknologi.md
+│   ├── diagrams/                      # Diagram Use Case, Activity, ERD
 │   └── research/
 │       └── pertanyaan-wawancara.md    # Panduan wawancara 5 responden
 ├── ai/
 │   ├── prompts/                       # Template prompt sistem
 │   ├── schemas/                       # JSON Schema output AI
 │   └── eval/                          # Dataset evaluasi dan uji akurasi
-└── src/                               # Implementasi kode aplikasi (Sprint 1)
+└── src/
+    ├── backend/                       # Python FastAPI & AI Engine
+    ├── web/                           # Next.js Web App (React + TailwindCSS)
+    └── mobile/                        # Expo Mobile App (React Native)
 ```
 
 ---

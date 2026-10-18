@@ -1,73 +1,72 @@
-# ADR-0001: Pilihan Tumpukan Teknologi (Technology Stack) & Strategi Flutter Web-First
+# ADR-0001: Pilihan Tumpukan Teknologi — Next.js (Web), Expo (Mobile), FastAPI (Backend) & Supabase
 
-- **Status:** DITERIMA (ACCEPTED)
-- **Tanggal:** 17 Oktober 2026 (Diperbarui dari Draf 6 Oktober 2026)
+- **Status:** DITERIMA (ACCEPTED — Direvisi 18 Oktober 2026)
+- **Tanggal:** 18 Oktober 2026 (Diperbarui dari draf awal 6 Oktober 2026)
 - **Pengambil Keputusan:** Rifqi (Hacker), Hakim (Hipster), Rama (Hustler), Project Manager
 
 ---
 
 ## 1. Konteks & Latar Belakang
-Proyek **CampusFolio** membutuhkan tumpukan teknologi (*tech stack*) yang mampu:
-1. Mendukung pengembangan antarmuka pengguna yang cepat, menarik, dan responsif.
-2. Memudahkan proses validasi dan pengujian kepada 5 responden mahasiswa serta demonstrasi kepada dosen tanpa hambatan instalasi aplikasi.
-3. Menyediakan API backend berkinerja tinggi yang terintegrasi secara mulus dengan modul kecerdasan buatan (NLP) berbasis teks.
-4. Memiliki kurva belajar yang ramah dan efisien bagi tim mahasiswa beranggotakan 3 orang dengan tenggat waktu sprint yang ketat.
+Proyek **CampusFolio** membutuhkan tumpukan teknologi (*tech stack*) yang mendukung:
+1. Pengembangan aplikasi mobile dan web secara cepat oleh tim mahasiswa beranggotakan 3 orang.
+2. Memaksimalkan keakraban (*familiarity*) tim terhadap bahasa dan alat pengembangan (ekosistem **JavaScript/TypeScript**).
+3. Kemudahan demonstrasi ke dosen dan pengujian kepada 5 responden mahasiswa tanpa hambatan instalasi file APK.
+4. Backend API berkinerja tinggi yang terintegrasi secara alami dengan modul pemrosesan teks AI (NLP).
+5. Database cloud terpusat yang tidak membebani perangkat laptop lokal mahasiswa.
 
 ---
 
 ## 2. Keputusan yang Disepakati
 
-Tim secara bulat memutuskan tumpukan teknologi berikut:
+Tim secara bulat menyetujui arsitektur gabungan berikut:
 
-### A. Frontend: Flutter dengan Pendekatan *Flutter Web-First*
-- **Framework:** **Flutter (Dart)**
-- **Strategi Rilis:**
-  - **Fase 1 (Validasi & MVP Demo):** Dikompilasi dan dijalankan sebagai **Web App** (`flutter run -d chrome` / `flutter build web`). Ini memungkinkan dosen dan responden mahasiswa menguji aplikasi langsung via browser laptop/HP tanpa perlu menginstal file `.apk`.
-  - **Fase 2 (Rilis Mobile):** Menggunakan *codebase* yang sama persis untuk dikompilasi menjadi aplikasi Android (`flutter build apk`) dan iOS tanpa menulis ulang kode (*zero-rewrite*).
-- **Arsitektur State Management:** Bloc / Cubit atau Riverpod.
-- **Networking:** `dio` dengan interceptor autentikasi JWT token.
-- **Penyimpanan Sesi:** `flutter_secure_storage` / `shared_preferences`.
+### A. Frontend Web: Next.js (React + TailwindCSS)
+- **Direktori:** `src/web/`
+- **Framework:** **Next.js (App Router)** + **TailwindCSS**
+- **Justifikasi Utama:**
+  - *Familiaritas Tinggi:* Tim telah terbiasa dengan React dan ekosistem JavaScript/TypeScript.
+  - *Mobile-Responsive Web:* Halaman feed, profil, portofolio, dan pencarian dapat langsung diuji coba dengan responsivitas tinggi baik di browser desktop maupun smartphone.
+  - *Kemudahan Uji Coba & Demo:* Dapat dideploy secara online dan gratis di **Vercel** hanya dalam 1 klik, memudahkan wawancara 5 responden mahasiswa via tautan web.
 
-### B. Backend: Python FastAPI
+### B. Frontend Mobile: Expo (React Native)
+- **Direktori:** `src/mobile/`
+- **Framework:** **Expo (React Native)**
+- **Justifikasi Utama:**
+  - *Demo Instan via Expo Go:* Dosen dan mahasiswa tidak perlu mengunduh file `.apk` yang rumit. Cukup unduh aplikasi Expo Go di Play Store/App Store, lalu scan QR code dari terminal untuk menjalankan aplikasi secara native di ponsel.
+  - *Berbagi Kode dengan Next.js:* Logika pemanggilan API, skema validasi, tipe TypeScript, dan *state management* dapat diselaraskan dengan versi web.
+
+### C. Backend: Python FastAPI
+- **Direktori:** `src/backend/`
 - **Framework:** **FastAPI (Python 3.10+)**
 - **Justifikasi Utama:**
-  - *Unified Stack:* Backend API dan modul pemrosesan AI teks (Scikit-Learn / Transformers) berada dalam satu ekosistem Python yang sama tanpa perlu microservice terpisah.
-  - *Auto-generated Documentation:* Otomatis menghasilkan Swagger UI interaktif di `/docs`, memudahkan Hipster (Hakim) menguji payload request/response JSON secara mandiri.
-  - Asynchronous murni (`async/await`) dengan performa tinggi.
+  - *Pusat Layanan Tunggal (Single Source of Truth):* Menyediakan REST API yang dikonsumsi secara bersamaan oleh Next.js (Web) dan Expo (Mobile).
+  - *Integrasi Alami AI:* Engine pemrosesan AI teks (TF-IDF Scikit-Learn dan Moderasi) berjalan langsung di Python tanpa overhead komunikasi antar-layanan (*microservice*).
+  - *Swagger UI Otomatis:* Dokumentasi interaktif di `/docs` mempermudah pengembang frontend (Hakim & Rifqi) menguji endpoint.
 
-### C. Database: PostgreSQL (via Supabase Cloud Free Tier)
+### D. Database: PostgreSQL (via Supabase Cloud Free Tier)
 - **RDBMS:** **PostgreSQL (Hosted di Supabase Cloud)**
 - **Justifikasi Utama:**
-  - *Zero Resource Overhead:* Tidak membebani RAM/CPU laptop pengembang (tidak membutuhkan instalasi lokal maupun Docker Desktop).
-  - *Database Kolaboratif Terpusat:* Hacker (Rifqi) dan Hipster (Hakim) terhubung ke basis data cloud yang sama secara real-time.
-  - *Spreadsheet GUI:* Memudahkan tim memasukkan dan meninjau data dummy mahasiswa via browser Table Editor.
-  - *Storage Terintegrasi:* Mendukung upload berkas gambar portofolio dan avatar pengguna secara gratis.
-- **ORM & Koneksi:** `SQLAlchemy` / `asyncpg` dengan connection string standar PostgreSQL.
-- **Ekstensi:** Siap mendukung ekstensi `pgvector` jika diperlukan pencarian embedding vektor di level database.
+  - *Zero Resource Overhead:* Tidak membebani laptop pengembang (tidak perlu instalasi PostgreSQL lokal / Docker).
+  - *Database Kolaboratif:* Seluruh anggota tim terhubung ke basis data cloud terpusat yang sama (10 tabel relasional aktif).
+  - *Supabase Storage:* Terintegrasi langsung untuk mengunggah dan menyajikan gambar portofolio dan avatar pengguna.
 
-### D. Layanan AI (NLP & Moderasi Teks)
-- **AI-1 (Rekomendasi Kolaborator):**
-  - *Tahap Baseline (MVP):* `scikit-learn` (TF-IDF Vectorizer + Cosine Similarity) dengan penyesuaian bobot keahlian komplementer (*complementary skill bonus*).
-  - *Tahap Lanjutan (Semantic Enhancement):* Model `sentence-transformers` multibahasa (`paraphrase-multilingual-MiniLM-L12-v2`) atau API embedding untuk menangani sinonim dan bahasa gaul kampus.
-- **AI-2 (Moderasi Konten Teks):**
-  - Triage awal menggunakan kata kunci kontekstual dan model zero-shot/sentimen.
-  - Status klasifikasi: `aman`, `perlu_review`, `berpotensi_melanggar`.
-  - Mengikuti prinsip wajib PRD: *Human-in-the-Loop* (keputusan akhir penghapusan konten sensitif selalu oleh admin manusia).
-
-### E. Media & Asset Storage (Portofolio & Avatar)
-- **Fase Lokal:** Static file directory mount di FastAPI.
-- **Fase Production/Cloud:** Supabase Storage atau Cloudinary (free tier).
+### E. Layanan AI (NLP & Moderasi Teks)
+- **AI-1 (Rekomendasi Kolaborator):** Baseline TF-IDF + Cosine Similarity dengan pembobotan *complementary skills*.
+- **AI-2 (Moderasi Konten Teks):** Klasifikasi teks awal (*aman*, *perlu_review*, *berpotensi_melanggar*) dengan prinsip *Human-in-the-Loop*.
 
 ---
 
 ## 3. Konsekuensi Positif (*Pros*)
-1. **Beban Kerja Minimal:** Tim tidak perlu mengulang pembuatan kode UI dua kali (web dan mobile berbagi 100% kode Flutter).
-2. **Uji Coba Pengguna Lancar:** Wawancara 5 mahasiswa responden dapat langsung dilakukan dengan membagikan link demo web.
-3. **Pemisahan Peran Jelas:** Hacker (Rifqi) fokus pada API & AI di `src/backend`, sedangkan Hipster (Hakim) fokus pada komponen UI di `src/mobile`.
+1. **Kecepatan Pengembangan Maksimal (*High Developer Velocity*):** Menghilangkan kurva belajar bahasa Dart/Flutter, sehingga tim bisa langsung fokus menyelesaikan User Story Sprint 1.
+2. **Fleksibilitas Platform:** Mendukung Web (Next.js) untuk portofolio luas dan Mobile (Expo) untuk interaksi aplikasi harian mahasiswa.
+3. **Penyelarasan Beban Kerja:**
+   - **Rifqi (Hacker):** Mengawal FastAPI backend, Supabase database, dan pipeline AI.
+   - **Hakim (Hipster):** Mengembangkan UI Next.js Web dan Expo Mobile berbasis mockup `ui/Model UI.webp`.
+   - **Rama (Hustler):** Melakukan riset pengguna via web demo dan menyusun metrik validasi.
 
 ---
 
 ## 4. Rencana Tindak Lanjut
-1. Melakukan inisialisasi struktur modul `src/backend` (FastAPI starter & engine AI baseline).
-2. Melakukan inisialisasi panduan modul `src/mobile` (Flutter setup dengan target Web & Android).
-3. Melakukan sinkronisasi repositori ke branch `develop` dan `main`.
+1. Inisialisasi modul frontend Next.js di `src/web/`.
+2. Perbarui panduan Expo di `src/mobile/`.
+3. Sinkronisasi seluruh perubahan ke branch `develop` dan `main`.

@@ -1,6 +1,7 @@
 # Source Code — CampusFolio (Team 3)
 
-Arsitektur kode aplikasi dibagi menjadi dua modul utama sesuai kesepakatan pada [ADR-0001: Pilihan Teknologi](../docs/decisions/ADR-0001-pilihan-teknologi.md):
+Arsitektur kode aplikasi dibagi menjadi tiga modul utama sesuai kesepakatan pada [ADR-0001: Pilihan Teknologi](../docs/decisions/ADR-0001-pilihan-teknologi.md):
 
-1. **[`backend/`](backend/)**: Backend API menggunakan **FastAPI (Python)**, **PostgreSQL**, serta engine pemrosesan teks AI (TF-IDF & Moderasi).
-2. **[`mobile/`](mobile/)**: Frontend klien menggunakan **Flutter (Dart)** dengan pendekatan **Flutter Web-First** untuk pengujian dan demo instan sebelum rilis APK Android.
+1. **[`backend/`](backend/)**: Backend REST API dan engine pemrosesan teks AI (TF-IDF & Moderasi) menggunakan **FastAPI (Python)** dan **PostgreSQL (Supabase Cloud)**.
+2. **[`web/`](web/)**: Aplikasi web portofolio dan feed linimasa menggunakan **Next.js (React + TailwindCSS)** untuk kemudahan demo online dan pengujian responden via tautan web.
+3. **[`mobile/`](mobile/)**: Aplikasi mobile mahasiswa menggunakan **Expo (React Native)** untuk pengalaman native smartphone dengan kemudahan demo via **Expo Go**.
