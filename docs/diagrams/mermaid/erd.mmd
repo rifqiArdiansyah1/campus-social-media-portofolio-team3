@@ -2,10 +2,15 @@ erDiagram
     users ||--o{ portfolio_items : memiliki
     users ||--o{ posts : menulis
     users ||--o{ user_skills : memiliki
-    users ||--o{ moderation_records : "admin_id"
+    users ||--o{ moderation_records : "admin_id / moderator_id"
     users ||--o{ reports : "pelapor_id"
+    users ||--o{ reports : "ditinjau_oleh"
     users ||--o{ recommendation_logs : "pemohon_id"
     users ||--o{ recommendation_logs : "kandidat_id"
+    users ||--o{ friendships : "requester_id"
+    users ||--o{ friendships : "addressee_id"
+    users ||--o{ user_blocks : "blocker_id"
+    users ||--o{ user_blocks : "blocked_id"
     skills ||--o{ user_skills : ""
     skills ||--o{ portfolio_skills : ""
     skills ||--o{ post_skills : ""
@@ -24,18 +29,33 @@ erDiagram
         int angkatan
         text bio
         varchar(255) kontak_url
-        enum role
+        enum role "mahasiswa, moderator, admin"
         timestamp created_at
     }
     skills {
         bigint skill_id PK
         varchar(60) nama UK
-        enum tipe
+        enum tipe "skill, minat"
     }
     user_skills {
         bigint user_id PK, FK
         bigint skill_id PK, FK
-        enum level
+        enum level "pemula, menengah, mahir"
+    }
+    friendships {
+        bigint friendship_id PK
+        bigint requester_id FK
+        bigint addressee_id FK
+        enum status "menunggu, diterima, ditolak"
+        timestamp created_at
+        timestamp updated_at
+    }
+    user_blocks {
+        bigint block_id PK
+        bigint blocker_id FK
+        bigint blocked_id FK
+        text alasan
+        timestamp created_at
     }
     portfolio_items {
         bigint portfolio_id PK
@@ -44,6 +64,15 @@ erDiagram
         text deskripsi
         varchar(255) tautan_url
         varchar(255) gambar_url
+        enum kategori "proyek, skpi, sertifikat, artikel_ilmiah"
+        varchar(100) nomor_dokumen
+        varchar(150) penerbit
+        date tanggal_terbit
+        varchar(255) file_url
+        enum status_verifikasi "draft, menunggu_review, terverifikasi, ditolak"
+        bigint diverifikasi_oleh FK
+        text catatan_verifikasi
+        timestamp verified_at
         timestamp created_at
     }
     portfolio_skills {
@@ -54,8 +83,13 @@ erDiagram
         bigint post_id PK
         bigint user_id FK
         text isi
-        enum tipe
-        enum status
+        varchar(255) gambar_url "fokus foto + teks"
+        enum tipe "umum, cari_anggota"
+        enum status "draft, tayang, menunggu_review, direview, ditolak, revisi, dihapus"
+        boolean is_deleted
+        timestamp deleted_at
+        bigint deleted_by FK
+        text alasan_hapus
         timestamp created_at
     }
     post_skills {
@@ -66,11 +100,13 @@ erDiagram
         bigint moderation_id PK
         bigint post_id FK
         bigint admin_id FK
-        enum label_ai
+        bigint moderator_id FK "Kaprodi"
+        enum label_ai "aman, perlu_review, berpotensi_melanggar"
         varchar(60) kategori_ai
         float confidence
         text penjelasan_ai
-        enum keputusan_admin
+        enum keputusan_admin "setujui, tolak, minta_revisi, hapus_konten"
+        enum keputusan_moderator "setujui, tolak, minta_revisi, hapus_konten"
         text catatan_admin
         timestamp created_at
         timestamp decided_at
@@ -80,8 +116,13 @@ erDiagram
         bigint post_id FK
         bigint pelapor_id FK
         text alasan
-        enum status
+        enum kategori_laporan "spam, konten_tidak_pantas, ujaran_kebencian, dll"
+        enum status "baru, diproses, selesai, diabaikan"
+        bigint ditinjau_oleh FK "moderator / admin"
+        varchar(50) tindakan_diambil "postingan_dihapus, peringatan, dll"
+        text catatan_tinjauan
         timestamp created_at
+        timestamp resolved_at
     }
     recommendation_logs {
         bigint rec_id PK
@@ -90,6 +131,6 @@ erDiagram
         text kebutuhan_teks
         float skor
         text alasan
-        enum umpan_balik
+        enum umpan_balik "relevan, tidak_relevan"
         timestamp created_at
     }

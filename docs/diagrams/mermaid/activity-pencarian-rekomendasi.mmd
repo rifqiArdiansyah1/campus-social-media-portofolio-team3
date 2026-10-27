@@ -1,28 +1,41 @@
 flowchart TB
     subgraph MHS["Mahasiswa"]
-        M0(["Mulai"]) --> M1["Buka Cari / Rekomendasi; isi kata kunci atau kebutuhan proyek"]
-        M2["Lihat detail profil dan portofolio"] --> D3{"Relevan dan sesuai kebutuhan?"}
-        M3["Hubungi / ajak kolaborasi lewat kontak di profil"] --> MF1(["Kolaborasi dimulai"])
+        M0(["Buka Menu Home / Dashboard"]) --> M_DASH["Akses Dashboard Sentral: Feed Aktivitas, Postingan Teman, & Widget Rekomendasi"]
+        M_DASH --> M1["Eksplorasi Profil / Cari Rekan Kolaborasi"]
+        M1 --> D_ACT{"Pilihan Aksi Mahasiswa?"}
+        
+        %% Cabang Pertemanan
+        D_ACT -- "Tambah Pertemanan" --> M_FR["Kirim Permintaan Pertemanan (Friend Request)"]
+        D_ACT -- "Privasi Terganggu" --> M_BLK["Blokir Profil Pengguna"]
+        
+        %% Cabang Kolaborasi
+        D_ACT -- "Ajak Kolaborasi" --> M_KOLAB["Hubungi via Kontak Profil / Kolaborasi Proyek"] --> MF1(["Kolaborasi Dimulai"])
+        
+        M_ACC["Terima / Tolak Permintaan Pertemanan di Home Dashboard"] --> MF_FR(["Jaringan Pertemanan Diperbarui"])
     end
+
     subgraph SIS["Sistem CampusFolio"]
-        S1["Terima dan validasi permintaan"] --> D1{"Jenis permintaan?"}
-        S2["Cari di profil, portofolio, dan posting (basis data)"]
-        S3["Ambil skill/minat pemohon dan kandidat"]
-        D2{"Skor di atas ambang dan AI berhasil?"}
-        S4["Susun daftar rekomendasi + alasan"]
-        S5["Tampilkan hasil (+ alasan jika rekomendasi)"]
-        S6["Simpan umpan balik tidak relevan (evaluasi AI)"] --> MF2(["Selesai"])
+        S_HOME["Agregasi Aktivitas: Postingan, Status Verifikasi SKPI, Rekomendasi AI, & Notifikasi Teman"] --> M_DASH
+        S_REQ["Simpan Permintaan Pertemanan (status: menunggu) & kirim notifikasi"] --> M_ACC
+        S_BLK["Catat Blokir di user_blocks; sembunyikan profil & postingan timbal balik"] --> MF_BLK(["Profil Diblokir"])
+        
+        S_SEARCH["Pencarian Berbasis Kata Kunci / Tag Keahlian"]
+        S_AI_FETCH["Ambil Profil, Skill, & Minat Pemohon vs Kandidat"]
+        D2{"Skor di atas ambang & AI berhasil?"}
+        S_REC_OUT["Susun Daftar Rekomendasi + Skor Kecocokan (%) & Alasan"]
+        S_SHOW["Tampilkan Hasil Pencarian & Kartu Rekomendasi AI di Feed/Home"]
     end
-    subgraph AIL["Layanan AI (Text)"]
-        A1["Hitung kemiripan dan skill pelengkap; susun alasan"]
+
+    subgraph AIL["Layanan AI (TF-IDF & NLP Matcher)"]
+        A1["Hitung kemiripan teks profil, skill pelengkap, dan deskripsi kebutuhan"]
     end
-    M1 --> S1
-    D1 -- "Kata kunci" --> S2
-    D1 -- "Rekomendasi" --> S3 --> A1 --> D2
-    D2 -- "Ya" --> S4
-    D2 -- "Tidak / AI gagal" --> S2
-    S2 --> S5
-    S4 --> S5
-    S5 --> M2
-    D3 -- "Ya" --> M3
-    D3 -- "Tidak" --> S6
+
+    M1 --> SIS_IN{"Mode Pencarian?"}
+    SIS_IN -- "Kata Kunci / Skill" --> S_SEARCH --> S_SHOW
+    SIS_IN -- "Rekomendasi AI" --> S_AI_FETCH --> A1 --> D2
+    D2 -- "Ya" --> S_REC_OUT --> S_SHOW
+    D2 -- "Tidak / Fallback" --> S_SEARCH
+    
+    S_SHOW --> D_ACT
+    M_FR --> S_REQ
+    M_BLK --> S_BLK

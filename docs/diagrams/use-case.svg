@@ -1,1 +1,154 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1090" viewBox="0 0 1500 1090" font-family="'DejaVu Sans','Segoe UI',Arial,sans-serif"><title>Use Case Diagram CampusFolio</title><defs><marker id="open" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto"><path d="M1,1 L11,6 L1,11" fill="none" stroke="#333" stroke-width="1.4"/></marker><marker id="solid" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto"><path d="M1,1 L11,6 L1,11 Z" fill="#333" stroke="#333" stroke-width="1"/></marker><filter id="sh" x="-5%" y="-5%" width="110%" height="115%"><feDropShadow dx="1.5" dy="2" stdDeviation="1.5" flood-color="#000" flood-opacity="0.18"/></filter></defs><rect width="100%" height="100%" fill="#ffffff"/><text x="750.0" y="28.0" font-size="18" text-anchor="middle" dominant-baseline="central" font-weight="bold" fill="#111">Use Case Diagram — CampusFolio (Campus Social Media / Portfolio)</text><rect x="240" y="62" width="1050" height="898" rx="10" fill="#FAFBFC" stroke="#555" stroke-width="2"/><text x="765.0" y="80.0" font-size="14" text-anchor="middle" dominant-baseline="central" font-weight="bold" fill="#444">Sistem CampusFolio</text><line x1="272.0" y1="130.0" x2="272.0" y2="895.0" stroke="#333" stroke-width="1.5"/><line x1="272.0" y1="130.0" x2="298.0" y2="130.0" stroke="#333" stroke-width="1.5"/><circle cx="272" cy="130" r="2.5" fill="#333"/><line x1="272.0" y1="215.0" x2="298.0" y2="215.0" stroke="#333" stroke-width="1.5"/><circle cx="272" cy="215" r="2.5" fill="#333"/><line x1="272.0" y1="300.0" x2="298.0" y2="300.0" stroke="#333" stroke-width="1.5"/><circle cx="272" cy="300" r="2.5" fill="#333"/><line x1="272.0" y1="385.0" x2="298.0" y2="385.0" stroke="#333" stroke-width="1.5"/><circle cx="272" cy="385" r="2.5" fill="#333"/><line x1="272.0" y1="470.0" x2="298.0" y2="470.0" stroke="#333" stroke-width="1.5"/><circle cx="272" cy="470" r="2.5" fill="#333"/><line x1="272.0" y1="555.0" x2="298.0" y2="555.0" stroke="#333" stroke-width="1.5"/><circle cx="272" cy="555" r="2.5" fill="#333"/><line x1="272.0" y1="640.0" x2="298.0" y2="640.0" stroke="#333" stroke-width="1.5"/><circle cx="272" cy="640" r="2.5" fill="#333"/><line x1="272.0" y1="725.0" x2="298.0" y2="725.0" stroke="#333" stroke-width="1.5"/><circle cx="272" cy="725" r="2.5" fill="#333"/><line x1="272.0" y1="810.0" x2="298.0" y2="810.0" stroke="#333" stroke-width="1.5"/><circle cx="272" cy="810" r="2.5" fill="#333"/><line x1="272.0" y1="895.0" x2="298.0" y2="895.0" stroke="#333" stroke-width="1.5"/><circle cx="272" cy="895" r="2.5" fill="#333"/><line x1="130.0" y1="514.0" x2="272.0" y2="514.0" stroke="#333" stroke-width="1.5"/><circle cx="272" cy="514" r="2.5" fill="#333"/><line x1="1370.0" y1="134.0" x2="521.9" y2="131.1" stroke="#333" stroke-width="1.5"/><line x1="1370.0" y1="134.0" x2="1133.9" y2="261.9" stroke="#333" stroke-width="1.5"/><line x1="1370.0" y1="694.0" x2="857.7" y2="575.5" stroke="#333" stroke-width="1.5"/><line x1="1370.0" y1="694.0" x2="864.8" y2="797.4" stroke="#333" stroke-width="1.5"/><line x1="522.0" y1="215.0" x2="658.0" y2="215.0" stroke="#333" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#open)"/><rect x="559.9" y="198.0" width="60.2" height="16.0" fill="#fff" opacity="0.92"/><text x="590.0" y="206.0" font-size="10" text-anchor="middle" dominant-baseline="central" font-weight="normal" fill="#333" font-style="italic">«include»</text><line x1="522.0" y1="385.0" x2="658.0" y2="385.0" stroke="#333" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#open)"/><rect x="559.9" y="368.0" width="60.2" height="16.0" fill="#fff" opacity="0.92"/><text x="590.0" y="376.0" font-size="10" text-anchor="middle" dominant-baseline="central" font-weight="normal" fill="#333" font-style="italic">«include»</text><line x1="522.0" y1="555.0" x2="658.0" y2="555.0" stroke="#333" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#open)"/><rect x="559.9" y="538.0" width="60.2" height="16.0" fill="#fff" opacity="0.92"/><text x="590.0" y="546.0" font-size="10" text-anchor="middle" dominant-baseline="central" font-weight="normal" fill="#333" font-style="italic">«include»</text><line x1="521.9" y1="811.6" x2="658.1" y2="813.4" stroke="#333" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#open)"/><rect x="559.9" y="795.5" width="60.2" height="16.0" fill="#fff" opacity="0.92"/><text x="590.0" y="803.5" font-size="10" text-anchor="middle" dominant-baseline="central" font-weight="normal" fill="#333" font-style="italic">«include»</text><line x1="682.6" y1="745.6" x2="497.4" y2="789.4" stroke="#333" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#open)"/><rect x="562.8" y="750.5" width="54.4" height="16.0" fill="#fff" opacity="0.92"/><text x="590.0" y="758.5" font-size="10" text-anchor="middle" dominant-baseline="central" font-weight="normal" fill="#333" font-style="italic">«extend»</text><line x1="1075.0" y1="417.0" x2="1075.0" y2="323.0" stroke="#333" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#open)"/><rect x="1047.8" y="353.0" width="54.4" height="16.0" fill="#fff" opacity="0.92"/><text x="1075.0" y="361.0" font-size="10" text-anchor="middle" dominant-baseline="central" font-weight="normal" fill="#333" font-style="italic">«extend»</text><ellipse cx="410" cy="130" rx="112" ry="33" fill="#CDE8FF" stroke="#2B6CB0" stroke-width="1.6" filter="url(#sh)"/><text x="410.0" y="130.0" font-size="12" text-anchor="middle" dominant-baseline="central" font-weight="normal" fill="#111">Login</text><ellipse cx="410" cy="215" rx="112" ry="33" fill="#CDE8FF" stroke="#2B6CB0" stroke-width="1.6" filter="url(#sh)"/><text x="410.0" y="215.0" font-size="12" text-anchor="middle" dominant-baseline="central" font-weight="normal" fill="#111">Registrasi</text><ellipse cx="410" cy="300" rx="112" ry="33" fill="#CDE8FF" stroke="#2B6CB0" stroke-width="1.6" filter="url(#sh)"/><text x="410.0" y="300.0" font-size="12" text-anchor="middle" dominant-baseline="central" font-weight="normal" fill="#111">Logout</text><ellipse cx="410" cy="385" rx="112" ry="33" fill="#CDE8FF" stroke="#2B6CB0" stroke-width="1.6" filter="url(#sh)"/><text x="410.0" y="385.0" font-size="12" text-anchor="middle" dominant-baseline="central" font-weight="normal" fill="#111">Kelola Profil</text><ellipse cx="410" cy="470" rx="112" ry="33" fill="#CDE8FF" stroke="#2B6CB0" stroke-width="1.6" filter="url(#sh)"/><text x="410.0" y="470.0" font-size="12" text-anchor="middle" dominant-baseline="central" font-weight="normal" fill="#111">Kelola Portofolio</text><ellipse cx="410" cy="555" rx="112" ry="33" fill="#CDE8FF" stroke="#2B6CB0" stroke-width="1.6" filter="url(#sh)"/><text x="410.0" y="555.0" font-size="12" text-anchor="middle" dominant-baseline="central" font-weight="normal" fill="#111">Buat Posting</text><ellipse cx="410" cy="640" rx="112" ry="33" fill="#CDE8FF" stroke="#2B6CB0" stroke-width="1.6" filter="url(#sh)"/><text x="410.0" y="632.5" font-size="12" text-anchor="middle" dominant-baseline="central" font-weight="normal" fill="#111">Cari Mahasiswa /</text><text x="410.0" y="647.5" font-size="12" text-anchor="middle" dominant-baseline="central" font-weight="normal" fill="#111">Portofolio / Posting</text><ellipse cx="410" cy="725" rx="112" ry="33" fill="#CDE8FF" stroke="#2B6CB0" stroke-width="1.6" filter="url(#sh)"/><text x="410.0" y="717.5" font-size="12" text-anchor="middle" dominant-baseline="central" font-weight="normal" fill="#111">Lihat Detail Profil</text><text x="410.0" y="732.5" font-size="12" text-anchor="middle" dominant-baseline="central" font-weight="normal" fill="#111">&amp; Portofolio</text><ellipse cx="410" cy="810" rx="112" ry="33" fill="#CDE8FF" stroke="#2B6CB0" stroke-width="1.6" filter="url(#sh)"/><text x="410.0" y="802.5" font-size="12" text-anchor="middle" dominant-baseline="central" font-weight="normal" fill="#111">Lihat Rekomendasi</text><text x="410.0" y="817.5" font-size="12" text-anchor="middle" dominant-baseline="central" font-weight="normal" fill="#111">Kolaborator</text><ellipse cx="410" cy="895" rx="112" ry="33" fill="#CDE8FF" stroke="#2B6CB0" stroke-width="1.6" filter="url(#sh)"/><text x="410.0" y="895.0" font-size="12" text-anchor="middle" dominant-baseline="central" font-weight="normal" fill="#111">Laporkan Konten</text><ellipse cx="770" cy="215" rx="112" ry="33" fill="#CDE8FF" stroke="#2B6CB0" stroke-width="1.6" filter="url(#sh)"/><text x="770.0" y="215.0" font-size="12" text-anchor="middle" dominant-baseline="central" font-weight="normal" fill="#111">Validasi Data</text><ellipse cx="770" cy="385" rx="112" ry="33" fill="#CDE8FF" stroke="#2B6CB0" stroke-width="1.6" filter="url(#sh)"/><text x="770.0" y="377.5" font-size="12" text-anchor="middle" dominant-baseline="central" font-weight="normal" fill="#111">Kelola Skill</text><text x="770.0" y="392.5" font-size="12" text-anchor="middle" dominant-baseline="central" font-weight="normal" fill="#111">&amp; Minat</text><ellipse cx="770" cy="555" rx="112" ry="33" fill="#E6DBFF" stroke="#6B46C1" stroke-width="1.6" filter="url(#sh)"/><text x="770.0" y="547.5" font-size="12" text-anchor="middle" dominant-baseline="central" font-weight="normal" fill="#111">Klasifikasi Konten</text><text x="770.0" y="562.5" font-size="12" text-anchor="middle" dominant-baseline="central" font-weight="normal" fill="#111">Awal (AI)</text><ellipse cx="770" cy="725" rx="112" ry="33" fill="#CDE8FF" stroke="#2B6CB0" stroke-width="1.6" filter="url(#sh)"/><text x="770.0" y="717.5" font-size="12" text-anchor="middle" dominant-baseline="central" font-weight="normal" fill="#111">Cari Anggota dari</text><text x="770.0" y="732.5" font-size="12" text-anchor="middle" dominant-baseline="central" font-weight="normal" fill="#111">Kebutuhan Proyek</text><ellipse cx="770" cy="815" rx="112" ry="33" fill="#E6DBFF" stroke="#6B46C1" stroke-width="1.6" filter="url(#sh)"/><text x="770.0" y="807.5" font-size="12" text-anchor="middle" dominant-baseline="central" font-weight="normal" fill="#111">Hitung Kemiripan</text><text x="770.0" y="822.5" font-size="12" text-anchor="middle" dominant-baseline="central" font-weight="normal" fill="#111">Skill/Minat (AI)</text><ellipse cx="1075" cy="290" rx="112" ry="33" fill="#FFE8C7" stroke="#C05621" stroke-width="1.6" filter="url(#sh)"/><text x="1075.0" y="282.5" font-size="12" text-anchor="middle" dominant-baseline="central" font-weight="normal" fill="#111">Tinjau Antrean</text><text x="1075.0" y="297.5" font-size="12" text-anchor="middle" dominant-baseline="central" font-weight="normal" fill="#111">Moderasi</text><ellipse cx="1075" cy="450" rx="112" ry="33" fill="#FFE8C7" stroke="#C05621" stroke-width="1.6" filter="url(#sh)"/><text x="1075.0" y="442.5" font-size="12" text-anchor="middle" dominant-baseline="central" font-weight="normal" fill="#111">Putuskan: Setujui /</text><text x="1075.0" y="457.5" font-size="12" text-anchor="middle" dominant-baseline="central" font-weight="normal" fill="#111">Tolak / Minta Revisi</text><g fill="none" stroke="#222" stroke-width="2" stroke-linecap="round"><circle cx="110" cy="491" r="9" fill="#fff"/><line x1="110" y1="500" x2="110" y2="528"/><line x1="92" y1="512" x2="128" y2="512"/><line x1="110" y1="528" x2="95" y2="554"/><line x1="110" y1="528" x2="125" y2="554"/></g><text x="110.0" y="572.0" font-size="12" text-anchor="middle" dominant-baseline="central" font-weight="bold" fill="#111">Mahasiswa</text><g fill="none" stroke="#222" stroke-width="2" stroke-linecap="round"><circle cx="1390" cy="111" r="9" fill="#fff"/><line x1="1390" y1="120" x2="1390" y2="148"/><line x1="1372" y1="132" x2="1408" y2="132"/><line x1="1390" y1="148" x2="1375" y2="174"/><line x1="1390" y1="148" x2="1405" y2="174"/></g><text x="1390.0" y="184.5" font-size="12" text-anchor="middle" dominant-baseline="central" font-weight="bold" fill="#111">Admin /</text><text x="1390.0" y="199.5" font-size="12" text-anchor="middle" dominant-baseline="central" font-weight="bold" fill="#111">Moderator</text><g fill="none" stroke="#222" stroke-width="2" stroke-linecap="round"><circle cx="1390" cy="671" r="9" fill="#fff"/><line x1="1390" y1="680" x2="1390" y2="708"/><line x1="1372" y1="692" x2="1408" y2="692"/><line x1="1390" y1="708" x2="1375" y2="734"/><line x1="1390" y1="708" x2="1405" y2="734"/></g><text x="1390.0" y="744.5" font-size="12" text-anchor="middle" dominant-baseline="central" font-weight="bold" fill="#111">Layanan AI</text><text x="1390.0" y="759.5" font-size="12" text-anchor="middle" dominant-baseline="central" font-weight="bold" fill="#111">(Text Model)</text><text x="110.0" y="602.0" font-size="10" text-anchor="middle" dominant-baseline="central" font-weight="normal" fill="#555" font-style="italic">(aktor utama)</text><text x="1390.0" y="798.0" font-size="10" text-anchor="middle" dominant-baseline="central" font-weight="normal" fill="#555" font-style="italic">(aktor sekunder)</text><rect x="905" y="835" width="360" height="105" rx="0" fill="#FFFBE6" stroke="#B7791F" stroke-width="1.2" stroke-dasharray="4,3"/><text x="917.0" y="853.0" font-size="11" text-anchor="start" dominant-baseline="central" font-weight="bold" fill="#111">Catatan</text><text x="917.0" y="868.0" font-size="10" text-anchor="start" dominant-baseline="central" font-weight="normal" fill="#111">1. Semua use case selain Registrasi dan Login</text><text x="917.0" y="882.0" font-size="10" text-anchor="start" dominant-baseline="central" font-weight="normal" fill="#111">    mensyaratkan Login berhasil (precondition).</text><text x="917.0" y="904.0" font-size="10" text-anchor="start" dominant-baseline="central" font-weight="normal" fill="#111">2. AI hanya memberi saran / klasifikasi awal;</text><text x="917.0" y="918.0" font-size="10" text-anchor="start" dominant-baseline="central" font-weight="normal" fill="#111">    keputusan moderasi akhir oleh Admin.</text><rect x="240" y="985" width="1050" height="85" rx="6" fill="#fff" stroke="#999" stroke-width="1"/><text x="255.0" y="1001.0" font-size="11" text-anchor="start" dominant-baseline="central" font-weight="bold" fill="#111">Keterangan simbol</text><line x1="260.0" y1="1030.0" x2="320.0" y2="1030.0" stroke="#333" stroke-width="1.5"/><text x="330.0" y="1030.0" font-size="10" text-anchor="start" dominant-baseline="central" font-weight="normal" fill="#111">Association (aktor ↔ use case)</text><line x1="700.0" y1="1030.0" x2="760.0" y2="1030.0" stroke="#333" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#open)"/><text x="770.0" y="1030.0" font-size="10" text-anchor="start" dominant-baseline="central" font-weight="normal" fill="#111">«include»: use case dasar → use case yang selalu dipanggil</text><line x1="700.0" y1="1053.0" x2="760.0" y2="1053.0" stroke="#333" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#open)"/><text x="770.0" y="1053.0" font-size="10" text-anchor="start" dominant-baseline="central" font-weight="normal" fill="#111">«extend»: use case tambahan → use case dasar (jika kondisi terpenuhi)</text><text x="255.0" y="1053.0" font-size="10" text-anchor="start" dominant-baseline="central" font-weight="bold" fill="#111">Warna:</text><ellipse cx="325" cy="1053" rx="18" ry="9" fill="#CDE8FF" stroke="#2B6CB0" stroke-width="1.6" filter="url(#sh)"/><text x="325.0" y="1053.0" font-size="12" text-anchor="middle" dominant-baseline="central" font-weight="normal" fill="#111"></text><text x="350.0" y="1053.0" font-size="10" text-anchor="start" dominant-baseline="central" font-weight="normal" fill="#111">Mahasiswa</text><ellipse cx="445" cy="1053" rx="18" ry="9" fill="#E6DBFF" stroke="#6B46C1" stroke-width="1.6" filter="url(#sh)"/><text x="445.0" y="1053.0" font-size="12" text-anchor="middle" dominant-baseline="central" font-weight="normal" fill="#111"></text><text x="470.0" y="1053.0" font-size="10" text-anchor="start" dominant-baseline="central" font-weight="normal" fill="#111">AI</text><ellipse cx="515" cy="1053" rx="18" ry="9" fill="#FFE8C7" stroke="#C05621" stroke-width="1.6" filter="url(#sh)"/><text x="515.0" y="1053.0" font-size="12" text-anchor="middle" dominant-baseline="central" font-weight="normal" fill="#111"></text><text x="540.0" y="1053.0" font-size="10" text-anchor="start" dominant-baseline="central" font-weight="normal" fill="#111">Admin</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1220" viewBox="0 0 1600 1220" font-family="'DejaVu Sans','Segoe UI',Arial,sans-serif">
+  <title>Use Case Diagram CampusFolio v1.1</title>
+  <defs>
+    <marker id="open" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto">
+      <path d="M1,1 L11,6 L1,11" fill="none" stroke="#333" stroke-width="1.4"/>
+    </marker>
+    <filter id="sh" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="1.5" dy="2" stdDeviation="1.5" flood-color="#000" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+  <rect width="100%" height="100%" fill="#ffffff"/>
+  <text x="800" y="32" font-size="20" text-anchor="middle" font-weight="bold" fill="#111">Use Case Diagram — CampusFolio (Campus Social Media &amp; Portfolio v1.1)</text>
+
+  <!-- System Boundary -->
+  <rect x="250" y="65" width="1080" height="1035" rx="10" fill="#FAFBFC" stroke="#555" stroke-width="2"/>
+  <text x="790" y="88" font-size="15" text-anchor="middle" font-weight="bold" fill="#333">Sistem CampusFolio</text>
+
+  <!-- Left Actor: Mahasiswa -->
+  <g fill="none" stroke="#222" stroke-width="2" stroke-linecap="round">
+    <circle cx="110" cy="480" r="10" fill="#fff"/>
+    <line x1="110" y1="490" x2="110" y2="522"/>
+    <line x1="90" y1="504" x2="130" y2="504"/>
+    <line x1="110" y1="522" x2="94" y2="550"/>
+    <line x1="110" y1="522" x2="126" y2="550"/>
+  </g>
+  <text x="110" y="570" font-size="13" text-anchor="middle" font-weight="bold" fill="#111">Mahasiswa</text>
+  <text x="110" y="588" font-size="10.5" text-anchor="middle" fill="#555" font-style="italic">(Aktor Utama)</text>
+
+  <!-- Right Top Actor: Moderator / Kaprodi -->
+  <g fill="none" stroke="#222" stroke-width="2" stroke-linecap="round">
+    <circle cx="1470" cy="220" r="10" fill="#fff"/>
+    <line x1="1470" y1="230" x2="1470" y2="262"/>
+    <line x1="1450" y1="244" x2="1490" y2="244"/>
+    <line x1="1470" y1="262" x2="1454" y2="290"/>
+    <line x1="1470" y1="262" x2="1486" y2="290"/>
+  </g>
+  <text x="1470" y="310" font-size="13" text-anchor="middle" font-weight="bold" fill="#111">Moderator (Kaprodi)</text>
+  <text x="1470" y="328" font-size="10.5" text-anchor="middle" fill="#555" font-style="italic">&amp; Admin Kemahasiswaan</text>
+
+  <!-- Right Bottom Actor: Layanan AI -->
+  <g fill="none" stroke="#222" stroke-width="2" stroke-linecap="round">
+    <circle cx="1470" cy="800" r="10" fill="#fff"/>
+    <line x1="1470" y1="810" x2="1470" y2="842"/>
+    <line x1="1450" y1="824" x2="1490" y2="824"/>
+    <line x1="1470" y1="842" x2="1454" y2="870"/>
+    <line x1="1470" y1="842" x2="1486" y2="870"/>
+  </g>
+  <text x="1470" y="890" font-size="13" text-anchor="middle" font-weight="bold" fill="#111">Layanan AI</text>
+  <text x="1470" y="908" font-size="10.5" text-anchor="middle" fill="#555" font-style="italic">(NLP &amp; Matcher)</text>
+
+  <!-- Mahasiswa Ellipses (Blue) -->
+  <ellipse cx="430" cy="130" rx="120" ry="26" fill="#CDE8FF" stroke="#2B6CB0" stroke-width="1.6" filter="url(#sh)"/>
+  <text x="430" y="130" font-size="12" text-anchor="middle" dominant-baseline="central">UC-01: Registrasi &amp; Login</text>
+
+  <ellipse cx="430" cy="195" rx="120" ry="26" fill="#CDE8FF" stroke="#2B6CB0" stroke-width="1.6" filter="url(#sh)"/>
+  <text x="430" y="195" font-size="12" text-anchor="middle" dominant-baseline="central">UC-04: Akses Home Dashboard</text>
+
+  <ellipse cx="430" cy="260" rx="120" ry="26" fill="#CDE8FF" stroke="#2B6CB0" stroke-width="1.6" filter="url(#sh)"/>
+  <text x="430" y="260" font-size="12" text-anchor="middle" dominant-baseline="central">UC-03: Kelola Profil &amp; Skills</text>
+
+  <ellipse cx="430" cy="325" rx="120" ry="26" fill="#CDE8FF" stroke="#2B6CB0" stroke-width="1.6" filter="url(#sh)"/>
+  <text x="430" y="325" font-size="12" text-anchor="middle" dominant-baseline="central">UC-05: Kelola Pertemanan</text>
+
+  <ellipse cx="430" cy="390" rx="120" ry="26" fill="#CDE8FF" stroke="#2B6CB0" stroke-width="1.6" filter="url(#sh)"/>
+  <text x="430" y="390" font-size="12" text-anchor="middle" dominant-baseline="central">UC-06: Blokir Profil Pengguna</text>
+
+  <ellipse cx="430" cy="460" rx="125" ry="28" fill="#CDE8FF" stroke="#2B6CB0" stroke-width="1.6" filter="url(#sh)"/>
+  <text x="430" y="453" font-size="11.5" text-anchor="middle">UC-07: Upload Portofolio</text>
+  <text x="430" y="469" font-size="10" text-anchor="middle" fill="#333">(SKPI / Sertifikat / Artikel Ilmiah)</text>
+
+  <ellipse cx="430" cy="540" rx="125" ry="28" fill="#CDE8FF" stroke="#2B6CB0" stroke-width="1.6" filter="url(#sh)"/>
+  <text x="430" y="533" font-size="11.5" text-anchor="middle">UC-08: Buat Postingan Feed</text>
+  <text x="430" y="549" font-size="10" text-anchor="middle" fill="#333">(Fokus Foto + Teks)</text>
+
+  <ellipse cx="430" cy="620" rx="120" ry="26" fill="#CDE8FF" stroke="#2B6CB0" stroke-width="1.6" filter="url(#sh)"/>
+  <text x="430" y="620" font-size="11.5" text-anchor="middle" dominant-baseline="central">UC-10: Cari Mahasiswa / Karya</text>
+
+  <ellipse cx="430" cy="685" rx="120" ry="26" fill="#CDE8FF" stroke="#2B6CB0" stroke-width="1.6" filter="url(#sh)"/>
+  <text x="430" y="685" font-size="11.5" text-anchor="middle" dominant-baseline="central">UC-11: Lihat Detail Profil</text>
+
+  <ellipse cx="430" cy="755" rx="125" ry="28" fill="#CDE8FF" stroke="#2B6CB0" stroke-width="1.6" filter="url(#sh)"/>
+  <text x="430" y="748" font-size="11.5" text-anchor="middle">UC-12: Rekomendasi Kolaborator</text>
+  <text x="430" y="764" font-size="10" text-anchor="middle" fill="#333">(Kecocokan AI)</text>
+
+  <ellipse cx="430" cy="830" rx="120" ry="26" fill="#CDE8FF" stroke="#2B6CB0" stroke-width="1.6" filter="url(#sh)"/>
+  <text x="430" y="830" font-size="11.5" text-anchor="middle" dominant-baseline="central">UC-14: Laporkan Postingan</text>
+
+  <!-- Secondary & Included Cases (Center) -->
+  <ellipse cx="780" cy="540" rx="125" ry="28" fill="#E6DBFF" stroke="#6B46C1" stroke-width="1.6" filter="url(#sh)"/>
+  <text x="780" y="533" font-size="11.5" text-anchor="middle">UC-09: Klasifikasi Konten Awal</text>
+  <text x="780" y="549" font-size="10" text-anchor="middle" fill="#444">(Layanan AI Text Screening)</text>
+
+  <ellipse cx="780" cy="755" rx="125" ry="28" fill="#E6DBFF" stroke="#6B46C1" stroke-width="1.6" filter="url(#sh)"/>
+  <text x="780" y="748" font-size="11.5" text-anchor="middle">UC-13: Hitung Kemiripan TF-IDF</text>
+  <text x="780" y="764" font-size="10" text-anchor="middle" fill="#444">&amp; Cosine Similarity</text>
+
+  <!-- Moderator / Admin Ellipses (Right/Orange) -->
+  <ellipse cx="1120" cy="220" rx="140" ry="30" fill="#FFE8C7" stroke="#C05621" stroke-width="1.6" filter="url(#sh)"/>
+  <text x="1120" y="213" font-size="12" text-anchor="middle">UC-15: Tinjau Antrean Konten</text>
+  <text x="1120" y="229" font-size="10" text-anchor="middle" fill="#333">&amp; Terima Laporan Pelanggaran</text>
+
+  <ellipse cx="1120" cy="340" rx="140" ry="30" fill="#FFE8C7" stroke="#C05621" stroke-width="1.6" filter="url(#sh)"/>
+  <text x="1120" y="333" font-size="12" text-anchor="middle">UC-16: Tinjau Upload Portofolio</text>
+  <text x="1120" y="349" font-size="10" text-anchor="middle" fill="#333">(Validasi SKPI &amp; Artikel Ilmiah)</text>
+
+  <ellipse cx="1120" cy="460" rx="140" ry="30" fill="#FFE8C7" stroke="#C05621" stroke-width="1.6" filter="url(#sh)"/>
+  <text x="1120" y="453" font-size="12" text-anchor="middle">UC-17: Hapus / Takedown Post</text>
+  <text x="1120" y="469" font-size="10" text-anchor="middle" fill="#333">(Soft Delete &amp; Audit Trail)</text>
+
+  <!-- Lines -->
+  <line x1="140" y1="480" x2="300" y2="480" stroke="#333" stroke-width="1.5"/>
+  <line x1="300" y1="130" x2="300" y2="830" stroke="#333" stroke-width="1.5"/>
+  <line x1="300" y1="130" x2="310" y2="130" stroke="#333" stroke-width="1.5"/>
+  <line x1="300" y1="195" x2="310" y2="195" stroke="#333" stroke-width="1.5"/>
+  <line x1="300" y1="260" x2="310" y2="260" stroke="#333" stroke-width="1.5"/>
+  <line x1="300" y1="325" x2="310" y2="325" stroke="#333" stroke-width="1.5"/>
+  <line x1="300" y1="390" x2="310" y2="390" stroke="#333" stroke-width="1.5"/>
+  <line x1="300" y1="460" x2="305" y2="460" stroke="#333" stroke-width="1.5"/>
+  <line x1="300" y1="540" x2="305" y2="540" stroke="#333" stroke-width="1.5"/>
+  <line x1="300" y1="620" x2="310" y2="620" stroke="#333" stroke-width="1.5"/>
+  <line x1="300" y1="685" x2="310" y2="685" stroke="#333" stroke-width="1.5"/>
+  <line x1="300" y1="755" x2="305" y2="755" stroke="#333" stroke-width="1.5"/>
+  <line x1="300" y1="830" x2="310" y2="830" stroke="#333" stroke-width="1.5"/>
+
+  <line x1="1440" y1="250" x2="1260" y2="220" stroke="#333" stroke-width="1.5"/>
+  <line x1="1440" y1="250" x2="1260" y2="340" stroke="#333" stroke-width="1.5"/>
+  <line x1="1440" y1="250" x2="1260" y2="460" stroke="#333" stroke-width="1.5"/>
+
+  <line x1="1440" y1="830" x2="905" y2="540" stroke="#333" stroke-width="1.5"/>
+  <line x1="1440" y1="830" x2="905" y2="755" stroke="#333" stroke-width="1.5"/>
+
+  <!-- Include & Extend relationships -->
+  <line x1="555" y1="540" x2="655" y2="540" stroke="#333" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#open)"/>
+  <rect x="580" y="525" width="55" height="15" fill="#fff" opacity="0.9"/>
+  <text x="607" y="534" font-size="9" text-anchor="middle" font-style="italic">«include»</text>
+
+  <line x1="555" y1="755" x2="655" y2="755" stroke="#333" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#open)"/>
+  <rect x="580" y="740" width="55" height="15" fill="#fff" opacity="0.9"/>
+  <text x="607" y="749" font-size="9" text-anchor="middle" font-style="italic">«include»</text>
+
+  <line x1="1120" y1="430" x2="1120" y2="250" stroke="#333" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#open)"/>
+  <rect x="1095" y="340" width="50" height="15" fill="#fff" opacity="0.9"/>
+  <text x="1120" y="349" font-size="9" text-anchor="middle" font-style="italic">«extend»</text>
+
+  <!-- Legend -->
+  <rect x="250" y="1120" width="1080" height="70" rx="6" fill="#fff" stroke="#999" stroke-width="1"/>
+  <text x="270" y="1140" font-size="11" font-weight="bold" fill="#111">Keterangan Peran &amp; Simbol:</text>
+  <ellipse cx="330" cy="1165" rx="14" ry="7" fill="#CDE8FF" stroke="#2B6CB0" stroke-width="1.2"/>
+  <text x="350" y="1165" font-size="10.5" dominant-baseline="central">Fitur Mahasiswa</text>
+  <ellipse cx="480" cy="1165" rx="14" ry="7" fill="#FFE8C7" stroke="#C05621" stroke-width="1.2"/>
+  <text x="500" y="1165" font-size="10.5" dominant-baseline="central">Fitur Kaprodi &amp; Admin</text>
+  <ellipse cx="670" cy="1165" rx="14" ry="7" fill="#E6DBFF" stroke="#6B46C1" stroke-width="1.2"/>
+  <text x="690" y="1165" font-size="10.5" dominant-baseline="central">Modul Layanan AI (Screening &amp; Matcher)</text>
+</svg>

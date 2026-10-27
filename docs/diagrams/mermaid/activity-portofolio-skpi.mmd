@@ -1,0 +1,28 @@
+flowchart TB
+    subgraph MHS["Mahasiswa"]
+        P0(["Mulai"]) --> P1["Buka Menu Portofolio -> Tambah Capaian Baru"]
+        P1 --> P2["Pilih Kategori: Proyek / SKPI / Sertifikat / Artikel Ilmiah"]
+        P2 --> P3["Unggah Dokumen Bukti (PDF/Gambar), Isi No. Dokumen & Penerbit"]
+        P3 --> P4["Submit Pengajuan Portofolio"]
+        P_NOTIF["Terima Notifikasi Hasil Verifikasi (Terverifikasi / Ditolak)"] --> PF(["Selesai"])
+    end
+
+    subgraph SIS["Sistem CampusFolio"]
+        S1["Validasi kelengkapan form & berkas dokumen bukti"] --> S2["Simpan portofolio (status: menunggu_review)"]
+        S2 --> S3["Arahkan ke Antrean Tinjauan Portofolio Kaprodi (sesuai jurusan)"]
+        S_OK["Ubah status: terverifikasi; beri Badge Resmi & Catat Poin SKPI"] --> S_NOTIF
+        S_REJ["Ubah status: ditolak; simpan catatan perbaikan dari verifikator"] --> S_NOTIF
+        S_NOTIF["Kirim notifikasi real-time & perbarui tampilan Home Dashboard"] --> P_NOTIF
+    end
+
+    subgraph MOD["Moderator (Kaprodi Jurusan) / Admin"]
+        V1["Buka Antrean Tinjauan Upload Portofolio & SKPI Prodi"] --> V2["Periksa keabsahan sertifikat / DOI artikel ilmiah / dokumen"]
+        V2 --> D_VERIF{"Hasil Tinjauan Kelayakan?"}
+        V_ACC["Pilih: Setujui & Verifikasi Capaian"]
+        V_REJ["Pilih: Tolak / Minta Perbaikan Dokumen (isi catatan)"]
+    end
+
+    P4 --> S1
+    S3 --> V1
+    D_VERIF -- "Valid & Memenuhi Syarat" --> V_ACC --> S_OK
+    D_VERIF -- "Tidak Valid / Berkas Kurang" --> V_REJ --> S_REJ
