@@ -9,7 +9,7 @@ Perubahan Klien: Penambahan role Moderator (Kaprodi), Pertemanan, Blokir Profil,
 
 | Diagram | Menjawab Pertanyaan | File Gambar / Vektor | Sumber Mermaid |
 | :--- | :--- | :--- | :--- |
-| **Use Case Diagram** | Siapa yang memakai sistem dan fitur apa yang tersedia untuk masing-masing role? | `diagrams/use-case.svg` / `.png` | Skenario Use Case v1.1 |
+| **Use Case Diagram** | Siapa yang memakai sistem dan fitur apa yang tersedia untuk masing-masing role? | `diagrams/use-case.svg` / `.png` | `diagrams/mermaid/use-case.mmd` |
 | **Activity Diagram AD-01** | Bagaimana alur posting foto+teks, inspeksi AI, laporan pelanggaran, serta tinjauan dan takedown postingan oleh Kaprodi/Admin? | `diagrams/activity-posting-moderasi.svg` / `.png` | `diagrams/mermaid/activity-posting-moderasi.mmd` |
 | **Activity Diagram AD-02** | Bagaimana alur navigasi Dashboard Home terpadu, pengelolaan pertemanan mahasiswa, blokir profil, dan rekomendasi kolaborator AI? | `diagrams/activity-pencarian-rekomendasi.svg` / `.png` | `diagrams/mermaid/activity-pencarian-rekomendasi.mmd` |
 | **Activity Diagram AD-03** | Bagaimana alur unggah dokumen portofolio (SKPI, Sertifikat, Artikel Ilmiah) dan proses verifikasi oleh Kaprodi? | `diagrams/activity-portofolio-skpi.svg` / `.png` | `diagrams/mermaid/activity-portofolio-skpi.mmd` |
@@ -18,6 +18,70 @@ Perubahan Klien: Penambahan role Moderator (Kaprodi), Pertemanan, Blokir Profil,
 ---
 
 ## 2. Use Case Diagram
+
+![Use Case Diagram CampusFolio](diagrams/use-case.png)
+
+```mermaid
+flowchart LR
+    subgraph AKTOR_KIRI[" "]
+        MHS(("Mahasiswa\n(Aktor Utama)"))
+    end
+
+    subgraph SYSTEM["Sistem CampusFolio (v1.1)"]
+        UC01(["UC-01: Registrasi & Login"])
+        UC02(["UC-02: Logout"])
+        UC03(["UC-03: Kelola Profil & Skills"])
+        UC04(["UC-04: Akses Home Dashboard"])
+        UC05(["UC-05: Kelola Pertemanan"])
+        UC06(["UC-06: Blokir Profil Pengguna"])
+        UC07(["UC-07: Upload Portofolio (SKPI/Sertifikat/Artikel)"])
+        UC08(["UC-08: Buat Postingan (Foto + Teks)"])
+        UC09(["UC-09: Klasifikasi Konten Awal (AI)"])
+        UC10(["UC-10: Cari Mahasiswa / Karya / Postingan"])
+        UC11(["UC-11: Lihat Detail Profil & Portofolio"])
+        UC12(["UC-12: Rekomendasi Kolaborator AI"])
+        UC13(["UC-13: Hitung Kemiripan TF-IDF & Cosine Similarity"])
+        UC14(["UC-14: Laporkan Postingan Melanggar"])
+        UC15(["UC-15: Tinjau Antrean Konten & Terima Laporan"])
+        UC16(["UC-16: Tinjau Upload Portofolio & Validasi SKPI"])
+        UC17(["UC-17: Hapus / Takedown Postingan"])
+    end
+
+    subgraph AKTOR_KANAN[" "]
+        MOD_ADM(("Moderator (Kaprodi)\n& Admin"))
+        AI(("Layanan AI\n(Text Model)"))
+    end
+
+    %% Relasi Mahasiswa
+    MHS --- UC01
+    MHS --- UC02
+    MHS --- UC03
+    MHS --- UC04
+    MHS --- UC05
+    MHS --- UC06
+    MHS --- UC07
+    MHS --- UC08
+    MHS --- UC10
+    MHS --- UC11
+    MHS --- UC12
+    MHS --- UC14
+
+    %% Relasi Include & Extend
+    UC08 -.->|«include»| UC09
+    UC12 -.->|«include»| UC13
+    UC17 -.->|«extend»| UC15
+
+    %% Relasi AI
+    UC09 --- AI
+    UC13 --- AI
+
+    %% Relasi Moderator & Admin
+    MOD_ADM --- UC01
+    MOD_ADM --- UC04
+    MOD_ADM --- UC15
+    MOD_ADM --- UC16
+    MOD_ADM --- UC17
+```
 
 ### 2.1 Aktor
 1. **Mahasiswa (Aktor Utama):** Pengguna inti platform yang mengelola profil, mengunggah portofolio (karya, sertifikat, SKPI, artikel ilmiah), membuat postingan foto & teks, menjalin pertemanan, memblokir pengguna jika diperlukan, serta melaporkan konten melanggar.
@@ -52,12 +116,8 @@ Perubahan Klien: Penambahan role Moderator (Kaprodi), Pertemanan, Blokir Profil,
 ## 3. Activity Diagram
 
 ### 3.1 AD-01 — Pembuatan Postingan (Foto + Teks), Pelaporan, & Tinjauan/Hapus Postingan
-Diagram ini memodelkan siklus hidup postingan feed dan penegakan moderasi:
-1. **Pembuatan Postingan:** Mahasiswa menulis teks deskripsi/caption dan mengunggah foto kegiatan.
-2. **AI Screening:** Layanan AI memeriksa teks. Konten aman langsung ditayangkan di Home Dashboard. Konten berisiko masuk status `menunggu_review`.
-3. **Pelaporan oleh Mahasiswa:** Setiap mahasiswa dapat melaporkan postingan yang melanggar norma (spam, ujaran kebencian, plagiarisme). Postingan masuk antrean prioritas.
-4. **Tinjauan oleh Kaprodi / Admin:** Moderator (Kaprodi sesuai prodi) atau Admin memeriksa postingan dan laporan.
-5. **Keputusan Moderasi:** Moderator dapat menyetujui, meminta revisi, atau langsung **menghapus postingan (takedown)** dengan mencatat alasan penghapusan ke audit trail (`deleted_by`, `alasan_hapus`).
+
+![Activity Diagram AD-01](diagrams/activity-posting-moderasi.png)
 
 ```mermaid
 flowchart TB
@@ -103,11 +163,8 @@ flowchart TB
 ---
 
 ### 3.2 AD-02 — Home Dashboard Terpadu, Pertemanan, Blokir Profil, & Rekomendasi AI
-Diagram ini memodelkan interaksi sentral di halaman Dashboard Home:
-1. **Dashboard Sentral:** Mengagregasi postingan linimasa terbaru (dari teman & kampus), daftar rekomendasi kolaborator AI, dan notifikasi pertemanan.
-2. **Sistem Pertemanan:** Mahasiswa dapat mengirim *Friend Request* dan menerima/menolak di widget Dashboard.
-3. **Fitur Blokir Profil:** Jika ada pengguna yang mengganggu atau privasi terancam, mahasiswa dapat memblokir profil tersebut. Profil dan konten pengguna yang diblokir otomatis disembunyikan secara timbal balik.
-4. **Pencarian & Rekomendasi Kolaborator:** Rekomendasi cerdas AI berbasis TF-IDF memadukan skill yang dibutuhkan dengan kandidat rekan tim yang relevan.
+
+![Activity Diagram AD-02](diagrams/activity-pencarian-rekomendasi.png)
 
 ```mermaid
 flowchart TB
@@ -153,10 +210,8 @@ flowchart TB
 ---
 
 ### 3.3 AD-03 — Unggah dan Tinjauan Portofolio (SKPI, Sertifikat, & Artikel Ilmiah)
-Diagram ini memodelkan proses pengajuan dan validasi portofolio formal:
-1. **Pengajuan oleh Mahasiswa:** Mahasiswa memilih kategori (Proyek, SKPI, Sertifikat Kompetensi, atau Artikel Ilmiah), melampirkan berkas bukti (PDF/dokumen), nomor sertifikat/DOI, dan nama penerbit/jurnal.
-2. **Antrean Validasi Kaprodi:** Pengajuan masuk ke antrean verifikasi Moderator (Kaprodi) sesuai program studi mahasiswa.
-3. **Persetujuan & Catatan:** Kaprodi memverifikasi keabsahan dokumen. Jika valid, status menjadi `terverifikasi` dan diberi badge resmi validasi kampus. Jika tidak lengkap, status `ditolak` dengan catatan perbaikan.
+
+![Activity Diagram AD-03](diagrams/activity-portofolio-skpi.png)
 
 ```mermaid
 flowchart TB
@@ -193,7 +248,7 @@ flowchart TB
 
 ## 4. Entity Relationship Diagram (ERD)
 
-Skema basis data diperbarui untuk mengakomodasi seluruh kebutuhan baru:
+![ERD CampusFolio](diagrams/erd.png)
 
 ```mermaid
 erDiagram

@@ -1,0 +1,59 @@
+flowchart LR
+    subgraph AKTOR_KIRI[" "]
+        MHS(("Mahasiswa\n(Aktor Utama)"))
+    end
+
+    subgraph SYSTEM["Sistem CampusFolio (v1.1)"]
+        UC01(["UC-01: Registrasi & Login"])
+        UC02(["UC-02: Logout"])
+        UC03(["UC-03: Kelola Profil & Skills"])
+        UC04(["UC-04: Akses Home Dashboard"])
+        UC05(["UC-05: Kelola Pertemanan"])
+        UC06(["UC-06: Blokir Profil Pengguna"])
+        UC07(["UC-07: Upload Portofolio (SKPI/Sertifikat/Artikel)"])
+        UC08(["UC-08: Buat Postingan (Foto + Teks)"])
+        UC09(["UC-09: Klasifikasi Konten Awal (AI)"])
+        UC10(["UC-10: Cari Mahasiswa / Karya / Postingan"])
+        UC11(["UC-11: Lihat Detail Profil & Portofolio"])
+        UC12(["UC-12: Rekomendasi Kolaborator AI"])
+        UC13(["UC-13: Hitung Kemiripan TF-IDF & Cosine Similarity"])
+        UC14(["UC-14: Laporkan Postingan Melanggar"])
+        UC15(["UC-15: Tinjau Antrean Konten & Terima Laporan"])
+        UC16(["UC-16: Tinjau Upload Portofolio & Validasi SKPI"])
+        UC17(["UC-17: Hapus / Takedown Postingan"])
+    end
+
+    subgraph AKTOR_KANAN[" "]
+        MOD_ADM(("Moderator (Kaprodi)\n& Admin"))
+        AI(("Layanan AI\n(Text Model)"))
+    end
+
+    %% Relasi Mahasiswa
+    MHS --- UC01
+    MHS --- UC02
+    MHS --- UC03
+    MHS --- UC04
+    MHS --- UC05
+    MHS --- UC06
+    MHS --- UC07
+    MHS --- UC08
+    MHS --- UC10
+    MHS --- UC11
+    MHS --- UC12
+    MHS --- UC14
+
+    %% Relasi Include & Extend
+    UC08 -.->|«include»| UC09
+    UC12 -.->|«include»| UC13
+    UC17 -.->|«extend»| UC15
+
+    %% Relasi AI
+    UC09 --- AI
+    UC13 --- AI
+
+    %% Relasi Moderator & Admin
+    MOD_ADM --- UC01
+    MOD_ADM --- UC04
+    MOD_ADM --- UC15
+    MOD_ADM --- UC16
+    MOD_ADM --- UC17
