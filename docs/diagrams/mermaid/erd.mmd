@@ -1,6 +1,8 @@
 erDiagram
     users ||--o{ portfolio_items : memiliki
+    users ||--o{ portfolio_items : "diverifikasi_oleh"
     users ||--o{ posts : menulis
+    users ||--o{ posts : "deleted_by"
     users ||--o{ user_skills : memiliki
     users ||--o{ moderation_records : "admin_id / moderator_id"
     users ||--o{ reports : "pelapor_id"
