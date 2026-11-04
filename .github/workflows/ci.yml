@@ -45,21 +45,21 @@ jobs:
 
       - name: Run Alembic Upgrade on Clean Database
         env:
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/campusfolio_test
+          DATABASE_URL: postgresql+psycopg2://postgres:postgres@localhost:5432/campusfolio_test
         run: |
           cd src/backend
           python -m alembic upgrade head
 
       - name: Run Pytest Test Suite
         env:
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/campusfolio_test
+          DATABASE_URL: postgresql+psycopg2://postgres:postgres@localhost:5432/campusfolio_test
         run: |
           cd src/backend
           python -m pytest tests/
 
       - name: Verify OpenAPI Contract Parity
         env:
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/campusfolio_test
+          DATABASE_URL: postgresql+psycopg2://postgres:postgres@localhost:5432/campusfolio_test
         run: |
           python scripts/export_openapi.py
           git diff --exit-code docs/openapi.json

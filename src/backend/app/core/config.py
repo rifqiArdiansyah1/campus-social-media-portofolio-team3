@@ -42,6 +42,13 @@ class Settings(BaseSettings):
         extra="ignore"
     )
 
+    @field_validator("DATABASE_URL", "MIGRATION_DATABASE_URL", mode="after")
+    @classmethod
+    def normalize_database_url(cls, v: Optional[str]) -> Optional[str]:
+        if v and v.startswith("postgresql://"):
+            return v.replace("postgresql://", "postgresql+psycopg2://", 1)
+        return v
+
     @field_validator("CORS_ORIGINS", mode="before")
     @classmethod
     def parse_cors_origins(cls, v: Union[str, List[str]]) -> List[str]:
