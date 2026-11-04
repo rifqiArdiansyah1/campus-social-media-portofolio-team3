@@ -114,8 +114,14 @@ def upgrade() -> None:
     op.drop_index('idx_moderation_pending', table_name='moderation_records')
     op.create_index('idx_moderation_pending', 'moderation_records', ['created_at'], unique=False, postgresql_where=sa.text('keputusan_admin IS NULL AND keputusan_moderator IS NULL'))
 
+    # 8. recommendation_logs: add chk_recommendation_self
+    op.create_check_constraint('chk_recommendation_self', 'recommendation_logs', 'pemohon_id <> kandidat_id')
+
 
 def downgrade() -> None:
+    # 8. recommendation_logs
+    op.drop_constraint('chk_recommendation_self', 'recommendation_logs', type_='check')
+
     # 7. moderation_records
     op.drop_index('idx_moderation_pending', table_name='moderation_records')
     op.create_index('idx_moderation_pending', 'moderation_records', ['created_at'], unique=False, postgresql_where=sa.text('keputusan_admin IS NULL'))

@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
 
@@ -8,6 +8,43 @@ export const apiClient = axios.create({
     "Content-Type": "application/json",
   },
 });
+
+/**
+ * Standardized API Error contract matching Backend AppError & FastAPI Validation
+ */
+export interface AppErrorDetail {
+  loc?: (string | number)[];
+  msg?: string;
+  type?: string;
+}
+
+export interface AppErrorResponse {
+  detail: string;
+  code?: string;
+  errors?: AppErrorDetail[];
+}
+
+// Request interceptor to automatically attach JWT token for authenticated requests
+apiClient.interceptors.request.use((config) => {
+  if (typeof window !== "undefined") {
+    const token = localStorage.getItem("campusfolio_token");
+    if (token && config.headers) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+  }
+  return config;
+});
+
+// Response interceptor to format error message from backend contract
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error: AxiosError<AppErrorResponse>) => {
+    if (error.response?.data?.detail) {
+      error.message = error.response.data.detail;
+    }
+    return Promise.reject(error);
+  }
+);
 
 export interface CandidateProfile {
   user_id: string;

@@ -43,11 +43,16 @@ jobs:
       - name: Run Ruff Linter
         run: python -m ruff check src/backend
 
-      - name: Run Alembic Upgrade on Clean Database
+      - name: Run Alembic Upgrade & Reversibility Test
         env:
           DATABASE_URL: postgresql+psycopg2://postgres:postgres@localhost:5432/campusfolio_test
         run: |
           cd src/backend
+          echo "=== 1. Upgrade to Head ==="
+          python -m alembic upgrade head
+          echo "=== 2. Test Downgrade to Base (Reversibility) ==="
+          python -m alembic downgrade base
+          echo "=== 3. Re-upgrade to Head ==="
           python -m alembic upgrade head
 
       - name: Run Pytest Test Suite

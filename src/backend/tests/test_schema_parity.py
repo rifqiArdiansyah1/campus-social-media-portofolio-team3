@@ -60,6 +60,7 @@ EXPECTED_CONSTRAINTS = {
     "reports_tindakan_diambil_check",
     "recommendation_logs_skor_check",
     "recommendation_logs_umpan_balik_check",
+    "chk_recommendation_self",
 }
 
 

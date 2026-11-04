@@ -10,9 +10,6 @@ from app.core.config import settings
 # Protect against decompression bomb attacks
 Image.MAX_IMAGE_PIXELS = 10_000_000
 
-MAX_IMAGE_SIZE = 5 * 1024 * 1024       # 5 MB
-MAX_DOC_SIZE = 10 * 1024 * 1024        # 10 MB
-
 ALLOWED_IMAGE_FORMATS = {
     "JPEG": ("image/jpeg", ".jpg"),
     "PNG": ("image/png", ".png"),
@@ -38,13 +35,21 @@ class StorageService:
         if not self.supabase_client and settings.ENV.lower() != "production":
             os.makedirs(self.local_dir, exist_ok=True)
 
+    @property
+    def max_image_size(self) -> int:
+        return settings.MAX_IMAGE_SIZE_MB * 1024 * 1024
+
+    @property
+    def max_doc_size(self) -> int:
+        return settings.MAX_DOC_SIZE_MB * 1024 * 1024
+
     def validate_and_sanitize_image(self, data: bytes) -> Tuple[bytes, str, str]:
         """
         Validate image via Pillow, strip EXIF metadata, and enforce size limits.
         Returns: (sanitized_bytes, generated_filename, content_type)
         """
-        if len(data) > MAX_IMAGE_SIZE:
-            raise ValueError(f"Ukuran gambar melebihi batas maksimal {MAX_IMAGE_SIZE // (1024 * 1024)} MB.")
+        if len(data) > self.max_image_size:
+            raise ValueError(f"Ukuran gambar melebihi batas maksimal {settings.MAX_IMAGE_SIZE_MB} MB.")
 
         try:
             image = Image.open(io.BytesIO(data))
@@ -81,11 +86,11 @@ class StorageService:
         Validate PDF document via magic bytes header %PDF-, enforce size limits.
         Returns: (data, generated_filename, content_type)
         """
-        if len(data) > MAX_DOC_SIZE:
-            raise ValueError(f"Ukuran dokumen PDF melebihi batas maksimal {MAX_DOC_SIZE // (1024 * 1024)} MB.")
+        if len(data) > self.max_doc_size:
+            raise ValueError(f"Ukuran dokumen PDF melebihi batas maksimal {settings.MAX_DOC_SIZE_MB} MB.")
 
-        # Check magic bytes
-        if not data.startswith(b"%PDF-"):
+        # Check magic bytes (ISO 32000-1 §7.5.2 allows header within first 1024 bytes)
+        if b"%PDF-" not in data[:1024]:
             raise ValueError("Berkas bukan merupakan dokumen PDF yang valid (magic header mismatch).")
 
         filename = f"{uuid4()}.pdf"

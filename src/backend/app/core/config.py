@@ -26,6 +26,8 @@ class Settings(BaseSettings):
     POST_IMAGES_BUCKET: str = "post-images"
     PORTFOLIO_DOCS_BUCKET: str = "portfolio-docs"
     STORAGE_LOCAL_FALLBACK_DIR: str = "uploads"
+    MAX_IMAGE_SIZE_MB: int = 5
+    MAX_DOC_SIZE_MB: int = 10
 
     # Allowed Email Domains for Student Registration (US-01)
     ALLOWED_EMAIL_DOMAINS: List[str] = ["campus.ac.id", "students.campus.ac.id"]

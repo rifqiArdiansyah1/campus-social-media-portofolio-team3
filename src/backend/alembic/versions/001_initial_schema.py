@@ -168,7 +168,6 @@ def upgrade() -> None:
         sa.ForeignKeyConstraint(['kandidat_id'], ['users.user_id'], name='recommendation_logs_kandidat_id_fkey', ondelete='CASCADE'),
         sa.ForeignKeyConstraint(['pemohon_id'], ['users.user_id'], name='recommendation_logs_pemohon_id_fkey', ondelete='CASCADE'),
         sa.PrimaryKeyConstraint('rec_id', name='recommendation_logs_pkey'),
-        sa.CheckConstraint('pemohon_id <> kandidat_id', name='chk_recommendation_self'),
         sa.CheckConstraint('skor >= 0 AND skor <= 1', name='recommendation_logs_skor_check'),
         sa.CheckConstraint("umpan_balik IN ('relevan', 'tidak_relevan')", name='recommendation_logs_umpan_balik_check')
     )

@@ -42,6 +42,8 @@ venv/
 ENV/
 env/
 .pytest_cache/
+uploads/
+src/backend/uploads/
 
 # Mobile (Flutter / React Native / Android / iOS)
 .dart_tool/

@@ -1,9 +1,11 @@
 import logging
+import os
 
 from fastapi import Depends, FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 from starlette.exceptions import HTTPException as StarletteHTTPException
@@ -92,6 +94,11 @@ async def unhandled_exception_handler(request: Request, exc: Exception):
 
 # Include unified API v1 router
 app.include_router(api_router, prefix=settings.API_V1_STR)
+
+# Mount local storage directory for static file serving in development
+if settings.ENV.lower() != "production":
+    os.makedirs(storage_service.local_dir, exist_ok=True)
+    app.mount("/static", StaticFiles(directory=storage_service.local_dir), name="static")
 
 
 @app.get("/", tags=["Health Check"])
