@@ -1,6 +1,8 @@
+from datetime import date, datetime
+from typing import List, Literal, Optional
+
 from pydantic import BaseModel, Field
-from typing import Optional, List, Literal
-from datetime import datetime, date
+
 
 class PortfolioCreate(BaseModel):
     judul: str = Field(..., max_length=150)

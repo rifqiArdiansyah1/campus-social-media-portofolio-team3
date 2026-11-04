@@ -1,5 +1,7 @@
-from fastapi import APIRouter, HTTPException
 from typing import List
+
+from fastapi import APIRouter
+
 from app.schemas.recommendation import CandidateProfile, RecommendationQuery, RecommendationResponse
 from app.services.ai_engine.recommender import recommender_engine
 
@@ -52,7 +54,7 @@ MOCK_STUDENTS: List[CandidateProfile] = [
 @router.post("/match", response_model=RecommendationResponse, summary="Rekomendasi Kolaborator Mahasiswa (AI-1)")
 def get_collaborator_recommendations(query: RecommendationQuery):
     """
-    Endpoint AI-1: Menganalisis kemiripan semantik dan keahlian komplementer 
+    Endpoint AI-1: Menganalisis kemiripan semantik dan keahlian komplementer
     untuk merekomendasikan rekan proyek/lomba mahasiswa.
     """
     # Cari pengguna pencari di pool

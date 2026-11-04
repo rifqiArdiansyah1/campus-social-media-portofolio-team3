@@ -1,22 +1,25 @@
-from typing import List, Dict, Any, Optional
+from typing import List, Optional
+
+import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-import numpy as np
+
 from app.schemas.recommendation import CandidateProfile, RecommendationItem, RecommendationResponse
+
 
 class TFIDFRecommender:
     """
     AI-1: Engine rekomendasi kolaborator mahasiswa berbasis TF-IDF & Cosine Similarity.
     Mendukung complementary skill weighting dan penjelasan berbasis bahasa alami.
     """
-    
+
     def __init__(self):
         self.vectorizer = TfidfVectorizer(
             lowercase=True,
             stop_words=None, # Mengakomodasi variasi istilah teknis & bahasa Indonesia
             ngram_range=(1, 2)
         )
-    
+
     def _build_profile_text(self, profile: CandidateProfile) -> str:
         skills_text = " ".join(profile.skills)
         interests_text = " ".join(profile.interests)
@@ -58,7 +61,7 @@ class TFIDFRecommender:
         for idx, candidate in enumerate(candidate_pool):
             base_score = float(similarity_scores[idx])
             cand_skills_set = set(s.lower() for s in candidate.skills)
-            
+
             # Intersection & Complementary analysis
             matched = list(user_skills_set.intersection(cand_skills_set))
             complementary = list(cand_skills_set.difference(user_skills_set))

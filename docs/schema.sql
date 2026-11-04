@@ -158,7 +158,7 @@ CREATE TABLE recommendation_logs (
     alasan          TEXT,
     umpan_balik     VARCHAR(15) CHECK (umpan_balik IN ('relevan', 'tidak_relevan')),
     created_at      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CHECK (pemohon_id <> kandidat_id)
+    CONSTRAINT chk_recommendation_self CHECK (pemohon_id <> kandidat_id)
 );
 
 -- 10. INDEKS PERFORMA & FILTER
@@ -178,4 +178,5 @@ CREATE INDEX idx_moderation_post         ON moderation_records (post_id);
 CREATE INDEX idx_moderation_pending      ON moderation_records (created_at) WHERE keputusan_admin IS NULL AND keputusan_moderator IS NULL;
 CREATE INDEX idx_reports_post            ON reports (post_id);
 CREATE INDEX idx_reports_status          ON reports (status);
+CREATE INDEX idx_reports_kategori        ON reports (kategori_laporan);
 CREATE INDEX idx_reclog_pemohon          ON recommendation_logs (pemohon_id);

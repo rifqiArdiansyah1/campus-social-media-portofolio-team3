@@ -1,0 +1,99 @@
+name: CampusFolio CI Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  backend:
+    name: Backend Lint, Migration & Tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: campusfolio_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r src/backend/requirements.txt -r src/backend/requirements-dev.txt
+
+      - name: Run Ruff Linter
+        run: python -m ruff check src/backend
+
+      - name: Run Alembic Upgrade & Reversibility Test
+        env:
+          DATABASE_URL: postgresql+psycopg2://postgres:postgres@localhost:5432/campusfolio_test
+        run: |
+          cd src/backend
+          echo "=== 1. Upgrade to Head ==="
+          python -m alembic upgrade head
+          echo "=== 2. Test Downgrade to Base (Reversibility) ==="
+          python -m alembic downgrade base
+          echo "=== 3. Re-upgrade to Head ==="
+          python -m alembic upgrade head
+
+      - name: Run Pytest Test Suite
+        env:
+          DATABASE_URL: postgresql+psycopg2://postgres:postgres@localhost:5432/campusfolio_test
+        run: |
+          cd src/backend
+          python -m pytest tests/
+
+      - name: Verify OpenAPI Contract Parity
+        env:
+          DATABASE_URL: postgresql+psycopg2://postgres:postgres@localhost:5432/campusfolio_test
+        run: |
+          python scripts/export_openapi.py
+          git diff --exit-code docs/openapi.json
+
+  web:
+    name: Web Lint & Production Build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: src/web
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: src/web/package-lock.json
+
+      - name: Install Web Dependencies
+        run: npm ci
+
+      - name: Run Web Linter (ESLint)
+        run: npm run lint
+
+      - name: Run Next.js Production Build
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:8000/api/v1
+        run: npm run build

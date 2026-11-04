@@ -1,0 +1,506 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "CampusFolio API",
+    "description": "Backend API & Layanan AI untuk CampusFolio — Campus Social Media & Portfolio (Team 3)",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/api/v1/recommendations/match": {
+      "post": {
+        "tags": [
+          "AI Recommendations (AI-1)"
+        ],
+        "summary": "Rekomendasi Kolaborator Mahasiswa (AI-1)",
+        "description": "Endpoint AI-1: Menganalisis kemiripan semantik dan keahlian komplementer\nuntuk merekomendasikan rekan proyek/lomba mahasiswa.",
+        "operationId": "get_collaborator_recommendations_api_v1_recommendations_match_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecommendationQuery"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecommendationResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/recommendations/candidates": {
+      "get": {
+        "tags": [
+          "AI Recommendations (AI-1)"
+        ],
+        "summary": "Daftar Profil Mahasiswa (Dummy/Sample)",
+        "operationId": "list_candidates_api_v1_recommendations_candidates_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CandidateProfile"
+                  },
+                  "type": "array",
+                  "title": "Response List Candidates Api V1 Recommendations Candidates Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/moderation/check": {
+      "post": {
+        "tags": [
+          "AI Content Moderation (AI-2)"
+        ],
+        "summary": "Klasifikasi Awal Moderasi Postingan (AI-2)",
+        "description": "Endpoint AI-2: Memindai teks postingan sebelum/sesudah tayang.\nHasil klasifikasi menentukan apakah postingan langsung tayang (aman),\nditinjau admin (perlu_review), atau disembunyikan (berpotensi_melanggar).",
+        "operationId": "check_post_moderation_api_v1_moderation_check_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ModerationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModerationResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "tags": [
+          "Health Check"
+        ],
+        "summary": "Root",
+        "operationId": "root__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "tags": [
+          "Health Check"
+        ],
+        "summary": "Health Check",
+        "operationId": "health_check_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/health/db": {
+      "get": {
+        "tags": [
+          "Health Check"
+        ],
+        "summary": "Database Health Check",
+        "description": "Verifikasi koneksi aktif ke PostgreSQL di Supabase Cloud.",
+        "operationId": "database_health_check_api_v1_health_db_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/health/storage": {
+      "get": {
+        "tags": [
+          "Health Check"
+        ],
+        "summary": "Storage Health Check",
+        "description": "Verifikasi status storage backend.",
+        "operationId": "storage_health_check_api_v1_health_storage_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CandidateProfile": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "department": {
+            "type": "string",
+            "title": "Department"
+          },
+          "bio": {
+            "type": "string",
+            "title": "Bio",
+            "default": ""
+          },
+          "skills": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Skills",
+            "default": []
+          },
+          "interests": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Interests",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "name",
+          "department"
+        ],
+        "title": "CandidateProfile"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "ModerationRequest": {
+        "properties": {
+          "post_id": {
+            "type": "string",
+            "title": "Post Id"
+          },
+          "content": {
+            "type": "string",
+            "title": "Content"
+          },
+          "user_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "post_id",
+          "content"
+        ],
+        "title": "ModerationRequest"
+      },
+      "ModerationResponse": {
+        "properties": {
+          "post_id": {
+            "type": "string",
+            "title": "Post Id"
+          },
+          "label": {
+            "type": "string",
+            "enum": [
+              "aman",
+              "perlu_review",
+              "berpotensi_melanggar"
+            ],
+            "title": "Label"
+          },
+          "categories": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Categories",
+            "description": "Violation categories (e.g. ujaran_kasar, pelecehan, spam)"
+          },
+          "confidence": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Confidence",
+            "description": "Confidence score"
+          },
+          "explanation": {
+            "type": "string",
+            "title": "Explanation",
+            "description": "Explanation of classification"
+          }
+        },
+        "type": "object",
+        "required": [
+          "post_id",
+          "label",
+          "confidence",
+          "explanation"
+        ],
+        "title": "ModerationResponse"
+      },
+      "RecommendationItem": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "department": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Department"
+          },
+          "score": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Score",
+            "description": "Similarity score between 0.0 and 1.0"
+          },
+          "matched_terms": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Matched Terms",
+            "description": "Matched skills/interests"
+          },
+          "complementary_skills": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Complementary Skills",
+            "description": "Skills that complement the seeker"
+          },
+          "reason": {
+            "type": "string",
+            "title": "Reason",
+            "description": "Natural language explanation of match"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "score",
+          "reason"
+        ],
+        "title": "RecommendationItem"
+      },
+      "RecommendationQuery": {
+        "properties": {
+          "query_user_id": {
+            "type": "string",
+            "title": "Query User Id"
+          },
+          "target_skills": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Skills",
+            "description": "Skills specifically needed for project"
+          },
+          "project_description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Project Description",
+            "description": "Optional project requirement text",
+            "default": ""
+          },
+          "top_k": {
+            "type": "integer",
+            "maximum": 20.0,
+            "minimum": 1.0,
+            "title": "Top K",
+            "default": 5
+          }
+        },
+        "type": "object",
+        "required": [
+          "query_user_id"
+        ],
+        "title": "RecommendationQuery"
+      },
+      "RecommendationResponse": {
+        "properties": {
+          "query_user_id": {
+            "type": "string",
+            "title": "Query User Id"
+          },
+          "recommendations": {
+            "items": {
+              "$ref": "#/components/schemas/RecommendationItem"
+            },
+            "type": "array",
+            "title": "Recommendations"
+          }
+        },
+        "type": "object",
+        "required": [
+          "query_user_id",
+          "recommendations"
+        ],
+        "title": "RecommendationResponse"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}
