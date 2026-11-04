@@ -1,5 +1,7 @@
-from typing import List, Dict, Tuple
+from typing import List
+
 from app.schemas.moderation import ModerationResponse
+
 
 class ContentModerator:
     """

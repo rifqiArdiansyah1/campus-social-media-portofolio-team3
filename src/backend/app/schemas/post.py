@@ -1,6 +1,8 @@
-from pydantic import BaseModel, Field
-from typing import Optional, List, Literal
 from datetime import datetime
+from typing import List, Literal, Optional
+
+from pydantic import BaseModel, Field
+
 
 class PostCreate(BaseModel):
     isi: str = Field(..., description="Isi caption atau teks postingan")
