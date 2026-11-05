@@ -51,7 +51,7 @@ def admin_create_user(
     if db.query(User).filter(User.email == payload.email).first():
         raise ConflictError(detail="Email telah terdaftar di sistem.", code="EMAIL_TAKEN")
 
-    if payload.nim and db.query(User).filter(User.nim == payload.nim).first():
+    if db.query(User).filter(User.nim == payload.nim).first():
         raise ConflictError(detail="NIM/Identitas telah terdaftar di sistem.", code="NIM_TAKEN")
 
     pw_hash = hash_password(payload.password)

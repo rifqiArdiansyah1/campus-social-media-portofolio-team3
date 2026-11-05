@@ -42,6 +42,8 @@ export function setAuthSession(token: string, user: UserProfile): void {
   if (typeof window !== "undefined") {
     localStorage.setItem(AUTH_TOKEN_KEY, token);
     localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
+    // Set cookie for Next.js SSR & Edge Middleware compatibility (24h expiry)
+    document.cookie = `${AUTH_TOKEN_KEY}=${token}; path=/; max-age=86400; SameSite=Lax`;
   }
 }
 
@@ -70,6 +72,7 @@ export function clearAuthSession(): void {
   if (typeof window !== "undefined") {
     localStorage.removeItem(AUTH_TOKEN_KEY);
     localStorage.removeItem(AUTH_USER_KEY);
+    document.cookie = `${AUTH_TOKEN_KEY}=; path=/; max-age=0; SameSite=Lax`;
   }
 }
 

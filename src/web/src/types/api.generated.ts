@@ -285,9 +285,9 @@ export interface components {
             jurusan?: string | null;
             /**
              * Nim
-             * @description Nomor identitas/NIP opsional
+             * @description Nomor identitas/NIP staf
              */
-            nim?: string | null;
+            nim: string;
             /**
              * Angkatan
              * @description Tahun angkatan opsional
@@ -327,7 +327,7 @@ export interface components {
         LoginRequest: {
             /**
              * Email
-             * @description Email kampus terdaftar
+             * @description Email kampus atau NIM terdaftar
              */
             email: string;
             /**

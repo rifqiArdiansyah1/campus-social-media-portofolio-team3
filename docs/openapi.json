@@ -408,17 +408,11 @@
             "description": "Program studi binaan (wajib untuk moderator)"
           },
           "nim": {
-            "anyOf": [
-              {
-                "type": "string",
-                "maxLength": 20
-              },
-              {
-                "type": "null"
-              }
-            ],
+            "type": "string",
+            "maxLength": 20,
+            "minLength": 3,
             "title": "Nim",
-            "description": "Nomor identitas/NIP opsional"
+            "description": "Nomor identitas/NIP staf"
           },
           "angkatan": {
             "anyOf": [
@@ -438,7 +432,8 @@
           "email",
           "nama",
           "password",
-          "role"
+          "role",
+          "nim"
         ],
         "title": "AdminCreateUserRequest"
       },
@@ -505,7 +500,7 @@
             "type": "string",
             "maxLength": 100,
             "title": "Email",
-            "description": "Email kampus terdaftar"
+            "description": "Email kampus atau NIM terdaftar"
           },
           "password": {
             "type": "string",

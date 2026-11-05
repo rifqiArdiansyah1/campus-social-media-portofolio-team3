@@ -100,31 +100,37 @@ def login(
     """
     client_ip = get_client_ip(request)
 
-    # 1. Rate limiter check (prior to bcrypt verification to prevent resource exhaustion)
-    rate_limiter.check_rate_limit(client_ip=client_ip, email=payload.email)
+    identifier = payload.email.strip()
 
-    # 2. Query user from database
-    user = db.query(User).filter(User.email == payload.email).first()
+    # 1. Rate limiter check (prior to bcrypt verification to prevent resource exhaustion)
+    rate_limiter.check_rate_limit(client_ip=client_ip, email=identifier)
+
+    # 2. Query user from database by email or NIM
+    user = db.query(User).filter(
+        (User.email == identifier.lower()) | (User.nim == identifier)
+    ).first()
 
     # 3. Authenticate with timing attack defense
     if not user:
         # Compute dummy verification to match response timing (~80-100ms)
         verify_password(payload.password, DUMMY_HASH)
-        rate_limiter.record_failure(client_ip=client_ip, email=payload.email)
+        rate_limiter.record_failure(client_ip=client_ip, email=identifier)
         raise UnauthorizedError(
             detail="Email atau kata sandi tidak valid.",
             code="INVALID_CREDENTIALS",
         )
 
     if not verify_password(payload.password, user.password_hash):
-        rate_limiter.record_failure(client_ip=client_ip, email=payload.email)
+        rate_limiter.record_failure(client_ip=client_ip, email=identifier)
         raise UnauthorizedError(
             detail="Email atau kata sandi tidak valid.",
             code="INVALID_CREDENTIALS",
         )
 
     # 4. Successful login: reset rate limit counters
-    rate_limiter.reset_for_user(client_ip=client_ip, email=payload.email)
+    rate_limiter.reset_for_user(client_ip=client_ip, email=identifier)
+    if user.email != identifier:
+        rate_limiter.reset_for_user(client_ip=client_ip, email=user.email)
 
     # 5. Issue JWT access token (minimal payload: sub, iat, exp)
     access_token = create_access_token(subject=user.id)

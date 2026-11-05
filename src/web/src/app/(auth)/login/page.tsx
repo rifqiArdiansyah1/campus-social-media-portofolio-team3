@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { z } from "zod";
 import { AxiosError } from "axios";
 import { loginUser } from "@/lib/auth";
@@ -11,22 +11,35 @@ import { AppErrorResponse } from "@/lib/api";
 const loginSchema = z.object({
   email: z
     .string()
-    .min(1, "Email kampus wajib diisi")
-    .email("Format email tidak valid"),
+    .min(1, "NIM atau email kampus wajib diisi")
+    .refine(
+      (val) => {
+        const clean = val.trim();
+        const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(clean);
+        const isNim = /^[a-zA-Z0-9]{5,20}$/.test(clean);
+        return isEmail || isNim;
+      },
+      { message: "Masukkan email kampus resmi atau NIM mahasiswa valid" }
+    ),
   password: z.string().min(1, "Kata sandi wajib diisi"),
 });
 
 type LoginFormValues = z.infer<typeof loginSchema>;
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const isExpired = searchParams.get("expired") === "true";
+
   const [formData, setFormData] = useState<LoginFormValues>({
     email: "",
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<Partial<Record<keyof LoginFormValues, string>>>({});
-  const [serverError, setServerError] = useState<string | null>(null);
+  const [serverError, setServerError] = useState<string | null>(
+    isExpired ? "Sesi login Anda telah kedaluwarsa. Silakan masuk kembali." : null
+  );
   const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,7 +70,7 @@ export default function LoginPage() {
     setIsLoading(true);
     try {
       await loginUser({
-        email: formData.email,
+        email: formData.email.trim(),
         password: formData.password,
       });
       router.push("/home");
@@ -171,29 +184,29 @@ export default function LoginPage() {
 
             {/* Credentials Form */}
             <form className="space-y-4" onSubmit={handleSubmit}>
-              {/* Input Email Mahasiswa */}
+              {/* Input NIM / Email Mahasiswa */}
               <div className="space-y-1.5">
                 <label htmlFor="email" className="block text-xs font-semibold text-slate-700">
-                  Email Mahasiswa Kampus <span className="text-rose-500">*</span>
+                  NIM atau Email Mahasiswa Kampus <span className="text-rose-500">*</span>
                 </label>
                 <div className="relative rounded-xl shadow-xs">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                    <span className="material-symbols-outlined text-[20px]">mail</span>
+                    <span className="material-symbols-outlined text-[20px]">badge</span>
                   </div>
                   <input
-                    type="email"
+                    type="text"
                     id="email"
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    placeholder="nama@campus.ac.id"
+                    placeholder="cth. 2106728910 atau nama@campus.ac.id"
                     className={`block w-full pl-10 pr-20 py-3 text-xs sm:text-sm bg-slate-50 border ${
                       fieldErrors.email ? "border-rose-400 ring-1 ring-rose-400" : "border-slate-200"
                     } rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-700 focus:border-brand-700 text-slate-900 placeholder:text-slate-400 transition`}
                   />
                   <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                     <span className="text-[10px] font-semibold tracking-wide bg-brand-100 text-brand-800 px-2 py-0.5 rounded-md">
-                      @campus.ac.id
+                      @ac.id / NIM
                     </span>
                   </div>
                 </div>
@@ -309,5 +322,13 @@ export default function LoginPage() {
         </div>
       </main>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-slate-100" />}>
+      <LoginForm />
+    </Suspense>
   );
 }

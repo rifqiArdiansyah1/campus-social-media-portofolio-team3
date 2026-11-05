@@ -540,6 +540,7 @@ def test_admin_create_moderator_missing_jurusan(client, db_session: Session):
         "nama": "Kaprodi Tanpa Jurusan",
         "password": "KaprodiPassword123!",
         "role": "moderator",
+        "nim": "KAP002",
     }
     response = client.post("/api/v1/admin/users", json=payload, headers=headers)
     assert response.status_code == 422
@@ -567,6 +568,7 @@ def test_admin_create_moderator_invalid_jurusan(client, db_session: Session):
         "password": "KaprodiPassword123!",
         "role": "moderator",
         "jurusan": "Jurusan Fiktif",
+        "nim": "KAP003",
     }
     response = client.post("/api/v1/admin/users", json=payload, headers=headers)
     assert response.status_code == 422
@@ -600,6 +602,7 @@ def test_admin_create_user_forbidden_for_student_and_moderator(client, db_sessio
         "password": "AnotherPassword123!",
         "role": "moderator",
         "jurusan": "Teknik Informatika",
+        "nim": "KAP004",
     }
 
     # Student forbidden
@@ -649,3 +652,36 @@ def test_can_moderate_truth_table():
     assert can_moderate(mhs, "Teknik Informatika") is False
     assert can_moderate(mhs, "Sistem Informasi") is False
     assert can_moderate(mhs, None) is False
+
+def test_login_success_with_nim(client, db_session: Session):
+    raw_pass = "RahasiaNim123!"
+    user = User(
+        nim="220101099",
+        nama="Student Login NIM",
+        email="student.nim@campus.ac.id",
+        password_hash=hash_password(raw_pass),
+        role="mahasiswa",
+        jurusan="Teknik Informatika",
+        angkatan=2022,
+    )
+    db_session.add(user)
+    db_session.commit()
+
+    payload = {"email": "220101099", "password": raw_pass}
+    response = client.post("/api/v1/auth/login", json=payload)
+    assert response.status_code == 200
+    data = response.json()
+    assert "access_token" in data
+    assert data["user"]["email"] == "student.nim@campus.ac.id"
+    assert data["user"]["nim"] == "220101099"
+
+
+def test_trusted_proxy_zero_setting(client):
+    with patch.object(settings, "TRUSTED_PROXY_COUNT", 0):
+        email = "proxy0@campus.ac.id"
+        payload = {"email": email, "password": "Wrong"}
+        for _ in range(5):
+            client.post("/api/v1/auth/login", json=payload, headers={"X-Forwarded-For": "1.2.3.4"})
+        res = client.post("/api/v1/auth/login", json=payload, headers={"X-Forwarded-For": "5.6.7.8"})
+        assert res.status_code == 429
+

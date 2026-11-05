@@ -33,8 +33,10 @@ const registerSchema = z
       .email("Format email tidak valid")
       .refine(
         (val) => {
-          const lower = val.toLowerCase().trim();
-          return lower.endsWith("@campus.ac.id") || lower.endsWith("@students.campus.ac.id");
+          const parts = val.trim().toLowerCase().split("@");
+          if (parts.length !== 2) return false;
+          const domain = parts[1];
+          return domain === "campus.ac.id" || domain === "students.campus.ac.id";
         },
         {
           message: "Email harus menggunakan domain resmi kampus (@campus.ac.id atau @students.campus.ac.id)",

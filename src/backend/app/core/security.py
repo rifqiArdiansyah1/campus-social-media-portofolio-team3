@@ -96,16 +96,17 @@ def get_client_ip(request: Request) -> str:
     """
     Extract trusted client IP address considering reverse proxies.
     Evaluates X-Forwarded-For from right to left based on TRUSTED_PROXY_COUNT.
+    If TRUSTED_PROXY_COUNT <= 0, ignores X-Forwarded-For and returns direct client host.
     Falls back to request.client.host if no header is present.
     """
-    xff = request.headers.get("x-forwarded-for")
-    if xff:
-        ips = [ip.strip() for ip in xff.split(",") if ip.strip()]
-        if ips:
-            trusted_count = settings.TRUSTED_PROXY_COUNT
-            if len(ips) >= trusted_count:
-                return ips[-trusted_count]
-            return ips[0]
+    if settings.TRUSTED_PROXY_COUNT > 0:
+        xff = request.headers.get("x-forwarded-for")
+        if xff:
+            ips = [ip.strip() for ip in xff.split(",") if ip.strip()]
+            if ips:
+                if len(ips) >= settings.TRUSTED_PROXY_COUNT:
+                    return ips[-settings.TRUSTED_PROXY_COUNT]
+                return ips[0]
 
     if request.client and request.client.host:
         return request.client.host
@@ -146,28 +147,34 @@ class DualLayerRateLimiter:
         # Check Layer 1: IP + Email
         if ip_email_key in self._ip_email_failures:
             active_attempts = self._prune(self._ip_email_failures[ip_email_key], self.LAYER1_WINDOW_SECONDS, current_time)
-            self._ip_email_failures[ip_email_key] = active_attempts
-            if len(active_attempts) >= self.LAYER1_MAX_FAILURES:
-                oldest = active_attempts[0]
-                retry_after = max(1, int(oldest + self.LAYER1_WINDOW_SECONDS - current_time))
-                raise RateLimitError(
-                    detail="Terlalu banyak percobaan login gagal untuk kombinasi IP dan akun ini. Coba lagi nanti.",
-                    code="TOO_MANY_REQUESTS",
-                    headers={"Retry-After": str(retry_after)},
-                )
+            if not active_attempts:
+                self._ip_email_failures.pop(ip_email_key, None)
+            else:
+                self._ip_email_failures[ip_email_key] = active_attempts
+                if len(active_attempts) >= self.LAYER1_MAX_FAILURES:
+                    oldest = active_attempts[0]
+                    retry_after = max(1, int(oldest + self.LAYER1_WINDOW_SECONDS - current_time))
+                    raise RateLimitError(
+                        detail="Terlalu banyak percobaan login gagal untuk kombinasi IP dan akun ini. Coba lagi nanti.",
+                        code="TOO_MANY_REQUESTS",
+                        headers={"Retry-After": str(retry_after)},
+                    )
 
         # Check Layer 2: Global Email
         if norm_email in self._email_failures:
             active_attempts = self._prune(self._email_failures[norm_email], self.LAYER2_WINDOW_SECONDS, current_time)
-            self._email_failures[norm_email] = active_attempts
-            if len(active_attempts) >= self.LAYER2_MAX_FAILURES:
-                oldest = active_attempts[0]
-                retry_after = max(1, int(oldest + self.LAYER2_WINDOW_SECONDS - current_time))
-                raise RateLimitError(
-                    detail="Terlalu banyak percobaan login gagal untuk akun ini. Akun dikunci sementara demi keamanan.",
-                    code="TOO_MANY_REQUESTS",
-                    headers={"Retry-After": str(retry_after)},
-                )
+            if not active_attempts:
+                self._email_failures.pop(norm_email, None)
+            else:
+                self._email_failures[norm_email] = active_attempts
+                if len(active_attempts) >= self.LAYER2_MAX_FAILURES:
+                    oldest = active_attempts[0]
+                    retry_after = max(1, int(oldest + self.LAYER2_WINDOW_SECONDS - current_time))
+                    raise RateLimitError(
+                        detail="Terlalu banyak percobaan login gagal untuk akun ini. Akun dikunci sementara demi keamanan.",
+                        code="TOO_MANY_REQUESTS",
+                        headers={"Retry-After": str(retry_after)},
+                    )
 
     def record_failure(self, client_ip: str, email: str, now: Optional[float] = None) -> None:
         """

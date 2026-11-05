@@ -50,13 +50,13 @@ class RegisterRequest(BaseModel):
 
 
 class LoginRequest(BaseModel):
-    email: str = Field(..., max_length=100, description="Email kampus terdaftar")
+    email: str = Field(..., max_length=100, description="Email kampus atau NIM terdaftar")
     password: str = Field(..., description="Kata sandi akun")
 
     @field_validator("email")
     @classmethod
     def validate_email(cls, v: str) -> str:
-        return normalize_email(v)
+        return v.strip().lower()
 
 
 class UserProfileResponse(BaseModel):
@@ -92,8 +92,16 @@ class AdminCreateUserRequest(BaseModel):
     password: str = Field(..., description="Kata sandi sementara (minimal 8 karakter, maksimal 72 byte UTF-8)")
     role: str = Field(..., description="Peran akun baru: 'moderator' atau 'admin'")
     jurusan: Optional[str] = Field(default=None, max_length=100, description="Program studi binaan (wajib untuk moderator)")
-    nim: Optional[str] = Field(default=None, max_length=20, description="Nomor identitas/NIP opsional")
+    nim: str = Field(..., min_length=3, max_length=20, description="Nomor identitas/NIP staf")
     angkatan: Optional[int] = Field(default=None, description="Tahun angkatan opsional")
+
+    @field_validator("nim")
+    @classmethod
+    def validate_nim(cls, v: str) -> str:
+        clean = v.strip()
+        if not clean:
+            raise ValueError("NIM/NIP tidak boleh kosong")
+        return clean
 
     @field_validator("email")
     @classmethod
