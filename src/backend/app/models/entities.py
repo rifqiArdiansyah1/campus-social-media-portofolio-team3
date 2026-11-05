@@ -17,7 +17,7 @@ from sqlalchemy import (
     UniqueConstraint,
     text,
 )
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, synonym
 
 from app.core.database import Base
 
@@ -26,6 +26,7 @@ class User(Base):
     __tablename__ = "users"
 
     user_id = Column(BigInteger, Identity(always=True), primary_key=True)
+    id = synonym("user_id")
     nim = Column(String(20), unique=True, nullable=False)
     nama = Column(String(100), nullable=False)
     email = Column(String(100), unique=True, nullable=False)

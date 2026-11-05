@@ -4,6 +4,120 @@
  */
 
 export interface paths {
+    "/api/v1/auth/register": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Registrasi Akun Mahasiswa Baru
+         * @description Mendaftarkan akun mahasiswa baru (US-01).
+         *     - Memvalidasi domain email resmi kampus (@campus.ac.id / @students.campus.ac.id)
+         *     - Memvalidasi daftar prodi resmi kampus
+         *     - Membatasi kata sandi antara 8 hingga 72 byte UTF-8
+         *     - Memaksa peran akun selalu menjadi 'mahasiswa' (mencegah eskalasi hak akses)
+         *     - Menangani duplikasi NIM dan email dengan status 409 (NIM_TAKEN / EMAIL_TAKEN)
+         */
+        post: operations["register_api_v1_auth_register_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Masuk / Otentikasi Pengguna
+         * @description Masuk ke sistem menggunakan email dan kata sandi.
+         *     - Dilindungi rate limiter 2 lapis (IP+Email dan Global Email)
+         *     - Mitigasi timing attack dengan dummy bcrypt hashing saat email tidak ditemukan
+         *     - Menangani kata sandi > 72 byte secara elegan sebagai 401 INVALID_CREDENTIALS
+         *     - Mengembalikan JWT stateless dengan masa berlaku 24 jam
+         */
+        post: operations["login_api_v1_auth_login_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Profil Pengguna Sesi Aktif
+         * @description Mengambil data profil pengguna yang sedang login berdasarkan token JWT aktif.
+         */
+        get: operations["get_current_user_profile_api_v1_auth_me_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/logout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Keluar dari Sesi
+         * @description Keluar dari sesi (stateless JWT).
+         *     Klien diharapkan menghapus token dari storage lokal / cookie.
+         */
+        post: operations["logout_api_v1_auth_logout_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Pembuatan Akun Staf/Moderator/Admin (Khusus Administrator)
+         * @description Endpoint khusus administrator untuk membuat akun baru berwenang (moderator/admin).
+         *     - Menolak pembuatan moderator tanpa jurusan spesifik (422 MODERATOR_JURUSAN_REQUIRED)
+         *     - Memvalidasi jurusan moderator terhadap daftar prodi resmi kampus (422 INVALID_JURUSAN)
+         *     - Mengizinkan unit administratif untuk akun role 'admin'
+         *     - Menangani duplikasi email dan identitas unik
+         */
+        post: operations["admin_create_user_api_v1_admin_users_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/recommendations/match": {
         parameters: {
             query?: never;
@@ -142,6 +256,44 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AdminCreateUserRequest */
+        AdminCreateUserRequest: {
+            /**
+             * Email
+             * @description Email resmi staf/admin
+             */
+            email: string;
+            /**
+             * Nama
+             * @description Nama staf/admin
+             */
+            nama: string;
+            /**
+             * Password
+             * @description Kata sandi sementara (minimal 8 karakter, maksimal 72 byte UTF-8)
+             */
+            password: string;
+            /**
+             * Role
+             * @description Peran akun baru: 'moderator' atau 'admin'
+             */
+            role: string;
+            /**
+             * Jurusan
+             * @description Program studi binaan (wajib untuk moderator)
+             */
+            jurusan?: string | null;
+            /**
+             * Nim
+             * @description Nomor identitas/NIP staf
+             */
+            nim: string;
+            /**
+             * Angkatan
+             * @description Tahun angkatan opsional
+             */
+            angkatan?: number | null;
+        };
         /** CandidateProfile */
         CandidateProfile: {
             /** User Id */
@@ -170,6 +322,19 @@ export interface components {
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
+        };
+        /** LoginRequest */
+        LoginRequest: {
+            /**
+             * Email
+             * @description Email kampus atau NIM terdaftar
+             */
+            email: string;
+            /**
+             * Password
+             * @description Kata sandi akun
+             */
+            password: string;
         };
         /** ModerationRequest */
         ModerationRequest: {
@@ -262,6 +427,85 @@ export interface components {
             /** Recommendations */
             recommendations: components["schemas"]["RecommendationItem"][];
         };
+        /** RegisterRequest */
+        RegisterRequest: {
+            /**
+             * Nim
+             * @description Nomor Induk Mahasiswa
+             */
+            nim: string;
+            /**
+             * Nama
+             * @description Nama lengkap mahasiswa
+             */
+            nama: string;
+            /**
+             * Email
+             * @description Email resmi kampus
+             */
+            email: string;
+            /**
+             * Password
+             * @description Kata sandi (minimal 8 karakter, maksimal 72 byte UTF-8)
+             */
+            password: string;
+            /**
+             * Jurusan
+             * @description Program studi / Jurusan resmi
+             */
+            jurusan: string;
+            /**
+             * Angkatan
+             * @description Tahun angkatan masuk
+             */
+            angkatan: number;
+            /**
+             * Role
+             * @description Diabaikan untuk registrasi mandiri, selalu dipaksa 'mahasiswa'
+             */
+            role?: string | null;
+        };
+        /** TokenResponse */
+        TokenResponse: {
+            /** Access Token */
+            access_token: string;
+            /**
+             * Token Type
+             * @default bearer
+             */
+            token_type: string;
+            /** Expires In */
+            expires_in: number;
+            user: components["schemas"]["UserProfileResponse"];
+        };
+        /** UserProfileResponse */
+        UserProfileResponse: {
+            /** User Id */
+            user_id: number;
+            /** Nim */
+            nim?: string | null;
+            /** Nama */
+            nama: string;
+            /** Email */
+            email: string;
+            /** Role */
+            role: string;
+            /** Jurusan */
+            jurusan?: string | null;
+            /** Angkatan */
+            angkatan?: number | null;
+            /** Bio */
+            bio?: string | null;
+            /** Kontak Url */
+            kontak_url?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Id */
+            readonly id: number;
+        };
         /** ValidationError */
         ValidationError: {
             /** Location */
@@ -284,6 +528,143 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    register_api_v1_auth_register_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RegisterRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserProfileResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    login_api_v1_auth_login_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LoginRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TokenResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_current_user_profile_api_v1_auth_me_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserProfileResponse"];
+                };
+            };
+        };
+    };
+    logout_api_v1_auth_logout_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    admin_create_user_api_v1_admin_users_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminCreateUserRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserProfileResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     get_collaborator_recommendations_api_v1_recommendations_match_post: {
         parameters: {
             query?: never;

@@ -6,6 +6,179 @@
     "version": "0.1.0"
   },
   "paths": {
+    "/api/v1/auth/register": {
+      "post": {
+        "tags": [
+          "Authentication & RBAC (M02)"
+        ],
+        "summary": "Registrasi Akun Mahasiswa Baru",
+        "description": "Mendaftarkan akun mahasiswa baru (US-01).\n- Memvalidasi domain email resmi kampus (@campus.ac.id / @students.campus.ac.id)\n- Memvalidasi daftar prodi resmi kampus\n- Membatasi kata sandi antara 8 hingga 72 byte UTF-8\n- Memaksa peran akun selalu menjadi 'mahasiswa' (mencegah eskalasi hak akses)\n- Menangani duplikasi NIM dan email dengan status 409 (NIM_TAKEN / EMAIL_TAKEN)",
+        "operationId": "register_api_v1_auth_register_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserProfileResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "tags": [
+          "Authentication & RBAC (M02)"
+        ],
+        "summary": "Masuk / Otentikasi Pengguna",
+        "description": "Masuk ke sistem menggunakan email dan kata sandi.\n- Dilindungi rate limiter 2 lapis (IP+Email dan Global Email)\n- Mitigasi timing attack dengan dummy bcrypt hashing saat email tidak ditemukan\n- Menangani kata sandi > 72 byte secara elegan sebagai 401 INVALID_CREDENTIALS\n- Mengembalikan JWT stateless dengan masa berlaku 24 jam",
+        "operationId": "login_api_v1_auth_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/me": {
+      "get": {
+        "tags": [
+          "Authentication & RBAC (M02)"
+        ],
+        "summary": "Profil Pengguna Sesi Aktif",
+        "description": "Mengambil data profil pengguna yang sedang login berdasarkan token JWT aktif.",
+        "operationId": "get_current_user_profile_api_v1_auth_me_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserProfileResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "tags": [
+          "Authentication & RBAC (M02)"
+        ],
+        "summary": "Keluar dari Sesi",
+        "description": "Keluar dari sesi (stateless JWT).\nKlien diharapkan menghapus token dari storage lokal / cookie.",
+        "operationId": "logout_api_v1_auth_logout_post",
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/users": {
+      "post": {
+        "tags": [
+          "Administration (M02)"
+        ],
+        "summary": "Pembuatan Akun Staf/Moderator/Admin (Khusus Administrator)",
+        "description": "Endpoint khusus administrator untuk membuat akun baru berwenang (moderator/admin).\n- Menolak pembuatan moderator tanpa jurusan spesifik (422 MODERATOR_JURUSAN_REQUIRED)\n- Memvalidasi jurusan moderator terhadap daftar prodi resmi kampus (422 INVALID_JURUSAN)\n- Mengizinkan unit administratif untuk akun role 'admin'\n- Menangani duplikasi email dan identitas unik",
+        "operationId": "admin_create_user_api_v1_admin_users_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminCreateUserRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserProfileResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
     "/api/v1/recommendations/match": {
       "post": {
         "tags": [
@@ -196,6 +369,74 @@
   },
   "components": {
     "schemas": {
+      "AdminCreateUserRequest": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "maxLength": 100,
+            "title": "Email",
+            "description": "Email resmi staf/admin"
+          },
+          "nama": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 2,
+            "title": "Nama",
+            "description": "Nama staf/admin"
+          },
+          "password": {
+            "type": "string",
+            "title": "Password",
+            "description": "Kata sandi sementara (minimal 8 karakter, maksimal 72 byte UTF-8)"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role",
+            "description": "Peran akun baru: 'moderator' atau 'admin'"
+          },
+          "jurusan": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jurusan",
+            "description": "Program studi binaan (wajib untuk moderator)"
+          },
+          "nim": {
+            "type": "string",
+            "maxLength": 20,
+            "minLength": 3,
+            "title": "Nim",
+            "description": "Nomor identitas/NIP staf"
+          },
+          "angkatan": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Angkatan",
+            "description": "Tahun angkatan opsional"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email",
+          "nama",
+          "password",
+          "role",
+          "nim"
+        ],
+        "title": "AdminCreateUserRequest"
+      },
       "CandidateProfile": {
         "properties": {
           "user_id": {
@@ -252,6 +493,27 @@
         },
         "type": "object",
         "title": "HTTPValidationError"
+      },
+      "LoginRequest": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "maxLength": 100,
+            "title": "Email",
+            "description": "Email kampus atau NIM terdaftar"
+          },
+          "password": {
+            "type": "string",
+            "title": "Password",
+            "description": "Kata sandi akun"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "title": "LoginRequest"
       },
       "ModerationRequest": {
         "properties": {
@@ -461,6 +723,191 @@
         ],
         "title": "RecommendationResponse"
       },
+      "RegisterRequest": {
+        "properties": {
+          "nim": {
+            "type": "string",
+            "maxLength": 20,
+            "minLength": 5,
+            "title": "Nim",
+            "description": "Nomor Induk Mahasiswa"
+          },
+          "nama": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 2,
+            "title": "Nama",
+            "description": "Nama lengkap mahasiswa"
+          },
+          "email": {
+            "type": "string",
+            "maxLength": 100,
+            "title": "Email",
+            "description": "Email resmi kampus"
+          },
+          "password": {
+            "type": "string",
+            "title": "Password",
+            "description": "Kata sandi (minimal 8 karakter, maksimal 72 byte UTF-8)"
+          },
+          "jurusan": {
+            "type": "string",
+            "maxLength": 100,
+            "title": "Jurusan",
+            "description": "Program studi / Jurusan resmi"
+          },
+          "angkatan": {
+            "type": "integer",
+            "minimum": 2015.0,
+            "title": "Angkatan",
+            "description": "Tahun angkatan masuk"
+          },
+          "role": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Role",
+            "description": "Diabaikan untuk registrasi mandiri, selalu dipaksa 'mahasiswa'"
+          }
+        },
+        "type": "object",
+        "required": [
+          "nim",
+          "nama",
+          "email",
+          "password",
+          "jurusan",
+          "angkatan"
+        ],
+        "title": "RegisterRequest"
+      },
+      "TokenResponse": {
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "title": "Access Token"
+          },
+          "token_type": {
+            "type": "string",
+            "title": "Token Type",
+            "default": "bearer"
+          },
+          "expires_in": {
+            "type": "integer",
+            "title": "Expires In"
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserProfileResponse"
+          }
+        },
+        "type": "object",
+        "required": [
+          "access_token",
+          "expires_in",
+          "user"
+        ],
+        "title": "TokenResponse"
+      },
+      "UserProfileResponse": {
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "nim": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nim"
+          },
+          "nama": {
+            "type": "string",
+            "title": "Nama"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          },
+          "jurusan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jurusan"
+          },
+          "angkatan": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Angkatan"
+          },
+          "bio": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bio"
+          },
+          "kontak_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kontak Url"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "id": {
+            "type": "integer",
+            "title": "Id",
+            "readOnly": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "nama",
+          "email",
+          "role",
+          "created_at",
+          "id"
+        ],
+        "title": "UserProfileResponse"
+      },
       "ValidationError": {
         "properties": {
           "loc": {
@@ -500,6 +947,12 @@
           "type"
         ],
         "title": "ValidationError"
+      }
+    },
+    "securitySchemes": {
+      "HTTPBearer": {
+        "type": "http",
+        "scheme": "bearer"
       }
     }
   }

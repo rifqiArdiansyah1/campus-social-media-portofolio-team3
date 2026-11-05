@@ -35,10 +35,20 @@ apiClient.interceptors.request.use((config) => {
   return config;
 });
 
-// Response interceptor to format error message from backend contract
+// Response interceptor to format error message from backend contract & handle session expiration
 apiClient.interceptors.response.use(
   (response) => response,
   (error: AxiosError<AppErrorResponse>) => {
+    if (error.response?.status === 401) {
+      const code = error.response.data?.code;
+      if (code === "TOKEN_EXPIRED" || code === "INVALID_TOKEN") {
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("campusfolio_token");
+          localStorage.removeItem("campusfolio_user");
+          document.cookie = "campusfolio_token=; path=/; max-age=0; SameSite=Lax";
+        }
+      }
+    }
     if (error.response?.data?.detail) {
       error.message = error.response.data.detail;
     }

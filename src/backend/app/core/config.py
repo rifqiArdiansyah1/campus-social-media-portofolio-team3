@@ -14,7 +14,10 @@ class Settings(BaseSettings):
     # JWT Authentication
     SECRET_KEY: str = "campusfolio-secret-key-change-in-production-2026"
     ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7  # 7 days
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24  # 24 hours (1 day)
+
+    # Security & Reverse Proxy
+    TRUSTED_PROXY_COUNT: int = 1
 
     # Database
     DATABASE_URL: str = "postgresql://postgres:postgres@localhost:5432/campusfolio_db"
@@ -31,6 +34,16 @@ class Settings(BaseSettings):
 
     # Allowed Email Domains for Student Registration (US-01)
     ALLOWED_EMAIL_DOMAINS: List[str] = ["campus.ac.id", "students.campus.ac.id"]
+
+    # Official Academic Departments (Controlled list for students & Kaprodi/moderator)
+    ALLOWED_JURUSAN: List[str] = [
+        "Teknik Informatika",
+        "Sistem Informasi",
+        "Ilmu Komputer",
+        "Manajemen Bisnis",
+        "Teknik Elektro",
+        "Teknik Komputer",
+    ]
 
     # CORS (Allows Next.js Web on localhost and hosted domains)
     CORS_ORIGINS: Union[List[str], str] = [
@@ -75,6 +88,19 @@ class Settings(BaseSettings):
                 except Exception:
                     pass
             return [d.strip() for d in v.split(",") if d.strip()]
+        return v
+
+    @field_validator("ALLOWED_JURUSAN", mode="before")
+    @classmethod
+    def parse_allowed_jurusan(cls, v: Union[str, List[str]]) -> List[str]:
+        if isinstance(v, str):
+            v_stripped = v.strip()
+            if v_stripped.startswith("[") and v_stripped.endswith("]"):
+                try:
+                    return json.loads(v_stripped)
+                except Exception:
+                    pass
+            return [j.strip() for j in v.split(",") if j.strip()]
         return v
 
     @model_validator(mode="after")
