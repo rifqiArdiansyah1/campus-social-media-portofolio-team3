@@ -2,6 +2,7 @@ import logging
 import os
 
 from fastapi import Depends, FastAPI, Request
+from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -42,7 +43,7 @@ async def app_error_handler(request: Request, exc: AppError):
     content = {"detail": exc.detail, "code": exc.code}
     if exc.errors is not None:
         content["errors"] = exc.errors
-    return JSONResponse(status_code=exc.status_code, content=content)
+    return JSONResponse(status_code=exc.status_code, content=content, headers=exc.headers)
 
 
 @app.exception_handler(RequestValidationError)
@@ -52,7 +53,7 @@ async def validation_error_handler(request: Request, exc: RequestValidationError
         content={
             "detail": "Validasi input gagal",
             "code": "VALIDATION_ERROR",
-            "errors": exc.errors()
+            "errors": jsonable_encoder(exc.errors())
         }
     )
 

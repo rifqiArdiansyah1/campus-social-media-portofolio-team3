@@ -39,6 +39,8 @@ EXPECTED_INDEXES = {
 }
 
 EXPECTED_CONSTRAINTS = {
+    "users_email_key",
+    "users_nim_key",
     "users_role_check",
     "skills_tipe_check",
     "user_skills_level_check",

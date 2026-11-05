@@ -10,6 +10,16 @@ const config: Config = {
     extend: {
       colors: {
         // Stitch "Academic Modernist" Design System Palette
+        brand: {
+          50: "#eef2ff",
+          100: "#e0e7ff",
+          200: "#c7d2fe",
+          500: "#6366f1",
+          600: "#4f46e5",
+          700: "#4338ca",
+          800: "#3730a3",
+          900: "#312e81",
+        },
         primary: {
           DEFAULT: "#2a14b4",
           container: "#4338ca",
