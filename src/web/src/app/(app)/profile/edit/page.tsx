@@ -41,6 +41,8 @@ export default function ProfileEditPage() {
   const router = useRouter();
   const { user, refreshUser } = useAuth();
   const toast = useToast();
+  const toastRef = React.useRef(toast);
+  toastRef.current = toast;
 
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -86,14 +88,14 @@ export default function ProfileEditPage() {
           }
         }
       } catch (err: any) {
-        toast.error(err.response?.data?.detail || "Gagal mengambil data profil Anda");
+        toastRef.current.error(err.response?.data?.detail || "Gagal mengambil data profil Anda");
       } finally {
         setIsLoading(false);
       }
     }
 
     loadProfileData();
-  }, [toast]);
+  }, []);
 
   const validateForm = (): boolean => {
     const errors: Record<string, string> = {};

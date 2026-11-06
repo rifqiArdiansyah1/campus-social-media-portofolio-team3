@@ -40,13 +40,15 @@ vi.mock("@/context/AuthContext", () => ({
   }),
 }));
 
+const mockToast = {
+  success: vi.fn(),
+  error: vi.fn(),
+  info: vi.fn(),
+  warning: vi.fn(),
+};
+
 vi.mock("@/context/ToastContext", () => ({
-  useToast: () => ({
-    success: vi.fn(),
-    error: vi.fn(),
-    info: vi.fn(),
-    warning: vi.fn(),
-  }),
+  useToast: () => mockToast,
 }));
 
 // Mock apiClient

@@ -54,6 +54,8 @@ export default function ProfileDetailPage() {
   const router = useRouter();
   const { user: currentUser } = useAuth();
   const toast = useToast();
+  const toastRef = React.useRef(toast);
+  toastRef.current = toast;
 
   const [profile, setProfile] = useState<PublicProfileData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -87,7 +89,7 @@ export default function ProfileDetailPage() {
         if (err.response?.status === 404) {
           setIsNotFound(true);
         } else {
-          toast.error(err.response?.data?.detail || "Gagal memuat profil pengguna");
+          toastRef.current.error(err.response?.data?.detail || "Gagal memuat profil pengguna");
         }
       } finally {
         setIsLoading(false);
@@ -95,7 +97,7 @@ export default function ProfileDetailPage() {
     }
 
     fetchProfile();
-  }, [rawId, isMeParam, toast]);
+  }, [rawId, isMeParam]);
 
   const isOwner = Boolean(
     currentUser && profile && (currentUser.id === profile.user_id || isMeParam)

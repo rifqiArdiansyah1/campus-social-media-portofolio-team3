@@ -47,10 +47,11 @@ def auth_headers(user: User) -> dict:
 def test_get_skills_filter_and_search(client, db_session: Session):
     # Seed unique master skills for this test
     uid = uuid.uuid4().hex[:6]
+    s0 = Skill(nama=f"Python Programming {uid}", tipe="skill")
     s1 = Skill(nama=f"Wildcard {uid} 100% Guaranteed", tipe="skill")
     s2 = Skill(nama=f"Wildcard_{uid}_C_Sharp", tipe="skill")
     s3 = Skill(nama=f"Unique Minat {uid}", tipe="minat")
-    db_session.add_all([s1, s2, s3])
+    db_session.add_all([s0, s1, s2, s3])
     db_session.commit()
 
     # Filter tipe=skill
