@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.api.v1.endpoints import admin, auth, moderation, recommendations, skills, users
+from app.api.v1.endpoints import admin, auth, moderation, posts, recommendations, skills, uploads, users
 
 api_router = APIRouter()
 
@@ -9,5 +9,7 @@ api_router.include_router(auth.router, prefix="/auth", tags=["Authentication & R
 api_router.include_router(admin.router, prefix="/admin", tags=["Administration (M02)"])
 api_router.include_router(users.router, prefix="/users", tags=["Users & Profiles (M04)"])
 api_router.include_router(skills.router, prefix="/skills", tags=["Skills (M04)"])
+api_router.include_router(uploads.router, prefix="/uploads", tags=["Uploads & Media (M05)"])
+api_router.include_router(posts.router, prefix="/posts", tags=["Posts & Feed (M05)"])
 api_router.include_router(recommendations.router, prefix="/recommendations", tags=["AI Recommendations (AI-1)"])
 api_router.include_router(moderation.router, prefix="/moderation", tags=["AI Content Moderation (AI-2)"])

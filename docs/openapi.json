@@ -437,6 +437,373 @@
         }
       }
     },
+    "/api/v1/uploads/post-image": {
+      "post": {
+        "tags": [
+          "Uploads & Media (M05)"
+        ],
+        "summary": "Unggah Foto untuk Postingan Linimasa",
+        "operationId": "upload_post_image_api_v1_uploads_post_image_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_upload_post_image_api_v1_uploads_post_image_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadImageResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/posts": {
+      "post": {
+        "tags": [
+          "Posts & Feed (M05)"
+        ],
+        "summary": "Buat Postingan Baru dengan Moderasi Otomatis AI (AD-01)",
+        "operationId": "create_post_api_v1_posts_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostDetailResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Posts & Feed (M05)"
+        ],
+        "summary": "Linimasa Feed Postingan Kampus (Keyset Pagination & Scope Filtering)",
+        "operationId": "get_posts_feed_api_v1_posts_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "scope",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "all",
+                "friends",
+                "recruiting"
+              ],
+              "type": "string",
+              "description": "Cakupan linimasa",
+              "default": "all",
+              "title": "Scope"
+            },
+            "description": "Cakupan linimasa"
+          },
+          {
+            "name": "skill_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter berdasarkan ID keahlian",
+              "title": "Skill Id"
+            },
+            "description": "Filter berdasarkan ID keahlian"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "description": "Batas jumlah item",
+              "default": 10,
+              "title": "Limit"
+            },
+            "description": "Batas jumlah item"
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Opaque keyset cursor untuk navigasi",
+              "title": "Cursor"
+            },
+            "description": "Opaque keyset cursor untuk navigasi"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostFeedResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/posts/me": {
+      "get": {
+        "tags": [
+          "Posts & Feed (M05)"
+        ],
+        "summary": "Ambil Seluruh Postingan Milik Sendiri (Draft, Menunggu Review, Tayang, Revisi)",
+        "operationId": "get_my_posts_api_v1_posts_me_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "description": "Jumlah postingan per halaman",
+              "default": 10,
+              "title": "Limit"
+            },
+            "description": "Jumlah postingan per halaman"
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Opaque cursor untuk pagination",
+              "title": "Cursor"
+            },
+            "description": "Opaque cursor untuk pagination"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostFeedResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/posts/{id}": {
+      "get": {
+        "tags": [
+          "Posts & Feed (M05)"
+        ],
+        "summary": "Ambil Detail Satu Postingan",
+        "operationId": "get_post_detail_api_v1_posts__id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostDetailResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Posts & Feed (M05)"
+        ],
+        "summary": "Perbarui Postingan (Hanya untuk Status Draft, Revisi, atau Ditolak)",
+        "operationId": "update_post_api_v1_posts__id__patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostDetailResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/recommendations/match": {
       "post": {
         "tags": [
@@ -695,6 +1062,21 @@
         ],
         "title": "AdminCreateUserRequest"
       },
+      "Body_upload_post_image_api_v1_uploads_post_image_post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream",
+            "title": "File",
+            "description": "Berkas foto (JPEG, PNG, WEBP maks 5MB)"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file"
+        ],
+        "title": "Body_upload_post_image_api_v1_uploads_post_image_post"
+      },
       "CandidateProfile": {
         "properties": {
           "user_id": {
@@ -949,6 +1331,311 @@
           "id"
         ],
         "title": "MyProfileResponse"
+      },
+      "PostAuthorResponse": {
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "nama": {
+            "type": "string",
+            "title": "Nama"
+          },
+          "jurusan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jurusan"
+          },
+          "angkatan": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Angkatan"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "nama",
+          "role"
+        ],
+        "title": "PostAuthorResponse"
+      },
+      "PostCreate": {
+        "properties": {
+          "isi": {
+            "type": "string",
+            "title": "Isi",
+            "description": "Isi caption atau teks postingan"
+          },
+          "gambar_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gambar Url",
+            "description": "Tautan atau path foto pendukung dari bucket post-images"
+          },
+          "tipe": {
+            "type": "string",
+            "enum": [
+              "umum",
+              "cari_anggota"
+            ],
+            "title": "Tipe",
+            "default": "umum"
+          },
+          "skill_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Skill Ids",
+            "description": "Daftar ID keahlian relevan (maksimal 10)"
+          }
+        },
+        "type": "object",
+        "required": [
+          "isi"
+        ],
+        "title": "PostCreate"
+      },
+      "PostDetailResponse": {
+        "properties": {
+          "post_id": {
+            "type": "integer",
+            "title": "Post Id"
+          },
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "author": {
+            "$ref": "#/components/schemas/PostAuthorResponse"
+          },
+          "isi": {
+            "type": "string",
+            "title": "Isi"
+          },
+          "gambar_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gambar Url"
+          },
+          "tipe": {
+            "type": "string",
+            "enum": [
+              "umum",
+              "cari_anggota"
+            ],
+            "title": "Tipe"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "is_deleted": {
+            "type": "boolean",
+            "title": "Is Deleted"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/PostSkillTagResponse"
+            },
+            "type": "array",
+            "title": "Skills",
+            "default": []
+          },
+          "moderation_note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Moderation Note"
+          },
+          "is_owner": {
+            "type": "boolean",
+            "title": "Is Owner",
+            "default": false
+          },
+          "can_takedown": {
+            "type": "boolean",
+            "title": "Can Takedown",
+            "default": false
+          },
+          "can_report": {
+            "type": "boolean",
+            "title": "Can Report",
+            "default": false
+          },
+          "can_edit": {
+            "type": "boolean",
+            "title": "Can Edit",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "post_id",
+          "user_id",
+          "author",
+          "isi",
+          "tipe",
+          "status",
+          "is_deleted",
+          "created_at"
+        ],
+        "title": "PostDetailResponse"
+      },
+      "PostFeedResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/PostDetailResponse"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "has_more": {
+            "type": "boolean",
+            "title": "Has More"
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Cursor",
+            "description": "Opaque cursor string base4 untuk pagination keyset stabil"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "has_more"
+        ],
+        "title": "PostFeedResponse"
+      },
+      "PostSkillTagResponse": {
+        "properties": {
+          "skill_id": {
+            "type": "integer",
+            "title": "Skill Id"
+          },
+          "nama": {
+            "type": "string",
+            "title": "Nama"
+          },
+          "tipe": {
+            "type": "string",
+            "title": "Tipe"
+          }
+        },
+        "type": "object",
+        "required": [
+          "skill_id",
+          "nama",
+          "tipe"
+        ],
+        "title": "PostSkillTagResponse"
+      },
+      "PostUpdate": {
+        "properties": {
+          "isi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Isi",
+            "description": "Caption teks yang diperbarui"
+          },
+          "gambar_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gambar Url",
+            "description": "Path atau URL gambar baru"
+          },
+          "tipe": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "umum",
+                  "cari_anggota"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tipe"
+          },
+          "skill_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "integer"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Skill Ids"
+          }
+        },
+        "type": "object",
+        "title": "PostUpdate"
       },
       "PublicProfileResponse": {
         "properties": {
@@ -1412,6 +2099,44 @@
           "items"
         ],
         "title": "UpdateUserSkillsRequest"
+      },
+      "UploadImageResponse": {
+        "properties": {
+          "path": {
+            "type": "string",
+            "title": "Path",
+            "description": "Path relatif dalam storage bucket (e.g. 101/uuid.jpg)"
+          },
+          "url": {
+            "type": "string",
+            "title": "Url",
+            "description": "URL publik berkas gambar yang dapat diakses langsung"
+          },
+          "filename": {
+            "type": "string",
+            "title": "Filename",
+            "description": "Nama file unik"
+          },
+          "content_type": {
+            "type": "string",
+            "title": "Content Type",
+            "description": "Tipe MIME gambar (e.g. image/jpeg)"
+          },
+          "size_bytes": {
+            "type": "integer",
+            "title": "Size Bytes",
+            "description": "Ukuran berkas dalam byte"
+          }
+        },
+        "type": "object",
+        "required": [
+          "path",
+          "url",
+          "filename",
+          "content_type",
+          "size_bytes"
+        ],
+        "title": "UploadImageResponse"
       },
       "UserProfileResponse": {
         "properties": {

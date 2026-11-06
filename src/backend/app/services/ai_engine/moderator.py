@@ -65,3 +65,7 @@ class ContentModerator:
 
 # Singleton instance
 moderator_engine = ContentModerator()
+
+
+def get_moderator_engine() -> ContentModerator:
+    return moderator_engine

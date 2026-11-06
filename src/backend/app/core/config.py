@@ -32,6 +32,11 @@ class Settings(BaseSettings):
     MAX_IMAGE_SIZE_MB: int = 5
     MAX_DOC_SIZE_MB: int = 10
 
+    # AI Moderation & Post Settings (AD-01 & M05)
+    AI_SAFE_THRESHOLD: float = 0.80
+    AI_TIMEOUT_SECONDS: float = 3.0
+    MAX_POST_SKILLS: int = 10
+
     # Allowed Email Domains for Student Registration (US-01)
     ALLOWED_EMAIL_DOMAINS: List[str] = ["campus.ac.id", "students.campus.ac.id"]
 
