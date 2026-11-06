@@ -4,6 +4,8 @@ from typing import List, Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, computed_field, field_validator, model_validator
 
+from app.schemas.auth import UserProfileResponse
+
 # Regex for allowed skill custom names: letters, numbers, spaces, and common tech symbols
 SKILL_NAME_REGEX = re.compile(r"^[a-zA-Z0-9\s\+\#\.\-\/]+$")
 
@@ -104,15 +106,29 @@ class UpdateProfileRequest(BaseModel):
             return cleaned
         return v
 
+    @field_validator("bio")
+    @classmethod
+    def validate_bio(cls, v: Optional[str]) -> Optional[str]:
+        if v is not None:
+            cleaned = v.strip()
+            return cleaned if cleaned else None
+        return None
+
     @field_validator("kontak_url")
     @classmethod
     def validate_kontak_url(cls, v: Optional[str]) -> Optional[str]:
-        if v is not None and v != "":
+        if v is not None:
             cleaned = v.strip()
+            if not cleaned:
+                return None
             if not (cleaned.startswith("http://") or cleaned.startswith("https://")):
                 raise ValueError("kontak_url harus diawali dengan http:// atau https://")
             return cleaned
-        return v
+        return None
+
+
+class MyProfileResponse(UserProfileResponse):
+    skills: List[UserSkillResponse] = []
 
 
 class PublicProfileResponse(BaseModel):

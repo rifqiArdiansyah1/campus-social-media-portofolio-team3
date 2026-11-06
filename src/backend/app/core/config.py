@@ -52,7 +52,7 @@ class Settings(BaseSettings):
     ]
 
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=(".env", "src/backend/.env"),
         case_sensitive=True,
         extra="ignore"
     )

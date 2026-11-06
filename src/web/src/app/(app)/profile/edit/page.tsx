@@ -18,6 +18,13 @@ const ALLOWED_JURUSAN = [
   "Teknik Komputer",
 ];
 
+interface UserSkillApiResponse {
+  skill_id: number;
+  nama: string;
+  tipe: "skill" | "minat";
+  level: "pemula" | "menengah" | "mahir";
+}
+
 interface UserMeResponse {
   user_id: number;
   nim: string;
@@ -28,13 +35,7 @@ interface UserMeResponse {
   angkatan: number | null;
   bio: string | null;
   kontak_url: string | null;
-}
-
-interface UserSkillApiResponse {
-  skill_id: number;
-  nama: string;
-  tipe: "skill" | "minat";
-  level: "pemula" | "menengah" | "mahir";
+  skills?: UserSkillApiResponse[];
 }
 
 export default function ProfileEditPage() {
@@ -62,7 +63,7 @@ export default function ProfileEditPage() {
     async function loadProfileData() {
       try {
         setIsLoading(true);
-        // Load user me details
+        // Load user me details with skills included
         const meRes = await apiClient.get<UserMeResponse>("/users/me");
         const data = meRes.data;
         setNama(data.nama || "");
@@ -71,21 +72,15 @@ export default function ProfileEditPage() {
         setBio(data.bio || "");
         setKontakUrl(data.kontak_url || "");
 
-        // Load current skills for this user
-        if (data.user_id) {
-          const publicRes = await apiClient.get<{ skills: UserSkillApiResponse[] }>(
-            `/users/${data.user_id}`
+        if (data.skills && Array.isArray(data.skills)) {
+          setSkills(
+            data.skills.map((s) => ({
+              skill_id: s.skill_id,
+              nama: s.nama,
+              tipe: s.tipe,
+              level: s.level,
+            }))
           );
-          if (publicRes.data?.skills) {
-            setSkills(
-              publicRes.data.skills.map((s) => ({
-                skill_id: s.skill_id,
-                nama: s.nama,
-                tipe: s.tipe,
-                level: s.level,
-              }))
-            );
-          }
         }
       } catch (err: any) {
         toastRef.current.error(err.response?.data?.detail || "Gagal mengambil data profil Anda");

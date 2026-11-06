@@ -10,8 +10,8 @@ from app.core.exceptions import ForbiddenError, InvalidInputError, NotFoundError
 from app.core.normalizers import normalize_jurusan
 from app.core.security import can_moderate, get_current_user
 from app.models.entities import Skill, User, UserSkill
-from app.schemas.auth import UserProfileResponse
 from app.schemas.profile import (
+    MyProfileResponse,
     PublicProfileResponse,
     UpdateProfileRequest,
     UpdateUserSkillsRequest,
@@ -23,14 +23,46 @@ from app.services.visibility import is_target_blocking_viewer, is_viewer_blockin
 router = APIRouter()
 
 
-@router.get("/me", response_model=UserProfileResponse, summary="Ambil Profil Pengguna Aktif")
+def get_user_skills(db: Session, user_id: int) -> List[UserSkillResponse]:
+    rows = (
+        db.query(UserSkill, Skill)
+        .join(Skill, UserSkill.skill_id == Skill.skill_id)
+        .filter(UserSkill.user_id == user_id)
+        .all()
+    )
+    return [
+        UserSkillResponse(
+            skill_id=s.skill_id,
+            nama=s.nama,
+            tipe=s.tipe,
+            level=us.level or "pemula",
+        )
+        for us, s in rows
+    ]
+
+
+@router.get("/me", response_model=MyProfileResponse, summary="Ambil Profil Pengguna Aktif Beserta Skills")
 def get_my_profile(
+    db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    return UserProfileResponse.model_validate(current_user)
+    skills = get_user_skills(db, current_user.user_id)
+    return MyProfileResponse(
+        user_id=current_user.user_id,
+        nim=current_user.nim,
+        nama=current_user.nama,
+        email=current_user.email,
+        role=current_user.role,
+        jurusan=current_user.jurusan,
+        angkatan=current_user.angkatan,
+        bio=current_user.bio,
+        kontak_url=current_user.kontak_url,
+        created_at=current_user.created_at,
+        skills=skills,
+    )
 
 
-@router.patch("/me", response_model=UserProfileResponse, summary="Perbarui Data Profil Mandiri")
+@router.patch("/me", response_model=MyProfileResponse, summary="Perbarui Data Profil Mandiri")
 def update_my_profile(
     payload: UpdateProfileRequest,
     db: Session = Depends(get_db),
@@ -63,7 +95,21 @@ def update_my_profile(
 
     db.commit()
     db.refresh(current_user)
-    return UserProfileResponse.model_validate(current_user)
+
+    skills = get_user_skills(db, current_user.user_id)
+    return MyProfileResponse(
+        user_id=current_user.user_id,
+        nim=current_user.nim,
+        nama=current_user.nama,
+        email=current_user.email,
+        role=current_user.role,
+        jurusan=current_user.jurusan,
+        angkatan=current_user.angkatan,
+        bio=current_user.bio,
+        kontak_url=current_user.kontak_url,
+        created_at=current_user.created_at,
+        skills=skills,
+    )
 
 
 @router.put("/me/skills", response_model=List[UserSkillResponse], summary="Perbarui Seluruh Keahlian & Minat Mahasiswa")
@@ -73,6 +119,7 @@ def update_my_skills(
     current_user: User = Depends(get_current_user),
 ):
     target_skills = []
+    seen_skill_ids = set()
 
     for item in payload.items:
         skill = None
@@ -91,12 +138,12 @@ def update_my_skills(
                 .first()
             )
             if not skill:
-                skill = Skill(nama=item.nama, tipe=item.tipe)
-                db.add(skill)
                 try:
-                    db.flush()
+                    with db.begin_nested():
+                        skill = Skill(nama=item.nama, tipe=item.tipe)
+                        db.add(skill)
+                        db.flush()
                 except IntegrityError:
-                    db.rollback()
                     # Handled concurrent creation
                     skill = (
                         db.query(Skill)
@@ -105,6 +152,12 @@ def update_my_skills(
                     )
 
         if skill:
+            if skill.skill_id in seen_skill_ids:
+                raise InvalidInputError(
+                    code="DUPLICATE_SKILL",
+                    detail=f"Keahlian '{skill.nama}' duplikat dalam permintaan",
+                )
+            seen_skill_ids.add(skill.skill_id)
             target_skills.append((skill.skill_id, skill.nama, skill.tipe, item.level))
 
     # Atomic Replacement
@@ -155,21 +208,7 @@ def get_user_public_profile(
         )
 
     # Fetch skills
-    user_skills_rows = (
-        db.query(UserSkill, Skill)
-        .join(Skill, UserSkill.skill_id == Skill.skill_id)
-        .filter(UserSkill.user_id == id)
-        .all()
-    )
-    skills = [
-        UserSkillResponse(
-            skill_id=s.skill_id,
-            nama=s.nama,
-            tipe=s.tipe,
-            level=us.level or "pemula",
-        )
-        for us, s in user_skills_rows
-    ]
+    skills = get_user_skills(db, id)
 
     friendship_status = get_friendship_status(
         db, viewer_id=current_user.user_id, target_id=id
