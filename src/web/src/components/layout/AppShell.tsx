@@ -34,7 +34,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           { label: "Moderasi", href: "/moderation", icon: ShieldAlert },
         ]
       : []),
-    { label: "Profil", href: user?.id ? `/profile/${user.id}` : "/profile/me", icon: User },
+    { label: "Profil", href: `/profile/${user?.id ?? user?.user_id ?? "me"}`, icon: User },
   ];
 
   // Mobile Bottom Bar Navigation (4 slots: Home, Explore, Portfolio, More)

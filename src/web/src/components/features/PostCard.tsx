@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Image from "next/image";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { Heart, MessageSquare, MoreHorizontal, ShieldAlert, Flag, Trash2 } from "lucide-react";
 
 export interface PostViewModel {
@@ -38,8 +39,6 @@ export function PostCard({
   onReport,
   onDelete,
 }: PostCardProps) {
-  const [menuOpen, setMenuOpen] = useState(false);
-
   const formattedDate = new Date(post.created_at).toLocaleDateString("id-ID", {
     day: "numeric",
     month: "short",
@@ -80,68 +79,72 @@ export function PostCard({
           </div>
         </div>
 
-        {/* Action Menu (Takedown, Report, Delete) */}
+        {/* Action Menu (Accessible Headless UI Menu with automatic click-outside) */}
         {(post.can_takedown || post.can_report || post.can_delete) && (
-          <div className="relative">
-            <button
-              type="button"
-              onClick={() => setMenuOpen(!menuOpen)}
-              className="text-slate-400 hover:text-slate-700 p-1.5 rounded-lg hover:bg-slate-100 transition-colors"
+          <Menu as="div" className="relative">
+            <MenuButton
+              className="text-slate-400 hover:text-slate-700 p-1.5 rounded-lg hover:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-primary"
               aria-label="Opsi postingan"
-              aria-expanded={menuOpen}
             >
               <MoreHorizontal className="w-5 h-5" />
-            </button>
+            </MenuButton>
 
-            {menuOpen && (
-              <div
-                className="absolute right-0 mt-1 w-44 rounded-xl bg-white shadow-lg border border-border-subtle py-1 z-20 text-xs font-medium"
-                onMouseLeave={() => setMenuOpen(false)}
-              >
-                {post.can_takedown && onTakedown && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setMenuOpen(false);
-                      onTakedown(post.id);
-                    }}
-                    className="w-full flex items-center gap-2 px-3 py-2 text-accent-danger-accessible hover:bg-red-50 text-left transition-colors"
-                  >
-                    <ShieldAlert className="w-4 h-4" />
-                    <span>Takedown Post</span>
-                  </button>
-                )}
+            <MenuItems
+              transition
+              className="absolute right-0 mt-1 w-44 origin-top-right rounded-xl bg-white shadow-lg border border-border-subtle py-1 z-20 text-xs font-medium focus:outline-none transition duration-100 ease-out data-[closed]:scale-95 data-[closed]:opacity-0"
+            >
+              {post.can_takedown && onTakedown && (
+                <MenuItem>
+                  {({ focus }) => (
+                    <button
+                      type="button"
+                      onClick={() => onTakedown(post.id)}
+                      className={`w-full flex items-center gap-2 px-3 py-2 text-accent-danger-accessible text-left transition-colors ${
+                        focus ? "bg-red-50" : ""
+                      }`}
+                    >
+                      <ShieldAlert className="w-4 h-4" />
+                      <span>Takedown Post</span>
+                    </button>
+                  )}
+                </MenuItem>
+              )}
 
-                {post.can_report && onReport && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setMenuOpen(false);
-                      onReport(post.id);
-                    }}
-                    className="w-full flex items-center gap-2 px-3 py-2 text-slate-700 hover:bg-slate-50 text-left transition-colors"
-                  >
-                    <Flag className="w-4 h-4 text-slate-500" />
-                    <span>Laporkan Konten</span>
-                  </button>
-                )}
+              {post.can_report && onReport && (
+                <MenuItem>
+                  {({ focus }) => (
+                    <button
+                      type="button"
+                      onClick={() => onReport(post.id)}
+                      className={`w-full flex items-center gap-2 px-3 py-2 text-slate-700 text-left transition-colors ${
+                        focus ? "bg-slate-50" : ""
+                      }`}
+                    >
+                      <Flag className="w-4 h-4 text-slate-500" />
+                      <span>Laporkan Konten</span>
+                    </button>
+                  )}
+                </MenuItem>
+              )}
 
-                {post.can_delete && onDelete && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setMenuOpen(false);
-                      onDelete(post.id);
-                    }}
-                    className="w-full flex items-center gap-2 px-3 py-2 text-red-600 hover:bg-red-50 text-left transition-colors"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                    <span>Hapus Postingan</span>
-                  </button>
-                )}
-              </div>
-            )}
-          </div>
+              {post.can_delete && onDelete && (
+                <MenuItem>
+                  {({ focus }) => (
+                    <button
+                      type="button"
+                      onClick={() => onDelete(post.id)}
+                      className={`w-full flex items-center gap-2 px-3 py-2 text-red-600 text-left transition-colors ${
+                        focus ? "bg-red-50" : ""
+                      }`}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      <span>Hapus Postingan</span>
+                    </button>
+                  )}
+                </MenuItem>
+              )}
+            </MenuItems>
+          </Menu>
         )}
       </div>
 

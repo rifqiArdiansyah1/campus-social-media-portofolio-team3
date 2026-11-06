@@ -5,7 +5,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { AxiosError } from "axios";
-import { loginUser, registerUser } from "@/lib/auth";
+import { registerUser } from "@/lib/auth";
+import { useAuth } from "@/context/AuthContext";
+import { useEffect } from "react";
 import { AppErrorResponse } from "@/lib/api";
 
 const ALLOWED_JURUSAN = [
@@ -67,6 +69,14 @@ type RegisterFormValues = z.infer<typeof registerSchema>;
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { login, isAuthenticated, isLoading: authLoading } = useAuth();
+
+  // Guest Guard: if already logged in, redirect immediately to /home
+  useEffect(() => {
+    if (!authLoading && isAuthenticated) {
+      router.replace("/home");
+    }
+  }, [authLoading, isAuthenticated, router]);
   const [formData, setFormData] = useState({
     nama: "",
     nim: "",
@@ -127,7 +137,7 @@ export default function RegisterPage() {
 
       // Auto login on successful registration
       try {
-        await loginUser({
+        await login({
           email: formData.email.trim().toLowerCase(),
           password: formData.password,
         });
@@ -147,8 +157,8 @@ export default function RegisterPage() {
           ...prev,
           nim: "NIM mahasiswa ini telah terdaftar.",
         }));
-      } else if (axiosError.response?.data?.detail) {
-        setServerError(axiosError.response.data.detail);
+      } else if (axiosError.message) {
+        setServerError(axiosError.message);
       } else {
         setServerError("Gagal mendaftarkan akun. Silakan periksa kembali data Anda.");
       }

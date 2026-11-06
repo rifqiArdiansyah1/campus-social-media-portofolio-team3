@@ -19,7 +19,7 @@ export interface AppErrorDetail {
 }
 
 export interface AppErrorResponse {
-  detail: string;
+  detail: string | AppErrorDetail[];
   code?: string;
   errors?: AppErrorDetail[];
 }
@@ -73,9 +73,17 @@ apiClient.interceptors.response.use(
       }
       triggerUnauthorized();
     }
-    if (error.response?.data?.detail) {
-      error.message = error.response.data.detail;
+
+    const detail = error.response?.data?.detail;
+    if (typeof detail === "string") {
+      error.message = detail;
+    } else if (Array.isArray(detail)) {
+      error.message = detail
+        .map((d: any) => d.msg || JSON.stringify(d))
+        .filter(Boolean)
+        .join(", ");
     }
+
     return Promise.reject(error);
   }
 );

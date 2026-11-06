@@ -5,6 +5,8 @@ import {
   UserProfile,
   TokenResponse,
   LoginPayload,
+  AUTH_TOKEN_KEY,
+  AUTH_USER_KEY,
   getAuthToken,
   getStoredUser,
   setAuthSession,
@@ -46,7 +48,16 @@ export function AuthProvider({ children, onClearCache }: AuthProviderProps) {
     }
   }, [onClearCache]);
 
-  // Sync session on mount
+  const verifyCurrentUser = useCallback(async () => {
+    try {
+      const freshUser = await apiFetchCurrentUser();
+      setUser(freshUser);
+    } catch {
+      logout();
+    }
+  }, [logout]);
+
+  // Sync session on mount & multi-tab storage events
   useEffect(() => {
     let isMounted = true;
 
@@ -71,7 +82,6 @@ export function AuthProvider({ children, onClearCache }: AuthProviderProps) {
           setUser(freshUser);
         }
       } catch {
-        // If token is invalid or expired
         if (isMounted) {
           logout();
         }
@@ -84,6 +94,28 @@ export function AuthProvider({ children, onClearCache }: AuthProviderProps) {
 
     initAuth();
 
+    // Listen for multi-tab logout/login events
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === AUTH_TOKEN_KEY) {
+        if (!e.newValue) {
+          // Logged out in another tab
+          setUser(null);
+          setToken(null);
+          if (onClearCache) onClearCache();
+        } else {
+          // Logged in from another tab
+          setToken(e.newValue);
+          const cached = getStoredUser();
+          if (cached) setUser(cached);
+          verifyCurrentUser();
+        }
+      }
+    };
+
+    if (typeof window !== "undefined") {
+      window.addEventListener("storage", handleStorageChange);
+    }
+
     // Listen for 401 Unauthorized from apiClient
     const unregister = registerOnUnauthorized(() => {
       logout();
@@ -91,9 +123,12 @@ export function AuthProvider({ children, onClearCache }: AuthProviderProps) {
 
     return () => {
       isMounted = false;
+      if (typeof window !== "undefined") {
+        window.removeEventListener("storage", handleStorageChange);
+      }
       unregister();
     };
-  }, [logout]);
+  }, [logout, onClearCache, verifyCurrentUser]);
 
   const login = useCallback(
     async (payload: LoginPayload): Promise<TokenResponse> => {
@@ -111,13 +146,8 @@ export function AuthProvider({ children, onClearCache }: AuthProviderProps) {
   );
 
   const refreshUser = useCallback(async () => {
-    try {
-      const freshUser = await apiFetchCurrentUser();
-      setUser(freshUser);
-    } catch {
-      logout();
-    }
-  }, [logout]);
+    await verifyCurrentUser();
+  }, [verifyCurrentUser]);
 
   const value: AuthContextValue = {
     user,

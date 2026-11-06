@@ -1,11 +1,11 @@
 "use client";
 
-import React, { Suspense, useState } from "react";
+import React, { Suspense, useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { z } from "zod";
 import { AxiosError } from "axios";
-import { loginUser } from "@/lib/auth";
+import { useAuth } from "@/context/AuthContext";
 import { AppErrorResponse } from "@/lib/api";
 
 const loginSchema = z.object({
@@ -29,7 +29,10 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { login, isAuthenticated, isLoading: authLoading } = useAuth();
+
   const isExpired = searchParams.get("expired") === "true";
+  const nextParam = searchParams.get("next");
 
   const [formData, setFormData] = useState<LoginFormValues>({
     email: "",
@@ -41,6 +44,14 @@ function LoginForm() {
     isExpired ? "Sesi login Anda telah kedaluwarsa. Silakan masuk kembali." : null
   );
   const [isLoading, setIsLoading] = useState(false);
+
+  // Guest Guard: if already logged in, redirect immediately to next or /home
+  useEffect(() => {
+    if (!authLoading && isAuthenticated) {
+      const destination = nextParam || "/home";
+      router.replace(destination);
+    }
+  }, [authLoading, isAuthenticated, nextParam, router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -69,24 +80,26 @@ function LoginForm() {
 
     setIsLoading(true);
     try {
-      await loginUser({
+      await login({
         email: formData.email.trim(),
         password: formData.password,
       });
-      router.push("/home");
+
+      const destination = nextParam || "/home";
+      router.push(destination);
     } catch (err) {
       const axiosError = err as AxiosError<AppErrorResponse>;
       if (axiosError.response?.status === 429) {
         setServerError(
-          axiosError.response.data?.detail ||
+          (axiosError.response.data?.detail as string) ||
             "Terlalu banyak percobaan masuk gagal. Silakan tunggu beberapa saat sebelum mencoba kembali."
         );
       } else if (axiosError.response?.status === 401) {
         setServerError(
-          axiosError.response.data?.detail || "Email atau kata sandi tidak valid."
+          (axiosError.response.data?.detail as string) || "Email atau kata sandi tidak valid."
         );
-      } else if (axiosError.response?.data?.detail) {
-        setServerError(axiosError.response.data.detail);
+      } else if (axiosError.message) {
+        setServerError(axiosError.message);
       } else {
         setServerError("Gagal terhubung ke server. Periksa koneksi jaringan Anda.");
       }
