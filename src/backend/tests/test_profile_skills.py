@@ -200,6 +200,33 @@ def test_update_profile_validation_errors(client, db_session: Session):
     assert res_bad_url.status_code == 422
 
 
+def test_update_profile_empty_string_normalized_to_none(client, db_session: Session):
+    student = create_unique_user(
+        db_session,
+        nama="User With Links",
+    )
+    headers = auth_headers(student)
+
+    # First set kontak_url
+    client.patch(
+        "/api/v1/users/me",
+        json={"kontak_url": "https://github.com/test", "bio": "Initial bio"},
+        headers=headers,
+    )
+
+    # Now send empty string / spaces for kontak_url and bio to clear them
+    res = client.patch(
+        "/api/v1/users/me",
+        json={"kontak_url": "   ", "bio": "  "},
+        headers=headers,
+    )
+    assert res.status_code == 200
+    data = res.json()
+    assert data["kontak_url"] is None
+    assert data["bio"] is None
+    assert "skills" in data
+
+
 # ============================================================================
 # 3. USER SKILLS ENDPOINTS (PUT /api/v1/users/me/skills)
 # ============================================================================
@@ -264,6 +291,21 @@ def test_update_skills_quota_and_duplicate_validation(client, db_session: Sessio
     }
     res_dup = client.put("/api/v1/users/me/skills", json=payload_dup, headers=headers)
     assert res_dup.status_code == 422
+
+    # Mixed duplicate (item 1 has ID, item 2 has lower-cased Name of same skill) -> 422
+    s_mix = Skill(nama=f"UniqueMaster-{uid}", tipe="skill")
+    db_session.add(s_mix)
+    db_session.commit()
+
+    payload_mixed = {
+        "items": [
+            {"skill_id": s_mix.skill_id, "tipe": "skill", "level": "pemula"},
+            {"nama": f"uniquemaster-{uid}", "tipe": "skill", "level": "mahir"},
+        ]
+    }
+    res_mix = client.put("/api/v1/users/me/skills", json=payload_mixed, headers=headers)
+    assert res_mix.status_code == 422
+    assert res_mix.json()["code"] == "DUPLICATE_SKILL"
 
     # Limit exactly 20 items -> 200 OK
     items_20 = [{"nama": f"Skill-{uid}-{i}", "tipe": "skill", "level": "pemula"} for i in range(20)]

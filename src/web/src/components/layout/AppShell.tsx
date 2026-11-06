@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { getInitials } from "@/lib/utils";
 import {
   Home,
   Compass,
@@ -18,15 +19,16 @@ import {
 } from "lucide-react";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
-  const { user, role, logout } = useAuth();
   const pathname = usePathname();
+  const { user, role, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const isStaff = role === "moderator" || role === "admin";
 
+  // Desktop Sidebar Navigation Items
   const navItems = [
     { label: "Beranda", href: "/home", icon: Home },
-    { label: "Jelajah", href: "/explore", icon: Compass },
+    { label: "Jelajah Rekomendasi", href: "/explore", icon: Compass },
     { label: "Portofolio", href: "/portfolio", icon: FolderKanban },
     ...(isStaff
       ? [
@@ -37,12 +39,19 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     { label: "Profil", href: `/profile/${user?.id ?? user?.user_id ?? "me"}`, icon: User },
   ];
 
-  // Mobile Bottom Bar Navigation (4 slots: Home, Explore, Portfolio, More)
+  // Mobile Bottom Bar Navigation (3 primary slots + "Lainnya" trigger)
   const mobilePrimaryNav = [
     { label: "Beranda", href: "/home", icon: Home },
     { label: "Jelajah", href: "/explore", icon: Compass },
     { label: "Portofolio", href: "/portfolio", icon: FolderKanban },
   ];
+
+  const checkIsActive = (item: { label: string; href: string }) => {
+    if (item.label === "Profil" && (pathname?.startsWith("/profile") ?? false)) {
+      return true;
+    }
+    return pathname === item.href || pathname?.startsWith(`${item.href}/`);
+  };
 
   return (
     <div className="min-h-screen bg-surface-canvas flex flex-col lg:flex-row">
@@ -66,7 +75,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         {/* Navigation Items */}
         <nav className="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
           {navItems.map((item) => {
-            const isActive = pathname === item.href || pathname?.startsWith(`${item.href}/`);
+            const isActive = checkIsActive(item);
             const IconComponent = item.icon;
             return (
               <Link
@@ -90,7 +99,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2.5 min-w-0">
               <div className="w-9 h-9 rounded-full bg-primary/10 text-primary font-bold text-xs flex items-center justify-center flex-shrink-0">
-                {user?.nama?.charAt(0).toUpperCase() || "U"}
+                {getInitials(user?.nama)}
               </div>
               <div className="min-w-0">
                 <p className="text-xs font-bold text-slate-900 truncate font-heading">
@@ -162,7 +171,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
             <div className="py-4 space-y-1.5 flex-1 overflow-y-auto">
               {navItems.map((item) => {
-                const isActive = pathname === item.href;
+                const isActive = checkIsActive(item);
                 const IconComponent = item.icon;
                 return (
                   <Link

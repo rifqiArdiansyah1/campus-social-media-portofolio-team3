@@ -22,6 +22,7 @@ import {
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/context/ToastContext";
 import { apiClient } from "@/lib/api";
+import { getInitials } from "@/lib/utils";
 import { EmptyState } from "@/components/common/EmptyState";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 
@@ -162,7 +163,7 @@ export default function ProfileDetailPage() {
           <div className="flex items-start sm:items-center gap-4">
             {/* Avatar Circle with Initial */}
             <div className="w-16 h-16 rounded-2xl bg-indigo-50 border border-indigo-200 text-primary font-bold text-2xl flex items-center justify-center flex-shrink-0 shadow-sm">
-              {profile.nama?.charAt(0).toUpperCase() || "U"}
+              {getInitials(profile.nama)}
             </div>
 
             <div className="space-y-1">
@@ -398,8 +399,16 @@ export default function ProfileDetailPage() {
           {activeTab === "portfolio" && (
             <div className="p-6 rounded-2xl bg-white border border-border-subtle shadow-sm">
               <EmptyState
-                title="Belum Ada Karya Portofolio Terpublikasi"
-                description="Karya inovatif, proyek skripsi, dan rekam jejak portofolio mahasiswa akan tampil secara otomatis setelah modul M07 aktif."
+                title={
+                  isOwner
+                    ? "Anda Belum Mengunggah Portofolio"
+                    : "Belum Ada Karya Portofolio Terpublikasi"
+                }
+                description={
+                  isOwner
+                    ? "Anda belum mempublikasikan karya portofolio. Modul unggah portofolio (M07) akan segera hadir untuk memfasilitasi karya terbaik Anda."
+                    : "Mahasiswa ini belum mempublikasikan karya portofolio. Karya inovatif dan portofolio proyek akan tampil setelah dipublikasikan."
+                }
                 icon={FolderOpen}
               />
             </div>
@@ -408,8 +417,16 @@ export default function ProfileDetailPage() {
           {activeTab === "skpi" && (
             <div className="p-6 rounded-2xl bg-white border border-border-subtle shadow-sm">
               <EmptyState
-                title="Rekapitulasi SKPI Resmi"
-                description="Daftar sertifikat keahlian, prestasi kompetisi, dan verifikasi SKPI oleh Kaprodi akan disajikan pada modul M08."
+                title={
+                  isOwner
+                    ? "Rekapitulasi SKPI Anda"
+                    : "Rekapitulasi SKPI Resmi"
+                }
+                description={
+                  isOwner
+                    ? "Klaim sertifikat kompetensi dan aktivitas pendukung SKPI Anda akan dapat dikelola dan diajukan ke Kaprodi pada modul M08."
+                    : "Daftar sertifikat keahlian, prestasi kompetisi, dan verifikasi SKPI resmi oleh Kaprodi akan disajikan pada modul M08."
+                }
                 icon={FileCheck2}
               />
             </div>

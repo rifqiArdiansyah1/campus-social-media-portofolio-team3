@@ -184,7 +184,7 @@
         "tags": [
           "Users & Profiles (M04)"
         ],
-        "summary": "Ambil Profil Pengguna Aktif",
+        "summary": "Ambil Profil Pengguna Aktif Beserta Skills",
         "operationId": "get_my_profile_api_v1_users_me_get",
         "responses": {
           "200": {
@@ -192,7 +192,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserProfileResponse"
+                  "$ref": "#/components/schemas/MyProfileResponse"
                 }
               }
             }
@@ -226,7 +226,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserProfileResponse"
+                  "$ref": "#/components/schemas/MyProfileResponse"
                 }
               }
             }
@@ -846,6 +846,109 @@
           "explanation"
         ],
         "title": "ModerationResponse"
+      },
+      "MyProfileResponse": {
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "nim": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nim"
+          },
+          "nama": {
+            "type": "string",
+            "title": "Nama"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          },
+          "jurusan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jurusan"
+          },
+          "angkatan": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Angkatan"
+          },
+          "bio": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bio"
+          },
+          "kontak_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kontak Url"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/UserSkillResponse"
+            },
+            "type": "array",
+            "title": "Skills",
+            "default": []
+          },
+          "id": {
+            "type": "integer",
+            "title": "Id",
+            "readOnly": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "nama",
+          "email",
+          "role",
+          "created_at",
+          "id"
+        ],
+        "title": "MyProfileResponse"
       },
       "PublicProfileResponse": {
         "properties": {

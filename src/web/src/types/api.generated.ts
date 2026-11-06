@@ -125,7 +125,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Ambil Profil Pengguna Aktif */
+        /** Ambil Profil Pengguna Aktif Beserta Skills */
         get: operations["get_my_profile_api_v1_users_me_get"];
         put?: never;
         post?: never;
@@ -438,6 +438,39 @@ export interface components {
              * @description Explanation of classification
              */
             explanation: string;
+        };
+        /** MyProfileResponse */
+        MyProfileResponse: {
+            /** User Id */
+            user_id: number;
+            /** Nim */
+            nim?: string | null;
+            /** Nama */
+            nama: string;
+            /** Email */
+            email: string;
+            /** Role */
+            role: string;
+            /** Jurusan */
+            jurusan?: string | null;
+            /** Angkatan */
+            angkatan?: number | null;
+            /** Bio */
+            bio?: string | null;
+            /** Kontak Url */
+            kontak_url?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Skills
+             * @default []
+             */
+            skills: components["schemas"]["UserSkillResponse"][];
+            /** Id */
+            readonly id: number;
         };
         /** PublicProfileResponse */
         PublicProfileResponse: {
@@ -876,7 +909,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UserProfileResponse"];
+                    "application/json": components["schemas"]["MyProfileResponse"];
                 };
             };
         };
@@ -900,7 +933,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UserProfileResponse"];
+                    "application/json": components["schemas"]["MyProfileResponse"];
                 };
             };
             /** @description Validation Error */
