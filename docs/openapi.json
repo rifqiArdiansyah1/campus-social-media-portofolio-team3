@@ -179,6 +179,264 @@
         ]
       }
     },
+    "/api/v1/users/me": {
+      "get": {
+        "tags": [
+          "Users & Profiles (M04)"
+        ],
+        "summary": "Ambil Profil Pengguna Aktif",
+        "operationId": "get_my_profile_api_v1_users_me_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserProfileResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "Users & Profiles (M04)"
+        ],
+        "summary": "Perbarui Data Profil Mandiri",
+        "operationId": "update_my_profile_api_v1_users_me_patch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProfileRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserProfileResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/users/me/skills": {
+      "put": {
+        "tags": [
+          "Users & Profiles (M04)"
+        ],
+        "summary": "Perbarui Seluruh Keahlian & Minat Mahasiswa",
+        "operationId": "update_my_skills_api_v1_users_me_skills_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserSkillsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/UserSkillResponse"
+                  },
+                  "type": "array",
+                  "title": "Response Update My Skills Api V1 Users Me Skills Put"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/users/{id}": {
+      "get": {
+        "tags": [
+          "Users & Profiles (M04)"
+        ],
+        "summary": "Ambil Profil Publik Mahasiswa",
+        "operationId": "get_user_public_profile_api_v1_users__id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicProfileResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/skills": {
+      "get": {
+        "tags": [
+          "Skills (M04)"
+        ],
+        "summary": "Daftar Master Keahlian & Minat",
+        "operationId": "get_skills_api_v1_skills_get",
+        "parameters": [
+          {
+            "name": "tipe",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "skill",
+                    "minat"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter berdasarkan kategori tag ('skill' atau 'minat')",
+              "title": "Tipe"
+            },
+            "description": "Filter berdasarkan kategori tag ('skill' atau 'minat')"
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Pencarian nama keahlian/minat (case-insensitive)",
+              "title": "Q"
+            },
+            "description": "Pencarian nama keahlian/minat (case-insensitive)"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "description": "Jumlah maksimal item yang dikembalikan",
+              "default": 50,
+              "title": "Limit"
+            },
+            "description": "Jumlah maksimal item yang dikembalikan"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SkillResponse"
+                  },
+                  "title": "Response Get Skills Api V1 Skills Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/recommendations/match": {
       "post": {
         "tags": [
@@ -589,6 +847,131 @@
         ],
         "title": "ModerationResponse"
       },
+      "PublicProfileResponse": {
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "nama": {
+            "type": "string",
+            "title": "Nama"
+          },
+          "jurusan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jurusan"
+          },
+          "angkatan": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Angkatan"
+          },
+          "bio": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bio"
+          },
+          "kontak_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kontak Url"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/UserSkillResponse"
+            },
+            "type": "array",
+            "title": "Skills",
+            "default": []
+          },
+          "friendship_status": {
+            "type": "string",
+            "enum": [
+              "none",
+              "pending_sent",
+              "pending_received",
+              "friends"
+            ],
+            "title": "Friendship Status",
+            "default": "none"
+          },
+          "blocked_by_me": {
+            "type": "boolean",
+            "title": "Blocked By Me",
+            "default": false
+          },
+          "nim": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nim"
+          },
+          "email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email"
+          },
+          "is_visible": {
+            "type": "boolean",
+            "title": "Is Visible",
+            "readOnly": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "nama",
+          "role",
+          "created_at",
+          "is_visible"
+        ],
+        "title": "PublicProfileResponse"
+      },
       "RecommendationItem": {
         "properties": {
           "user_id": {
@@ -786,6 +1169,29 @@
         ],
         "title": "RegisterRequest"
       },
+      "SkillResponse": {
+        "properties": {
+          "skill_id": {
+            "type": "integer",
+            "title": "Skill Id"
+          },
+          "nama": {
+            "type": "string",
+            "title": "Nama"
+          },
+          "tipe": {
+            "type": "string",
+            "title": "Tipe"
+          }
+        },
+        "type": "object",
+        "required": [
+          "skill_id",
+          "nama",
+          "tipe"
+        ],
+        "title": "SkillResponse"
+      },
       "TokenResponse": {
         "properties": {
           "access_token": {
@@ -812,6 +1218,97 @@
           "user"
         ],
         "title": "TokenResponse"
+      },
+      "UpdateProfileRequest": {
+        "properties": {
+          "nama": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nama",
+            "description": "Nama lengkap"
+          },
+          "bio": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bio",
+            "description": "Biografi singkat mahasiswa"
+          },
+          "kontak_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kontak Url",
+            "description": "Tautan profil eksternal (LinkedIn, GitHub, Portofolio)"
+          },
+          "jurusan": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jurusan",
+            "description": "Program studi"
+          },
+          "angkatan": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 2100.0,
+                "minimum": 2000.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Angkatan",
+            "description": "Tahun angkatan"
+          }
+        },
+        "type": "object",
+        "title": "UpdateProfileRequest"
+      },
+      "UpdateUserSkillsRequest": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/UserSkillItem"
+            },
+            "type": "array",
+            "maxItems": 20,
+            "title": "Items",
+            "description": "Daftar keahlian & minat maksimal 20 item total per pengguna"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "title": "UpdateUserSkillsRequest"
       },
       "UserProfileResponse": {
         "properties": {
@@ -907,6 +1404,86 @@
           "id"
         ],
         "title": "UserProfileResponse"
+      },
+      "UserSkillItem": {
+        "properties": {
+          "skill_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Skill Id",
+            "description": "ID skill master jika sudah ada"
+          },
+          "nama": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 60
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nama",
+            "description": "Nama keahlian atau minat kustom"
+          },
+          "tipe": {
+            "type": "string",
+            "enum": [
+              "skill",
+              "minat"
+            ],
+            "title": "Tipe",
+            "description": "Tipe tag: 'skill' atau 'minat'",
+            "default": "skill"
+          },
+          "level": {
+            "type": "string",
+            "enum": [
+              "pemula",
+              "menengah",
+              "mahir"
+            ],
+            "title": "Level",
+            "description": "Tingkat kemahiran",
+            "default": "pemula"
+          }
+        },
+        "type": "object",
+        "title": "UserSkillItem"
+      },
+      "UserSkillResponse": {
+        "properties": {
+          "skill_id": {
+            "type": "integer",
+            "title": "Skill Id"
+          },
+          "nama": {
+            "type": "string",
+            "title": "Nama"
+          },
+          "tipe": {
+            "type": "string",
+            "title": "Tipe"
+          },
+          "level": {
+            "type": "string",
+            "title": "Level"
+          }
+        },
+        "type": "object",
+        "required": [
+          "skill_id",
+          "nama",
+          "tipe",
+          "level"
+        ],
+        "title": "UserSkillResponse"
       },
       "ValidationError": {
         "properties": {

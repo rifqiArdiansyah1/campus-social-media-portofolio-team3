@@ -66,6 +66,7 @@ class Skill(Base):
 
     __table_args__ = (
         CheckConstraint("tipe IN ('skill', 'minat')", name="skills_tipe_check"),
+        Index("uq_skills_nama_lower", text("LOWER(nama)"), unique=True),
     )
 
     # Relationships
