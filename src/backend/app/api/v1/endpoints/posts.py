@@ -2,13 +2,14 @@ import asyncio
 import base64
 import json
 import logging
+import os
 from datetime import datetime
 from typing import Literal, Optional, Tuple
 from urllib.parse import urlparse
 
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy import and_, or_
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload, selectinload
 
 from app.core.config import settings
 from app.core.database import get_db
@@ -46,7 +47,10 @@ def decode_cursor(cursor_str: str) -> Optional[Tuple[datetime, int]]:
     try:
         raw = base64.urlsafe_b64decode(cursor_str.encode()).decode()
         data = json.loads(raw)
-        return datetime.fromisoformat(data["t"]), int(data["id"])
+        dt = datetime.fromisoformat(data["t"])
+        if dt.tzinfo is not None:
+            dt = dt.replace(tzinfo=None)
+        return dt, int(data["id"])
     except Exception:
         return None
 
@@ -80,21 +84,23 @@ def validate_and_canonicalize_image_path(gambar_url: Optional[str], user_id: int
                 detail="URL gambar harus berasal dari penyimpanan resmi CampusFolio bucket post-images.",
             )
 
-        if not rel_path.startswith(expected_prefix):
+        norm_path = os.path.normpath(rel_path).replace("\\", "/")
+        if ".." in norm_path.split("/") or not norm_path.startswith(expected_prefix):
             raise InvalidInputError(
                 code="INVALID_IMAGE_OWNERSHIP",
                 detail="Anda hanya dapat menggunakan foto yang diunggah oleh akun Anda sendiri.",
             )
-        return rel_path
+        return norm_path
 
     # If it's already a relative path
     rel_path = cleaned.lstrip("/")
-    if not rel_path.startswith(expected_prefix):
+    norm_path = os.path.normpath(rel_path).replace("\\", "/")
+    if ".." in norm_path.split("/") or not norm_path.startswith(expected_prefix):
         raise InvalidInputError(
             code="INVALID_IMAGE_OWNERSHIP",
             detail="Path gambar tidak valid atau bukan milik akun Anda.",
         )
-    return rel_path
+    return norm_path
 
 
 def build_image_public_url(path: Optional[str]) -> Optional[str]:
@@ -321,6 +327,11 @@ def get_my_posts(
 ):
     query = (
         db.query(Post)
+        .options(
+            joinedload(Post.user),
+            selectinload(Post.skills).joinedload(PostSkill.skill),
+            selectinload(Post.moderation_records),
+        )
         .filter(
             Post.user_id == current_user.user_id,
             Post.is_deleted == False,  # noqa: E712
@@ -377,6 +388,11 @@ def get_posts_feed(
     # 1. Base Query: Public visible posts (status 'tayang' or 'direview') and not deleted
     query = (
         db.query(Post)
+        .options(
+            joinedload(Post.user),
+            selectinload(Post.skills).joinedload(PostSkill.skill),
+            selectinload(Post.moderation_records),
+        )
         .filter(
             Post.is_deleted == False,  # noqa: E712
             Post.status.in_(["tayang", "direview"]),
@@ -461,7 +477,16 @@ def get_post_detail(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    post = db.query(Post).filter(Post.post_id == id, Post.is_deleted == False).first()  # noqa: E712
+    post = (
+        db.query(Post)
+        .options(
+            joinedload(Post.user),
+            selectinload(Post.skills).joinedload(PostSkill.skill),
+            selectinload(Post.moderation_records),
+        )
+        .filter(Post.post_id == id, Post.is_deleted == False)  # noqa: E712
+        .first()
+    )
     if not post:
         raise NotFoundError(code="POST_NOT_FOUND", detail="Postingan tidak ditemukan.")
 
