@@ -187,6 +187,76 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/uploads/post-image": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Unggah Foto untuk Postingan Linimasa */
+        post: operations["upload_post_image_api_v1_uploads_post_image_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/posts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Linimasa Feed Postingan Kampus (Keyset Pagination & Scope Filtering) */
+        get: operations["get_posts_feed_api_v1_posts_get"];
+        put?: never;
+        /** Buat Postingan Baru dengan Moderasi Otomatis AI (AD-01) */
+        post: operations["create_post_api_v1_posts_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/posts/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ambil Seluruh Postingan Milik Sendiri (Draft, Menunggu Review, Tayang, Revisi) */
+        get: operations["get_my_posts_api_v1_posts_me_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/posts/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ambil Detail Satu Postingan */
+        get: operations["get_post_detail_api_v1_posts__id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Perbarui Postingan (Hanya untuk Status Draft, Revisi, atau Ditolak) */
+        patch: operations["update_post_api_v1_posts__id__patch"];
+        trace?: never;
+    };
     "/api/v1/recommendations/match": {
         parameters: {
             query?: never;
@@ -363,6 +433,14 @@ export interface components {
              */
             angkatan?: number | null;
         };
+        /** Body_upload_post_image_api_v1_uploads_post_image_post */
+        Body_upload_post_image_api_v1_uploads_post_image_post: {
+            /**
+             * File
+             * @description Berkas foto (JPEG, PNG, WEBP maks 5MB)
+             */
+            file: string;
+        };
         /** CandidateProfile */
         CandidateProfile: {
             /** User Id */
@@ -471,6 +549,134 @@ export interface components {
             skills: components["schemas"]["UserSkillResponse"][];
             /** Id */
             readonly id: number;
+        };
+        /** PostAuthorResponse */
+        PostAuthorResponse: {
+            /** User Id */
+            user_id: number;
+            /** Nama */
+            nama: string;
+            /** Jurusan */
+            jurusan?: string | null;
+            /** Angkatan */
+            angkatan?: number | null;
+            /** Role */
+            role: string;
+        };
+        /** PostCreate */
+        PostCreate: {
+            /**
+             * Isi
+             * @description Isi caption atau teks postingan
+             */
+            isi: string;
+            /**
+             * Gambar Url
+             * @description Tautan atau path foto pendukung dari bucket post-images
+             */
+            gambar_url?: string | null;
+            /**
+             * Tipe
+             * @default umum
+             * @enum {string}
+             */
+            tipe: "umum" | "cari_anggota";
+            /**
+             * Skill Ids
+             * @description Daftar ID keahlian relevan (maksimal 10)
+             */
+            skill_ids?: number[];
+        };
+        /** PostDetailResponse */
+        PostDetailResponse: {
+            /** Post Id */
+            post_id: number;
+            /** User Id */
+            user_id: number;
+            author: components["schemas"]["PostAuthorResponse"];
+            /** Isi */
+            isi: string;
+            /** Gambar Url */
+            gambar_url?: string | null;
+            /**
+             * Tipe
+             * @enum {string}
+             */
+            tipe: "umum" | "cari_anggota";
+            /** Status */
+            status: string;
+            /** Is Deleted */
+            is_deleted: boolean;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Skills
+             * @default []
+             */
+            skills: components["schemas"]["PostSkillTagResponse"][];
+            /** Moderation Note */
+            moderation_note?: string | null;
+            /**
+             * Is Owner
+             * @default false
+             */
+            is_owner: boolean;
+            /**
+             * Can Takedown
+             * @default false
+             */
+            can_takedown: boolean;
+            /**
+             * Can Report
+             * @default false
+             */
+            can_report: boolean;
+            /**
+             * Can Edit
+             * @default false
+             */
+            can_edit: boolean;
+        };
+        /** PostFeedResponse */
+        PostFeedResponse: {
+            /** Items */
+            items: components["schemas"]["PostDetailResponse"][];
+            /** Has More */
+            has_more: boolean;
+            /**
+             * Next Cursor
+             * @description Opaque cursor string base4 untuk pagination keyset stabil
+             */
+            next_cursor?: string | null;
+        };
+        /** PostSkillTagResponse */
+        PostSkillTagResponse: {
+            /** Skill Id */
+            skill_id: number;
+            /** Nama */
+            nama: string;
+            /** Tipe */
+            tipe: string;
+        };
+        /** PostUpdate */
+        PostUpdate: {
+            /**
+             * Isi
+             * @description Caption teks yang diperbarui
+             */
+            isi?: string | null;
+            /**
+             * Gambar Url
+             * @description Path atau URL gambar baru
+             */
+            gambar_url?: string | null;
+            /** Tipe */
+            tipe?: ("umum" | "cari_anggota") | null;
+            /** Skill Ids */
+            skill_ids?: number[] | null;
         };
         /** PublicProfileResponse */
         PublicProfileResponse: {
@@ -668,6 +874,34 @@ export interface components {
              * @description Daftar keahlian & minat maksimal 20 item total per pengguna
              */
             items: components["schemas"]["UserSkillItem"][];
+        };
+        /** UploadImageResponse */
+        UploadImageResponse: {
+            /**
+             * Path
+             * @description Path relatif dalam storage bucket (e.g. 101/uuid.jpg)
+             */
+            path: string;
+            /**
+             * Url
+             * @description URL publik berkas gambar yang dapat diakses langsung
+             */
+            url: string;
+            /**
+             * Filename
+             * @description Nama file unik
+             */
+            filename: string;
+            /**
+             * Content Type
+             * @description Tipe MIME gambar (e.g. image/jpeg)
+             */
+            content_type: string;
+            /**
+             * Size Bytes
+             * @description Ukuran berkas dalam byte
+             */
+            size_bytes: number;
         };
         /** UserProfileResponse */
         UserProfileResponse: {
@@ -1034,6 +1268,210 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SkillResponse"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    upload_post_image_api_v1_uploads_post_image_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["Body_upload_post_image_api_v1_uploads_post_image_post"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UploadImageResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_posts_feed_api_v1_posts_get: {
+        parameters: {
+            query?: {
+                /** @description Cakupan linimasa */
+                scope?: "all" | "friends" | "recruiting";
+                /** @description Filter berdasarkan ID keahlian */
+                skill_id?: number | null;
+                /** @description Batas jumlah item */
+                limit?: number;
+                /** @description Opaque keyset cursor untuk navigasi */
+                cursor?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostFeedResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_post_api_v1_posts_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostDetailResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_my_posts_api_v1_posts_me_get: {
+        parameters: {
+            query?: {
+                /** @description Jumlah postingan per halaman */
+                limit?: number;
+                /** @description Opaque cursor untuk pagination */
+                cursor?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostFeedResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_post_detail_api_v1_posts__id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostDetailResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_post_api_v1_posts__id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostDetailResponse"];
                 };
             };
             /** @description Validation Error */

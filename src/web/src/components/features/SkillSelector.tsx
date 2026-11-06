@@ -22,6 +22,7 @@ interface SkillSelectorProps {
   onChange: (skills: SelectedSkill[]) => void;
   maxSkills?: number;
   disabled?: boolean;
+  allowCreate?: boolean;
 }
 
 export function SkillSelector({
@@ -29,6 +30,7 @@ export function SkillSelector({
   onChange,
   maxSkills = 20,
   disabled = false,
+  allowCreate = true,
 }: SkillSelectorProps) {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState<SkillItemApi[]>([]);
@@ -146,7 +148,7 @@ export function SkillSelector({
       e.preventDefault();
       if (focusedIndex >= 0 && focusedIndex < suggestions.length) {
         handleAddSkill(suggestions[focusedIndex]);
-      } else if (query.trim().length >= 2) {
+      } else if (allowCreate && query.trim().length >= 2) {
         handleAddSkill({ nama: query.trim(), tipe: selectedTipe });
       }
     } else if (e.key === "Escape") {
@@ -276,7 +278,7 @@ export function SkillSelector({
                   );
                 })}
 
-                {!isExactMatch && query.trim().length >= 2 && suggestions.length > 0 && (
+                {allowCreate && !isExactMatch && query.trim().length >= 2 && suggestions.length > 0 && (
                   <li
                     role="option"
                     aria-selected={false}

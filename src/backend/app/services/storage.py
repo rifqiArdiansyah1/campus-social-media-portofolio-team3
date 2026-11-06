@@ -1,6 +1,6 @@
 import io
 import os
-from typing import Tuple
+from typing import Optional, Tuple
 from uuid import uuid4
 
 from PIL import Image
@@ -43,10 +43,10 @@ class StorageService:
     def max_doc_size(self) -> int:
         return settings.MAX_DOC_SIZE_MB * 1024 * 1024
 
-    def validate_and_sanitize_image(self, data: bytes) -> Tuple[bytes, str, str]:
+    def validate_and_sanitize_image(self, data: bytes, user_id: Optional[int] = None) -> Tuple[bytes, str, str]:
         """
         Validate image via Pillow, strip EXIF metadata, and enforce size limits.
-        Returns: (sanitized_bytes, generated_filename, content_type)
+        Returns: (sanitized_bytes, generated_path, content_type)
         """
         if len(data) > self.max_image_size:
             raise ValueError(f"Ukuran gambar melebihi batas maksimal {settings.MAX_IMAGE_SIZE_MB} MB.")
@@ -64,7 +64,10 @@ class StorageService:
             raise ValueError(f"Format gambar {fmt} tidak didukung. Gunakan JPEG, PNG, atau WEBP.")
 
         content_type, ext = ALLOWED_IMAGE_FORMATS[fmt]
-        filename = f"{uuid4()}{ext}"
+        if user_id is not None:
+            filename = f"{user_id}/{uuid4()}{ext}"
+        else:
+            filename = f"{uuid4()}{ext}"
 
         # Re-save to clean buffer (strips all EXIF / GPS / device metadata)
         output_buffer = io.BytesIO()
@@ -112,6 +115,7 @@ class StorageService:
             bucket_dir = os.path.join(self.local_dir, bucket)
             os.makedirs(bucket_dir, exist_ok=True)
             local_path = os.path.join(bucket_dir, path)
+            os.makedirs(os.path.dirname(local_path), exist_ok=True)
             with open(local_path, "wb") as f:
                 f.write(data)
             return path
