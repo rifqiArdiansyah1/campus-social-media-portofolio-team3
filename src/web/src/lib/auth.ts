@@ -2,7 +2,7 @@ import { apiClient } from "./api";
 
 export interface UserProfile {
   user_id: number;
-  id: number;
+  id?: number;
   nim?: string | null;
   nama: string;
   email: string;
@@ -11,7 +11,7 @@ export interface UserProfile {
   angkatan?: number | null;
   bio?: string | null;
   kontak_url?: string | null;
-  created_at: string;
+  created_at?: string;
 }
 
 export interface TokenResponse {
@@ -38,12 +38,14 @@ export interface RegisterPayload {
 export const AUTH_TOKEN_KEY = "campusfolio_token";
 export const AUTH_USER_KEY = "campusfolio_user";
 
+/**
+ * Persist user token and profile to client-side localStorage.
+ * Client-side guard is used instead of un-secured cookie mirroring to avoid unnecessary XSS exposure.
+ */
 export function setAuthSession(token: string, user: UserProfile): void {
   if (typeof window !== "undefined") {
     localStorage.setItem(AUTH_TOKEN_KEY, token);
     localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
-    // Set cookie for Next.js SSR & Edge Middleware compatibility (24h expiry)
-    document.cookie = `${AUTH_TOKEN_KEY}=${token}; path=/; max-age=86400; SameSite=Lax`;
   }
 }
 
@@ -72,7 +74,6 @@ export function clearAuthSession(): void {
   if (typeof window !== "undefined") {
     localStorage.removeItem(AUTH_TOKEN_KEY);
     localStorage.removeItem(AUTH_USER_KEY);
-    document.cookie = `${AUTH_TOKEN_KEY}=; path=/; max-age=0; SameSite=Lax`;
   }
 }
 
@@ -97,12 +98,4 @@ export async function fetchCurrentUser(): Promise<UserProfile> {
     localStorage.setItem(AUTH_USER_KEY, JSON.stringify(response.data));
   }
   return response.data;
-}
-
-export async function logoutUser(): Promise<void> {
-  try {
-    await apiClient.post("/auth/logout");
-  } finally {
-    clearAuthSession();
-  }
 }
