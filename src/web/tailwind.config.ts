@@ -45,9 +45,19 @@ const config: Config = {
         },
         "on-surface": "#131b2e",
         "on-surface-variant": "#464554",
+        "border-subtle": "#E2E8F0",
+
+        // Badges / Non-text visuals
         "match-emerald": "#10B981",
         "recruiting-coral": "#F43F5E",
-        "border-subtle": "#E2E8F0",
+
+        // High-contrast accessible text variants (WCAG AA >= 4.5:1 on light backgrounds)
+        accent: {
+          "emerald-accessible": "#047857",
+          "coral-accessible": "#BE123C",
+          "danger-accessible": "#B91C1C",
+          "amber-accessible": "#B45309",
+        },
       },
       fontFamily: {
         sans: ["var(--font-plus-jakarta)", "sans-serif"],

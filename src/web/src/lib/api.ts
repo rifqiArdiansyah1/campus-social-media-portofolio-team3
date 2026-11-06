@@ -24,6 +24,33 @@ export interface AppErrorResponse {
   errors?: AppErrorDetail[];
 }
 
+type UnauthorizedCallback = () => void;
+const unauthorizedCallbacks: UnauthorizedCallback[] = [];
+
+/**
+ * Register a callback to be executed when a 401 Unauthorized response is encountered
+ * e.g., to clear react-query cache and reset user session.
+ */
+export function registerOnUnauthorized(callback: UnauthorizedCallback): () => void {
+  unauthorizedCallbacks.push(callback);
+  return () => {
+    const index = unauthorizedCallbacks.indexOf(callback);
+    if (index !== -1) {
+      unauthorizedCallbacks.splice(index, 1);
+    }
+  };
+}
+
+function triggerUnauthorized(): void {
+  for (const cb of unauthorizedCallbacks) {
+    try {
+      cb();
+    } catch {
+      // ignore callback error
+    }
+  }
+}
+
 // Request interceptor to automatically attach JWT token for authenticated requests
 apiClient.interceptors.request.use((config) => {
   if (typeof window !== "undefined") {
@@ -40,14 +67,11 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error: AxiosError<AppErrorResponse>) => {
     if (error.response?.status === 401) {
-      const code = error.response.data?.code;
-      if (code === "TOKEN_EXPIRED" || code === "INVALID_TOKEN") {
-        if (typeof window !== "undefined") {
-          localStorage.removeItem("campusfolio_token");
-          localStorage.removeItem("campusfolio_user");
-          document.cookie = "campusfolio_token=; path=/; max-age=0; SameSite=Lax";
-        }
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("campusfolio_token");
+        localStorage.removeItem("campusfolio_user");
       }
+      triggerUnauthorized();
     }
     if (error.response?.data?.detail) {
       error.message = error.response.data.detail;
@@ -55,32 +79,3 @@ apiClient.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
-export interface CandidateProfile {
-  user_id: string;
-  name: string;
-  department: string;
-  bio: string;
-  skills: string[];
-  interests: string[];
-}
-
-export interface RecommendationQuery {
-  query_user_id: string;
-  target_skills?: string[];
-  project_description?: string;
-  top_k?: number;
-}
-
-export const fetchRecommendations = async (query: RecommendationQuery) => {
-  const response = await apiClient.post("/recommendations/match", query);
-  return response.data;
-};
-
-export const checkModeration = async (postId: string, content: string) => {
-  const response = await apiClient.post("/moderation/check", {
-    post_id: postId,
-    content: content,
-  });
-  return response.data;
-};
