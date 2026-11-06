@@ -14,6 +14,7 @@ import {
   Award,
   Clock,
   AlertTriangle,
+  Edit3,
 } from "lucide-react";
 import { getInitials } from "@/lib/utils";
 
@@ -43,6 +44,7 @@ export interface PostViewModel {
   can_takedown?: boolean;
   can_report?: boolean;
   can_delete?: boolean;
+  can_edit?: boolean;
 }
 
 export interface PostCardProps {
@@ -52,6 +54,7 @@ export interface PostCardProps {
   onTakedown?: (postId: number) => void;
   onReport?: (postId: number) => void;
   onDelete?: (postId: number) => void;
+  onEdit?: (post: PostViewModel) => void;
 }
 
 export function PostCard({
@@ -61,6 +64,7 @@ export function PostCard({
   onTakedown,
   onReport,
   onDelete,
+  onEdit,
 }: PostCardProps) {
   const formattedDate = new Date(post.created_at).toLocaleDateString("id-ID", {
     day: "numeric",
@@ -134,7 +138,7 @@ export function PostCard({
         </div>
 
         {/* Action Menu (Accessible Headless UI Menu) */}
-        {(post.can_takedown || post.can_report || post.can_delete) && (
+        {(post.can_takedown || post.can_report || post.can_delete || (post.can_edit && onEdit)) && (
           <Menu as="div" className="relative flex-shrink-0">
             <MenuButton
               className="text-slate-400 hover:text-slate-700 p-1.5 rounded-lg hover:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-primary"
@@ -147,6 +151,22 @@ export function PostCard({
               transition
               className="absolute right-0 mt-1 w-44 origin-top-right rounded-xl bg-white shadow-lg border border-border-subtle py-1 z-20 text-xs font-medium focus:outline-none transition duration-100 ease-out data-[closed]:scale-95 data-[closed]:opacity-0"
             >
+              {post.can_edit && onEdit && (
+                <MenuItem>
+                  {({ focus }) => (
+                    <button
+                      type="button"
+                      onClick={() => onEdit(post)}
+                      className={`w-full flex items-center gap-2 px-3 py-2 text-primary text-left transition-colors ${
+                        focus ? "bg-indigo-50" : ""
+                      }`}
+                    >
+                      <Edit3 className="w-4 h-4 text-primary" />
+                      <span>Edit Postingan</span>
+                    </button>
+                  )}
+                </MenuItem>
+              )}
               {post.can_takedown && onTakedown && (
                 <MenuItem>
                   {({ focus }) => (

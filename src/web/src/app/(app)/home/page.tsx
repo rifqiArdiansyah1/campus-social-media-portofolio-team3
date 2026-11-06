@@ -71,6 +71,7 @@ function mapApiToViewModel(item: PostDetailApi): PostViewModel {
     can_takedown: item.can_takedown,
     can_report: item.can_report,
     can_delete: false,
+    can_edit: item.can_edit,
     likes_count: 0,
     comments_count: 0,
     is_liked: false,
@@ -301,6 +302,9 @@ export default function HomePage() {
                 onComment={() => toast.info("Fitur komentar akan diaktifkan pada modul interaksi.")}
                 onTakedown={handleTakedown}
                 onReport={handleReport}
+                onEdit={(p) => {
+                  toast.info(`Membuka mode perbaikan postingan #${p.id}.`);
+                }}
               />
             ))}
 

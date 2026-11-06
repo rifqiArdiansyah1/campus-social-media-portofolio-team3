@@ -225,6 +225,15 @@ def test_create_post_validations(client, db_session: Session):
     assert res_bad_img2.status_code == 422
     assert res_bad_img2.json()["code"] == "INVALID_IMAGE_OWNERSHIP"
 
+    # 6. Path traversal attempt in gambar_url
+    res_traversal = client.post(
+        "/api/v1/posts",
+        json={"isi": "Test traversal", "gambar_url": f"{user.user_id}/../other/secret.jpg"},
+        headers=headers,
+    )
+    assert res_traversal.status_code == 422
+    assert res_traversal.json()["code"] == "INVALID_IMAGE_OWNERSHIP"
+
 
 # ============================================================================
 # 4. TEST FEED KEYSET PAGINATION, SORTING & TIE-BREAKING

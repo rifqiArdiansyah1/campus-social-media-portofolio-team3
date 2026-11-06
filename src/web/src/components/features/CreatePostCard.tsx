@@ -64,9 +64,7 @@ export function CreatePostCard({ onPostCreated }: CreatePostCardProps) {
       const formData = new FormData();
       formData.append("file", file);
 
-      const res = await apiClient.post<{ path: string; url: string }>("/uploads/post-image", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const res = await apiClient.post<{ path: string; url: string }>("/uploads/post-image", formData);
 
       setUploadedImagePath(res.data.path);
     } catch (err: any) {

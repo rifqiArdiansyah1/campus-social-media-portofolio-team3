@@ -149,6 +149,27 @@ describe("M05 Feed & Post Creation Frontend Tests", () => {
       expect(screen.getByText("Konten sedang diverifikasi oleh admin prodi")).toBeInTheDocument();
       expect(screen.getByText(/menunggu review/i)).toBeInTheDocument();
     });
+
+    it("renders edit option in menu when can_edit is true and triggers onEdit", () => {
+      const handleEdit = vi.fn();
+      const editablePost: PostViewModel = {
+        ...mockPostGeneral,
+        is_owner: true,
+        can_edit: true,
+        status: "revisi",
+      };
+
+      render(<PostCard post={editablePost} onEdit={handleEdit} />);
+
+      const menuBtn = screen.getByRole("button", { name: "Opsi postingan" });
+      fireEvent.click(menuBtn);
+
+      const editBtn = screen.getByRole("menuitem", { name: /Edit Postingan/i });
+      expect(editBtn).toBeInTheDocument();
+      fireEvent.click(editBtn);
+
+      expect(handleEdit).toHaveBeenCalledWith(editablePost);
+    });
   });
 
   describe("HomePage Feed Integration", () => {
