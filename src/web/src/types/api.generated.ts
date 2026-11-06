@@ -118,6 +118,75 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/users/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ambil Profil Pengguna Aktif */
+        get: operations["get_my_profile_api_v1_users_me_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Perbarui Data Profil Mandiri */
+        patch: operations["update_my_profile_api_v1_users_me_patch"];
+        trace?: never;
+    };
+    "/api/v1/users/me/skills": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Perbarui Seluruh Keahlian & Minat Mahasiswa */
+        put: operations["update_my_skills_api_v1_users_me_skills_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/users/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ambil Profil Publik Mahasiswa */
+        get: operations["get_user_public_profile_api_v1_users__id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/skills": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Daftar Master Keahlian & Minat */
+        get: operations["get_skills_api_v1_skills_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/recommendations/match": {
         parameters: {
             query?: never;
@@ -370,6 +439,50 @@ export interface components {
              */
             explanation: string;
         };
+        /** PublicProfileResponse */
+        PublicProfileResponse: {
+            /** User Id */
+            user_id: number;
+            /** Nama */
+            nama: string;
+            /** Jurusan */
+            jurusan?: string | null;
+            /** Angkatan */
+            angkatan?: number | null;
+            /** Bio */
+            bio?: string | null;
+            /** Kontak Url */
+            kontak_url?: string | null;
+            /** Role */
+            role: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Skills
+             * @default []
+             */
+            skills: components["schemas"]["UserSkillResponse"][];
+            /**
+             * Friendship Status
+             * @default none
+             * @enum {string}
+             */
+            friendship_status: "none" | "pending_sent" | "pending_received" | "friends";
+            /**
+             * Blocked By Me
+             * @default false
+             */
+            blocked_by_me: boolean;
+            /** Nim */
+            nim?: string | null;
+            /** Email */
+            email?: string | null;
+            /** Is Visible */
+            readonly is_visible: boolean;
+        };
         /** RecommendationItem */
         RecommendationItem: {
             /** User Id */
@@ -465,6 +578,15 @@ export interface components {
              */
             role?: string | null;
         };
+        /** SkillResponse */
+        SkillResponse: {
+            /** Skill Id */
+            skill_id: number;
+            /** Nama */
+            nama: string;
+            /** Tipe */
+            tipe: string;
+        };
         /** TokenResponse */
         TokenResponse: {
             /** Access Token */
@@ -477,6 +599,42 @@ export interface components {
             /** Expires In */
             expires_in: number;
             user: components["schemas"]["UserProfileResponse"];
+        };
+        /** UpdateProfileRequest */
+        UpdateProfileRequest: {
+            /**
+             * Nama
+             * @description Nama lengkap
+             */
+            nama?: string | null;
+            /**
+             * Bio
+             * @description Biografi singkat mahasiswa
+             */
+            bio?: string | null;
+            /**
+             * Kontak Url
+             * @description Tautan profil eksternal (LinkedIn, GitHub, Portofolio)
+             */
+            kontak_url?: string | null;
+            /**
+             * Jurusan
+             * @description Program studi
+             */
+            jurusan?: string | null;
+            /**
+             * Angkatan
+             * @description Tahun angkatan
+             */
+            angkatan?: number | null;
+        };
+        /** UpdateUserSkillsRequest */
+        UpdateUserSkillsRequest: {
+            /**
+             * Items
+             * @description Daftar keahlian & minat maksimal 20 item total per pengguna
+             */
+            items: components["schemas"]["UserSkillItem"][];
         };
         /** UserProfileResponse */
         UserProfileResponse: {
@@ -505,6 +663,44 @@ export interface components {
             created_at: string;
             /** Id */
             readonly id: number;
+        };
+        /** UserSkillItem */
+        UserSkillItem: {
+            /**
+             * Skill Id
+             * @description ID skill master jika sudah ada
+             */
+            skill_id?: number | null;
+            /**
+             * Nama
+             * @description Nama keahlian atau minat kustom
+             */
+            nama?: string | null;
+            /**
+             * Tipe
+             * @description Tipe tag: 'skill' atau 'minat'
+             * @default skill
+             * @enum {string}
+             */
+            tipe: "skill" | "minat";
+            /**
+             * Level
+             * @description Tingkat kemahiran
+             * @default pemula
+             * @enum {string}
+             */
+            level: "pemula" | "menengah" | "mahir";
+        };
+        /** UserSkillResponse */
+        UserSkillResponse: {
+            /** Skill Id */
+            skill_id: number;
+            /** Nama */
+            nama: string;
+            /** Tipe */
+            tipe: string;
+            /** Level */
+            level: string;
         };
         /** ValidationError */
         ValidationError: {
@@ -652,6 +848,159 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["UserProfileResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_my_profile_api_v1_users_me_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserProfileResponse"];
+                };
+            };
+        };
+    };
+    update_my_profile_api_v1_users_me_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateProfileRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserProfileResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_my_skills_api_v1_users_me_skills_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateUserSkillsRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserSkillResponse"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_user_public_profile_api_v1_users__id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicProfileResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_skills_api_v1_skills_get: {
+        parameters: {
+            query?: {
+                /** @description Filter berdasarkan kategori tag ('skill' atau 'minat') */
+                tipe?: ("skill" | "minat") | null;
+                /** @description Pencarian nama keahlian/minat (case-insensitive) */
+                q?: string | null;
+                /** @description Jumlah maksimal item yang dikembalikan */
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SkillResponse"][];
                 };
             };
             /** @description Validation Error */

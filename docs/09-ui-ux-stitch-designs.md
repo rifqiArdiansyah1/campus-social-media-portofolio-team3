@@ -73,15 +73,19 @@ Semua aset screenshot resolusi tinggi dan source code HTML/CSS tersimpan di `ui/
 ---
 
 ### Screen 3: Profil Mahasiswa, Pertemanan, & Blokir Pengguna (US-02, US-06, US-13, US-14)
+- **Stitch Screen ID**: `projects/10744711964413240245/screens/c8ff4cb8186844c3beb115e66152b611`
 - **File Screenshot**: `ui/stitch/screenshots/03_profil_mahasiswa_skills.png`
 - **File Code**: `ui/stitch/html/03_profil_mahasiswa_skills.html`
 - **Pembaruan Fitur Terintegrasi**:
   1. **Tombol Tambah Pertemanan (Friendship Action):**
      - Status: `Tambah Teman`, `Permintaan Terkirim`, atau `Berteman`.
   2. **Fitur Blokir Profil (Block User):**
-     - Opsi menu titik tiga di pojok profil untuk memblokir akun yang mengganggu demi kenyamanan privasi.
-     - Pengguna yang diblokir otomatis disembunyikan dari linimasa dan tidak dapat mengirim pesan/friend request.
-  3. **Tab Rekapitulasi SKPI & Artikel Ilmiah:** Menampilkan daftar publikasi ilmiah dan sertifikat yang telah divalidasi prodi.
+     - Opsi menu titik tiga / tombol blokir di profil untuk memblokir akun yang mengganggu demi kenyamanan privasi.
+     - Pengguna yang diblokir otomatis disembunyikan dari linimasa dan profil mengembalikan respon 404 (anti-leak).
+     - Jika viewer memblokir target, profil menampilkan banner informatif dengan opsi buka blokir.
+  3. **Proteksi Privasi NIM & Email:**
+     - Data sensitif hanya tampak bagi pemilik profil, Kaprodi satu jurusan, atau Admin kampus.
+  4. **Tab Rekapitulasi SKPI & Portofolio:** Menampilkan placeholder empty-state modular yang terhubung ke M07.
 
 ---
 
@@ -95,10 +99,19 @@ Semua aset screenshot resolusi tinggi dan source code HTML/CSS tersimpan di `ui/
 
 ---
 
+### Screen 5: Edit Profil Mahasiswa & Kelola Tag Keahlian (US-02)
+- **Stitch Screen ID**: `projects/10744711964413240245/screens/6302c3ac7054472a9eaf78a90c47e87a`
+- **Pembaruan Fitur Terintegrasi**:
+  1. **Pengaturan Identitas Mandiri:** Form pengubahan nama, angkatan, bio (maks 1000 karakter), dan tautan kontak portofolio eksternal.
+  2. **Proteksi RBAC Jurusan:** Input jurusan dinonaktifkan bagi role `moderator` dan `admin` untuk menjamin kepatuhan batas moderasi prodi.
+  3. **Manajemen Tag Keahlian & Minat Aksesibel:** Combobox pencarian real-time dengan debouncing, chip level kemahiran (*pemula*, *menengah*, *mahir*), dan kuota maksimal 20 tag kompetensi.
+
+---
+
 ## 4. Panduan Eksekusi Implementasi (Frontend Web & Mobile)
 
 1. **Web App (Next.js 14 App Router)**:
-   - Slicing komponen modular di `src/web/src/components/` (Home Dashboard, Post Card, Friend Request Widget, Portfolio SKPI List, Moderation Review Modal).
+   - Slicing komponen modular di `src/web/src/components/` (Home Dashboard, Post Card, Friend Request Widget, Portfolio SKPI List, Moderation Review Modal, SkillSelector).
    - Akses kontrol dinamis (Conditional rendering untuk menu tinjauan Kaprodi & tombol hapus).
 2. **Mobile App (Expo React Native)**:
    - Layout responsif dengan dukungan Material Icons (`@expo/vector-icons`).
