@@ -804,6 +804,458 @@
         }
       }
     },
+    "/api/v1/friendships": {
+      "post": {
+        "tags": [
+          "Friendships (M06)"
+        ],
+        "summary": "Kirim Permohonan Pertemanan (US-13)",
+        "operationId": "create_friendship_request_api_v1_friendships_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FriendshipCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FriendshipResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Friendships (M06)"
+        ],
+        "summary": "Ambil Daftar Permohonan Pertemanan Masuk / Keluar (US-13)",
+        "operationId": "list_friendship_requests_api_v1_friendships_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "direction",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "incoming",
+                "outgoing"
+              ],
+              "type": "string",
+              "description": "Arah permohonan: incoming (masuk) atau outgoing (keluar)",
+              "default": "incoming",
+              "title": "Direction"
+            },
+            "description": "Arah permohonan: incoming (masuk) atau outgoing (keluar)"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Nomor halaman",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "Nomor halaman"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "description": "Jumlah item per halaman",
+              "default": 20,
+              "title": "Limit"
+            },
+            "description": "Jumlah item per halaman"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FriendshipListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/friendships/{id}": {
+      "patch": {
+        "tags": [
+          "Friendships (M06)"
+        ],
+        "summary": "Terima atau Tolak Permohonan Pertemanan (US-13)",
+        "operationId": "update_friendship_status_api_v1_friendships__id__patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FriendshipStatusUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FriendshipResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Friendships (M06)"
+        ],
+        "summary": "Batalkan Permintaan atau Putus Pertemanan (US-13 / FR-06)",
+        "operationId": "delete_friendship_api_v1_friendships__id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/friends": {
+      "get": {
+        "tags": [
+          "Friends (M06)"
+        ],
+        "summary": "Ambil Daftar Teman Aktif Mahasiswa (US-13)",
+        "operationId": "list_active_friends_api_v1_friends_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Pencarian nama atau jurusan teman",
+              "title": "Q"
+            },
+            "description": "Pencarian nama atau jurusan teman"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Nomor halaman",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "Nomor halaman"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "description": "Jumlah item per halaman",
+              "default": 20,
+              "title": "Limit"
+            },
+            "description": "Jumlah item per halaman"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FriendListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/blocks": {
+      "post": {
+        "tags": [
+          "User Blocks (M06)"
+        ],
+        "summary": "Blokir Profil Pengguna (US-14 / FR-07)",
+        "operationId": "block_user_api_v1_blocks_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserBlockRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserBlockResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "User Blocks (M06)"
+        ],
+        "summary": "Ambil Daftar Pengguna yang Diblokir (US-14)",
+        "operationId": "list_blocked_users_api_v1_blocks_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Nomor halaman",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "Nomor halaman"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "description": "Jumlah item per halaman",
+              "default": 20,
+              "title": "Limit"
+            },
+            "description": "Jumlah item per halaman"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BlockedListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/blocks/{blocked_id}": {
+      "delete": {
+        "tags": [
+          "User Blocks (M06)"
+        ],
+        "summary": "Buka Blokir Pengguna (US-14)",
+        "operationId": "unblock_user_api_v1_blocks__blocked_id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "blocked_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Blocked Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/recommendations/match": {
       "post": {
         "tags": [
@@ -1062,6 +1514,104 @@
         ],
         "title": "AdminCreateUserRequest"
       },
+      "BlockedListResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/BlockedUserSummary"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "page": {
+            "type": "integer",
+            "title": "Page"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "total_pages": {
+            "type": "integer",
+            "title": "Total Pages"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "page",
+          "limit",
+          "total_pages"
+        ],
+        "title": "BlockedListResponse"
+      },
+      "BlockedUserSummary": {
+        "properties": {
+          "block_id": {
+            "type": "integer",
+            "title": "Block Id"
+          },
+          "blocked_id": {
+            "type": "integer",
+            "title": "Blocked Id"
+          },
+          "nama": {
+            "type": "string",
+            "title": "Nama"
+          },
+          "jurusan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jurusan"
+          },
+          "angkatan": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Angkatan"
+          },
+          "alasan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alasan"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "block_id",
+          "blocked_id",
+          "nama",
+          "created_at"
+        ],
+        "title": "BlockedUserSummary"
+      },
       "Body_upload_post_image_api_v1_uploads_post_image_post": {
         "properties": {
           "file": {
@@ -1120,6 +1670,262 @@
           "department"
         ],
         "title": "CandidateProfile"
+      },
+      "FriendListResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/FriendUserSummary"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "page": {
+            "type": "integer",
+            "title": "Page"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "total_pages": {
+            "type": "integer",
+            "title": "Total Pages"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "page",
+          "limit",
+          "total_pages"
+        ],
+        "title": "FriendListResponse"
+      },
+      "FriendUserSummary": {
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "nama": {
+            "type": "string",
+            "title": "Nama"
+          },
+          "jurusan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jurusan"
+          },
+          "angkatan": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Angkatan"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          },
+          "avatar_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avatar Url"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "nama",
+          "role"
+        ],
+        "title": "FriendUserSummary"
+      },
+      "FriendshipCreate": {
+        "properties": {
+          "addressee_id": {
+            "type": "integer",
+            "title": "Addressee Id",
+            "description": "User ID calon teman yang dituju"
+          }
+        },
+        "type": "object",
+        "required": [
+          "addressee_id"
+        ],
+        "title": "FriendshipCreate"
+      },
+      "FriendshipDetailResponse": {
+        "properties": {
+          "friendship_id": {
+            "type": "integer",
+            "title": "Friendship Id"
+          },
+          "requester_id": {
+            "type": "integer",
+            "title": "Requester Id"
+          },
+          "addressee_id": {
+            "type": "integer",
+            "title": "Addressee Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          },
+          "counterpart": {
+            "$ref": "#/components/schemas/FriendUserSummary"
+          }
+        },
+        "type": "object",
+        "required": [
+          "friendship_id",
+          "requester_id",
+          "addressee_id",
+          "status",
+          "created_at",
+          "counterpart"
+        ],
+        "title": "FriendshipDetailResponse"
+      },
+      "FriendshipListResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/FriendshipDetailResponse"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "page": {
+            "type": "integer",
+            "title": "Page"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "total_pages": {
+            "type": "integer",
+            "title": "Total Pages"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "page",
+          "limit",
+          "total_pages"
+        ],
+        "title": "FriendshipListResponse"
+      },
+      "FriendshipResponse": {
+        "properties": {
+          "friendship_id": {
+            "type": "integer",
+            "title": "Friendship Id"
+          },
+          "requester_id": {
+            "type": "integer",
+            "title": "Requester Id"
+          },
+          "addressee_id": {
+            "type": "integer",
+            "title": "Addressee Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "friendship_id",
+          "requester_id",
+          "addressee_id",
+          "status",
+          "created_at"
+        ],
+        "title": "FriendshipResponse"
+      },
+      "FriendshipStatusUpdate": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "diterima",
+              "ditolak"
+            ],
+            "title": "Status",
+            "description": "Keputusan penerimaan pertemanan"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "title": "FriendshipStatusUpdate"
       },
       "HTTPValidationError": {
         "properties": {
@@ -1719,6 +2525,32 @@
             "title": "Friendship Status",
             "default": "none"
           },
+          "friendship_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Friendship Id"
+          },
+          "friendship_direction": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "incoming",
+                  "outgoing"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Friendship Direction"
+          },
           "blocked_by_me": {
             "type": "boolean",
             "title": "Blocked By Me",
@@ -2137,6 +2969,74 @@
           "size_bytes"
         ],
         "title": "UploadImageResponse"
+      },
+      "UserBlockRequest": {
+        "properties": {
+          "blocked_id": {
+            "type": "integer",
+            "title": "Blocked Id",
+            "description": "User ID yang ingin diblokir"
+          },
+          "alasan": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alasan",
+            "description": "Alasan pemblokiran (opsional, maks 500 karakter)"
+          }
+        },
+        "type": "object",
+        "required": [
+          "blocked_id"
+        ],
+        "title": "UserBlockRequest"
+      },
+      "UserBlockResponse": {
+        "properties": {
+          "block_id": {
+            "type": "integer",
+            "title": "Block Id"
+          },
+          "blocker_id": {
+            "type": "integer",
+            "title": "Blocker Id"
+          },
+          "blocked_id": {
+            "type": "integer",
+            "title": "Blocked Id"
+          },
+          "alasan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alasan"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "block_id",
+          "blocker_id",
+          "blocked_id",
+          "alasan",
+          "created_at"
+        ],
+        "title": "UserBlockResponse"
       },
       "UserProfileResponse": {
         "properties": {

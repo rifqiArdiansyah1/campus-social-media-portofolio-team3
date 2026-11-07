@@ -37,6 +37,7 @@ EXPECTED_INDEXES = {
     "idx_reports_kategori",
     "idx_reclog_pemohon",
     "uq_skills_nama_lower",
+    "uq_friendship_pair",
 }
 
 EXPECTED_CONSTRAINTS = {

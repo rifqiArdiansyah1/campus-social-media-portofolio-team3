@@ -17,7 +17,7 @@ from app.schemas.profile import (
     UpdateUserSkillsRequest,
     UserSkillResponse,
 )
-from app.services.friendship import get_friendship_status
+from app.services.friendship import get_friendship_relation
 from app.services.visibility import is_target_blocking_viewer, is_viewer_blocking_target
 
 router = APIRouter()
@@ -184,7 +184,7 @@ def get_user_public_profile(
     if not target_user:
         raise NotFoundError(code="USER_NOT_FOUND", detail="Pengguna tidak ditemukan")
 
-    # If target has blocked viewer, return 404 to avoid leaking block status
+    # If target has blocked viewer, return 404 to avoid leaking block status (anti-leak)
     if is_target_blocking_viewer(db, viewer_id=current_user.user_id, target_id=id):
         raise NotFoundError(code="USER_NOT_FOUND", detail="Pengguna tidak ditemukan")
 
@@ -197,6 +197,8 @@ def get_user_public_profile(
             role=target_user.role,
             created_at=target_user.created_at,
             friendship_status="none",
+            friendship_id=None,
+            friendship_direction=None,
             blocked_by_me=True,
             skills=[],
             bio=None,
@@ -210,7 +212,7 @@ def get_user_public_profile(
     # Fetch skills
     skills = get_user_skills(db, id)
 
-    friendship_status = get_friendship_status(
+    friendship_status, friendship_id, friendship_direction = get_friendship_relation(
         db, viewer_id=current_user.user_id, target_id=id
     )
 
@@ -231,6 +233,8 @@ def get_user_public_profile(
         created_at=target_user.created_at,
         skills=skills,
         friendship_status=friendship_status,
+        friendship_id=friendship_id,
+        friendship_direction=friendship_direction,
         blocked_by_me=False,
         nim=target_user.nim if can_view_sensitive else None,
         email=target_user.email if can_view_sensitive else None,

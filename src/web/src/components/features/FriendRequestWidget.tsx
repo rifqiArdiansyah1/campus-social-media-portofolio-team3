@@ -2,6 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { UserCheck, UserX, Users } from "lucide-react";
 
 export interface FriendRequestItem {
@@ -31,6 +32,12 @@ export function FriendRequestWidget({
       <div className="p-4 rounded-2xl border border-border-subtle bg-white text-center">
         <Users className="w-6 h-6 text-slate-400 mx-auto mb-2" />
         <p className="text-xs text-slate-500 font-medium">Tidak ada permohonan koneksi pertemanan baru.</p>
+        <Link
+          href="/friends"
+          className="inline-block mt-2 text-[11px] font-semibold text-primary hover:underline"
+        >
+          Kelola Daftar Teman &rarr;
+        </Link>
       </div>
     );
   }
@@ -44,6 +51,12 @@ export function FriendRequestWidget({
         <h3 className="text-xs font-bold text-slate-900 font-heading uppercase tracking-wider">
           Permohonan Koneksi ({requests.length})
         </h3>
+        <Link
+          href="/friends?tab=requests"
+          className="text-[11px] font-semibold text-primary hover:underline"
+        >
+          Lihat Semua
+        </Link>
       </div>
 
       <div className="space-y-3">
@@ -68,9 +81,12 @@ export function FriendRequestWidget({
                 )}
               </div>
               <div className="min-w-0">
-                <p className="text-xs font-bold text-slate-900 truncate font-heading">
+                <Link
+                  href={`/profile/${req.sender_id}`}
+                  className="text-xs font-bold text-slate-900 truncate font-heading hover:underline block"
+                >
                   {req.sender_name}
-                </p>
+                </Link>
                 {req.sender_jurusan && (
                   <p className="text-[11px] text-slate-500 truncate font-body">
                     {req.sender_jurusan}

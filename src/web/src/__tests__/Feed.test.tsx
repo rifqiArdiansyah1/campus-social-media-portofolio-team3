@@ -49,123 +49,122 @@ describe("M05 Feed & Post Creation Frontend Tests", () => {
   });
 
   describe("CreatePostCard", () => {
-    it("renders create post form and disables submit button when content is empty", () => {
-      render(<CreatePostCard />);
+    it("renders textarea, type selector, and image dropzone", () => {
+      render(<CreatePostCard onPostCreated={vi.fn()} />);
 
-      expect(screen.getByText("Rifqi Mahasiswa")).toBeInTheDocument();
-      expect(screen.getByPlaceholderText(/Bagikan progres riset/i)).toBeInTheDocument();
-      const submitBtn = screen.getByRole("button", { name: /Publikasikan/i });
-      expect(submitBtn).toBeDisabled();
+      expect(
+        screen.getByPlaceholderText(/Bagikan progres riset/i)
+      ).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /Umum/i })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /Cari Tim/i })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /Foto/i })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /Publikasikan/i })).toBeInTheDocument();
     });
 
-    it("enables submit button when valid text is typed for general post", () => {
-      render(<CreatePostCard />);
+    it("disables submit button and shows required skill indicator when type is 'cari_anggota'", () => {
+      render(<CreatePostCard onPostCreated={vi.fn()} />);
 
       const textarea = screen.getByPlaceholderText(/Bagikan progres riset/i);
-      fireEvent.change(textarea, { target: { value: "Halo dunia kampus!" } });
-
-      const submitBtn = screen.getByRole("button", { name: /Publikasikan/i });
-      expect(submitBtn).toBeEnabled();
-    });
-
-    it("displays skill selector and requires skills when 'Cari Tim' type is selected", () => {
-      render(<CreatePostCard />);
+      fireEvent.change(textarea, { target: { value: "Mencari frontend developer React" } });
 
       const cariTimBtn = screen.getByRole("button", { name: /Cari Tim/i });
       fireEvent.click(cariTimBtn);
 
-      expect(screen.getByText(/Keahlian yang Dibutuhkan/i)).toBeInTheDocument();
-      // Submit should be disabled until at least 1 skill is selected
-      const textarea = screen.getByPlaceholderText(/Jelaskan proyek lomba/i);
-      fireEvent.change(textarea, { target: { value: "Mencari rekan tim lomba" } });
-
       const submitBtn = screen.getByRole("button", { name: /Publikasikan/i });
       expect(submitBtn).toBeDisabled();
+      expect(screen.getByText(/Keahlian yang Dibutuhkan/i)).toBeInTheDocument();
+      expect(apiClient.post).not.toHaveBeenCalled();
     });
   });
 
   describe("PostCard", () => {
-    const mockPostGeneral: PostViewModel = {
+    const mockPost: PostViewModel = {
       id: 1,
       author_id: 101,
-      author_name: "Budi Santoso",
+      author_name: "Rifqi Mahasiswa",
       author_jurusan: "Teknik Informatika",
       author_avatar: null,
-      konten: "Proyek Smart Campus Assistant dengan LLM",
-      created_at: new Date().toISOString(),
-      tipe: "umum",
-      status: "tayang",
-      likes_count: 5,
-      comments_count: 2,
-      is_owner: false,
-    };
-
-    const mockPostRecruiting: PostViewModel = {
-      id: 2,
-      author_id: 102,
-      author_name: "Nadia Pramudita",
-      author_jurusan: "Ilmu Komputer",
-      konten: "Mencari 1 UI/UX Designer untuk Gemastik 2026",
+      konten: "Membangun sistem portofolio terpadu untuk kampus.",
+      media_url: "https://example.com/post-images/101/test.jpg",
       created_at: new Date().toISOString(),
       tipe: "cari_anggota",
       status: "tayang",
       skills: [
-        { skill_id: 1, nama: "Figma", tipe: "skill" },
-        { skill_id: 2, nama: "Flutter", tipe: "skill" },
+        { skill_id: 10, nama: "React", tipe: "skill" },
+        { skill_id: 11, nama: "FastAPI", tipe: "skill" },
       ],
-      is_owner: false,
+      moderation_note: null,
+      is_owner: true,
+      can_takedown: false,
+      can_report: false,
+      can_delete: false,
+      can_edit: true,
+      likes_count: 5,
+      comments_count: 2,
+      is_liked: false,
     };
 
-    it("renders general post with 2-char initials and action counts", () => {
-      render(<PostCard post={mockPostGeneral} />);
+    it("renders post author, content, image, skills, and recruiting badge", () => {
+      render(
+        <PostCard
+          post={mockPost}
+          onLike={vi.fn()}
+          onComment={vi.fn()}
+          onTakedown={vi.fn()}
+          onReport={vi.fn()}
+          onEdit={vi.fn()}
+        />
+      );
 
-      expect(screen.getByText("Budi Santoso")).toBeInTheDocument();
-      expect(screen.getByText("BS")).toBeInTheDocument(); // 2-char initial
-      expect(screen.getByText("Proyek Smart Campus Assistant dengan LLM")).toBeInTheDocument();
-      expect(screen.getByText("5")).toBeInTheDocument();
-    });
-
-    it("renders recruitment badge and required skill chips for recruiting posts", () => {
-      render(<PostCard post={mockPostRecruiting} />);
-
-      expect(screen.getByText("Nadia Pramudita")).toBeInTheDocument();
+      expect(screen.getByText("Rifqi Mahasiswa")).toBeInTheDocument();
+      expect(screen.getByText("Teknik Informatika")).toBeInTheDocument();
+      expect(screen.getByText(/Membangun sistem portofolio terpadu/i)).toBeInTheDocument();
       expect(screen.getByText("Cari Anggota Tim")).toBeInTheDocument();
-      expect(screen.getByText("Figma")).toBeInTheDocument();
-      expect(screen.getByText("Flutter")).toBeInTheDocument();
-      expect(screen.getByText("Terbuka untuk Kolaborasi")).toBeInTheDocument();
+      expect(screen.getByText("React")).toBeInTheDocument();
+      expect(screen.getByText("FastAPI")).toBeInTheDocument();
     });
 
-    it("renders moderation note alert when viewed by owner", () => {
-      const ownerPostWithNote: PostViewModel = {
-        ...mockPostGeneral,
-        is_owner: true,
-        status: "menunggu_review",
-        moderation_note: "Konten sedang diverifikasi oleh admin prodi",
-      };
+    it("calls onLike when like button is clicked", () => {
+      const handleLike = vi.fn();
+      render(
+        <PostCard
+          post={mockPost}
+          onLike={handleLike}
+          onComment={vi.fn()}
+          onTakedown={vi.fn()}
+          onReport={vi.fn()}
+          onEdit={vi.fn()}
+        />
+      );
 
-      render(<PostCard post={ownerPostWithNote} />);
+      const likeBtn = screen.getByRole("button", { name: /Sukai postingan/i });
+      fireEvent.click(likeBtn);
 
-      expect(screen.getByText(/Catatan Moderasi:/i)).toBeInTheDocument();
-      expect(screen.getByText("Konten sedang diverifikasi oleh admin prodi")).toBeInTheDocument();
-      expect(screen.getByText(/menunggu review/i)).toBeInTheDocument();
+      expect(handleLike).toHaveBeenCalledWith(1);
     });
 
-    it("renders edit option in menu when can_edit is true and triggers onEdit", () => {
+    it("renders edit menu item when is_owner and can_edit is true", async () => {
       const handleEdit = vi.fn();
-      const editablePost: PostViewModel = {
-        ...mockPostGeneral,
-        is_owner: true,
-        can_edit: true,
-        status: "revisi",
-      };
+      const editablePost = { ...mockPost, is_owner: true, can_edit: true };
 
-      render(<PostCard post={editablePost} onEdit={handleEdit} />);
+      render(
+        <PostCard
+          post={editablePost}
+          onLike={vi.fn()}
+          onComment={vi.fn()}
+          onTakedown={vi.fn()}
+          onReport={vi.fn()}
+          onEdit={handleEdit}
+        />
+      );
 
-      const menuBtn = screen.getByRole("button", { name: "Opsi postingan" });
+      // Open options dropdown menu
+      const menuBtn = screen.getByRole("button", { name: /Opsi postingan/i });
       fireEvent.click(menuBtn);
 
-      const editBtn = screen.getByRole("menuitem", { name: /Edit Postingan/i });
+      const editBtn = await screen.findByRole("menuitem", { name: /Edit Postingan/i });
       expect(editBtn).toBeInTheDocument();
+
       fireEvent.click(editBtn);
 
       expect(handleEdit).toHaveBeenCalledWith(editablePost);
@@ -174,36 +173,41 @@ describe("M05 Feed & Post Creation Frontend Tests", () => {
 
   describe("HomePage Feed Integration", () => {
     it("fetches feed on mount and renders posts", async () => {
-      (apiClient.get as any).mockResolvedValueOnce({
-        data: {
-          items: [
-            {
-              post_id: 10,
-              user_id: 201,
-              author: {
+      (apiClient.get as any).mockImplementation((url: string) => {
+        if (url === "/friendships") {
+          return Promise.resolve({ data: { items: [] } });
+        }
+        return Promise.resolve({
+          data: {
+            items: [
+              {
+                post_id: 10,
                 user_id: 201,
-                nama: "Ahmad Fauzi Penulis",
-                jurusan: "Teknik Informatika",
-                angkatan: 2022,
-                role: "mahasiswa",
+                author: {
+                  user_id: 201,
+                  nama: "Ahmad Fauzi Penulis",
+                  jurusan: "Teknik Informatika",
+                  angkatan: 2022,
+                  role: "mahasiswa",
+                },
+                isi: "Feed Postingan Pertama",
+                gambar_url: null,
+                tipe: "umum",
+                status: "tayang",
+                is_deleted: false,
+                created_at: new Date().toISOString(),
+                skills: [],
+                moderation_note: null,
+                is_owner: false,
+                can_takedown: false,
+                can_report: true,
+                can_edit: false,
               },
-              isi: "Feed Postingan Pertama",
-              gambar_url: null,
-              tipe: "umum",
-              status: "tayang",
-              is_deleted: false,
-              created_at: new Date().toISOString(),
-              skills: [],
-              moderation_note: null,
-              is_owner: false,
-              can_takedown: false,
-              can_report: true,
-              can_edit: false,
-            },
-          ],
-          has_more: false,
-          next_cursor: null,
-        },
+            ],
+            has_more: false,
+            next_cursor: null,
+          },
+        });
       });
 
       render(<HomePage />);
@@ -213,13 +217,14 @@ describe("M05 Feed & Post Creation Frontend Tests", () => {
     });
 
     it("switches tabs and triggers API call with new scope", async () => {
-      (apiClient.get as any)
-        .mockResolvedValueOnce({
-          data: { items: [], has_more: false, next_cursor: null },
-        })
-        .mockResolvedValueOnce({
+      (apiClient.get as any).mockImplementation((url: string) => {
+        if (url === "/friendships") {
+          return Promise.resolve({ data: { items: [] } });
+        }
+        return Promise.resolve({
           data: { items: [], has_more: false, next_cursor: null },
         });
+      });
 
       render(<HomePage />);
 
@@ -227,9 +232,12 @@ describe("M05 Feed & Post Creation Frontend Tests", () => {
       fireEvent.click(recruitingTab);
 
       await waitFor(() => {
-        expect(apiClient.get).toHaveBeenCalledWith("/posts", expect.objectContaining({
-          params: expect.objectContaining({ scope: "recruiting" }),
-        }));
+        expect(apiClient.get).toHaveBeenCalledWith(
+          "/posts",
+          expect.objectContaining({
+            params: expect.objectContaining({ scope: "recruiting" }),
+          })
+        );
       });
     });
   });

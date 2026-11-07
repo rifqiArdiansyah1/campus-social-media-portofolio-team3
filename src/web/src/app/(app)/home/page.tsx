@@ -53,6 +53,19 @@ interface PostFeedApiResponse {
   next_cursor: string | null;
 }
 
+interface FriendRequestsApiResponse {
+  items: Array<{
+    friendship_id: number;
+    counterpart: {
+      user_id: number;
+      nama: string;
+      jurusan: string | null;
+      avatar_url: string | null;
+    };
+    created_at: string;
+  }>;
+}
+
 function mapApiToViewModel(item: PostDetailApi): PostViewModel {
   return {
     id: item.post_id,
@@ -91,17 +104,31 @@ export default function HomePage() {
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(false);
 
-  // Friend requests placeholder for M06
-  const [friendRequests, setFriendRequests] = useState<FriendRequestItem[]>([
-    {
-      id: 201,
-      sender_id: 301,
-      sender_name: "Ahmad Fauzi",
-      sender_jurusan: "Teknik Informatika",
-      sender_avatar: null,
-      created_at: new Date().toISOString(),
-    },
-  ]);
+  // Live Friend requests for M06
+  const [friendRequests, setFriendRequests] = useState<FriendRequestItem[]>([]);
+  const [isLoadingRequests, setIsLoadingRequests] = useState(false);
+
+  const fetchFriendRequests = useCallback(async () => {
+    try {
+      setIsLoadingRequests(true);
+      const res = await apiClient.get<FriendRequestsApiResponse>("/friendships", {
+        params: { direction: "incoming" },
+      });
+      const mapped: FriendRequestItem[] = res.data.items.map((item) => ({
+        id: item.friendship_id,
+        sender_id: item.counterpart.user_id,
+        sender_name: item.counterpart.nama,
+        sender_jurusan: item.counterpart.jurusan,
+        sender_avatar: item.counterpart.avatar_url,
+        created_at: item.created_at,
+      }));
+      setFriendRequests(mapped);
+    } catch {
+      // Quiet fail if not yet authenticated
+    } finally {
+      setIsLoadingRequests(false);
+    }
+  }, []);
 
   const fetchFeed = useCallback(async (scope: "all" | "friends" | "recruiting", cursor?: string | null) => {
     try {
@@ -143,6 +170,10 @@ export default function HomePage() {
     fetchFeed(activeTab, null);
   }, [activeTab, fetchFeed]);
 
+  useEffect(() => {
+    fetchFriendRequests();
+  }, [fetchFriendRequests]);
+
   const handlePostCreated = (newPostApi: PostDetailApi) => {
     // Only display in public feed if status is 'tayang'
     if (newPostApi.status === "tayang") {
@@ -179,14 +210,31 @@ export default function HomePage() {
     toast.info(`Laporan untuk post #${postId} berhasil dikirim ke antrean review (M08).`);
   };
 
-  const handleAcceptFriend = (reqId: number) => {
-    toast.success("Permohonan koneksi diterima!");
-    setFriendRequests((prev) => prev.filter((r) => r.id !== reqId));
+  const handleAcceptFriend = async (reqId: number) => {
+    const prev = [...friendRequests];
+    setFriendRequests((old) => old.filter((r) => r.id !== reqId));
+    try {
+      await apiClient.patch(`/friendships/${reqId}`, { status: "diterima" });
+      toast.success("Permohonan koneksi diterima!");
+      if (activeTab === "friends") {
+        fetchFeed("friends", null);
+      }
+    } catch (err: any) {
+      setFriendRequests(prev);
+      toast.error(err.response?.data?.detail || "Gagal menerima permohonan koneksi.");
+    }
   };
 
-  const handleRejectFriend = (reqId: number) => {
-    toast.info("Permohonan koneksi ditolak.");
-    setFriendRequests((prev) => prev.filter((r) => r.id !== reqId));
+  const handleRejectFriend = async (reqId: number) => {
+    const prev = [...friendRequests];
+    setFriendRequests((old) => old.filter((r) => r.id !== reqId));
+    try {
+      await apiClient.patch(`/friendships/${reqId}`, { status: "ditolak" });
+      toast.info("Permohonan koneksi ditolak.");
+    } catch (err: any) {
+      setFriendRequests(prev);
+      toast.error(err.response?.data?.detail || "Gagal menolak permohonan koneksi.");
+    }
   };
 
   return (
@@ -238,7 +286,7 @@ export default function HomePage() {
                 : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
             }`}
           >
-            <UserCheck className="w-3.5 h-3.5" />
+            <Users className="w-3.5 h-3.5" />
             <span>Teman</span>
           </button>
 
@@ -247,25 +295,28 @@ export default function HomePage() {
             onClick={() => setActiveTab("recruiting")}
             className={`px-4 py-2 text-xs font-semibold rounded-xl flex items-center gap-1.5 transition-all ${
               activeTab === "recruiting"
-                ? "bg-rose-600 text-white shadow-sm"
+                ? "bg-recruiting-coral text-white shadow-sm"
                 : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
             }`}
           >
-            <Users className="w-3.5 h-3.5" />
+            <UserCheck className="w-3.5 h-3.5" />
             <span>Rekrutmen Tim</span>
           </button>
         </div>
 
-        {/* Posts Timeline Stream */}
+        {/* Post List or States */}
         {isLoading ? (
-          <div className="space-y-4 animate-pulse">
+          <div className="space-y-4 py-8">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="p-5 rounded-2xl bg-white border border-slate-200 space-y-3">
+              <div
+                key={i}
+                className="p-6 rounded-2xl bg-white border border-border-subtle shadow-sm animate-pulse space-y-4"
+              >
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-slate-200"></div>
-                  <div className="space-y-1.5 flex-1">
+                  <div className="space-y-2 flex-1">
                     <div className="h-4 w-32 bg-slate-200 rounded"></div>
-                    <div className="h-3 w-48 bg-slate-100 rounded"></div>
+                    <div className="h-3 w-20 bg-slate-100 rounded"></div>
                   </div>
                 </div>
                 <div className="h-16 bg-slate-100 rounded-xl"></div>
@@ -273,21 +324,21 @@ export default function HomePage() {
             ))}
           </div>
         ) : posts.length === 0 ? (
-          <div className="p-6 rounded-2xl bg-white border border-border-subtle shadow-sm">
+          <div className="p-8 rounded-2xl bg-white border border-border-subtle shadow-sm">
             <EmptyState
               title={
-                activeTab === "recruiting"
-                  ? "Belum Ada Lowongan Rekrutmen Tim"
-                  : activeTab === "friends"
+                activeTab === "friends"
                   ? "Belum Ada Postingan dari Teman"
-                  : "Linimasa Masih Sunyi"
+                  : activeTab === "recruiting"
+                  ? "Belum Ada Lowongan Rekrutmen Tim"
+                  : "Belum Ada Postingan di Kampus"
               }
               description={
-                activeTab === "recruiting"
-                  ? "Jadilah yang pertama membuka rekrutmen kolaborator untuk lomba atau proyek skripsi Anda."
-                  : activeTab === "friends"
-                  ? "Kembangkan jejaring pertemanan kampus Anda untuk melihat kabar terbaru dari rekan satu prodi."
-                  : "Mulai percakapan dengan membagikan karya portofolio atau pencapaian terbaru Anda."
+                activeTab === "friends"
+                  ? "Tambahkan teman baru untuk melihat aktivitas karya dan riset rekan mahasiswa di kampusmu."
+                  : activeTab === "recruiting"
+                  ? "Jadilah yang pertama membuka kesempatan rekrutmen tim untuk proyek kolaborasimu!"
+                  : "Bagikan progres proyek, ide inovasi, atau diskusikan riset pertamamu hari ini."
               }
               icon={FolderOpen}
             />
@@ -332,6 +383,7 @@ export default function HomePage() {
           requests={friendRequests}
           onAccept={handleAcceptFriend}
           onReject={handleRejectFriend}
+          isLoading={isLoadingRequests}
         />
 
         <div className="p-5 rounded-2xl border border-border-subtle bg-white shadow-sm space-y-3">
