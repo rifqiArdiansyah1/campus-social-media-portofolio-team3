@@ -15,7 +15,7 @@ from app.core.config import settings
 from app.core.database import get_db
 from app.core.exceptions import ConflictError, ForbiddenError, InvalidInputError, NotFoundError
 from app.core.security import can_moderate, get_current_user
-from app.models.entities import Friendship, ModerationRecord, Post, PostSkill, Skill, User, UserBlock
+from app.models.entities import Friendship, ModerationRecord, Post, PostSkill, Skill, User
 from app.schemas.post import (
     PostAuthorResponse,
     PostCreate,
@@ -26,7 +26,7 @@ from app.schemas.post import (
 )
 from app.services.ai_engine.moderator import ContentModerator, get_moderator_engine
 from app.services.storage import storage_service
-from app.services.visibility import is_target_blocking_viewer, is_viewer_blocking_target
+from app.services.visibility import exclude_hidden, is_target_blocking_viewer, is_viewer_blocking_target
 
 logger = logging.getLogger("campusfolio.posts")
 router = APIRouter()
@@ -399,17 +399,8 @@ def get_posts_feed(
         )
     )
 
-    # 2. Mutual Block Exclusion using NOT EXISTS
-    block_subquery = (
-        db.query(UserBlock.block_id)
-        .filter(
-            or_(
-                and_(UserBlock.blocker_id == viewer_id, UserBlock.blocked_id == Post.user_id),
-                and_(UserBlock.blocker_id == Post.user_id, UserBlock.blocked_id == viewer_id),
-            )
-        )
-    )
-    query = query.filter(~block_subquery.exists())
+    # 2. Mutual Block Exclusion using NOT EXISTS via exclude_hidden helper
+    query = exclude_hidden(query, viewer_id, Post.user_id)
 
     # 3. Scope Filtering
     if scope == "recruiting":

@@ -7,6 +7,7 @@ import { useAuth } from "@/context/AuthContext";
 import { getInitials } from "@/lib/utils";
 import {
   Home,
+  Users,
   Compass,
   FolderKanban,
   CheckSquare,
@@ -28,6 +29,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   // Desktop Sidebar Navigation Items
   const navItems = [
     { label: "Beranda", href: "/home", icon: Home },
+    { label: "Jejaring Teman", href: "/friends", icon: Users },
     { label: "Jelajah Rekomendasi", href: "/explore", icon: Compass },
     { label: "Portofolio", href: "/portfolio", icon: FolderKanban },
     ...(isStaff
@@ -124,8 +126,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </div>
       </aside>
 
-      {/* MOBILE / TABLET TOP BAR (< 1024px) */}
-      <header className="lg:hidden sticky top-0 z-30 h-14 bg-white/90 backdrop-blur-md border-b border-border-subtle px-4 flex items-center justify-between">
+      {/* MOBILE HEADER (< 1024px) */}
+      <header className="lg:hidden h-14 bg-white border-b border-border-subtle flex items-center justify-between px-4 sticky top-0 z-20">
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-lg bg-primary text-white flex items-center justify-center">
             <GraduationCap className="w-4 h-4" />
@@ -178,20 +180,34 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     key={item.href}
                     href={item.href}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold ${
+                    className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
                       isActive
-                        ? "bg-primary text-white"
-                        : "text-slate-700 hover:bg-slate-100"
+                        ? "bg-primary text-white shadow-sm"
+                        : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
                     }`}
                   >
-                    <IconComponent className="w-5 h-5" />
+                    <IconComponent className="w-5 h-5 flex-shrink-0" />
                     <span>{item.label}</span>
                   </Link>
                 );
               })}
             </div>
 
-            <div className="pt-4 border-t border-border-subtle">
+            <div className="pt-4 border-t border-border-subtle space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-full bg-primary/10 text-primary font-bold text-xs flex items-center justify-center flex-shrink-0">
+                  {getInitials(user?.nama)}
+                </div>
+                <div className="min-w-0">
+                  <p className="text-xs font-bold text-slate-900 truncate font-heading">
+                    {user?.nama || "Pengguna"}
+                  </p>
+                  <p className="text-[11px] text-slate-500 truncate font-body">
+                    {user?.jurusan || user?.email}
+                  </p>
+                </div>
+              </div>
+
               <button
                 type="button"
                 onClick={() => {

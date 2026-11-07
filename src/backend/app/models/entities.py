@@ -102,6 +102,7 @@ class Friendship(Base):
 
     __table_args__ = (
         UniqueConstraint("requester_id", "addressee_id", name="uq_friendship"),
+        Index("uq_friendship_pair", text("LEAST(requester_id, addressee_id), GREATEST(requester_id, addressee_id)"), unique=True),
         CheckConstraint("status IN ('menunggu', 'diterima', 'ditolak')", name="friendships_status_check"),
         CheckConstraint("requester_id <> addressee_id", name="chk_friendship_self"),
         Index("idx_friendships_requester", "requester_id"),

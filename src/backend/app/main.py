@@ -43,6 +43,8 @@ async def app_error_handler(request: Request, exc: AppError):
     content = {"detail": exc.detail, "code": exc.code}
     if exc.errors is not None:
         content["errors"] = exc.errors
+    if exc.extra:
+        content.update(exc.extra)
     return JSONResponse(status_code=exc.status_code, content=content, headers=exc.headers)
 
 
