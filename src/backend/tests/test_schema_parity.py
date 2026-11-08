@@ -38,6 +38,7 @@ EXPECTED_INDEXES = {
     "idx_reclog_pemohon",
     "uq_skills_nama_lower",
     "uq_friendship_pair",
+    "idx_portfolio_review_fifo",
 }
 
 EXPECTED_CONSTRAINTS = {

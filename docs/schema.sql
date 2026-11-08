@@ -77,6 +77,7 @@ CREATE TABLE portfolio_items (
     diverifikasi_oleh   BIGINT REFERENCES users(user_id) ON DELETE SET NULL,
     catatan_verifikasi  TEXT,
     verified_at         TIMESTAMP,
+    submitted_at        TIMESTAMP,
     created_at          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -166,6 +167,7 @@ CREATE INDEX idx_user_skills_skill       ON user_skills (skill_id);
 CREATE INDEX idx_portfolio_user          ON portfolio_items (user_id);
 CREATE INDEX idx_portfolio_kategori      ON portfolio_items (kategori);
 CREATE INDEX idx_portfolio_verifikasi    ON portfolio_items (status_verifikasi);
+CREATE INDEX idx_portfolio_review_fifo  ON portfolio_items (submitted_at ASC) WHERE status_verifikasi = 'menunggu_review';
 CREATE INDEX idx_posts_user              ON posts (user_id);
 CREATE INDEX idx_posts_status            ON posts (status);
 CREATE INDEX idx_posts_deleted           ON posts (is_deleted);

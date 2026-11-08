@@ -86,3 +86,25 @@ def test_local_storage_upload_and_static_serving():
     response = client.get(f"/static/{bucket}/{path}")
     assert response.status_code == 200
     assert response.content == test_data
+
+
+def test_pdf_validation_encrypted():
+    encrypted_pdf = b"%PDF-1.4\n1 0 obj\n<< /Encrypt 2 0 R >>\nendobj\ntrailer\n<<>>\n%%EOF"
+    with pytest.raises(ValueError, match="terenkripsi atau diproteksi"):
+        storage_service.validate_document_pdf(encrypted_pdf)
+
+
+def test_pdf_validation_with_user_id():
+    pdf_bytes = b"%PDF-1.4\n1 0 obj\n<<>>\nendobj\ntrailer\n<<>>\n%%EOF"
+    data, filename, content_type = storage_service.validate_document_pdf(pdf_bytes, user_id=42)
+    assert filename.startswith("42/")
+    assert filename.endswith(".pdf")
+    assert content_type == "application/pdf"
+
+
+def test_object_exists():
+    bucket = "portfolio-docs"
+    test_data = b"%PDF-1.4\n1 0 obj\n<<>>\nendobj\ntrailer\n<<>>\n%%EOF"
+    path = storage_service.upload_file(bucket, "42/sample_doc.pdf", test_data, "application/pdf")
+    assert storage_service.object_exists(bucket, path) is True
+    assert storage_service.object_exists(bucket, "non_existent_file.pdf") is False

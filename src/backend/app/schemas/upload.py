@@ -7,3 +7,10 @@ class UploadImageResponse(BaseModel):
     filename: str = Field(..., description="Nama file unik")
     content_type: str = Field(..., description="Tipe MIME gambar (e.g. image/jpeg)")
     size_bytes: int = Field(..., description="Ukuran berkas dalam byte")
+
+
+class UploadDocumentResponse(BaseModel):
+    path: str = Field(..., description="Path relatif dalam private storage bucket (e.g. 101/uuid.pdf)")
+    filename: str = Field(..., description="Nama file unik")
+    content_type: str = Field(..., description="Tipe MIME dokumen (e.g. application/pdf)")
+    size_bytes: int = Field(..., description="Ukuran berkas dalam byte")

@@ -152,6 +152,7 @@ class PortfolioItem(Base):
     diverifikasi_oleh = Column(BigInteger, ForeignKey("users.user_id", ondelete="SET NULL"), nullable=True)
     catatan_verifikasi = Column(Text, nullable=True)
     verified_at = Column(DateTime, nullable=True)
+    submitted_at = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow, server_default=text("CURRENT_TIMESTAMP"), nullable=False)
 
     __table_args__ = (
@@ -160,6 +161,11 @@ class PortfolioItem(Base):
         Index("idx_portfolio_user", "user_id"),
         Index("idx_portfolio_kategori", "kategori"),
         Index("idx_portfolio_verifikasi", "status_verifikasi"),
+        Index(
+            "idx_portfolio_review_fifo",
+            "submitted_at",
+            postgresql_where=text("status_verifikasi = 'menunggu_review'"),
+        ),
     )
 
     # Relationships

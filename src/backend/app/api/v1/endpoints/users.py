@@ -6,10 +6,16 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
-from app.core.exceptions import ForbiddenError, InvalidInputError, NotFoundError
+from app.core.exceptions import ConflictError, ForbiddenError, InvalidInputError, NotFoundError
 from app.core.normalizers import normalize_jurusan
 from app.core.security import can_moderate, get_current_user
-from app.models.entities import Skill, User, UserSkill
+from app.models.entities import PortfolioItem, Skill, User, UserSkill
+from app.schemas.portfolio import (
+    PortfolioPublicResponse,
+    SkillBriefResponse,
+    SkpiSummaryResponse,
+    mask_document_number,
+)
 from app.schemas.profile import (
     MyProfileResponse,
     PublicProfileResponse,
@@ -86,6 +92,22 @@ def update_my_profile(
                     detail=f"Jurusan '{data['jurusan']}' tidak terdaftar dalam program studi resmi kampus",
                 )
             data["jurusan"] = norm_jurusan
+
+        # Department locking if student has active or verified portfolios (M07)
+        if data.get("jurusan") != current_user.jurusan:
+            has_locked_portfolio = (
+                db.query(PortfolioItem.portfolio_id)
+                .filter(
+                    PortfolioItem.user_id == current_user.user_id,
+                    PortfolioItem.status_verifikasi.in_(["menunggu_review", "terverifikasi"]),
+                )
+                .first()
+            )
+            if has_locked_portfolio:
+                raise ConflictError(
+                    code="DEPARTMENT_LOCKED_ACTIVE_PORTFOLIO",
+                    detail="Jurusan tidak dapat diubah karena Anda memiliki portofolio yang sedang dalam antrean review atau telah terverifikasi resmi.",
+                )
 
     if "nama" in data and not data["nama"]:
         raise InvalidInputError(code="INVALID_NAME", detail="Nama tidak boleh kosong")
@@ -241,4 +263,120 @@ def get_user_public_profile(
         blocked_by_me=blocked_by_me,
         nim=target_user.nim if can_view_sensitive else None,
         email=target_user.email if can_view_sensitive else None,
+    )
+
+
+@router.get("/{id}/skpi-summary", response_model=SkpiSummaryResponse, summary="Ambil Ringkasan Poin SKPI Resmi & Capaian Mahasiswa")
+def get_user_skpi_summary(
+    id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    target_user = db.query(User).filter(User.user_id == id).first()
+    if not target_user:
+        raise NotFoundError(code="USER_NOT_FOUND", detail="Pengguna tidak ditemukan")
+
+    is_staff_viewer = current_user.role in ("moderator", "admin")
+
+    # Anti-leak mutual block
+    if not is_staff_viewer and is_target_blocking_viewer(db, viewer_id=current_user.user_id, target_id=id):
+        raise NotFoundError(code="USER_NOT_FOUND", detail="Pengguna tidak ditemukan")
+
+    is_owner = current_user.user_id == target_user.user_id
+    can_view_private = is_owner or (is_staff_viewer and can_moderate(current_user, target_user.jurusan))
+
+    # Fetch portfolios of target user
+    items_query = (
+        db.query(PortfolioItem)
+        .filter(PortfolioItem.user_id == id)
+        .order_by(PortfolioItem.created_at.desc())
+    )
+
+    all_items = items_query.all()
+
+    categories = ["proyek", "skpi", "sertifikat", "artikel_ilmiah"]
+    jumlah_per_kategori = {cat: 0 for cat in categories}
+    poin_weights = {"proyek": 0, "skpi": 1, "sertifikat": 1, "artikel_ilmiah": 2}
+    poin_per_kategori = {cat: 0 for cat in categories}
+
+    menunggu_count = 0
+    total_terverifikasi = 0
+
+    public_items = []
+    for item in all_items:
+        if item.status_verifikasi == "menunggu_review":
+            menunggu_count += 1
+        elif item.status_verifikasi == "terverifikasi":
+            cat = item.kategori if item.kategori in categories else "skpi"
+            jumlah_per_kategori[cat] += 1
+            poin_per_kategori[cat] += poin_weights.get(cat, 1)
+            total_terverifikasi += 1
+
+            skills = [
+                SkillBriefResponse(
+                    skill_id=ps.skill.skill_id,
+                    nama=ps.skill.nama,
+                    kategori=ps.skill.tipe,
+                )
+                for ps in item.skills
+                if ps.skill is not None
+            ]
+            public_items.append(
+                PortfolioPublicResponse(
+                    portfolio_id=item.portfolio_id,
+                    user_id=item.user_id,
+                    judul=item.judul,
+                    deskripsi=item.deskripsi,
+                    tautan_url=item.tautan_url,
+                    gambar_url=item.gambar_url,
+                    kategori=item.kategori,
+                    nomor_dokumen=mask_document_number(item.nomor_dokumen),
+                    penerbit=item.penerbit,
+                    tanggal_terbit=item.tanggal_terbit,
+                    has_file=bool(item.file_url),
+                    status_verifikasi=item.status_verifikasi,
+                    created_at=item.created_at,
+                    skills=skills,
+                )
+            )
+        elif item.kategori == "proyek":
+            jumlah_per_kategori["proyek"] += 1
+            skills = [
+                SkillBriefResponse(
+                    skill_id=ps.skill.skill_id,
+                    nama=ps.skill.nama,
+                    kategori=ps.skill.tipe,
+                )
+                for ps in item.skills
+                if ps.skill is not None
+            ]
+            public_items.append(
+                PortfolioPublicResponse(
+                    portfolio_id=item.portfolio_id,
+                    user_id=item.user_id,
+                    judul=item.judul,
+                    deskripsi=item.deskripsi,
+                    tautan_url=item.tautan_url,
+                    gambar_url=item.gambar_url,
+                    kategori=item.kategori,
+                    nomor_dokumen=None,
+                    penerbit=item.penerbit,
+                    tanggal_terbit=item.tanggal_terbit,
+                    has_file=bool(item.file_url),
+                    status_verifikasi=item.status_verifikasi,
+                    created_at=item.created_at,
+                    skills=skills,
+                )
+            )
+
+    total_poin = sum(poin_per_kategori.values())
+
+    return SkpiSummaryResponse(
+        user_id=id,
+        total_poin=total_poin,
+        total_terverifikasi=total_terverifikasi,
+        menunggu_review=menunggu_count if can_view_private else None,
+        jumlah_per_kategori=jumlah_per_kategori,
+        poin_per_kategori=poin_per_kategori,
+        items=public_items,
     )

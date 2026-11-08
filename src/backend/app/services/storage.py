@@ -84,9 +84,9 @@ class StorageService:
         sanitized_bytes = output_buffer.getvalue()
         return sanitized_bytes, filename, content_type
 
-    def validate_document_pdf(self, data: bytes) -> Tuple[bytes, str, str]:
+    def validate_document_pdf(self, data: bytes, user_id: Optional[int] = None) -> Tuple[bytes, str, str]:
         """
-        Validate PDF document via magic bytes header %PDF-, enforce size limits.
+        Validate PDF document via magic bytes header %PDF-, enforce size limits, and disallow encrypted PDFs.
         Returns: (data, generated_filename, content_type)
         """
         if len(data) > self.max_doc_size:
@@ -96,8 +96,28 @@ class StorageService:
         if b"%PDF-" not in data[:1024]:
             raise ValueError("Berkas bukan merupakan dokumen PDF yang valid (magic header mismatch).")
 
-        filename = f"{uuid4()}.pdf"
+        # Reject encrypted / password-protected PDFs
+        if b"/Encrypt" in data:
+            raise ValueError("Dokumen PDF terenkripsi atau diproteksi kata sandi tidak diperbolehkan.")
+
+        if user_id is not None:
+            filename = f"{user_id}/{uuid4()}.pdf"
+        else:
+            filename = f"{uuid4()}.pdf"
         return data, filename, "application/pdf"
+
+    def validate_and_sanitize_document(self, data: bytes, user_id: Optional[int] = None) -> Tuple[bytes, str, str]:
+        """
+        Validate and sanitize portfolio document (PDF or image).
+        """
+        # Check if PDF
+        if b"%PDF-" in data[:1024]:
+            return self.validate_document_pdf(data, user_id=user_id)
+        # Check if image
+        try:
+            return self.validate_and_sanitize_image(data, user_id=user_id)
+        except ValueError as exc:
+            raise ValueError(f"Berkas dokumen tidak valid atau format tidak didukung (gunakan PDF atau JPEG/PNG/WEBP): {exc}")
 
     def upload_file(self, bucket: str, path: str, data: bytes, content_type: str) -> str:
         """
@@ -122,6 +142,22 @@ class StorageService:
         else:
             raise RuntimeError("Storage backend unavailable in production.")
 
+    def object_exists(self, bucket: str, path: str) -> bool:
+        """
+        Check whether an object exists in the specified storage bucket.
+        """
+        if self.supabase_client:
+            try:
+                folder = os.path.dirname(path).replace("\\", "/")
+                filename = os.path.basename(path)
+                files = self.supabase_client.storage.from_(bucket).list(folder)
+                return any(f.get("name") == filename for f in files)
+            except Exception:
+                return False
+        else:
+            local_path = os.path.join(self.local_dir, bucket, path.replace("/", os.sep))
+            return os.path.isfile(local_path)
+
     def get_public_url(self, bucket: str, path: str) -> str:
         """
         Get public URL for public bucket (e.g. post-images).
@@ -131,9 +167,10 @@ class StorageService:
         else:
             return f"/static/{bucket}/{path}"
 
-    def get_signed_url(self, bucket: str, path: str, ttl_seconds: int = 3600) -> str:
+    def get_signed_url(self, bucket: str, path: str, ttl_seconds: int = 300) -> str:
         """
         Get signed temporary URL for private bucket (e.g. portfolio-docs).
+        Default TTL: 300 seconds (5 minutes).
         """
         if self.supabase_client:
             res = self.supabase_client.storage.from_(bucket).create_signed_url(path, ttl_seconds)
