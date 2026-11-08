@@ -1,6 +1,6 @@
-from datetime import datetime
 import logging
-from typing import Any, List, Optional, Union
+from datetime import datetime
+from typing import List, Optional, Union
 
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy import func, update

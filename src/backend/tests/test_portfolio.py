@@ -1,14 +1,10 @@
-from datetime import date, datetime, timedelta
-import io
+from datetime import date, timedelta
 from uuid import uuid4
 
-import pytest
 from sqlalchemy.orm import Session
 
-from app.core.config import settings
 from app.core.security import create_access_token
-from app.models.entities import PortfolioItem, PortfolioSkill, Skill, User, UserBlock
-from app.services.storage import storage_service
+from app.models.entities import Skill, User
 
 
 def create_user(
