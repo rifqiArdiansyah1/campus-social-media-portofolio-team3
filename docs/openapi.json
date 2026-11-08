@@ -346,6 +346,53 @@
         }
       }
     },
+    "/api/v1/users/{id}/skpi-summary": {
+      "get": {
+        "tags": [
+          "Users & Profiles (M04)"
+        ],
+        "summary": "Ambil Ringkasan Poin SKPI Resmi & Capaian Mahasiswa",
+        "operationId": "get_user_skpi_summary_api_v1_users__id__skpi_summary_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SkpiSummaryResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/skills": {
       "get": {
         "tags": [
@@ -461,6 +508,52 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/UploadImageResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/uploads/portfolio-doc": {
+      "post": {
+        "tags": [
+          "Uploads & Media (M05)"
+        ],
+        "summary": "Unggah Dokumen Bukti Portofolio / SKPI (Private)",
+        "operationId": "upload_portfolio_document_api_v1_uploads_portfolio_doc_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_upload_portfolio_document_api_v1_uploads_portfolio_doc_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadDocumentResponse"
                 }
               }
             }
@@ -1256,6 +1349,663 @@
         }
       }
     },
+    "/api/v1/portfolio/review-queue": {
+      "get": {
+        "tags": [
+          "Portfolio & SKPI (M07)"
+        ],
+        "summary": "Antrean Verifikasi Portofolio FIFO Kaprodi & Admin",
+        "operationId": "get_review_queue_api_v1_portfolio_review_queue_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "jurusan",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter jurusan (khusus Admin)",
+              "title": "Jurusan"
+            },
+            "description": "Filter jurusan (khusus Admin)"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewQueueListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/portfolio": {
+      "post": {
+        "tags": [
+          "Portfolio & SKPI (M07)"
+        ],
+        "summary": "Unggah/Buat Portofolio Baru (Draft atau Proyek)",
+        "operationId": "create_portfolio_item_api_v1_portfolio_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PortfolioCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PortfolioDetailResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Portfolio & SKPI (M07)"
+        ],
+        "summary": "Daftar Portofolio (Milik Sendiri / Rekan / Publik)",
+        "operationId": "list_portfolios_api_v1_portfolio_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter ID mahasiswa",
+              "title": "User Id"
+            },
+            "description": "Filter ID mahasiswa"
+          },
+          {
+            "name": "kategori",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter kategori (proyek, skpi, sertifikat, artikel_ilmiah)",
+              "title": "Kategori"
+            },
+            "description": "Filter kategori (proyek, skpi, sertifikat, artikel_ilmiah)"
+          },
+          {
+            "name": "status_verifikasi",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter status verifikasi",
+              "title": "Status Verifikasi"
+            },
+            "description": "Filter status verifikasi"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/components/schemas/PortfolioDetailResponse"
+                      },
+                      {
+                        "$ref": "#/components/schemas/PortfolioPublicResponse"
+                      }
+                    ]
+                  },
+                  "title": "Response List Portfolios Api V1 Portfolio Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/portfolio/{id}": {
+      "get": {
+        "tags": [
+          "Portfolio & SKPI (M07)"
+        ],
+        "summary": "Ambil Detail Satu Portofolio",
+        "operationId": "get_portfolio_item_api_v1_portfolio__id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/PortfolioDetailResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/PortfolioPublicResponse"
+                    }
+                  ],
+                  "title": "Response Get Portfolio Item Api V1 Portfolio  Id  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Portfolio & SKPI (M07)"
+        ],
+        "summary": "Perbarui Portofolio (Hanya saat status draft atau ditolak)",
+        "operationId": "update_portfolio_item_api_v1_portfolio__id__patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PortfolioUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PortfolioDetailResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Portfolio & SKPI (M07)"
+        ],
+        "summary": "Hapus Portofolio (Hanya saat status draft atau ditolak)",
+        "operationId": "delete_portfolio_item_api_v1_portfolio__id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/portfolio/{id}/submit": {
+      "post": {
+        "tags": [
+          "Portfolio & SKPI (M07)"
+        ],
+        "summary": "Ajukan Portofolio untuk Verifikasi SKPI oleh Kaprodi",
+        "operationId": "submit_portfolio_for_review_api_v1_portfolio__id__submit_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PortfolioDetailResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/portfolio/{id}/withdraw": {
+      "post": {
+        "tags": [
+          "Portfolio & SKPI (M07)"
+        ],
+        "summary": "Tarik Kembali Portofolio dari Antrean Review ke Draft",
+        "operationId": "withdraw_portfolio_from_review_api_v1_portfolio__id__withdraw_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PortfolioDetailResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/portfolio/{id}/review": {
+      "patch": {
+        "tags": [
+          "Portfolio & SKPI (M07)"
+        ],
+        "summary": "Verifikasi atau Tolak Pengajuan Portofolio SKPI (Kaprodi & Admin)",
+        "operationId": "review_portfolio_item_api_v1_portfolio__id__review_patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PortfolioReviewRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PortfolioDetailResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/portfolio/{id}/revoke": {
+      "post": {
+        "tags": [
+          "Portfolio & SKPI (M07)"
+        ],
+        "summary": "Cabut Status Verifikasi Portofolio Resmi (Admin Only)",
+        "operationId": "revoke_portfolio_verification_api_v1_portfolio__id__revoke_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PortfolioRevokeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PortfolioDetailResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/portfolio/{id}/file": {
+      "get": {
+        "tags": [
+          "Portfolio & SKPI (M07)"
+        ],
+        "summary": "Dapatkan Signed URL Berumur Pendek (120-300 detik) untuk Berkas Bukti Privat",
+        "operationId": "get_portfolio_file_signed_url_api_v1_portfolio__id__file_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignedUrlResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/recommendations/match": {
       "post": {
         "tags": [
@@ -1611,6 +2361,21 @@
           "created_at"
         ],
         "title": "BlockedUserSummary"
+      },
+      "Body_upload_portfolio_document_api_v1_uploads_portfolio_doc_post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream",
+            "title": "File",
+            "description": "Berkas bukti SKPI (PDF maks 10MB atau Gambar maks 5MB)"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file"
+        ],
+        "title": "Body_upload_portfolio_document_api_v1_uploads_portfolio_doc_post"
       },
       "Body_upload_post_image_api_v1_uploads_post_image_post": {
         "properties": {
@@ -2148,6 +2913,672 @@
           "id"
         ],
         "title": "MyProfileResponse"
+      },
+      "PortfolioAuthorResponse": {
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "nama_lengkap": {
+            "type": "string",
+            "title": "Nama Lengkap"
+          },
+          "nim": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nim"
+          },
+          "jurusan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jurusan"
+          },
+          "avatar_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avatar Url"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "nama_lengkap"
+        ],
+        "title": "PortfolioAuthorResponse"
+      },
+      "PortfolioCreate": {
+        "properties": {
+          "judul": {
+            "type": "string",
+            "maxLength": 150,
+            "minLength": 3,
+            "title": "Judul"
+          },
+          "deskripsi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deskripsi"
+          },
+          "tautan_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tautan Url"
+          },
+          "gambar_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gambar Url"
+          },
+          "kategori": {
+            "type": "string",
+            "enum": [
+              "proyek",
+              "skpi",
+              "sertifikat",
+              "artikel_ilmiah"
+            ],
+            "title": "Kategori",
+            "description": "Jenis portofolio/capaian",
+            "default": "proyek"
+          },
+          "nomor_dokumen": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nomor Dokumen",
+            "description": "Nomor SKPI/Sertifikat/DOI"
+          },
+          "penerbit": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 150
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Penerbit",
+            "description": "Penerbit jurnal / penyelenggara kegiatan"
+          },
+          "tanggal_terbit": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tanggal Terbit"
+          },
+          "file_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "File Url",
+            "description": "Path berkas dokumen PDF bukti"
+          },
+          "skill_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Skill Ids",
+            "description": "ID keahlian terkait (maksimal 10)"
+          }
+        },
+        "type": "object",
+        "required": [
+          "judul"
+        ],
+        "title": "PortfolioCreate"
+      },
+      "PortfolioDetailResponse": {
+        "properties": {
+          "portfolio_id": {
+            "type": "integer",
+            "title": "Portfolio Id"
+          },
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "judul": {
+            "type": "string",
+            "title": "Judul"
+          },
+          "deskripsi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deskripsi"
+          },
+          "tautan_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tautan Url"
+          },
+          "gambar_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gambar Url"
+          },
+          "kategori": {
+            "type": "string",
+            "title": "Kategori"
+          },
+          "nomor_dokumen": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nomor Dokumen"
+          },
+          "penerbit": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Penerbit"
+          },
+          "tanggal_terbit": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tanggal Terbit"
+          },
+          "file_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "File Url"
+          },
+          "has_file": {
+            "type": "boolean",
+            "title": "Has File",
+            "default": false
+          },
+          "status_verifikasi": {
+            "type": "string",
+            "title": "Status Verifikasi"
+          },
+          "diverifikasi_oleh": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Diverifikasi Oleh"
+          },
+          "catatan_verifikasi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Catatan Verifikasi"
+          },
+          "verified_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Verified At"
+          },
+          "submitted_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Submitted At"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/SkillBriefResponse"
+            },
+            "type": "array",
+            "title": "Skills",
+            "default": []
+          },
+          "author": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PortfolioAuthorResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "portfolio_id",
+          "user_id",
+          "judul",
+          "kategori",
+          "status_verifikasi",
+          "created_at"
+        ],
+        "title": "PortfolioDetailResponse",
+        "description": "Lengkap untuk Pemilik, Kaprodi se-prodi, dan Admin"
+      },
+      "PortfolioPublicResponse": {
+        "properties": {
+          "portfolio_id": {
+            "type": "integer",
+            "title": "Portfolio Id"
+          },
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "judul": {
+            "type": "string",
+            "title": "Judul"
+          },
+          "deskripsi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deskripsi"
+          },
+          "tautan_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tautan Url"
+          },
+          "gambar_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gambar Url"
+          },
+          "kategori": {
+            "type": "string",
+            "title": "Kategori"
+          },
+          "nomor_dokumen": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nomor Dokumen"
+          },
+          "penerbit": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Penerbit"
+          },
+          "tanggal_terbit": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tanggal Terbit"
+          },
+          "has_file": {
+            "type": "boolean",
+            "title": "Has File",
+            "default": false
+          },
+          "status_verifikasi": {
+            "type": "string",
+            "title": "Status Verifikasi"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/SkillBriefResponse"
+            },
+            "type": "array",
+            "title": "Skills",
+            "default": []
+          },
+          "author": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PortfolioAuthorResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "portfolio_id",
+          "user_id",
+          "judul",
+          "kategori",
+          "status_verifikasi",
+          "created_at"
+        ],
+        "title": "PortfolioPublicResponse",
+        "description": "Masked untuk pengguna lain / publik"
+      },
+      "PortfolioReviewRequest": {
+        "properties": {
+          "status_verifikasi": {
+            "type": "string",
+            "enum": [
+              "terverifikasi",
+              "ditolak"
+            ],
+            "title": "Status Verifikasi"
+          },
+          "catatan_verifikasi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Catatan Verifikasi",
+            "description": "Catatan hasil verifikasi dari Kaprodi/Admin"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status_verifikasi"
+        ],
+        "title": "PortfolioReviewRequest"
+      },
+      "PortfolioRevokeRequest": {
+        "properties": {
+          "alasan": {
+            "type": "string",
+            "minLength": 5,
+            "title": "Alasan",
+            "description": "Alasan pencabutan verifikasi portofolio untuk audit trail"
+          }
+        },
+        "type": "object",
+        "required": [
+          "alasan"
+        ],
+        "title": "PortfolioRevokeRequest"
+      },
+      "PortfolioUpdate": {
+        "properties": {
+          "judul": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 150,
+                "minLength": 3
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Judul"
+          },
+          "deskripsi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deskripsi"
+          },
+          "tautan_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tautan Url"
+          },
+          "gambar_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gambar Url"
+          },
+          "kategori": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "proyek",
+                  "skpi",
+                  "sertifikat",
+                  "artikel_ilmiah"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kategori"
+          },
+          "nomor_dokumen": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nomor Dokumen"
+          },
+          "penerbit": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 150
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Penerbit"
+          },
+          "tanggal_terbit": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tanggal Terbit"
+          },
+          "file_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "File Url"
+          },
+          "skill_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "integer"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Skill Ids"
+          }
+        },
+        "type": "object",
+        "title": "PortfolioUpdate"
       },
       "PostAuthorResponse": {
         "properties": {
@@ -2802,6 +4233,242 @@
         ],
         "title": "RegisterRequest"
       },
+      "ReviewQueueItemResponse": {
+        "properties": {
+          "portfolio_id": {
+            "type": "integer",
+            "title": "Portfolio Id"
+          },
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "judul": {
+            "type": "string",
+            "title": "Judul"
+          },
+          "deskripsi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deskripsi"
+          },
+          "kategori": {
+            "type": "string",
+            "title": "Kategori"
+          },
+          "nomor_dokumen": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nomor Dokumen"
+          },
+          "penerbit": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Penerbit"
+          },
+          "tanggal_terbit": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tanggal Terbit"
+          },
+          "file_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "File Url"
+          },
+          "has_file": {
+            "type": "boolean",
+            "title": "Has File",
+            "default": false
+          },
+          "status_verifikasi": {
+            "type": "string",
+            "title": "Status Verifikasi"
+          },
+          "submitted_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Submitted At"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "author_nama": {
+            "type": "string",
+            "title": "Author Nama"
+          },
+          "author_nim": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Author Nim"
+          },
+          "author_jurusan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Author Jurusan"
+          },
+          "author_avatar_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Author Avatar Url"
+          },
+          "is_duplicate_dokumen": {
+            "type": "boolean",
+            "title": "Is Duplicate Dokumen",
+            "default": false
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/SkillBriefResponse"
+            },
+            "type": "array",
+            "title": "Skills",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "portfolio_id",
+          "user_id",
+          "judul",
+          "kategori",
+          "status_verifikasi",
+          "created_at",
+          "author_nama"
+        ],
+        "title": "ReviewQueueItemResponse"
+      },
+      "ReviewQueueListResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ReviewQueueItemResponse"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "jurusan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jurusan"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total"
+        ],
+        "title": "ReviewQueueListResponse"
+      },
+      "SignedUrlResponse": {
+        "properties": {
+          "signed_url": {
+            "type": "string",
+            "title": "Signed Url"
+          },
+          "expires_in": {
+            "type": "integer",
+            "title": "Expires In"
+          }
+        },
+        "type": "object",
+        "required": [
+          "signed_url",
+          "expires_in"
+        ],
+        "title": "SignedUrlResponse"
+      },
+      "SkillBriefResponse": {
+        "properties": {
+          "skill_id": {
+            "type": "integer",
+            "title": "Skill Id"
+          },
+          "nama": {
+            "type": "string",
+            "title": "Nama"
+          },
+          "kategori": {
+            "type": "string",
+            "title": "Kategori"
+          }
+        },
+        "type": "object",
+        "required": [
+          "skill_id",
+          "nama",
+          "kategori"
+        ],
+        "title": "SkillBriefResponse"
+      },
       "SkillResponse": {
         "properties": {
           "skill_id": {
@@ -2824,6 +4491,64 @@
           "tipe"
         ],
         "title": "SkillResponse"
+      },
+      "SkpiSummaryResponse": {
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "total_poin": {
+            "type": "integer",
+            "title": "Total Poin"
+          },
+          "total_terverifikasi": {
+            "type": "integer",
+            "title": "Total Terverifikasi"
+          },
+          "menunggu_review": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Menunggu Review"
+          },
+          "jumlah_per_kategori": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Jumlah Per Kategori"
+          },
+          "poin_per_kategori": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Poin Per Kategori"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/PortfolioPublicResponse"
+            },
+            "type": "array",
+            "title": "Items",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "total_poin",
+          "total_terverifikasi",
+          "jumlah_per_kategori",
+          "poin_per_kategori"
+        ],
+        "title": "SkpiSummaryResponse"
       },
       "TokenResponse": {
         "properties": {
@@ -2942,6 +4667,38 @@
           "items"
         ],
         "title": "UpdateUserSkillsRequest"
+      },
+      "UploadDocumentResponse": {
+        "properties": {
+          "path": {
+            "type": "string",
+            "title": "Path",
+            "description": "Path relatif dalam private storage bucket (e.g. 101/uuid.pdf)"
+          },
+          "filename": {
+            "type": "string",
+            "title": "Filename",
+            "description": "Nama file unik"
+          },
+          "content_type": {
+            "type": "string",
+            "title": "Content Type",
+            "description": "Tipe MIME dokumen (e.g. application/pdf)"
+          },
+          "size_bytes": {
+            "type": "integer",
+            "title": "Size Bytes",
+            "description": "Ukuran berkas dalam byte"
+          }
+        },
+        "type": "object",
+        "required": [
+          "path",
+          "filename",
+          "content_type",
+          "size_bytes"
+        ],
+        "title": "UploadDocumentResponse"
       },
       "UploadImageResponse": {
         "properties": {

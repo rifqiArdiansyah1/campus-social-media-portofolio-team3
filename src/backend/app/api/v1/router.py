@@ -7,6 +7,7 @@ from app.api.v1.endpoints import (
     friends,
     friendships,
     moderation,
+    portfolio,
     posts,
     recommendations,
     skills,
@@ -26,5 +27,6 @@ api_router.include_router(posts.router, prefix="/posts", tags=["Posts & Feed (M0
 api_router.include_router(friendships.router, prefix="/friendships", tags=["Friendships (M06)"])
 api_router.include_router(friends.router, prefix="/friends", tags=["Friends (M06)"])
 api_router.include_router(blocks.router, prefix="/blocks", tags=["User Blocks (M06)"])
+api_router.include_router(portfolio.router, prefix="/portfolio", tags=["Portfolio & SKPI (M07)"])
 api_router.include_router(recommendations.router, prefix="/recommendations", tags=["AI Recommendations (AI-1)"])
 api_router.include_router(moderation.router, prefix="/moderation", tags=["AI Content Moderation (AI-2)"])
