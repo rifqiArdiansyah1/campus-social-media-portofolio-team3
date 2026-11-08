@@ -1050,10 +1050,10 @@
                   "type": "null"
                 }
               ],
-              "description": "Pencarian nama atau jurusan teman",
+              "description": "Pencarian nama, jurusan, atau NIM teman",
               "title": "Q"
             },
-            "description": "Pencarian nama atau jurusan teman"
+            "description": "Pencarian nama, jurusan, atau NIM teman"
           },
           {
             "name": "page",
@@ -1753,6 +1753,17 @@
               }
             ],
             "title": "Avatar Url"
+          },
+          "friendship_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Friendship Id"
           }
         },
         "type": "object",

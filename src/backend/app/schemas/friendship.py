@@ -11,6 +11,7 @@ class FriendUserSummary(BaseModel):
     angkatan: Optional[int] = None
     role: str
     avatar_url: Optional[str] = None
+    friendship_id: Optional[int] = None
 
 
 class FriendshipCreate(BaseModel):

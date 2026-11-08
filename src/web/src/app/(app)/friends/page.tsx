@@ -13,7 +13,8 @@ import {
   Search,
   ExternalLink,
   Loader2,
-  FolderOpen,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { useToast } from "@/context/ToastContext";
 import { apiClient } from "@/lib/api";
@@ -28,6 +29,7 @@ interface FriendUser {
   angkatan: number | null;
   role: string;
   avatar_url: string | null;
+  friendship_id?: number | null;
 }
 
 interface FriendshipItem {
@@ -49,6 +51,14 @@ interface BlockedUser {
   created_at: string;
 }
 
+interface PagedApiResponse<T> {
+  items: T[];
+  total: number;
+  page: number;
+  limit: number;
+  total_pages: number;
+}
+
 export default function FriendsPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -58,6 +68,11 @@ export default function FriendsPage() {
 
   const initialTab = (searchParams.get("tab") as "friends" | "requests" | "outgoing" | "blocks") || "friends";
   const [activeTab, setActiveTab] = useState<"friends" | "requests" | "outgoing" | "blocks">(initialTab);
+
+  // Pagination states
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
 
   // Data states
   const [friends, setFriends] = useState<FriendUser[]>([]);
@@ -77,19 +92,22 @@ export default function FriendsPage() {
   // Sync tab with URL
   const handleTabChange = (tab: "friends" | "requests" | "outgoing" | "blocks") => {
     setActiveTab(tab);
+    setPage(1);
     router.replace(`/friends?tab=${tab}`, { scroll: false });
   };
 
   // Fetch functions
-  const fetchFriends = useCallback(async (query: string = "") => {
+  const fetchFriends = useCallback(async (query: string = "", targetPage: number = 1) => {
     try {
       setIsLoading(true);
-      const params: Record<string, any> = { limit: 50 };
+      const params: Record<string, any> = { limit: 20, page: targetPage };
       if (query.trim()) {
         params.q = query.trim();
       }
-      const res = await apiClient.get<{ items: FriendUser[] }>("/friends", { params });
+      const res = await apiClient.get<PagedApiResponse<FriendUser>>("/friends", { params });
       setFriends(res.data.items);
+      setTotalPages(res.data.total_pages);
+      setTotalCount(res.data.total);
     } catch {
       toastRef.current.error("Gagal memuat daftar teman.");
     } finally {
@@ -97,13 +115,15 @@ export default function FriendsPage() {
     }
   }, []);
 
-  const fetchIncoming = useCallback(async () => {
+  const fetchIncoming = useCallback(async (targetPage: number = 1) => {
     try {
       setIsLoading(true);
-      const res = await apiClient.get<{ items: FriendshipItem[] }>("/friendships", {
-        params: { direction: "incoming", limit: 50 },
+      const res = await apiClient.get<PagedApiResponse<FriendshipItem>>("/friendships", {
+        params: { direction: "incoming", limit: 20, page: targetPage },
       });
       setIncomingRequests(res.data.items);
+      setTotalPages(res.data.total_pages);
+      setTotalCount(res.data.total);
     } catch {
       toastRef.current.error("Gagal memuat permohonan masuk.");
     } finally {
@@ -111,13 +131,15 @@ export default function FriendsPage() {
     }
   }, []);
 
-  const fetchOutgoing = useCallback(async () => {
+  const fetchOutgoing = useCallback(async (targetPage: number = 1) => {
     try {
       setIsLoading(true);
-      const res = await apiClient.get<{ items: FriendshipItem[] }>("/friendships", {
-        params: { direction: "outgoing", limit: 50 },
+      const res = await apiClient.get<PagedApiResponse<FriendshipItem>>("/friendships", {
+        params: { direction: "outgoing", limit: 20, page: targetPage },
       });
       setOutgoingRequests(res.data.items);
+      setTotalPages(res.data.total_pages);
+      setTotalCount(res.data.total);
     } catch {
       toastRef.current.error("Gagal memuat permohonan keluar.");
     } finally {
@@ -125,13 +147,15 @@ export default function FriendsPage() {
     }
   }, []);
 
-  const fetchBlocks = useCallback(async () => {
+  const fetchBlocks = useCallback(async (targetPage: number = 1) => {
     try {
       setIsLoading(true);
-      const res = await apiClient.get<{ items: BlockedUser[] }>("/blocks", {
-        params: { limit: 50 },
+      const res = await apiClient.get<PagedApiResponse<BlockedUser>>("/blocks", {
+        params: { limit: 20, page: targetPage },
       });
       setBlockedUsers(res.data.items);
+      setTotalPages(res.data.total_pages);
+      setTotalCount(res.data.total);
     } catch {
       toastRef.current.error("Gagal memuat daftar blokir.");
     } finally {
@@ -140,11 +164,11 @@ export default function FriendsPage() {
   }, []);
 
   useEffect(() => {
-    if (activeTab === "friends") fetchFriends(searchQuery);
-    else if (activeTab === "requests") fetchIncoming();
-    else if (activeTab === "outgoing") fetchOutgoing();
-    else if (activeTab === "blocks") fetchBlocks();
-  }, [activeTab, fetchFriends, fetchIncoming, fetchOutgoing, fetchBlocks, searchQuery]);
+    if (activeTab === "friends") fetchFriends(searchQuery, page);
+    else if (activeTab === "requests") fetchIncoming(page);
+    else if (activeTab === "outgoing") fetchOutgoing(page);
+    else if (activeTab === "blocks") fetchBlocks(page);
+  }, [activeTab, fetchFriends, fetchIncoming, fetchOutgoing, fetchBlocks, searchQuery, page]);
 
   // Actions
   const handleAcceptRequest = async (fid: number) => {
@@ -152,6 +176,7 @@ export default function FriendsPage() {
       setActionLoadingId(fid);
       await apiClient.patch(`/friendships/${fid}`, { status: "diterima" });
       setIncomingRequests((prev) => prev.filter((item) => item.friendship_id !== fid));
+      setTotalCount((c) => Math.max(0, c - 1));
       toast.success("Permohonan pertemanan diterima!");
     } catch (err: any) {
       toast.error(err.response?.data?.detail || "Gagal menerima permohonan.");
@@ -165,6 +190,7 @@ export default function FriendsPage() {
       setActionLoadingId(fid);
       await apiClient.patch(`/friendships/${fid}`, { status: "ditolak" });
       setIncomingRequests((prev) => prev.filter((item) => item.friendship_id !== fid));
+      setTotalCount((c) => Math.max(0, c - 1));
       toast.info("Permohonan pertemanan ditolak.");
     } catch (err: any) {
       toast.error(err.response?.data?.detail || "Gagal menolak permohonan.");
@@ -178,6 +204,7 @@ export default function FriendsPage() {
       setActionLoadingId(fid);
       await apiClient.delete(`/friendships/${fid}`);
       setOutgoingRequests((prev) => prev.filter((item) => item.friendship_id !== fid));
+      setTotalCount((c) => Math.max(0, c - 1));
       toast.info("Permohonan pertemanan dibatalkan.");
     } catch (err: any) {
       toast.error(err.response?.data?.detail || "Gagal membatalkan permohonan.");
@@ -189,11 +216,17 @@ export default function FriendsPage() {
   const handleConfirmUnfriend = async () => {
     if (!unfriendTarget) return;
     try {
-      // Find friendship_id by viewing user profile or direct unfriend
-      const profRes = await apiClient.get<{ friendship_id: number | null }>(`/users/${unfriendTarget.user_id}`);
-      if (profRes.data.friendship_id) {
-        await apiClient.delete(`/friendships/${profRes.data.friendship_id}`);
+      // Direct unfriend using friendship_id if available, avoiding extra round-trip
+      let fid = unfriendTarget.friendship_id;
+      if (!fid) {
+        const profRes = await apiClient.get<{ friendship_id: number | null }>(`/users/${unfriendTarget.user_id}`);
+        fid = profRes.data.friendship_id;
+      }
+
+      if (fid) {
+        await apiClient.delete(`/friendships/${fid}`);
         setFriends((prev) => prev.filter((u) => u.user_id !== unfriendTarget.user_id));
+        setTotalCount((c) => Math.max(0, c - 1));
         toast.info(`Pertemanan dengan ${unfriendTarget.nama} telah diputus.`);
       }
       setUnfriendTarget(null);
@@ -207,6 +240,7 @@ export default function FriendsPage() {
     try {
       await apiClient.delete(`/blocks/${unblockTarget.blocked_id}`);
       setBlockedUsers((prev) => prev.filter((u) => u.blocked_id !== unblockTarget.blocked_id));
+      setTotalCount((c) => Math.max(0, c - 1));
       toast.success(`Blokir terhadap ${unblockTarget.nama} telah dibuka.`);
       setUnblockTarget(null);
     } catch (err: any) {
@@ -266,11 +300,6 @@ export default function FriendsPage() {
         >
           <UserCheck className="w-4 h-4" />
           <span>Permohonan Masuk</span>
-          {incomingRequests.length > 0 && (
-            <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-white text-primary">
-              {incomingRequests.length}
-            </span>
-          )}
         </button>
 
         <button
@@ -309,14 +338,18 @@ export default function FriendsPage() {
       {/* TAB 1: TEMAN SAYA */}
       {activeTab === "friends" && (
         <section id="panel-friends" role="tabpanel" aria-labelledby="tab-friends" className="space-y-4">
+          {/* Search Box */}
           <div className="relative">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Cari teman berdasarkan nama atau program studi..."
-              className="w-full pl-10 pr-4 py-2.5 bg-white border border-border-subtle rounded-xl text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary shadow-sm"
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setPage(1);
+              }}
+              placeholder="Cari teman berdasarkan nama, jurusan, atau NIM..."
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border-subtle bg-white text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary shadow-sm"
             />
           </div>
 
@@ -327,53 +360,55 @@ export default function FriendsPage() {
           ) : friends.length === 0 ? (
             <div className="p-8 rounded-2xl bg-white border border-border-subtle shadow-sm">
               <EmptyState
-                title={searchQuery ? "Teman Tidak Ditemukan" : "Belum Ada Teman Terhubung"}
+                title="Belum Ada Teman"
                 description={
                   searchQuery
-                    ? `Tidak ditemukan teman yang cocok dengan kata kunci "${searchQuery}".`
-                    : "Anda belum memiliki koneksi pertemanan aktif. Temukan rekan mahasiswa melalui Beranda atau Jelajah dan kirim permohonan berteman."
+                    ? `Tidak ditemukan teman dengan kata kunci "${searchQuery}".`
+                    : "Jelajahi profil mahasiswa lain atau terima permohonan koneksi untuk menambah teman."
                 }
                 icon={Users}
               />
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {friends.map((friend) => (
                 <div
                   key={friend.user_id}
-                  className="p-5 rounded-2xl bg-white border border-border-subtle shadow-sm flex flex-col justify-between space-y-4 hover:border-slate-300 transition-colors"
+                  className="p-4 rounded-2xl bg-white border border-border-subtle shadow-sm hover:shadow-md transition-shadow flex items-center justify-between gap-3"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-xl bg-indigo-50 border border-indigo-200 text-primary font-bold text-base flex items-center justify-center flex-shrink-0">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 text-primary font-bold text-xs flex items-center justify-center flex-shrink-0">
                       {getInitials(friend.nama)}
                     </div>
                     <div className="min-w-0">
-                      <h3 className="text-sm font-bold text-slate-900 truncate font-heading">
+                      <Link
+                        href={`/profile/${friend.user_id}`}
+                        className="text-xs font-bold text-slate-900 truncate hover:text-primary transition-colors block font-heading"
+                      >
                         {friend.nama}
-                      </h3>
-                      {friend.jurusan && (
-                        <p className="text-xs text-slate-500 truncate">{friend.jurusan}</p>
-                      )}
-                      {friend.angkatan && (
-                        <p className="text-[11px] text-slate-400">Angkatan {friend.angkatan}</p>
-                      )}
+                      </Link>
+                      <p className="text-[11px] text-slate-500 truncate font-body">
+                        {friend.jurusan || "Mahasiswa"}
+                        {friend.angkatan && ` • Angkatan ${friend.angkatan}`}
+                      </p>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 pt-2 border-t border-border-subtle">
+                  <div className="flex items-center gap-1.5 flex-shrink-0">
                     <Link
                       href={`/profile/${friend.user_id}`}
-                      className="flex-1 py-1.5 px-3 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-primary text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors border border-indigo-200"
+                      className="p-2 rounded-xl text-slate-400 hover:text-primary hover:bg-indigo-50 transition-colors"
+                      title="Lihat Profil"
+                      aria-label={`Lihat Profil ${friend.nama}`}
                     >
-                      <span>Profil</span>
-                      <ExternalLink className="w-3 h-3" />
+                      <ExternalLink className="w-4 h-4" />
                     </Link>
                     <button
                       type="button"
                       onClick={() => setUnfriendTarget(friend)}
-                      className="p-1.5 rounded-xl border border-border-subtle text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+                      className="p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
                       title="Putus Pertemanan"
-                      aria-label="Putus Pertemanan"
+                      aria-label={`Putus Pertemanan dengan ${friend.nama}`}
                     >
                       <UserMinus className="w-4 h-4" />
                     </button>
@@ -396,8 +431,8 @@ export default function FriendsPage() {
             <div className="p-8 rounded-2xl bg-white border border-border-subtle shadow-sm">
               <EmptyState
                 title="Tidak Ada Permohonan Masuk"
-                description="Saat ini tidak ada mahasiswa lain yang sedang menunggu konfirmasi pertemanan dari Anda."
-                icon={FolderOpen}
+                description="Saat ini tidak ada mahasiswa lain yang sedang menunggu konfirmasi koneksi dari Anda."
+                icon={UserCheck}
               />
             </div>
           ) : (
@@ -407,18 +442,18 @@ export default function FriendsPage() {
                   key={req.friendship_id}
                   className="p-4 rounded-2xl bg-white border border-border-subtle shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-200 text-primary font-bold text-sm flex items-center justify-center flex-shrink-0">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-200 text-primary font-bold text-xs flex items-center justify-center flex-shrink-0">
                       {getInitials(req.counterpart.nama)}
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <Link
                         href={`/profile/${req.counterpart.user_id}`}
-                        className="text-xs font-bold text-slate-900 font-heading hover:underline block"
+                        className="text-xs font-bold text-slate-900 truncate hover:text-primary block font-heading"
                       >
                         {req.counterpart.nama}
                       </Link>
-                      <p className="text-[11px] text-slate-500">
+                      <p className="text-[11px] text-slate-500 font-body">
                         {req.counterpart.jurusan || "Mahasiswa"}
                         {req.counterpart.angkatan && ` • Angkatan ${req.counterpart.angkatan}`}
                       </p>
@@ -430,7 +465,7 @@ export default function FriendsPage() {
                       type="button"
                       onClick={() => handleAcceptRequest(req.friendship_id)}
                       disabled={actionLoadingId === req.friendship_id}
-                      className="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-sm disabled:opacity-50"
+                      className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-sm transition-all disabled:opacity-50"
                     >
                       {actionLoadingId === req.friendship_id ? (
                         <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -443,7 +478,7 @@ export default function FriendsPage() {
                       type="button"
                       onClick={() => handleRejectRequest(req.friendship_id)}
                       disabled={actionLoadingId === req.friendship_id}
-                      className="px-3 py-1.5 rounded-xl border border-border-subtle text-slate-600 hover:bg-slate-100 text-xs font-medium transition-colors disabled:opacity-50 flex items-center gap-1"
+                      className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium transition-all border border-border-subtle disabled:opacity-50"
                     >
                       <UserX className="w-3.5 h-3.5" />
                       <span>Tolak</span>
@@ -467,8 +502,8 @@ export default function FriendsPage() {
             <div className="p-8 rounded-2xl bg-white border border-border-subtle shadow-sm">
               <EmptyState
                 title="Tidak Ada Permintaan Terkirim"
-                description="Anda belum memiliki permohonan pertemanan keluar yang sedang menunggu respon."
-                icon={FolderOpen}
+                description="Semua permohonan koneksi yang Anda kirim telah direspon atau belum ada yang diajukan."
+                icon={Clock}
               />
             </div>
           ) : (
@@ -478,25 +513,26 @@ export default function FriendsPage() {
                   key={req.friendship_id}
                   className="p-4 rounded-2xl bg-white border border-border-subtle shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 font-bold text-sm flex items-center justify-center flex-shrink-0">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 text-slate-600 font-bold text-xs flex items-center justify-center flex-shrink-0">
                       {getInitials(req.counterpart.nama)}
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <Link
                         href={`/profile/${req.counterpart.user_id}`}
-                        className="text-xs font-bold text-slate-900 font-heading hover:underline block"
+                        className="text-xs font-bold text-slate-900 truncate hover:text-primary block font-heading"
                       >
                         {req.counterpart.nama}
                       </Link>
-                      <p className="text-[11px] text-slate-500">
+                      <p className="text-[11px] text-slate-500 font-body">
                         {req.counterpart.jurusan || "Mahasiswa"}
+                        {req.counterpart.angkatan && ` • Angkatan ${req.counterpart.angkatan}`}
                       </p>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-2 self-end sm:self-auto">
-                    <span className="text-xs text-amber-600 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-xl flex items-center gap-1 font-medium">
+                    <span className="flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200">
                       <Clock className="w-3.5 h-3.5" />
                       <span>Menunggu Respon</span>
                     </span>
@@ -573,6 +609,36 @@ export default function FriendsPage() {
             </div>
           )}
         </section>
+      )}
+
+      {/* Pagination Controls */}
+      {totalPages > 1 && !isLoading && (
+        <div className="flex items-center justify-between pt-4 border-t border-border-subtle text-xs text-slate-600">
+          <span>
+            Halaman <span className="font-semibold text-slate-900">{page}</span> dari{" "}
+            <span className="font-semibold text-slate-900">{totalPages}</span> (Total {totalCount} data)
+          </span>
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page <= 1}
+              className="p-1.5 rounded-lg border border-slate-200 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              aria-label="Halaman Sebelumnya"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            <button
+              type="button"
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              disabled={page >= totalPages}
+              className="p-1.5 rounded-lg border border-slate-200 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              aria-label="Halaman Berikutnya"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
       )}
 
       {/* Dialog Unfriend */}

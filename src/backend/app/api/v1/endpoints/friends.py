@@ -20,7 +20,7 @@ router = APIRouter()
     summary="Ambil Daftar Teman Aktif Mahasiswa (US-13)",
 )
 def list_active_friends(
-    q: Optional[str] = Query(None, description="Pencarian nama atau jurusan teman"),
+    q: Optional[str] = Query(None, description="Pencarian nama, jurusan, atau NIM teman"),
     page: int = Query(1, ge=1, description="Nomor halaman"),
     limit: int = Query(20, ge=1, le=50, description="Jumlah item per halaman"),
     db: Session = Depends(get_db),
@@ -41,7 +41,7 @@ def list_active_friends(
     )
 
     query = (
-        db.query(User)
+        db.query(User, Friendship.friendship_id)
         .join(Friendship, friendship_cond)
         .filter(Friendship.status == "diterima")
     )
@@ -49,7 +49,7 @@ def list_active_friends(
     # Exclude blocked counterparts
     query = exclude_hidden(query, viewer_id, User.user_id)
 
-    # Search filter with escaped SQL LIKE characters
+    # Search filter with escaped SQL LIKE characters (nama, jurusan, nim)
     if q:
         cleaned_q = q.strip()
         if cleaned_q:
@@ -59,11 +59,12 @@ def list_active_friends(
                 or_(
                     User.nama.ilike(pattern),
                     User.jurusan.ilike(pattern),
+                    User.nim.ilike(pattern),
                 )
             )
 
     total = query.count()
-    users = (
+    rows = (
         query.order_by(User.nama.asc())
         .offset((page - 1) * limit)
         .limit(limit)
@@ -78,8 +79,9 @@ def list_active_friends(
             angkatan=u.angkatan,
             role=u.role,
             avatar_url=None,
+            friendship_id=fid,
         )
-        for u in users
+        for u, fid in rows
     ]
 
     total_pages = math.ceil(total / limit) if total > 0 else 1

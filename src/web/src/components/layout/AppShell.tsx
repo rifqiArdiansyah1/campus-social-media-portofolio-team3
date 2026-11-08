@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { getInitials } from "@/lib/utils";
+import { apiClient } from "@/lib/api";
 import {
   Home,
   Users,
@@ -23,13 +24,27 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { user, role, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [incomingCount, setIncomingCount] = useState<number>(0);
 
   const isStaff = role === "moderator" || role === "admin";
+
+  useEffect(() => {
+    if (user && role === "mahasiswa") {
+      apiClient
+        .get<{ total: number }>("/friendships", { params: { direction: "incoming", limit: 1 } })
+        .then((res) => {
+          setIncomingCount(res.data.total ?? 0);
+        })
+        .catch(() => {
+          // Quiet ignore
+        });
+    }
+  }, [user, role, pathname]);
 
   // Desktop Sidebar Navigation Items
   const navItems = [
     { label: "Beranda", href: "/home", icon: Home },
-    { label: "Jejaring Teman", href: "/friends", icon: Users },
+    { label: "Jejaring Teman", href: "/friends", icon: Users, badge: incomingCount },
     { label: "Jelajah Rekomendasi", href: "/explore", icon: Compass },
     { label: "Portofolio", href: "/portfolio", icon: FolderKanban },
     ...(isStaff
@@ -79,6 +94,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           {navItems.map((item) => {
             const isActive = checkIsActive(item);
             const IconComponent = item.icon;
+            const badgeValue = item.badge;
             return (
               <Link
                 key={item.href}
@@ -90,7 +106,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 }`}
               >
                 <IconComponent className="w-5 h-5 flex-shrink-0" />
-                <span>{item.label}</span>
+                <span className="flex-1">{item.label}</span>
+                {Boolean(badgeValue && badgeValue > 0) && (
+                  <span
+                    className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                      isActive ? "bg-white text-primary" : "bg-rose-500 text-white"
+                    }`}
+                  >
+                    {badgeValue && badgeValue > 99 ? "99+" : badgeValue}
+                  </span>
+                )}
               </Link>
             );
           })}
@@ -140,10 +165,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <button
           type="button"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="p-2 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-100"
+          className="p-2 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-100 relative"
           aria-label="Toggle menu lainnya"
         >
           {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          {!mobileMenuOpen && incomingCount > 0 && (
+            <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-rose-500 rounded-full border-2 border-white" />
+          )}
         </button>
       </header>
 
@@ -175,6 +203,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               {navItems.map((item) => {
                 const isActive = checkIsActive(item);
                 const IconComponent = item.icon;
+                const badgeValue = item.badge;
                 return (
                   <Link
                     key={item.href}
@@ -187,7 +216,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     }`}
                   >
                     <IconComponent className="w-5 h-5 flex-shrink-0" />
-                    <span>{item.label}</span>
+                    <span className="flex-1">{item.label}</span>
+                    {Boolean(badgeValue && badgeValue > 0) && (
+                      <span
+                        className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                          isActive ? "bg-white text-primary" : "bg-rose-500 text-white"
+                        }`}
+                      >
+                        {badgeValue && badgeValue > 99 ? "99+" : badgeValue}
+                      </span>
+                    )}
                   </Link>
                 );
               })}
@@ -248,22 +286,21 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               }`}
             >
               <IconComponent className="w-5 h-5" />
-              <span className="text-[10px] mt-1 truncate">{item.label}</span>
+              <span className="text-[11px] mt-1 tracking-tight">{item.label}</span>
             </Link>
           );
         })}
 
-        {/* 4th button: "Lainnya" or "Moderasi" depending on role */}
         <button
           type="button"
           onClick={() => setMobileMenuOpen(true)}
-          className={`flex flex-col items-center justify-center w-16 py-1 text-center transition-colors ${
-            mobileMenuOpen ? "text-primary font-bold" : "text-slate-500 hover:text-slate-900"
-          }`}
-          aria-label="Menu navigasi lainnya"
+          className="flex flex-col items-center justify-center w-16 py-1 text-center text-slate-500 hover:text-slate-900 transition-colors relative"
         >
           <Menu className="w-5 h-5" />
-          <span className="text-[10px] mt-1">Lainnya</span>
+          <span className="text-[11px] mt-1 tracking-tight">Lainnya</span>
+          {incomingCount > 0 && (
+            <span className="absolute top-1 right-3 w-2.5 h-2.5 bg-rose-500 rounded-full border-2 border-white" />
+          )}
         </button>
       </nav>
     </div>

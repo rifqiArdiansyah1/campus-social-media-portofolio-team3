@@ -481,14 +481,15 @@ def get_post_detail(
     if not post:
         raise NotFoundError(code="POST_NOT_FOUND", detail="Postingan tidak ditemukan.")
 
-    # Mutual block check (anti-leak)
-    if is_target_blocking_viewer(db, current_user.user_id, post.user_id) or is_viewer_blocking_target(
-        db, current_user.user_id, post.user_id
-    ):
-        raise NotFoundError(code="POST_NOT_FOUND", detail="Postingan tidak ditemukan.")
-
     is_owner = (current_user.user_id == post.user_id)
     is_staff = can_moderate(current_user, post.user.jurusan if post.user else None)
+
+    # Mutual block check (anti-leak). Exemption: Authorized staff can inspect reported content
+    if not is_staff and (
+        is_target_blocking_viewer(db, current_user.user_id, post.user_id)
+        or is_viewer_blocking_target(db, current_user.user_id, post.user_id)
+    ):
+        raise NotFoundError(code="POST_NOT_FOUND", detail="Postingan tidak ditemukan.")
 
     # If post is not published/public, only owner or authorized staff can access
     if post.status not in ("tayang", "direview") and not (is_owner or is_staff):

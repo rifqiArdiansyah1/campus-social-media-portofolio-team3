@@ -250,15 +250,20 @@ describe("M06 Friendship & Social Interactions Tests", () => {
               angkatan: 2023,
               role: "mahasiswa",
               avatar_url: null,
+              friendship_id: 77,
             },
           ],
+          total: 1,
+          page: 1,
+          limit: 20,
+          total_pages: 1,
         },
       });
 
       render(<FriendsPage />);
 
       expect(await screen.findByText("Siti Rahmawati")).toBeInTheDocument();
-      expect(screen.getByText("Sistem Informasi")).toBeInTheDocument();
+      expect(screen.getByText(/Sistem Informasi/i)).toBeInTheDocument();
       expect(screen.getByRole("tab", { name: /Permohonan Masuk/i })).toBeInTheDocument();
       expect(screen.getByRole("tab", { name: /Daftar Blokir/i })).toBeInTheDocument();
     });
