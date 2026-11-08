@@ -202,3 +202,29 @@ def test_list_blocked_users_paginated(client, db_session: Session):
     assert data["total"] == 2
     assert len(data["items"]) == 2
     assert data["items"][0]["blocked_id"] in (blocked1.user_id, blocked2.user_id)
+
+
+def test_staff_exempt_from_block_when_viewing_profile_and_post(client, db_session: Session):
+    from app.models.entities import Post, UserBlock
+
+    student = create_user(db_session, nama="Mahasiswa Nakal", role="mahasiswa", jurusan="Teknik Informatika")
+    moderator = create_user(db_session, nama="Pak Kaprodi", role="moderator", jurusan="Teknik Informatika")
+
+    # Simulate an anomaly block record in DB: student blocks staff
+    anomaly_block = UserBlock(blocker_id=student.user_id, blocked_id=moderator.user_id)
+    db_session.add(anomaly_block)
+
+    # Create post by student
+    post = Post(user_id=student.user_id, isi="Postingan yang dilaporkan", status="tayang", tipe="umum")
+    db_session.add(post)
+    db_session.commit()
+
+    # 1. Moderator views student's profile -> 200 OK (staff is exempt from block 404)
+    res_prof = client.get(f"/api/v1/users/{student.user_id}", headers=auth_headers(moderator))
+    assert res_prof.status_code == 200
+    assert res_prof.json()["user_id"] == student.user_id
+
+    # 2. Moderator views reported post -> 200 OK (staff is exempt from post block 404)
+    res_post = client.get(f"/api/v1/posts/{post.post_id}", headers=auth_headers(moderator))
+    assert res_post.status_code == 200
+    assert res_post.json()["post_id"] == post.post_id

@@ -121,18 +121,20 @@ def create_friendship_request(
                 )
 
         if existing.status == "ditolak":
-            # Cooldown check: 24 hours
-            ref_time = existing.updated_at or existing.created_at
-            elapsed = (now - ref_time).total_seconds()
-            if elapsed < 86400:
-                remaining_seconds = max(1, int(86400 - elapsed))
-                raise RateLimitError(
-                    code="COOLDOWN_ACTIVE",
-                    detail="Permohonan pertemanan ke pengguna ini belum dapat diajukan kembali saat ini. Harap menunggu masa tenggang.",
-                    headers={"Retry-After": str(remaining_seconds)},
-                )
+            # Cooldown check: 24 hours only applies if the same requester who was rejected tries again.
+            # If the rejecting party (former addressee) is now initiating friendship, no cooldown applies.
+            if existing.requester_id == viewer_id:
+                ref_time = existing.updated_at or existing.created_at
+                elapsed = (now - ref_time).total_seconds()
+                if elapsed < 86400:
+                    remaining_seconds = max(1, int(86400 - elapsed))
+                    raise RateLimitError(
+                        code="COOLDOWN_ACTIVE",
+                        detail="Permohonan pertemanan ke pengguna ini belum dapat diajukan kembali saat ini. Harap menunggu masa tenggang.",
+                        headers={"Retry-After": str(remaining_seconds)},
+                    )
 
-            # Re-request after cooldown: update existing row
+            # Re-request: update existing row
             existing.requester_id = viewer_id
             existing.addressee_id = target_id
             existing.status = "menunggu"
@@ -361,6 +363,7 @@ def list_friendship_requests(
             angkatan=counterpart_user.angkatan,
             role=counterpart_user.role,
             avatar_url=None,
+            friendship_id=item.friendship_id,
         )
         result_items.append(
             FriendshipDetailResponse(

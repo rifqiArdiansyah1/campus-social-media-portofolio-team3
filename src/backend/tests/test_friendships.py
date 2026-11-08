@@ -349,3 +349,63 @@ def test_friends_query_pagination_and_escaping(client, db_session: Session):
     items = res_search.json()["items"]
     assert len(items) == 1
     assert items[0]["user_id"] == friend_special.user_id
+
+
+def test_cooldown_asymmetric_rejector_can_initiate_without_cooldown(client, db_session: Session):
+    user_a = create_user(db_session, nama="Mahasiswa A")
+    user_b = create_user(db_session, nama="Mahasiswa B")
+
+    # 1. User A sends request to User B
+    res_req = client.post(
+        "/api/v1/friendships",
+        json={"addressee_id": user_b.user_id},
+        headers=auth_headers(user_a),
+    )
+    assert res_req.status_code == 201
+    fid = res_req.json()["friendship_id"]
+
+    # 2. User B rejects User A
+    res_reject = client.patch(
+        f"/api/v1/friendships/{fid}",
+        json={"status": "ditolak"},
+        headers=auth_headers(user_b),
+    )
+    assert res_reject.status_code == 200
+
+    # 3. User A immediately tries again -> 429 COOLDOWN_ACTIVE
+    res_retry_a = client.post(
+        "/api/v1/friendships",
+        json={"addressee_id": user_b.user_id},
+        headers=auth_headers(user_a),
+    )
+    assert res_retry_a.status_code == 429
+    assert res_retry_a.json()["code"] == "COOLDOWN_ACTIVE"
+
+    # 4. But User B (the former rejector) decides to initiate friendship with User A -> Allowed immediately!
+    res_initiate_b = client.post(
+        "/api/v1/friendships",
+        json={"addressee_id": user_a.user_id},
+        headers=auth_headers(user_b),
+    )
+    assert res_initiate_b.status_code == 201
+    data_b = res_initiate_b.json()
+    assert data_b["friendship_id"] == fid
+    assert data_b["requester_id"] == user_b.user_id
+    assert data_b["addressee_id"] == user_a.user_id
+    assert data_b["status"] == "menunggu"
+
+
+def test_friends_endpoint_returns_friendship_id(client, db_session: Session):
+    user_me = create_user(db_session, nama="Saya Teman")
+    friend = create_user(db_session, nama="Teman Akrab")
+
+    f = Friendship(requester_id=user_me.user_id, addressee_id=friend.user_id, status="diterima")
+    db_session.add(f)
+    db_session.commit()
+
+    res = client.get("/api/v1/friends", headers=auth_headers(user_me))
+    assert res.status_code == 200
+    items = res.json()["items"]
+    assert len(items) == 1
+    assert items[0]["user_id"] == friend.user_id
+    assert items[0]["friendship_id"] == f.friendship_id

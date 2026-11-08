@@ -184,13 +184,16 @@ def get_user_public_profile(
     if not target_user:
         raise NotFoundError(code="USER_NOT_FOUND", detail="Pengguna tidak ditemukan")
 
+    is_staff_viewer = current_user.role in ("moderator", "admin")
+
     # If target has blocked viewer, return 404 to avoid leaking block status (anti-leak)
-    if is_target_blocking_viewer(db, viewer_id=current_user.user_id, target_id=id):
+    # Exemption: Staff (moderator/admin) can always view profiles for verification/moderation
+    if not is_staff_viewer and is_target_blocking_viewer(db, viewer_id=current_user.user_id, target_id=id):
         raise NotFoundError(code="USER_NOT_FOUND", detail="Pengguna tidak ditemukan")
 
     # If viewer has blocked target, return restricted profile so viewer can unblock
     blocked_by_me = is_viewer_blocking_target(db, viewer_id=current_user.user_id, target_id=id)
-    if blocked_by_me:
+    if blocked_by_me and not is_staff_viewer:
         return PublicProfileResponse(
             user_id=target_user.user_id,
             nama=target_user.nama,
@@ -235,7 +238,7 @@ def get_user_public_profile(
         friendship_status=friendship_status,
         friendship_id=friendship_id,
         friendship_direction=friendship_direction,
-        blocked_by_me=False,
+        blocked_by_me=blocked_by_me,
         nim=target_user.nim if can_view_sensitive else None,
         email=target_user.email if can_view_sensitive else None,
     )
