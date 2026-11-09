@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { getInitials } from "@/lib/utils";
+import { NotificationDropdown } from "@/components/layout/NotificationDropdown";
 import { apiClient } from "@/lib/api";
 import {
   Home,
@@ -75,18 +76,21 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {/* DESKTOP SIDEBAR (>= 1024px) */}
       <aside className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0 bg-white border-r border-border-subtle z-30">
         {/* Brand Header */}
-        <div className="h-16 flex items-center gap-3 px-6 border-b border-border-subtle">
-          <div className="w-9 h-9 rounded-xl bg-primary text-white flex items-center justify-center font-bold shadow-sm">
-            <GraduationCap className="w-5 h-5" />
+        <div className="h-16 flex items-center justify-between px-5 border-b border-border-subtle">
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-xl bg-primary text-white flex items-center justify-center font-bold shadow-sm">
+              <GraduationCap className="w-5 h-5" />
+            </div>
+            <div>
+              <h1 className="font-heading font-extrabold text-slate-900 text-base leading-tight">
+                CampusFolio
+              </h1>
+              <p className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">
+                {role || "Mahasiswa"}
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="font-heading font-extrabold text-slate-900 text-base leading-tight">
-              CampusFolio
-            </h1>
-            <p className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">
-              {role || "Mahasiswa"}
-            </p>
-          </div>
+          <NotificationDropdown />
         </div>
 
         {/* Navigation Items */}
@@ -162,17 +166,20 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </span>
         </div>
 
-        <button
-          type="button"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="p-2 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-100 relative"
-          aria-label="Toggle menu lainnya"
-        >
-          {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          {!mobileMenuOpen && incomingCount > 0 && (
-            <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-rose-500 rounded-full border-2 border-white" />
-          )}
-        </button>
+        <div className="flex items-center gap-1.5">
+          <NotificationDropdown />
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="p-2 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-100 relative"
+            aria-label="Toggle menu lainnya"
+          >
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            {!mobileMenuOpen && incomingCount > 0 && (
+              <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-rose-500 rounded-full border-2 border-white" />
+            )}
+          </button>
+        </div>
       </header>
 
       {/* MOBILE DRAWER / SHEET FOR "MORE" MENU (< 1024px) */}

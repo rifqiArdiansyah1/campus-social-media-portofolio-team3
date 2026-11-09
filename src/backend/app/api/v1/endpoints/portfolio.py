@@ -25,6 +25,7 @@ from app.schemas.portfolio import (
     SkillBriefResponse,
     mask_document_number,
 )
+from app.services.notification import create_notification
 from app.services.storage import storage_service
 from app.services.visibility import exclude_hidden, is_target_blocking_viewer
 
@@ -716,6 +717,33 @@ def review_portfolio_item(
         )
 
     db.commit()
+    try:
+        if payload.status_verifikasi == "terverifikasi":
+            create_notification(
+                db,
+                target_item.user_id,
+                "skpi_terverifikasi",
+                "Capaian SKPI Terverifikasi",
+                f"Capaian '{target_item.judul}' telah diverifikasi oleh tim peninjau.",
+                tautan="/portfolio",
+                ref_type="portfolio",
+                ref_id=target_item.portfolio_id,
+            )
+        elif payload.status_verifikasi == "ditolak":
+            create_notification(
+                db,
+                target_item.user_id,
+                "skpi_ditolak",
+                "Pengajuan SKPI Ditolak",
+                f"Pengajuan '{target_item.judul}' ditolak. Catatan: {payload.catatan_verifikasi or '-'}",
+                tautan="/portfolio",
+                ref_type="portfolio",
+                ref_id=target_item.portfolio_id,
+            )
+        db.commit()
+    except Exception as e:
+        logger.warning(f"Failed to create notification for portfolio review: {e}")
+
     db.refresh(target_item)
     return _serialize_detail(target_item)
 
