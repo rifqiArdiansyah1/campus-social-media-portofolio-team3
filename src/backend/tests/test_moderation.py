@@ -409,3 +409,88 @@ def test_admin_restore_takedown_success(client, db_session: Session):
     assert post.status == "tayang"
     assert post.deleted_by is None
     assert post.alasan_hapus is None
+
+
+def test_moderation_decision_state_guard_anti_race(client, db_session: Session):
+    kaprodi = create_user(db_session, role="moderator", jurusan="Teknik Informatika")
+    student = create_user(db_session, role="mahasiswa", jurusan="Teknik Informatika")
+    post = create_test_post(db_session, author=student, status="tayang")
+
+    # Trying to approve/reject an already published post should fail with 409 ALREADY_REVIEWED
+    resp = client.post(
+        f"/api/v1/moderation/{post.post_id}/decision",
+        json={"keputusan": "tolak", "catatan": "Catatan penolakan telat"},
+        headers=auth_headers(kaprodi),
+    )
+    assert resp.status_code == 409
+    assert resp.json()["code"] == "ALREADY_REVIEWED"
+
+
+def test_report_resolve_reverts_post_status_to_tayang(client, db_session: Session):
+    kaprodi = create_user(db_session, role="moderator", jurusan="Teknik Informatika")
+    student1 = create_user(db_session, role="mahasiswa", jurusan="Teknik Informatika")
+    student2 = create_user(db_session, role="mahasiswa", jurusan="Teknik Informatika")
+    post = create_test_post(db_session, author=student1, status="tayang")
+
+    # Student 2 reports post -> shifts to 'direview'
+    client.post(
+        "/api/v1/reports",
+        json={"post_id": post.post_id, "alasan": "Laporan salah sasaran", "kategori_laporan": "spam"},
+        headers=auth_headers(student2),
+    )
+    db_session.refresh(post)
+    assert post.status == "direview"
+
+    # Kaprodi dismisses the report from reports tab
+    rep = db_session.query(Report).filter(Report.post_id == post.post_id).first()
+    patch_resp = client.patch(
+        f"/api/v1/reports/{rep.report_id}",
+        json={"status": "diabaikan", "tindakan_diambil": "laporan_ditolak"},
+        headers=auth_headers(kaprodi),
+    )
+    assert patch_resp.status_code == 200
+
+    # Post status should automatically revert to 'tayang'
+    db_session.refresh(post)
+    assert post.status == "tayang"
+
+
+def test_moderation_note_includes_catatan_moderator(client, db_session: Session):
+    kaprodi = create_user(db_session, role="moderator", jurusan="Teknik Informatika")
+    student = create_user(db_session, role="mahasiswa", jurusan="Teknik Informatika")
+    post = create_test_post(db_session, author=student, status="menunggu_review")
+
+    # Kaprodi requests revision
+    client.post(
+        f"/api/v1/moderation/{post.post_id}/decision",
+        json={"keputusan": "minta_revisi", "catatan": "Perbaiki sitasi dan sumber referensi."},
+        headers=auth_headers(kaprodi),
+    )
+
+    # Student checks post detail
+    resp = client.get(f"/api/v1/posts/{post.post_id}", headers=auth_headers(student))
+    assert resp.status_code == 200
+    assert resp.json()["moderation_note"] == "Perbaiki sitasi dan sumber referensi."
+
+
+def test_can_report_flag_false_when_active_report_exists(client, db_session: Session):
+    student1 = create_user(db_session, role="mahasiswa", jurusan="Teknik Informatika")
+    student2 = create_user(db_session, role="mahasiswa", jurusan="Teknik Informatika")
+    post = create_test_post(db_session, author=student1, status="tayang")
+
+    # Before reporting, can_report is True for student2
+    resp = client.get(f"/api/v1/posts/{post.post_id}", headers=auth_headers(student2))
+    assert resp.status_code == 200
+    assert resp.json()["can_report"] is True
+
+    # Student 2 reports the post
+    client.post(
+        "/api/v1/reports",
+        json={"post_id": post.post_id, "alasan": "Spam iklan terdeteksi", "kategori_laporan": "spam"},
+        headers=auth_headers(student2),
+    )
+
+    # After reporting, can_report must be False
+    resp_after = client.get(f"/api/v1/posts/{post.post_id}", headers=auth_headers(student2))
+    assert resp_after.status_code == 200
+    assert resp_after.json()["can_report"] is False

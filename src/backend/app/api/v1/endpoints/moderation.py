@@ -6,7 +6,7 @@ from sqlalchemy import func
 from sqlalchemy.orm import Session, joinedload, selectinload
 
 from app.core.database import get_db
-from app.core.exceptions import ForbiddenError, NotFoundError
+from app.core.exceptions import ConflictError, ForbiddenError, NotFoundError
 from app.core.security import apply_moderation_scope, can_moderate, require_roles
 from app.models.entities import ModerationRecord, PortfolioItem, Post, Report, User
 from app.schemas.moderation import (
@@ -162,7 +162,15 @@ def submit_moderation_decision(
             detail="Hanya Administrator Kampus yang berwenang memutuskan moderasi postingan staf/dosen.",
         )
 
-    # 4. If action is takedown / hapus_konten, delegate to takedown logic
+    # 4. State guard: Decision (setujui, tolak, minta_revisi) only valid for posts pending review
+    if payload.keputusan in ("setujui", "tolak", "minta_revisi"):
+        if post.status not in ("menunggu_review", "direview"):
+            raise ConflictError(
+                code="ALREADY_REVIEWED",
+                detail="Postingan telah ditinjau atau diputuskan oleh peninjau lain.",
+            )
+
+    # 5. If action is takedown / hapus_konten, delegate to takedown logic
     if payload.keputusan == "hapus_konten":
         from app.api.v1.endpoints.posts import takedown_post
 

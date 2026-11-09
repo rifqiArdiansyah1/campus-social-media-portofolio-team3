@@ -78,6 +78,10 @@ export default function ModerationAuditPage() {
   // Tab 2: User Reports
   const [reports, setReports] = useState<ReportItem[]>([]);
   const [isLoadingReports, setIsLoadingReports] = useState(false);
+  const [reportOffset, setReportOffset] = useState<number>(0);
+  const [hasMoreReports, setHasMoreReports] = useState<boolean>(false);
+  const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
+  const REPORT_LIMIT = 20;
   const [reportFilter, setReportFilter] = useState<string>("baru");
 
   // Decision Modal
@@ -121,19 +125,41 @@ export default function ModerationAuditPage() {
   }, [toast]);
 
   // Fetch reports queue
-  const fetchReports = useCallback(async () => {
-    try {
-      setIsLoadingReports(true);
-      const res = await apiClient.get<ReportItem[]>("/reports", {
-        params: reportFilter ? { status: reportFilter } : {},
-      });
-      setReports(res.data);
-    } catch (err: any) {
-      toast.error(err.response?.data?.detail || "Gagal memuat daftar laporan pengguna.");
-    } finally {
-      setIsLoadingReports(false);
-    }
-  }, [reportFilter, toast]);
+  const fetchReports = useCallback(
+    async (offset = 0, isAppend = false) => {
+      try {
+        if (isAppend) {
+          setIsLoadingMore(true);
+        } else {
+          setIsLoadingReports(true);
+        }
+        const res = await apiClient.get<ReportItem[]>("/reports", {
+          params: {
+            ...(reportFilter ? { status: reportFilter } : {}),
+            limit: REPORT_LIMIT,
+            offset,
+          },
+        });
+        if (isAppend) {
+          setReports((prev) => [...prev, ...res.data]);
+        } else {
+          setReports(res.data);
+        }
+        setHasMoreReports(res.data.length === REPORT_LIMIT);
+        setReportOffset(offset);
+      } catch (err: any) {
+        toast.error(err.response?.data?.detail || "Gagal memuat daftar laporan pengguna.");
+      } finally {
+        setIsLoadingReports(false);
+        setIsLoadingMore(false);
+      }
+    },
+    [reportFilter, toast]
+  );
+
+  const handleLoadMoreReports = () => {
+    fetchReports(reportOffset + REPORT_LIMIT, true);
+  };
 
   useEffect(() => {
     fetchSummary();
@@ -618,6 +644,20 @@ export default function ModerationAuditPage() {
                     )}
                   </div>
                 ))}
+
+                {hasMoreReports && (
+                  <div className="pt-2 text-center">
+                    <button
+                      type="button"
+                      onClick={handleLoadMoreReports}
+                      disabled={isLoadingMore}
+                      className="px-4 py-2 text-xs font-semibold text-slate-700 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors inline-flex items-center gap-1.5 shadow-sm disabled:opacity-50"
+                    >
+                      {isLoadingMore && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                      <span>Muat Laporan Sebelumnya</span>
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </div>

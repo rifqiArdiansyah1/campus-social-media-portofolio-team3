@@ -248,6 +248,25 @@ def update_report_action(
             ref_type="report",
             ref_id=report.report_id,
         )
+
+        # Check if any other active reports remain for this post
+        remaining_active = (
+            db.query(Report)
+            .filter(
+                Report.post_id == report.post_id,
+                Report.report_id != report.report_id,
+                Report.status.in_(["baru", "diproses"]),
+            )
+            .count()
+        )
+        if (
+            remaining_active == 0
+            and report.post
+            and report.post.status == "direview"
+            and not report.post.is_deleted
+        ):
+            # Revert post status to 'tayang' as no open complaints remain
+            report.post.status = "tayang"
     else:
         report.resolved_at = None
 
