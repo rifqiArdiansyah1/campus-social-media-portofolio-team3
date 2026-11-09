@@ -123,11 +123,10 @@ def format_post_detail(post: Post, current_user: User) -> PostDetailResponse:
     is_owner = (current_user.user_id == post.user_id)
     is_staff = can_moderate(current_user, post.user.jurusan if post.user else None)
 
-    # 1. Status Masking:
-    # If a post has status 'direview' (currently reported), mask as 'tayang' for non-staff viewers
-    # (both the author and public see it as 'tayang' so investigation is not revealed prematurely)
+    # 1. Status Masking for public viewers:
+    # If a post has status 'direview' (currently reported), mask as 'tayang' for general public
     display_status = post.status
-    if not is_staff and display_status == "direview":
+    if not (is_owner or is_staff) and display_status == "direview":
         display_status = "tayang"
 
     # 2. Moderation Note & AI Explanation Privacy:
