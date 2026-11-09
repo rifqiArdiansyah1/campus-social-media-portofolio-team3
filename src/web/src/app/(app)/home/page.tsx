@@ -7,6 +7,8 @@ import { apiClient } from "@/lib/api";
 import { PostCard, PostViewModel } from "@/components/features/PostCard";
 import { CreatePostCard } from "@/components/features/CreatePostCard";
 import { FriendRequestWidget, FriendRequestItem } from "@/components/features/FriendRequestWidget";
+import { ReportPostModal } from "@/components/features/ReportPostModal";
+import { TakedownPostModal } from "@/components/features/TakedownPostModal";
 import { EmptyState } from "@/components/common/EmptyState";
 import {
   Sparkles,
@@ -103,6 +105,10 @@ export default function HomePage() {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(false);
+
+  // M08 Modals
+  const [reportModalPost, setReportModalPost] = useState<{ id: number; authorName: string } | null>(null);
+  const [takedownModalPost, setTakedownModalPost] = useState<{ id: number; authorName: string } | null>(null);
 
   // Live Friend requests for M06
   const [friendRequests, setFriendRequests] = useState<FriendRequestItem[]>([]);
@@ -203,11 +209,13 @@ export default function HomePage() {
   };
 
   const handleTakedown = (postId: number) => {
-    toast.warning(`Permintaan takedown post #${postId} diajukan ke antrean moderasi (M08).`);
+    const post = posts.find((p) => p.id === postId);
+    setTakedownModalPost({ id: postId, authorName: post?.author_name || "Pengguna" });
   };
 
   const handleReport = (postId: number) => {
-    toast.info(`Laporan untuk post #${postId} berhasil dikirim ke antrean review (M08).`);
+    const post = posts.find((p) => p.id === postId);
+    setReportModalPost({ id: postId, authorName: post?.author_name || "Pengguna" });
   };
 
   const handleAcceptFriend = async (reqId: number) => {
@@ -395,6 +403,33 @@ export default function HomePage() {
           </p>
         </div>
       </aside>
+
+      {/* M08 Feature Modals */}
+      <ReportPostModal
+        isOpen={Boolean(reportModalPost)}
+        postId={reportModalPost?.id ?? null}
+        postAuthorName={reportModalPost?.authorName}
+        onClose={() => setReportModalPost(null)}
+        onSuccess={() => {
+          if (reportModalPost) {
+            setPosts((prev) =>
+              prev.map((p) =>
+                p.id === reportModalPost.id ? { ...p, can_report: false } : p
+              )
+            );
+          }
+        }}
+      />
+
+      <TakedownPostModal
+        isOpen={Boolean(takedownModalPost)}
+        postId={takedownModalPost?.id ?? null}
+        postAuthorName={takedownModalPost?.authorName}
+        onClose={() => setTakedownModalPost(null)}
+        onSuccess={(deletedId) => {
+          setPosts((prev) => prev.filter((p) => p.id !== deletedId));
+        }}
+      />
     </div>
   );
 }

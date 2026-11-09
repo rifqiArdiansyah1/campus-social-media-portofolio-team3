@@ -895,6 +895,159 @@
             }
           }
         }
+      },
+      "delete": {
+        "tags": [
+          "Posts & Feed (M05)"
+        ],
+        "summary": "Hapus Postingan Mandiri oleh Penulis",
+        "operationId": "delete_post_api_v1_posts__id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/posts/{id}/takedown": {
+      "post": {
+        "tags": [
+          "Posts & Feed (M05)"
+        ],
+        "summary": "Takedown Postingan Pelanggar (Kaprodi Se-Prodi & Admin)",
+        "operationId": "takedown_post_endpoint_api_v1_posts__id__takedown_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostTakedownRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/posts/{id}/restore": {
+      "post": {
+        "tags": [
+          "Posts & Feed (M05)"
+        ],
+        "summary": "Pemulihan Postingan Takedown (Khusus Admin Kampus)",
+        "operationId": "restore_post_endpoint_api_v1_posts__id__restore_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostRestoreRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/v1/friendships": {
@@ -2115,6 +2268,312 @@
         }
       }
     },
+    "/api/v1/moderation/queue": {
+      "get": {
+        "tags": [
+          "AI Content Moderation (AI-2)"
+        ],
+        "summary": "Antrean Postingan AI Triage & Berisiko (Kaprodi Se-Prodi & Admin)",
+        "description": "Mengambil antrean postingan yang membutuhkan peninjauan manusia:\n- Status: 'menunggu_review' atau 'direview'\n- Filter berdasarkan program studi Kaprodi (Admin global)\n- Prioritas AI: 'berpotensi_melanggar' teratas, lalu 'perlu_review', lalu FIFO created_at.",
+        "operationId": "get_moderation_queue_api_v1_moderation_queue_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ModerationQueueItemResponse"
+                  },
+                  "type": "array",
+                  "title": "Response Get Moderation Queue Api V1 Moderation Queue Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/moderation/{post_id}/decision": {
+      "post": {
+        "tags": [
+          "AI Content Moderation (AI-2)"
+        ],
+        "summary": "Eksekusi Keputusan Moderasi Konten (Kaprodi Se-Prodi & Admin)",
+        "operationId": "submit_moderation_decision_api_v1_moderation__post_id__decision_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "post_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Post Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ModerationDecisionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/moderation/summary": {
+      "get": {
+        "tags": [
+          "AI Content Moderation (AI-2)"
+        ],
+        "summary": "Ringkasan Metrik Moderasi & Tinjauan (Dashboard M11)",
+        "operationId": "get_moderation_summary_api_v1_moderation_summary_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModerationSummaryResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/reports": {
+      "post": {
+        "tags": [
+          "Reports & Moderation (M08)"
+        ],
+        "summary": "Laporkan Postingan Melanggar (Mahasiswa)",
+        "operationId": "create_report_api_v1_reports_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReportCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Reports & Moderation (M08)"
+        ],
+        "summary": "Daftar Antrean Laporan Pelanggaran (Kaprodi Se-Prodi & Admin)",
+        "operationId": "get_reports_api_v1_reports_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "baru",
+                    "diproses",
+                    "selesai",
+                    "diabaikan"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter berdasarkan status laporan",
+              "title": "Status"
+            },
+            "description": "Filter berdasarkan status laporan"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "description": "Jumlah data per halaman (maksimal 50)",
+              "default": 20,
+              "title": "Limit"
+            },
+            "description": "Jumlah data per halaman (maksimal 50)"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Offset pagination",
+              "default": 0,
+              "title": "Offset"
+            },
+            "description": "Offset pagination"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReportResponse"
+                  },
+                  "title": "Response Get Reports Api V1 Reports Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/reports/{id}": {
+      "patch": {
+        "tags": [
+          "Reports & Moderation (M08)"
+        ],
+        "summary": "Tindak Lanjut Laporan Individu (Kaprodi Se-Prodi & Admin)",
+        "operationId": "update_report_action_api_v1_reports__id__patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReportActionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/": {
       "get": {
         "tags": [
@@ -2737,6 +3196,160 @@
         ],
         "title": "LoginRequest"
       },
+      "ModerationDecisionRequest": {
+        "properties": {
+          "keputusan": {
+            "type": "string",
+            "enum": [
+              "setujui",
+              "tolak",
+              "minta_revisi",
+              "hapus_konten"
+            ],
+            "title": "Keputusan",
+            "description": "Keputusan manusia atas konten"
+          },
+          "catatan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Catatan",
+            "description": "Catatan pertimbangan (wajib untuk tolak, minta_revisi, hapus_konten)"
+          }
+        },
+        "type": "object",
+        "required": [
+          "keputusan"
+        ],
+        "title": "ModerationDecisionRequest"
+      },
+      "ModerationQueueItemResponse": {
+        "properties": {
+          "post_id": {
+            "type": "integer",
+            "title": "Post Id"
+          },
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "author_name": {
+            "type": "string",
+            "title": "Author Name"
+          },
+          "author_jurusan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Author Jurusan"
+          },
+          "isi": {
+            "type": "string",
+            "title": "Isi"
+          },
+          "gambar_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gambar Url"
+          },
+          "tipe": {
+            "type": "string",
+            "title": "Tipe"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "label_ai": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label Ai"
+          },
+          "kategori_ai": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kategori Ai"
+          },
+          "confidence": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Confidence"
+          },
+          "penjelasan_ai": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Penjelasan Ai"
+          },
+          "jumlah_laporan_aktif": {
+            "type": "integer",
+            "title": "Jumlah Laporan Aktif",
+            "default": 0
+          },
+          "kategori_laporan": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Kategori Laporan"
+          }
+        },
+        "type": "object",
+        "required": [
+          "post_id",
+          "user_id",
+          "author_name",
+          "isi",
+          "tipe",
+          "status",
+          "created_at"
+        ],
+        "title": "ModerationQueueItemResponse"
+      },
       "ModerationRequest": {
         "properties": {
           "post_id": {
@@ -2810,6 +3423,29 @@
           "explanation"
         ],
         "title": "ModerationResponse"
+      },
+      "ModerationSummaryResponse": {
+        "properties": {
+          "post_menunggu": {
+            "type": "integer",
+            "title": "Post Menunggu"
+          },
+          "laporan_baru": {
+            "type": "integer",
+            "title": "Laporan Baru"
+          },
+          "portofolio_menunggu": {
+            "type": "integer",
+            "title": "Portofolio Menunggu"
+          }
+        },
+        "type": "object",
+        "required": [
+          "post_menunggu",
+          "laporan_baru",
+          "portofolio_menunggu"
+        ],
+        "title": "ModerationSummaryResponse"
       },
       "MyProfileResponse": {
         "properties": {
@@ -3803,6 +4439,20 @@
         ],
         "title": "PostFeedResponse"
       },
+      "PostRestoreRequest": {
+        "properties": {
+          "alasan_pemulihan": {
+            "type": "string",
+            "title": "Alasan Pemulihan",
+            "description": "Alasan pemulihan takedown oleh Admin kampus (minimal 5 karakter)"
+          }
+        },
+        "type": "object",
+        "required": [
+          "alasan_pemulihan"
+        ],
+        "title": "PostRestoreRequest"
+      },
       "PostSkillTagResponse": {
         "properties": {
           "skill_id": {
@@ -3825,6 +4475,20 @@
           "tipe"
         ],
         "title": "PostSkillTagResponse"
+      },
+      "PostTakedownRequest": {
+        "properties": {
+          "alasan_hapus": {
+            "type": "string",
+            "title": "Alasan Hapus",
+            "description": "Alasan penegakan takedown oleh staf kampus (minimal 5 karakter)"
+          }
+        },
+        "type": "object",
+        "required": [
+          "alasan_hapus"
+        ],
+        "title": "PostTakedownRequest"
       },
       "PostUpdate": {
         "properties": {
@@ -4232,6 +4896,199 @@
           "angkatan"
         ],
         "title": "RegisterRequest"
+      },
+      "ReportActionRequest": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "diproses",
+              "selesai",
+              "diabaikan"
+            ],
+            "title": "Status",
+            "description": "Status baru laporan"
+          },
+          "tindakan_diambil": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "postingan_dihapus",
+                  "peringatan",
+                  "laporan_ditolak",
+                  "sedang_investigasi"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tindakan Diambil",
+            "description": "Tindakan yang diambil"
+          },
+          "catatan_tinjauan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Catatan Tinjauan",
+            "description": "Catatan tindakan moderator/admin"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "title": "ReportActionRequest"
+      },
+      "ReportCreate": {
+        "properties": {
+          "post_id": {
+            "type": "integer",
+            "title": "Post Id"
+          },
+          "alasan": {
+            "type": "string",
+            "title": "Alasan",
+            "description": "Penjelasan detail pelanggaran (minimal 5 karakter)"
+          },
+          "kategori_laporan": {
+            "type": "string",
+            "enum": [
+              "spam",
+              "konten_tidak_pantas",
+              "ujaran_kebencian",
+              "misinformasi",
+              "plagiarisme",
+              "lainnya"
+            ],
+            "title": "Kategori Laporan",
+            "description": "Kategori pelanggaran",
+            "default": "konten_tidak_pantas"
+          }
+        },
+        "type": "object",
+        "required": [
+          "post_id",
+          "alasan"
+        ],
+        "title": "ReportCreate"
+      },
+      "ReportResponse": {
+        "properties": {
+          "report_id": {
+            "type": "integer",
+            "title": "Report Id"
+          },
+          "post_id": {
+            "type": "integer",
+            "title": "Post Id"
+          },
+          "pelapor_id": {
+            "type": "integer",
+            "title": "Pelapor Id"
+          },
+          "pelapor_nama": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pelapor Nama"
+          },
+          "post_isi_snippet": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Post Isi Snippet"
+          },
+          "alasan": {
+            "type": "string",
+            "title": "Alasan"
+          },
+          "kategori_laporan": {
+            "type": "string",
+            "title": "Kategori Laporan"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "ditinjau_oleh": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ditinjau Oleh"
+          },
+          "tindakan_diambil": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tindakan Diambil"
+          },
+          "catatan_tinjauan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Catatan Tinjauan"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "resolved_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Resolved At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "report_id",
+          "post_id",
+          "pelapor_id",
+          "alasan",
+          "kategori_laporan",
+          "status",
+          "created_at"
+        ],
+        "title": "ReportResponse"
       },
       "ReviewQueueItemResponse": {
         "properties": {

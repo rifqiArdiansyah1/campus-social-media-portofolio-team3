@@ -82,6 +82,34 @@ class PostDeleteRequest(BaseModel):
     alasan_hapus: str = Field(..., description="Alasan penghapusan/takedown postingan oleh moderator/admin")
 
 
+class PostTakedownRequest(BaseModel):
+    alasan_hapus: str = Field(..., description="Alasan penegakan takedown oleh staf kampus (minimal 5 karakter)")
+
+    @field_validator("alasan_hapus")
+    @classmethod
+    def validate_alasan(cls, v: str) -> str:
+        cleaned = v.strip() if v else ""
+        if len(cleaned) < 5:
+            raise ValueError("Alasan takedown minimal 5 karakter.")
+        if len(cleaned) > 1000:
+            raise ValueError("Alasan takedown maksimal 1000 karakter.")
+        return cleaned
+
+
+class PostRestoreRequest(BaseModel):
+    alasan_pemulihan: str = Field(..., description="Alasan pemulihan takedown oleh Admin kampus (minimal 5 karakter)")
+
+    @field_validator("alasan_pemulihan")
+    @classmethod
+    def validate_alasan(cls, v: str) -> str:
+        cleaned = v.strip() if v else ""
+        if len(cleaned) < 5:
+            raise ValueError("Alasan pemulihan minimal 5 karakter.")
+        if len(cleaned) > 1000:
+            raise ValueError("Alasan pemulihan maksimal 1000 karakter.")
+        return cleaned
+
+
 class PostResponse(BaseModel):
     post_id: int
     user_id: int
