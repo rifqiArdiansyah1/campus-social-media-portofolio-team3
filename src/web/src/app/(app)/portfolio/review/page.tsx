@@ -288,6 +288,18 @@ export default function PortfolioReviewPage() {
                   )}
                 </div>
 
+                {selectedItem.is_duplicate_dokumen && (
+                  <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-accent-amber-accessible flex items-start gap-2">
+                    <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-bold">Peringatan Duplikasi Dokumen:</p>
+                      <p className="mt-0.5">
+                        Nomor dokumen ({selectedItem.nomor_dokumen}) ini terdeteksi sama dengan berkas portofolio lain di sistem. Harap verifikasi keabsahan dokumen fisik secara cermat.
+                      </p>
+                    </div>
+                  </div>
+                )}
+
                 {/* Decision radio */}
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-2">

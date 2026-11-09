@@ -3,13 +3,13 @@ from typing import List
 from fastapi import APIRouter, Depends
 from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 
 from app.core.database import get_db
 from app.core.exceptions import ConflictError, ForbiddenError, InvalidInputError, NotFoundError
 from app.core.normalizers import normalize_jurusan
 from app.core.security import can_moderate, get_current_user
-from app.models.entities import PortfolioItem, Skill, User, UserSkill
+from app.models.entities import PortfolioItem, PortfolioSkill, Skill, User, UserSkill
 from app.schemas.portfolio import (
     PortfolioPublicResponse,
     SkillBriefResponse,
@@ -288,6 +288,9 @@ def get_user_skpi_summary(
     # Fetch portfolios of target user
     items_query = (
         db.query(PortfolioItem)
+        .options(
+            selectinload(PortfolioItem.skills).joinedload(PortfolioSkill.skill),
+        )
         .filter(PortfolioItem.user_id == id)
         .order_by(PortfolioItem.created_at.desc())
     )

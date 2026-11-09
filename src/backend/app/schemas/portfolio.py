@@ -54,6 +54,15 @@ class PortfolioCreate(BaseModel):
     file_url: Optional[str] = Field(None, max_length=255, description="Path berkas dokumen PDF bukti")
     skill_ids: List[int] = Field(default_factory=list, description="ID keahlian terkait (maksimal 10)")
 
+    @field_validator("gambar_url")
+    @classmethod
+    def validate_gambar_url(cls, v: Optional[str]) -> Optional[str]:
+        if v is not None:
+            v = v.strip()
+            if not (v.startswith("http://") or v.startswith("https://")):
+                raise ValueError("gambar_url harus menggunakan skema http:// atau https://")
+        return v
+
     @field_validator("tautan_url")
     @classmethod
     def validate_tautan_url(cls, v: Optional[str]) -> Optional[str]:
@@ -96,6 +105,15 @@ class PortfolioUpdate(BaseModel):
     tanggal_terbit: Optional[date] = None
     file_url: Optional[str] = Field(None, max_length=255)
     skill_ids: Optional[List[int]] = None
+
+    @field_validator("gambar_url")
+    @classmethod
+    def validate_gambar_url(cls, v: Optional[str]) -> Optional[str]:
+        if v is not None:
+            v = v.strip()
+            if not (v.startswith("http://") or v.startswith("https://")):
+                raise ValueError("gambar_url harus menggunakan skema http:// atau https://")
+        return v
 
     @field_validator("tautan_url")
     @classmethod

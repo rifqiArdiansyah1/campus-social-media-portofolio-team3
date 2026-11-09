@@ -4,7 +4,7 @@ from typing import List, Optional, Union
 
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy import func, update
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload, selectinload
 
 from app.core.config import settings
 from app.core.database import get_db
@@ -157,28 +157,36 @@ def get_review_queue(
 
     total = query.count()
     items = (
-        query.order_by(PortfolioItem.submitted_at.asc(), PortfolioItem.created_at.asc())
+        query.options(
+            joinedload(PortfolioItem.user),
+            selectinload(PortfolioItem.skills).joinedload(PortfolioSkill.skill),
+        )
+        .order_by(PortfolioItem.submitted_at.asc(), PortfolioItem.created_at.asc())
         .offset(offset)
         .limit(limit)
         .all()
     )
 
+    # Batch duplicate document detection in a single query
+    doc_numbers = [it.nomor_dokumen.strip().lower() for it in items if it.nomor_dokumen]
+    dup_set = set()
+    if doc_numbers:
+        dup_counts = (
+            db.query(func.lower(PortfolioItem.nomor_dokumen), func.count(PortfolioItem.portfolio_id))
+            .filter(
+                func.lower(PortfolioItem.nomor_dokumen).in_(doc_numbers),
+                PortfolioItem.status_verifikasi.in_(["terverifikasi", "menunggu_review"]),
+            )
+            .group_by(func.lower(PortfolioItem.nomor_dokumen))
+            .all()
+        )
+        dup_set = {doc for doc, cnt in dup_counts if cnt > 1}
+
     queue_items: List[ReviewQueueItemResponse] = []
     for it in items:
-        # Check duplicate document number detection
         is_dup = False
         if it.nomor_dokumen:
-            dup_found = (
-                db.query(PortfolioItem.portfolio_id)
-                .filter(
-                    PortfolioItem.portfolio_id != it.portfolio_id,
-                    PortfolioItem.kategori == it.kategori,
-                    func.lower(PortfolioItem.nomor_dokumen) == func.lower(it.nomor_dokumen.strip()),
-                    PortfolioItem.status_verifikasi.in_(["terverifikasi", "menunggu_review"]),
-                )
-                .first()
-            )
-            is_dup = dup_found is not None
+            is_dup = it.nomor_dokumen.strip().lower() in dup_set
 
         skills = [
             SkillBriefResponse(
@@ -343,7 +351,11 @@ def list_portfolios(
         query = query.filter(PortfolioItem.status_verifikasi == status_verifikasi)
 
     items = (
-        query.order_by(PortfolioItem.created_at.desc())
+        query.options(
+            joinedload(PortfolioItem.user),
+            selectinload(PortfolioItem.skills).joinedload(PortfolioSkill.skill),
+        )
+        .order_by(PortfolioItem.created_at.desc())
         .offset(offset)
         .limit(limit)
         .all()
@@ -594,24 +606,41 @@ def withdraw_portfolio_from_review(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    item = db.query(PortfolioItem).filter(PortfolioItem.portfolio_id == id).first()
-    if not item:
-        raise NotFoundError(code="PORTFOLIO_NOT_FOUND", detail="Portofolio tidak ditemukan.")
-
-    if item.user_id != current_user.user_id:
-        raise ForbiddenError(code="FORBIDDEN_OPERATION", detail="Hanya pemilik yang dapat menarik portofolio ini.")
-
-    if item.status_verifikasi != "menunggu_review":
+    # Atomic conditional update
+    stmt = (
+        update(PortfolioItem)
+        .where(
+            PortfolioItem.portfolio_id == id,
+            PortfolioItem.user_id == current_user.user_id,
+            PortfolioItem.status_verifikasi == "menunggu_review",
+        )
+        .values(
+            status_verifikasi="draft",
+            submitted_at=None,
+        )
+    )
+    result = db.execute(stmt)
+    if result.rowcount == 0:
+        item = db.query(PortfolioItem).filter(PortfolioItem.portfolio_id == id).first()
+        if not item:
+            raise NotFoundError(code="PORTFOLIO_NOT_FOUND", detail="Portofolio tidak ditemukan.")
+        if item.user_id != current_user.user_id:
+            raise ForbiddenError(code="FORBIDDEN_OPERATION", detail="Hanya pemilik yang dapat menarik portofolio ini.")
         raise ConflictError(
             code="CANNOT_WITHDRAW",
             detail=f"Portofolio dengan status '{item.status_verifikasi}' tidak dapat ditarik dari antrean.",
         )
 
-    item.status_verifikasi = "draft"
-    item.submitted_at = None
-
     db.commit()
-    db.refresh(item)
+    item = (
+        db.query(PortfolioItem)
+        .options(
+            joinedload(PortfolioItem.user),
+            selectinload(PortfolioItem.skills).joinedload(PortfolioSkill.skill),
+        )
+        .filter(PortfolioItem.portfolio_id == id)
+        .first()
+    )
     return _serialize_detail(item)
 
 
