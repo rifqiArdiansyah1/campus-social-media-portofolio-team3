@@ -2574,6 +2574,190 @@
         }
       }
     },
+    "/api/v1/notifications": {
+      "get": {
+        "tags": [
+          "Notifications (M08/US-10)"
+        ],
+        "summary": "Daftar Notifikasi Pengguna",
+        "description": "Mengambil daftar riwayat notifikasi milik pengguna terautentikasi (terurut dari yang terbaru).",
+        "operationId": "get_user_notifications_api_v1_notifications_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "unread_only",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "description": "Filter hanya notifikasi yang belum dibaca",
+              "default": false,
+              "title": "Unread Only"
+            },
+            "description": "Filter hanya notifikasi yang belum dibaca"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "description": "Jumlah data per halaman",
+              "default": 20,
+              "title": "Limit"
+            },
+            "description": "Jumlah data per halaman"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Offset data",
+              "default": 0,
+              "title": "Offset"
+            },
+            "description": "Offset data"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NotificationResponse"
+                  },
+                  "title": "Response Get User Notifications Api V1 Notifications Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/notifications/unread-count": {
+      "get": {
+        "tags": [
+          "Notifications (M08/US-10)"
+        ],
+        "summary": "Hitung Notifikasi Belum Dibaca",
+        "description": "Mengembalikan jumlah notifikasi aktif pengguna yang belum dibaca.",
+        "operationId": "get_unread_count_api_v1_notifications_unread_count_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnreadCountResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/notifications/read-all": {
+      "patch": {
+        "tags": [
+          "Notifications (M08/US-10)"
+        ],
+        "summary": "Tandai Semua Notifikasi Sudah Dibaca",
+        "description": "Menandai semua notifikasi pengguna yang belum dibaca menjadi sudah dibaca.",
+        "operationId": "mark_all_as_read_api_v1_notifications_read_all_patch",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReadAllResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/notifications/{notification_id}/read": {
+      "patch": {
+        "tags": [
+          "Notifications (M08/US-10)"
+        ],
+        "summary": "Tandai Satu Notifikasi Sudah Dibaca",
+        "description": "Menandai satu notifikasi spesifik sebagai sudah dibaca (HTTP 404 anti-leak jika bukan pemilik).",
+        "operationId": "mark_notification_as_read_api_v1_notifications__notification_id__read_patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "notification_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Notification Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/": {
       "get": {
         "tags": [
@@ -3549,6 +3733,83 @@
           "id"
         ],
         "title": "MyProfileResponse"
+      },
+      "NotificationResponse": {
+        "properties": {
+          "notification_id": {
+            "type": "integer",
+            "title": "Notification Id"
+          },
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "jenis": {
+            "type": "string",
+            "title": "Jenis"
+          },
+          "judul": {
+            "type": "string",
+            "title": "Judul"
+          },
+          "isi": {
+            "type": "string",
+            "title": "Isi"
+          },
+          "tautan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tautan"
+          },
+          "ref_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ref Type"
+          },
+          "ref_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ref Id"
+          },
+          "is_read": {
+            "type": "boolean",
+            "title": "Is Read"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "notification_id",
+          "user_id",
+          "jenis",
+          "judul",
+          "isi",
+          "is_read",
+          "created_at"
+        ],
+        "title": "NotificationResponse"
       },
       "PortfolioAuthorResponse": {
         "properties": {
@@ -4700,6 +4961,21 @@
         ],
         "title": "PublicProfileResponse"
       },
+      "ReadAllResponse": {
+        "properties": {
+          "updated_count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Updated Count",
+            "description": "Jumlah notifikasi yang ditandai sebagai dibaca"
+          }
+        },
+        "type": "object",
+        "required": [
+          "updated_count"
+        ],
+        "title": "ReadAllResponse"
+      },
       "RecommendationItem": {
         "properties": {
           "user_id": {
@@ -5433,6 +5709,21 @@
           "user"
         ],
         "title": "TokenResponse"
+      },
+      "UnreadCountResponse": {
+        "properties": {
+          "unread_count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Unread Count",
+            "description": "Jumlah notifikasi yang belum dibaca"
+          }
+        },
+        "type": "object",
+        "required": [
+          "unread_count"
+        ],
+        "title": "UnreadCountResponse"
       },
       "UpdateProfileRequest": {
         "properties": {

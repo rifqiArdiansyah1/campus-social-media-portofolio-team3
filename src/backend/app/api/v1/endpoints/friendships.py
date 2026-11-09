@@ -24,6 +24,7 @@ from app.schemas.friendship import (
     FriendshipStatusUpdate,
     FriendUserSummary,
 )
+from app.services.notification import create_notification
 from app.services.visibility import (
     exclude_hidden,
     is_target_blocking_viewer,
@@ -249,6 +250,22 @@ def update_friendship_status(
         )
 
     db.commit()
+    try:
+        if payload.status == "diterima":
+            create_notification(
+                db,
+                user_id=friendship.requester_id,
+                jenis="pertemanan_diterima",
+                judul="Permintaan Pertemanan Diterima",
+                isi=f"{current_user.nama} menerima permintaan pertemanan Anda.",
+                tautan=f"/profile/{current_user.user_id}",
+                ref_type="friendship",
+                ref_id=friendship.friendship_id,
+            )
+            db.commit()
+    except Exception:
+        pass
+
     db.refresh(friendship)
     return friendship
 
