@@ -1,5 +1,5 @@
 -- CampusFolio — Skema Basis Data (PostgreSQL)
--- Versi: v1.1 (Revisi Klien: Role Moderator/Kaprodi, Pertemanan, Blokir Profil, SKPI/Sertifikat/Artikel Ilmiah, Moderasi Konten & Takedown)
+-- Versi: v1.2 (Modul M08: Moderasi, Laporan, Takedown, & Notifikasi)
 -- Sumber Perancangan: docs/08-system-design.md & docs/diagrams/erd.svg
 
 -- 1. TABEL PENGGUNA (USERS)
@@ -102,7 +102,10 @@ CREATE TABLE posts (
     deleted_at    TIMESTAMP,
     deleted_by    BIGINT REFERENCES users(user_id) ON DELETE SET NULL,
     alasan_hapus  TEXT,
-    created_at    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_at    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT posts_soft_delete_check CHECK (
+        (is_deleted = FALSE) OR (deleted_at IS NOT NULL AND deleted_by IS NOT NULL AND alasan_hapus IS NOT NULL AND status = 'dihapus')
+    )
 );
 
 CREATE TABLE post_skills (
@@ -127,6 +130,7 @@ CREATE TABLE moderation_records (
     keputusan_moderator VARCHAR(20)
                         CHECK (keputusan_moderator IN ('setujui', 'tolak', 'minta_revisi', 'hapus_konten')),
     catatan_admin       TEXT,
+    catatan_moderator   TEXT,
     created_at          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     decided_at          TIMESTAMP
 );
@@ -162,7 +166,22 @@ CREATE TABLE recommendation_logs (
     CONSTRAINT chk_recommendation_self CHECK (pemohon_id <> kandidat_id)
 );
 
--- 10. INDEKS PERFORMA & FILTER
+-- 10. TABEL NOTIFIKASI PENGGUNA (NOTIFICATIONS)
+CREATE TABLE notifications (
+    notification_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    user_id         BIGINT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+    jenis           VARCHAR(30) NOT NULL
+                    CHECK (jenis IN ('moderasi_disetujui', 'moderasi_revisi', 'moderasi_ditolak', 'moderasi_takedown', 'laporan_selesai', 'laporan_diabaikan', 'pertemanan_diterima', 'pertemanan_baru', 'skpi_terverifikasi', 'skpi_ditolak')),
+    judul           VARCHAR(150) NOT NULL,
+    isi             TEXT NOT NULL,
+    tautan          VARCHAR(255) CHECK (tautan IS NULL OR tautan LIKE '/%'),
+    ref_type        VARCHAR(30),
+    ref_id          BIGINT,
+    is_read         BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at      TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 11. INDEKS PERFORMA & FILTER
 CREATE INDEX idx_user_skills_skill       ON user_skills (skill_id);
 CREATE INDEX idx_portfolio_user          ON portfolio_items (user_id);
 CREATE INDEX idx_portfolio_kategori      ON portfolio_items (kategori);
@@ -181,4 +200,8 @@ CREATE INDEX idx_moderation_pending      ON moderation_records (created_at) WHER
 CREATE INDEX idx_reports_post            ON reports (post_id);
 CREATE INDEX idx_reports_status          ON reports (status);
 CREATE INDEX idx_reports_kategori        ON reports (kategori_laporan);
+CREATE UNIQUE INDEX uq_reports_active_per_user ON reports (post_id, pelapor_id) WHERE status IN ('baru', 'diproses');
 CREATE INDEX idx_reclog_pemohon          ON recommendation_logs (pemohon_id);
+CREATE INDEX idx_notifications_user_created ON notifications (user_id, created_at DESC);
+CREATE INDEX idx_notifications_unread    ON notifications (user_id, created_at DESC) WHERE is_read = FALSE;
+CREATE UNIQUE INDEX uq_notifications_ref ON notifications (user_id, jenis, ref_type, ref_id) WHERE ref_type IS NOT NULL AND ref_id IS NOT NULL;

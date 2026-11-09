@@ -14,7 +14,8 @@ EXPECTED_TABLES = {
     "post_skills",
     "moderation_records",
     "reports",
-    "recommendation_logs"
+    "recommendation_logs",
+    "notifications",
 }
 
 EXPECTED_INDEXES = {
@@ -39,6 +40,10 @@ EXPECTED_INDEXES = {
     "uq_skills_nama_lower",
     "uq_friendship_pair",
     "idx_portfolio_review_fifo",
+    "idx_notifications_user_created",
+    "idx_notifications_unread",
+    "uq_notifications_ref",
+    "uq_reports_active_per_user",
 }
 
 EXPECTED_CONSTRAINTS = {
@@ -56,6 +61,7 @@ EXPECTED_CONSTRAINTS = {
     "portfolio_items_status_verifikasi_check",
     "posts_tipe_check",
     "posts_status_check",
+    "posts_soft_delete_check",
     "moderation_records_label_ai_check",
     "moderation_records_confidence_check",
     "moderation_records_keputusan_admin_check",
@@ -66,6 +72,8 @@ EXPECTED_CONSTRAINTS = {
     "recommendation_logs_skor_check",
     "recommendation_logs_umpan_balik_check",
     "chk_recommendation_self",
+    "notifications_jenis_check",
+    "notifications_tautan_check",
 }
 
 
@@ -102,7 +110,15 @@ def test_schema_parity_tables_and_indexes():
         assert partial_idx is not None, "Indeks idx_moderation_pending tidak ditemukan"
         assert "WHERE" in partial_idx, f"Indeks idx_moderation_pending harus berupa partial index: {partial_idx}"
 
-        # 4. Verify check & unique constraints
+        # 4. Verify partial unique index on reports
+        partial_reports_idx = conn.execute(text("""
+            SELECT indexdef FROM pg_indexes
+            WHERE schemaname = 'public' AND indexname = 'uq_reports_active_per_user';
+        """)).scalar()
+        assert partial_reports_idx is not None, "Indeks uq_reports_active_per_user tidak ditemukan"
+        assert "WHERE" in partial_reports_idx, f"Indeks uq_reports_active_per_user harus berupa partial index: {partial_reports_idx}"
+
+        # 5. Verify check & unique constraints
         constraints_res = conn.execute(text("""
             SELECT constraint_name FROM information_schema.table_constraints
             WHERE table_schema = 'public';

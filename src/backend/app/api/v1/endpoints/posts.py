@@ -15,16 +15,19 @@ from app.core.config import settings
 from app.core.database import get_db
 from app.core.exceptions import ConflictError, ForbiddenError, InvalidInputError, NotFoundError
 from app.core.security import can_moderate, get_current_user
-from app.models.entities import Friendship, ModerationRecord, Post, PostSkill, Skill, User
+from app.models.entities import Friendship, ModerationRecord, Post, PostSkill, Report, Skill, User
 from app.schemas.post import (
     PostAuthorResponse,
     PostCreate,
     PostDetailResponse,
     PostFeedResponse,
+    PostRestoreRequest,
     PostSkillTagResponse,
+    PostTakedownRequest,
     PostUpdate,
 )
 from app.services.ai_engine.moderator import ContentModerator, get_moderator_engine
+from app.services.notification import create_notification
 from app.services.storage import storage_service
 from app.services.visibility import exclude_hidden, is_target_blocking_viewer, is_viewer_blocking_target
 
@@ -136,9 +139,10 @@ def format_post_detail(post: Post, current_user: User) -> PostDetailResponse:
             moderation_note = latest_rec.catatan_admin or latest_rec.penjelasan_ai
 
     # 3. Action permissions
+    author_is_staff = post.user.role in ("moderator", "admin") if post.user else False
     can_edit = is_owner and (post.status in ("draft", "revisi", "ditolak"))
-    can_takedown = is_staff and not is_owner
-    can_report = not is_owner and not is_staff
+    can_takedown = is_staff and not post.is_deleted and (current_user.role == "admin" or not author_is_staff)
+    can_report = not is_owner and not post.is_deleted
 
     # 4. Author detail
     author_info = PostAuthorResponse(
@@ -519,7 +523,12 @@ async def update_post(
         raise ForbiddenError(code="FORBIDDEN_POST_EDIT", detail="Anda tidak memiliki izin mengedit postingan ini.")
 
     # 2. Status guard: only draft, revisi, or ditolak can be updated
-    if post.status in ("tayang", "menunggu_review"):
+    if post.status == "direview":
+        raise ConflictError(
+            code="CANNOT_EDIT_POST_UNDER_REVIEW",
+            detail="Postingan yang sedang dalam peninjauan moderasi tidak dapat diedit.",
+        )
+    if post.status in ("tayang", "menunggu_review", "dihapus"):
         raise ConflictError(
             code="POST_STATE_CONFLICT",
             detail=f"Postingan dengan status '{post.status}' tidak dapat diedit.",
@@ -586,3 +595,202 @@ async def update_post(
     db.refresh(post)
 
     return format_post_detail(post, current_user)
+
+
+
+def takedown_post(db: Session, post: Post, actor: User, alasan_hapus: str) -> Post:
+    """
+    Core service to execute content takedown:
+    - Quarantines/deletes public media file so it immediately returns 404
+    - Sets soft-delete audit columns (is_deleted, status, deleted_by, deleted_at, alasan_hapus)
+    - Auto-resolves all active reports for this post to selesai + postingan_dihapus
+    - Notifies post author and reporters
+    """
+    if post.is_deleted:
+        raise ConflictError(
+            code="POST_ALREADY_DELETED",
+            detail="Postingan sudah dalam status dihapus/takedown.",
+        )
+
+    # Invalidate media access immediately
+    if post.gambar_url:
+        storage_service.delete_file(settings.POST_IMAGES_BUCKET, post.gambar_url)
+
+    now = datetime.utcnow()
+    post.is_deleted = True
+    post.status = "dihapus"
+    post.deleted_by = actor.user_id
+    post.deleted_at = now
+    post.alasan_hapus = alasan_hapus
+
+    # Auto-resolve active reports
+    active_reports = (
+        db.query(Report)
+        .filter(Report.post_id == post.post_id, Report.status.in_(["baru", "diproses"]))
+        .all()
+    )
+    for r in active_reports:
+        r.status = "selesai"
+        r.tindakan_diambil = "postingan_dihapus"
+        r.resolved_at = now
+        r.ditinjau_oleh = actor.user_id
+        create_notification(
+            db=db,
+            user_id=r.pelapor_id,
+            jenis="laporan_selesai",
+            judul="Laporan Anda Telah Selesai Ditinjau",
+            isi="Laporan Anda terhadap sebuah postingan telah selesai ditindaklanjuti oleh tim moderasi kampus. Terima kasih telah menjaga keamanan komunitas CampusFolio.",
+            ref_type="report",
+            ref_id=r.report_id,
+        )
+
+    # Notify author
+    create_notification(
+        db=db,
+        user_id=post.user_id,
+        jenis="moderasi_takedown",
+        judul="Postingan Anda Telah Di-takedown",
+        isi=f"Postingan Anda telah dihapus oleh tim moderasi kampus karena melanggar pedoman: {alasan_hapus}",
+        ref_type="post",
+        ref_id=post.post_id,
+    )
+
+    db.commit()
+    db.refresh(post)
+    return post
+
+
+@router.post(
+    "/{id}/takedown",
+    summary="Takedown Postingan Pelanggar (Kaprodi Se-Prodi & Admin)",
+)
+def takedown_post_endpoint(
+    id: int,
+    payload: PostTakedownRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    post = (
+        db.query(Post)
+                .filter(Post.post_id == id)
+        .with_for_update()
+        .first()
+    )
+    if not post or post.is_deleted:
+        raise NotFoundError(code="POST_NOT_FOUND", detail="Postingan tidak ditemukan atau sudah dihapus.")
+
+    author_jurusan = post.user.jurusan if post.user else None
+    if not can_moderate(current_user, author_jurusan):
+        raise ForbiddenError(
+            code="FORBIDDEN_TAKEDOWN",
+            detail="Anda tidak memiliki izin memoderasi postingan dari program studi ini.",
+        )
+
+    # Staff protection: Moderator cannot takedown fellow staff or admin
+    if post.user and post.user.role in ("moderator", "admin") and current_user.role != "admin":
+        raise ForbiddenError(
+            code="CANNOT_TAKEDOWN_STAFF",
+            detail="Hanya Administrator Kampus yang berwenang men-takedown postingan staf/dosen.",
+        )
+
+    takedown_post(db, post, current_user, payload.alasan_hapus)
+    return {"message": "Postingan berhasil di-takedown.", "post_id": post.post_id}
+
+
+@router.post(
+    "/{id}/restore",
+    summary="Pemulihan Postingan Takedown (Khusus Admin Kampus)",
+)
+def restore_post_endpoint(
+    id: int,
+    payload: PostRestoreRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    if current_user.role != "admin":
+        raise ForbiddenError(
+            code="ADMIN_ONLY",
+            detail="Hanya Administrator Kampus yang dapat memulihkan postingan.",
+        )
+
+    post = db.query(Post).filter(Post.post_id == id).with_for_update().first()
+    if not post:
+        raise NotFoundError(code="POST_NOT_FOUND", detail="Postingan tidak ditemukan.")
+
+    if not post.is_deleted:
+        raise ConflictError(
+            code="POST_NOT_DELETED",
+            detail="Postingan tidak dalam status dihapus.",
+        )
+
+    post.is_deleted = False
+    post.status = "tayang"
+    post.deleted_at = None
+    post.deleted_by = None
+    post.alasan_hapus = None
+
+    create_notification(
+        db=db,
+        user_id=post.user_id,
+        jenis="moderasi_disetujui",
+        judul="Postingan Anda Telah Dipulihkan",
+        isi=f"Postingan Anda telah dipulihkan oleh Administrator Kampus: {payload.alasan_pemulihan}",
+        tautan=f"/posts/{post.post_id}",
+        ref_type="post",
+        ref_id=post.post_id,
+    )
+
+    db.commit()
+    return {"message": "Postingan berhasil dipulihkan.", "post_id": post.post_id}
+
+
+@router.delete(
+    "/{id}",
+    summary="Hapus Postingan Mandiri oleh Penulis",
+)
+def delete_post(
+    id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    post = db.query(Post).filter(Post.post_id == id).with_for_update().first()
+    if not post or post.is_deleted:
+        raise NotFoundError(code="POST_NOT_FOUND", detail="Postingan tidak ditemukan.")
+
+    if post.user_id != current_user.user_id:
+        raise ForbiddenError(
+            code="FORBIDDEN_DELETE",
+            detail="Anda hanya dapat menghapus postingan milik sendiri.",
+        )
+
+    # Integrity guard: Author cannot delete post under investigation
+    if post.status == "direview":
+        raise ConflictError(
+            code="CANNOT_DELETE_POST_UNDER_INVESTIGATION",
+            detail="Postingan yang sedang dalam peninjauan laporan aktif tidak dapat dihapus.",
+        )
+
+    if post.gambar_url:
+        storage_service.delete_file(settings.POST_IMAGES_BUCKET, post.gambar_url)
+
+    now = datetime.utcnow()
+    post.is_deleted = True
+    post.status = "dihapus"
+    post.deleted_by = current_user.user_id
+    post.deleted_at = now
+    post.alasan_hapus = "Dihapus secara mandiri oleh penulis"
+
+    # Auto-resolve any remaining active reports
+    reports = (
+        db.query(Report)
+        .filter(Report.post_id == post.post_id, Report.status.in_(["baru", "diproses"]))
+        .all()
+    )
+    for r in reports:
+        r.status = "selesai"
+        r.tindakan_diambil = "postingan_dihapus"
+        r.resolved_at = now
+        r.ditinjau_oleh = current_user.user_id
+
+    db.commit()
+    return {"message": "Postingan berhasil dihapus.", "post_id": post.post_id}

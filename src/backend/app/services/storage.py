@@ -180,5 +180,41 @@ class StorageService:
         else:
             return f"/static/{bucket}/{path}?signed=dev_token&ttl={ttl_seconds}"
 
+    def extract_storage_path(self, bucket: str, file_url_or_path: str) -> str:
+        """
+        Extract relative object key from a full URL or relative path for a bucket.
+        """
+        if not file_url_or_path:
+            return ""
+        marker = f"/{bucket}/"
+        if marker in file_url_or_path:
+            return file_url_or_path.split(marker, 1)[1].split("?")[0]
+        return file_url_or_path.lstrip("/")
+
+    def delete_file(self, bucket: str, path: str) -> bool:
+        """
+        Delete a file from Supabase Storage bucket, or local fallback in development.
+        Returns True if successful, False on failure.
+        """
+        if not path:
+            return True
+        clean_path = self.extract_storage_path(bucket, path)
+        if not clean_path:
+            return True
+        if self.supabase_client:
+            try:
+                self.supabase_client.storage.from_(bucket).remove([clean_path])
+                return True
+            except Exception:
+                return False
+        else:
+            try:
+                local_path = os.path.join(self.local_dir, bucket, clean_path.replace("/", os.sep))
+                if os.path.exists(local_path):
+                    os.remove(local_path)
+                return True
+            except Exception:
+                return False
+
 
 storage_service = StorageService()

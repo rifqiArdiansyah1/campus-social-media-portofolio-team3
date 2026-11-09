@@ -47,6 +47,7 @@ class User(Base):
     portfolio_items = relationship("PortfolioItem", foreign_keys="[PortfolioItem.user_id]", back_populates="user", cascade="all, delete-orphan")
     posts = relationship("Post", foreign_keys="[Post.user_id]", back_populates="user", cascade="all, delete-orphan")
     reports_submitted = relationship("Report", foreign_keys="[Report.pelapor_id]", back_populates="reporter", cascade="all, delete-orphan")
+    notifications = relationship("Notification", foreign_keys="[Notification.user_id]", back_populates="user", cascade="all, delete-orphan")
 
     # Friendships
     sent_friendships = relationship("Friendship", foreign_keys="[Friendship.requester_id]", back_populates="requester", cascade="all, delete-orphan")
@@ -205,6 +206,7 @@ class Post(Base):
         Index("idx_posts_user", "user_id"),
         Index("idx_posts_status", "status"),
         Index("idx_posts_deleted", "is_deleted"),
+        CheckConstraint("(is_deleted = FALSE) OR (deleted_at IS NOT NULL AND deleted_by IS NOT NULL AND alasan_hapus IS NOT NULL AND status = 'dihapus')", name="posts_soft_delete_check"),
     )
 
     # Relationships
@@ -239,6 +241,7 @@ class ModerationRecord(Base):
     keputusan_admin = Column(String(20), nullable=True)  # 'setujui', 'tolak', 'minta_revisi', 'hapus_konten'
     keputusan_moderator = Column(String(20), nullable=True)  # 'setujui', 'tolak', 'minta_revisi', 'hapus_konten'
     catatan_admin = Column(Text, nullable=True)
+    catatan_moderator = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow, server_default=text("CURRENT_TIMESTAMP"), nullable=False)
     decided_at = Column(DateTime, nullable=True)
 
@@ -283,6 +286,7 @@ class Report(Base):
         Index("idx_reports_post", "post_id"),
         Index("idx_reports_status", "status"),
         Index("idx_reports_kategori", "kategori_laporan"),
+        Index("uq_reports_active_per_user", "post_id", "pelapor_id", unique=True, postgresql_where=text("status IN ('baru', 'diproses')")),
     )
 
     post = relationship("Post", back_populates="reports")
@@ -308,3 +312,46 @@ class RecommendationLog(Base):
         CheckConstraint("umpan_balik IN ('relevan', 'tidak_relevan')", name="recommendation_logs_umpan_balik_check"),
         Index("idx_reclog_pemohon", "pemohon_id"),
     )
+
+
+class Notification(Base):
+    __tablename__ = "notifications"
+
+    notification_id = Column(BigInteger, Identity(always=True), primary_key=True)
+    user_id = Column(BigInteger, ForeignKey("users.user_id", ondelete="CASCADE"), nullable=False)
+    jenis = Column(String(30), nullable=False)
+    judul = Column(String(150), nullable=False)
+    isi = Column(Text, nullable=False)
+    tautan = Column(String(255), nullable=True)
+    ref_type = Column(String(30), nullable=True)
+    ref_id = Column(BigInteger, nullable=True)
+    is_read = Column(Boolean, nullable=False, server_default=text("false"))
+    created_at = Column(DateTime(timezone=True), default=datetime.utcnow, server_default=text("CURRENT_TIMESTAMP"), nullable=False)
+
+    __table_args__ = (
+        CheckConstraint(
+            "jenis IN ('moderasi_disetujui', 'moderasi_revisi', 'moderasi_ditolak', 'moderasi_takedown', "
+            "'laporan_selesai', 'laporan_diabaikan', 'pertemanan_diterima', 'pertemanan_baru', "
+            "'skpi_terverifikasi', 'skpi_ditolak')",
+            name="notifications_jenis_check",
+        ),
+        CheckConstraint("tautan IS NULL OR tautan LIKE '/%'", name="notifications_tautan_check"),
+        Index("idx_notifications_user_created", "user_id", text("created_at DESC")),
+        Index(
+            "idx_notifications_unread",
+            "user_id",
+            text("created_at DESC"),
+            postgresql_where=text("is_read = FALSE"),
+        ),
+        Index(
+            "uq_notifications_ref",
+            "user_id",
+            "jenis",
+            "ref_type",
+            "ref_id",
+            unique=True,
+            postgresql_where=text("ref_type IS NOT NULL AND ref_id IS NOT NULL"),
+        ),
+    )
+
+    user = relationship("User", foreign_keys=[user_id], back_populates="notifications")

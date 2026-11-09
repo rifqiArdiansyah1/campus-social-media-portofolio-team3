@@ -304,3 +304,24 @@ def can_moderate(current_user: User, jurusan_target: Optional[str]) -> bool:
         return current_user.jurusan.strip().lower() == jurusan_target.strip().lower()
 
     return False
+
+
+def apply_moderation_scope(query, user_model, current_user: User):
+    """
+    Applies faculty/department scoping for moderation queries in SQLAlchemy.
+    - Admin: unrestricted access to all departments
+    - Moderator (Kaprodi): restricted strictly to matching jurusan (case-insensitive).
+      If moderator has no assigned jurusan, returns an empty query.
+    - Mahasiswa / Others: returns an empty query.
+    """
+    from sqlalchemy import false, func
+
+    if current_user.role == "admin":
+        return query
+
+    if current_user.role == "moderator":
+        if not current_user.jurusan:
+            return query.filter(false())
+        return query.filter(func.lower(func.trim(user_model.jurusan)) == current_user.jurusan.strip().lower())
+
+    return query.filter(false())

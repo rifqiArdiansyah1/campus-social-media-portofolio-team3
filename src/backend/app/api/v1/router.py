@@ -10,6 +10,7 @@ from app.api.v1.endpoints import (
     portfolio,
     posts,
     recommendations,
+    reports,
     skills,
     uploads,
     users,
@@ -30,3 +31,4 @@ api_router.include_router(blocks.router, prefix="/blocks", tags=["User Blocks (M
 api_router.include_router(portfolio.router, prefix="/portfolio", tags=["Portfolio & SKPI (M07)"])
 api_router.include_router(recommendations.router, prefix="/recommendations", tags=["AI Recommendations (AI-1)"])
 api_router.include_router(moderation.router, prefix="/moderation", tags=["AI Content Moderation (AI-2)"])
+api_router.include_router(reports.router, prefix="/reports", tags=["Reports & Moderation (M08)"])
