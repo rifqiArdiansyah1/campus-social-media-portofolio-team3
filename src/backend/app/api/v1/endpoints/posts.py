@@ -136,13 +136,24 @@ def format_post_detail(post: Post, current_user: User) -> PostDetailResponse:
         if post.moderation_records:
             # Sort by created_at descending to get the latest record
             latest_rec = sorted(post.moderation_records, key=lambda r: r.created_at, reverse=True)[0]
-            moderation_note = latest_rec.catatan_admin or latest_rec.penjelasan_ai
+            moderation_note = (
+                latest_rec.catatan_moderator
+                or latest_rec.catatan_admin
+                or latest_rec.penjelasan_ai
+            )
 
     # 3. Action permissions
+    has_active_report = False
+    if post.reports:
+        has_active_report = any(
+            r.pelapor_id == current_user.user_id and r.status in ("baru", "diproses")
+            for r in post.reports
+        )
+
     author_is_staff = post.user.role in ("moderator", "admin") if post.user else False
     can_edit = is_owner and (post.status in ("draft", "revisi", "ditolak"))
     can_takedown = is_staff and not post.is_deleted and (current_user.role == "admin" or not author_is_staff)
-    can_report = not is_owner and not post.is_deleted
+    can_report = not is_owner and not post.is_deleted and not has_active_report
 
     # 4. Author detail
     author_info = PostAuthorResponse(
@@ -335,6 +346,7 @@ def get_my_posts(
             joinedload(Post.user),
             selectinload(Post.skills).joinedload(PostSkill.skill),
             selectinload(Post.moderation_records),
+            selectinload(Post.reports),
         )
         .filter(
             Post.user_id == current_user.user_id,
@@ -396,6 +408,7 @@ def get_posts_feed(
             joinedload(Post.user),
             selectinload(Post.skills).joinedload(PostSkill.skill),
             selectinload(Post.moderation_records),
+            selectinload(Post.reports),
         )
         .filter(
             Post.is_deleted == False,  # noqa: E712
@@ -478,6 +491,7 @@ def get_post_detail(
             joinedload(Post.user),
             selectinload(Post.skills).joinedload(PostSkill.skill),
             selectinload(Post.moderation_records),
+            selectinload(Post.reports),
         )
         .filter(Post.post_id == id, Post.is_deleted == False)  # noqa: E712
         .first()

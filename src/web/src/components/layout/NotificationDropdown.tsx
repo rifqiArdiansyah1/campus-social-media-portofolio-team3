@@ -90,7 +90,11 @@ function getNotificationIcon(jenis: string) {
   }
 }
 
-export function NotificationDropdown() {
+export interface NotificationDropdownProps {
+  skipPolling?: boolean;
+}
+
+export function NotificationDropdown({ skipPolling = false }: NotificationDropdownProps) {
   const router = useRouter();
   const pathname = usePathname();
   const { user } = useAuth();
@@ -132,9 +136,11 @@ export function NotificationDropdown() {
     }
   }, [user]);
 
-  // Initial fetch & Polling every 45s (paused if tab is hidden)
+  // Initial fetch & Polling every 45s (paused if tab is hidden or skipPolling enabled)
   useEffect(() => {
     fetchUnreadCount();
+
+    if (skipPolling) return;
 
     const interval = setInterval(() => {
       if (typeof document !== "undefined" && document.visibilityState === "visible") {
@@ -153,7 +159,7 @@ export function NotificationDropdown() {
       clearInterval(interval);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, [fetchUnreadCount]);
+  }, [fetchUnreadCount, skipPolling]);
 
   // Auto-close on route change
   useEffect(() => {
