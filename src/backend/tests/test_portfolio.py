@@ -627,3 +627,52 @@ def test_skpi_summary_calculation_and_masking(client, db_session: Session):
         assert "catatan_verifikasi" not in item or item.get("catatan_verifikasi") is None
         if item.get("nomor_dokumen"):
             assert item["nomor_dokumen"].startswith("***")
+
+
+def test_portfolio_gambar_url_validation(client, db_session: Session):
+    student = create_user(db_session, "valid_gambar@kampus.ac.id", "mahasiswa", "Informatika")
+
+    # Invalid scheme
+    res_invalid = client.post(
+        "/api/v1/portfolio",
+        json={
+            "judul": "Proyek Invalid Image",
+            "kategori": "proyek",
+            "gambar_url": "javascript:alert(1)",
+        },
+        headers=auth_headers(student),
+    )
+    assert res_invalid.status_code == 422
+
+    # Valid scheme
+    res_valid = client.post(
+        "/api/v1/portfolio",
+        json={
+            "judul": "Proyek Valid Image",
+            "kategori": "proyek",
+            "gambar_url": "https://example.com/cover.jpg",
+        },
+        headers=auth_headers(student),
+    )
+    assert res_valid.status_code == 201
+    assert res_valid.json()["gambar_url"] == "https://example.com/cover.jpg"
+
+
+def test_portfolio_withdraw_atomic_and_safety(client, db_session: Session):
+    student = create_user(db_session, "withdraw_owner@kampus.ac.id", "mahasiswa", "Informatika")
+    stranger = create_user(db_session, "withdraw_stranger@kampus.ac.id", "mahasiswa", "Informatika")
+
+    create_res = client.post(
+        "/api/v1/portfolio",
+        json={"judul": "Proyek Withdraw Test", "kategori": "proyek"},
+        headers=auth_headers(student),
+    )
+    item_id = create_res.json()["portfolio_id"]
+
+    # 1. Draft cannot be withdrawn -> 409
+    res_draft_withdraw = client.post(f"/api/v1/portfolio/{item_id}/withdraw", headers=auth_headers(student))
+    assert res_draft_withdraw.status_code == 409
+
+    # 2. Stranger cannot withdraw -> 403
+    res_stranger = client.post(f"/api/v1/portfolio/{item_id}/withdraw", headers=auth_headers(stranger))
+    assert res_stranger.status_code == 403

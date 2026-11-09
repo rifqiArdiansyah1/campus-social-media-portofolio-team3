@@ -22,6 +22,10 @@ import {
   FolderOpen,
   FileCheck2,
   Loader2,
+  ExternalLink,
+  Eye,
+  Lock,
+  FileCheck,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/context/ToastContext";
@@ -29,6 +33,34 @@ import { apiClient } from "@/lib/api";
 import { getInitials } from "@/lib/utils";
 import { EmptyState } from "@/components/common/EmptyState";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
+import { PortfolioStatusBadge, PortfolioStatus } from "@/components/common/PortfolioStatusBadge";
+
+interface PublicPortfolioItem {
+  portfolio_id: number;
+  user_id: number;
+  judul: string;
+  deskripsi?: string | null;
+  tautan_url?: string | null;
+  gambar_url?: string | null;
+  kategori: string;
+  nomor_dokumen?: string | null;
+  penerbit?: string | null;
+  tanggal_terbit?: string | null;
+  has_file: boolean;
+  status_verifikasi: PortfolioStatus;
+  created_at: string;
+  skills: Array<{ skill_id: number; nama: string; kategori: string }>;
+}
+
+interface ProfileSkpiSummary {
+  user_id: number;
+  total_poin: number;
+  total_terverifikasi: number;
+  menunggu_review: number | null;
+  jumlah_per_kategori: Record<string, number>;
+  poin_per_kategori: Record<string, number>;
+  items: PublicPortfolioItem[];
+}
 
 interface UserSkillData {
   skill_id: number;
@@ -68,6 +100,8 @@ export default function ProfileDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isNotFound, setIsNotFound] = useState(false);
   const [activeTab, setActiveTab] = useState<"portfolio" | "skpi">("portfolio");
+  const [portfolios, setPortfolios] = useState<PublicPortfolioItem[]>([]);
+  const [skpiSummary, setSkpiSummary] = useState<ProfileSkpiSummary | null>(null);
 
   // Interaction Dialogs & States
   const [blockDialogOpen, setBlockDialogOpen] = useState(false);
@@ -92,8 +126,29 @@ export default function ProfileDetailPage() {
         targetId = rawId as string;
       }
 
-      const res = await apiClient.get<PublicProfileData>(`/users/${targetId}`);
-      setProfile(res.data);
+      const [resProfile, resPortfolios, resSkpi] = await Promise.allSettled([
+        apiClient.get<PublicProfileData>(`/users/${targetId}`),
+        apiClient.get<PublicPortfolioItem[]>(`/portfolio?user_id=${targetId}`),
+        apiClient.get<ProfileSkpiSummary>(`/users/${targetId}/skpi-summary`),
+      ]);
+
+      if (resProfile.status === "fulfilled") {
+        setProfile(resProfile.value.data);
+      } else {
+        const err = resProfile.reason as any;
+        if (err?.response?.status === 404) {
+          setIsNotFound(true);
+          return;
+        }
+        toastRef.current.error(err?.response?.data?.detail || "Gagal memuat profil pengguna");
+      }
+
+      if (resPortfolios.status === "fulfilled") {
+        setPortfolios(resPortfolios.value.data);
+      }
+      if (resSkpi.status === "fulfilled") {
+        setSkpiSummary(resSkpi.value.data);
+      }
     } catch (err: any) {
       if (err.response?.status === 404) {
         setIsNotFound(true);
@@ -104,6 +159,19 @@ export default function ProfileDetailPage() {
       setIsLoading(false);
     }
   }, [rawId, isMeParam]);
+
+  const handleViewDocument = async (portfolioId: number) => {
+    const win = window.open("about:blank", "_blank");
+    try {
+      const res = await apiClient.get<{ signed_url: string }>(`/portfolio/${portfolioId}/file`);
+      if (win) {
+        win.location.href = res.data.signed_url;
+      }
+    } catch (err: any) {
+      if (win) win.close();
+      toast.error(err.message || "Gagal membuka dokumen bukti.");
+    }
+  };
 
   useEffect(() => {
     fetchProfile();
@@ -627,38 +695,200 @@ export default function ProfileDetailPage() {
           </div>
 
           {activeTab === "portfolio" && (
-            <div className="p-6 rounded-2xl bg-white border border-border-subtle shadow-sm">
-              <EmptyState
-                title={
-                  isOwner
-                    ? "Anda Belum Mengunggah Portofolio"
-                    : "Belum Ada Karya Portofolio Terpublikasi"
-                }
-                description={
-                  isOwner
-                    ? "Anda belum mempublikasikan karya portofolio. Modul unggah portofolio (M07) akan segera hadir untuk memfasilitasi karya terbaik Anda."
-                    : "Mahasiswa ini belum mempublikasikan karya portofolio. Karya inovatif dan portofolio proyek akan tampil setelah dipublikasikan."
-                }
-                icon={FolderOpen}
-              />
+            <div>
+              {portfolios.length === 0 ? (
+                <div className="p-6 rounded-2xl bg-white border border-border-subtle shadow-sm">
+                  <EmptyState
+                    title={
+                      isOwner
+                        ? "Anda Belum Mengunggah Portofolio"
+                        : "Belum Ada Karya Portofolio Terpublikasi"
+                    }
+                    description={
+                      isOwner
+                        ? "Mulai publikasikan karya inovatif, proyek mandiri, atau capaian prestasi Anda di halaman Portofolio."
+                        : "Mahasiswa ini belum mempublikasikan karya portofolio atau capaian prestasi yang telah terverifikasi resmi."
+                    }
+                    icon={FolderOpen}
+                  />
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {portfolios.map((item) => (
+                    <div
+                      key={item.portfolio_id}
+                      className="p-5 rounded-2xl bg-white border border-border-subtle shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow"
+                    >
+                      <div>
+                        <div className="flex items-start justify-between gap-2 mb-2">
+                          <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                            {item.kategori.replace("_", " ")}
+                          </span>
+                          <PortfolioStatusBadge status={item.status_verifikasi} />
+                        </div>
+
+                        <h3 className="text-sm font-bold text-slate-900 font-heading leading-snug">
+                          {item.judul}
+                        </h3>
+
+                        {item.deskripsi && (
+                          <p className="mt-2 text-xs text-slate-600 line-clamp-2 leading-relaxed font-body">
+                            {item.deskripsi}
+                          </p>
+                        )}
+
+                        <div className="mt-3 space-y-1 text-[11px] text-slate-500">
+                          {item.nomor_dokumen && (
+                            <p>
+                              <span className="font-semibold text-slate-700">
+                                {item.kategori === "artikel_ilmiah" ? "DOI:" : "No. Dokumen:"}
+                              </span>{" "}
+                              {item.nomor_dokumen}
+                            </p>
+                          )}
+                          {item.penerbit && (
+                            <p>
+                              <span className="font-semibold text-slate-700">Penerbit:</span> {item.penerbit}
+                            </p>
+                          )}
+                          {item.tanggal_terbit && (
+                            <p>
+                              <span className="font-semibold text-slate-700">Tanggal Terbit:</span> {item.tanggal_terbit}
+                            </p>
+                          )}
+                          {item.tautan_url && (
+                            <p className="flex items-center gap-1 text-primary truncate">
+                              <ExternalLink className="w-3 h-3 flex-shrink-0" />
+                              <a href={item.tautan_url} target="_blank" rel="noreferrer" className="hover:underline">
+                                {item.tautan_url}
+                              </a>
+                            </p>
+                          )}
+                        </div>
+
+                        {item.skills && item.skills.length > 0 && (
+                          <div className="mt-3 flex flex-wrap gap-1">
+                            {item.skills.map((s) => (
+                              <span
+                                key={s.skill_id}
+                                className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-[10px] font-medium"
+                              >
+                                {s.nama}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      {item.has_file && (
+                        <div className="mt-4 pt-3 border-t border-border-subtle flex items-center justify-between">
+                          {isOwner || currentUser?.role === "admin" || (currentUser?.role === "moderator" && currentUser?.jurusan === profile.jurusan) ? (
+                            <button
+                              type="button"
+                              onClick={() => handleViewDocument(item.portfolio_id)}
+                              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-slate-200 text-[11px] font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
+                            >
+                              <Eye className="w-3.5 h-3.5 text-slate-500" />
+                              <span>Lihat Dokumen Bukti</span>
+                            </button>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 text-[11px] text-slate-400">
+                              <Lock className="w-3 h-3" />
+                              <span>Bukti Dokumen Terverifikasi Kaprodi</span>
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
           {activeTab === "skpi" && (
-            <div className="p-6 rounded-2xl bg-white border border-border-subtle shadow-sm">
-              <EmptyState
-                title={
-                  isOwner
-                    ? "Rekapitulasi SKPI Anda"
-                    : "Rekapitulasi SKPI Resmi"
-                }
-                description={
-                  isOwner
-                    ? "Klaim sertifikat kompetensi dan aktivitas pendukung SKPI Anda akan dapat dikelola dan diajukan ke Kaprodi pada modul M08."
-                    : "Daftar sertifikat keahlian, prestasi kompetisi, dan verifikasi SKPI resmi oleh Kaprodi akan disajikan pada modul M08."
-                }
-                icon={FileCheck2}
-              />
+            <div className="space-y-4">
+              {skpiSummary && (
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="p-4 rounded-2xl bg-white border border-border-subtle shadow-sm flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-emerald-50 text-accent-emerald-accessible flex items-center justify-center">
+                      <Award className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <span className="text-[11px] font-semibold text-slate-500">Poin SKPI Resmi</span>
+                      <p className="text-xl font-black text-slate-900 font-heading">{skpiSummary.total_poin} Poin</p>
+                    </div>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-white border border-border-subtle shadow-sm flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-blue-50 text-primary flex items-center justify-center">
+                      <FileCheck className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <span className="text-[11px] font-semibold text-slate-500">Capaian Terverifikasi</span>
+                      <p className="text-xl font-black text-slate-900 font-heading">{skpiSummary.total_terverifikasi} Berkas</p>
+                    </div>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-white border border-border-subtle shadow-sm flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-slate-50 text-slate-700 flex items-center justify-center">
+                      <FileCheck2 className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <span className="text-[11px] font-semibold text-slate-500">Kategori Terisi</span>
+                      <p className="text-xl font-black text-slate-900 font-heading">
+                        {Object.values(skpiSummary.jumlah_per_kategori).filter((n) => n > 0).length} Kategori
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {(!skpiSummary || skpiSummary.items.length === 0) ? (
+                <div className="p-6 rounded-2xl bg-white border border-border-subtle shadow-sm">
+                  <EmptyState
+                    title={
+                      isOwner
+                        ? "Rekapitulasi SKPI Anda Masih Kosong"
+                        : "Belum Ada Capaian SKPI Terverifikasi"
+                    }
+                    description={
+                      isOwner
+                        ? "Ajukan berkas sertifikat atau capaian akademik Anda untuk diverifikasi oleh Kaprodi di menu Portofolio."
+                        : "Belum ada capaian akademik resmi yang diverifikasi Kaprodi untuk mahasiswa ini."
+                    }
+                    icon={FileCheck2}
+                  />
+                </div>
+              ) : (
+                <div className="p-5 rounded-2xl bg-white border border-border-subtle shadow-sm space-y-3">
+                  <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                    Daftar Capaian Terverifikasi Resmi
+                  </h3>
+                  <div className="divide-y divide-border-subtle">
+                    {skpiSummary.items.map((it) => (
+                      <div key={it.portfolio_id} className="py-3 first:pt-0 last:pb-0 flex items-center justify-between gap-3">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-600 uppercase">
+                              {it.kategori.replace("_", " ")}
+                            </span>
+                            <span className="text-xs font-bold text-slate-900 font-heading">{it.judul}</span>
+                          </div>
+                          <div className="flex items-center gap-3 mt-1 text-[11px] text-slate-500">
+                            {it.nomor_dokumen && <span>No: {it.nomor_dokumen}</span>}
+                            {it.penerbit && <span>Penerbit: {it.penerbit}</span>}
+                            {it.tanggal_terbit && <span>Tanggal: {it.tanggal_terbit}</span>}
+                          </div>
+                        </div>
+                        <span className="text-xs font-bold text-accent-emerald-accessible flex-shrink-0">
+                          {it.kategori === "proyek" ? "0 Poin" : it.kategori === "artikel_ilmiah" ? "+2 Poin" : "+1 Poin"}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
