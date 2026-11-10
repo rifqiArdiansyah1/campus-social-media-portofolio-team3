@@ -111,7 +111,7 @@ class TFIDFRecommender:
             cand_skills_lower = set(cand_skills_map.keys())
             cand_skill_ids_set = set(candidate.skill_ids) if candidate.skill_ids else set()
 
-            # Irisan keahlian (matched terms) - prioritaskan skill_ids jika ada
+            # Irisan keahlian (matched terms) - keahlian bersama antara pemohon dan kandidat
             matched_names: Set[str] = set()
             if user_skill_ids_set and cand_skill_ids_set:
                 common_ids = user_skill_ids_set.intersection(cand_skill_ids_set)
@@ -128,8 +128,11 @@ class TFIDFRecommender:
             complementary_names: Set[str] = set()
             if needed_skills_set or needed_skill_ids_set:
                 needed_matched = cand_skills_lower.intersection(needed_skills_set)
+                # Komplementer sejati: hanya keahlian yang dibutuhkan proyek yang BELUM dimiliki oleh pemohon
                 for s_lower in needed_matched:
-                    complementary_names.add(cand_skills_map.get(s_lower, s_lower))
+                    if s_lower not in user_skills_set:
+                        complementary_names.add(cand_skills_map.get(s_lower, s_lower))
+
                 total_needed = len(needed_skills_set) if needed_skills_set else len(needed_skill_ids_set)
                 # Boost proporsional jika kandidat memenuhi keahlian yang dicari proyek
                 if needed_matched and total_needed > 0:
@@ -160,7 +163,7 @@ class TFIDFRecommender:
             elif sorted_matched:
                 reason = f"Memiliki kesamaan minat dan keahlian di bidang {', '.join(sorted_matched[:2])}."
             else:
-                # Jika skor TF-IDF tinggi berdasarkan kesamaan bio akademik
+                # Jika skor TF-IDF tinggi berdasarkan keselarasan bio akademik
                 reason = f"Memiliki keselarasan fokus dan latar belakang minat kolaborasi di bidang {candidate.department}."
 
             recommendations.append(
@@ -217,7 +220,8 @@ class TFIDFRecommender:
             needed_matched_lower = cand_skills_lower.intersection(needed_skills_set) if needed_skills_set else set()
 
             matched_terms = sorted([cand_skills_map[s] for s in matched_lower])
-            complementary = sorted([cand_skills_map[s] for s in needed_matched_lower])
+            # Komplementer sejati di mode cadangan: keahlian target di luar skill pemohon
+            complementary = sorted([cand_skills_map[s] for s in needed_matched_lower if s not in user_skills_set])
 
             # Hitung skor perkiraan sederhana berbasis rasio overlap
             total_target = max(1, len(needed_skills_set) if needed_skills_set else len(user_skills_set))

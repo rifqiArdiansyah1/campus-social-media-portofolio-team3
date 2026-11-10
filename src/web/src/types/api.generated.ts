@@ -170,6 +170,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/users/{id}/skpi-summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ambil Ringkasan Poin SKPI Resmi & Capaian Mahasiswa */
+        get: operations["get_user_skpi_summary_api_v1_users__id__skpi_summary_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/skills": {
         parameters: {
             query?: never;
@@ -198,6 +215,23 @@ export interface paths {
         put?: never;
         /** Unggah Foto untuk Postingan Linimasa */
         post: operations["upload_post_image_api_v1_uploads_post_image_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/uploads/portfolio-doc": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Unggah Dokumen Bukti Portofolio / SKPI (Private) */
+        post: operations["upload_portfolio_document_api_v1_uploads_portfolio_doc_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -250,11 +284,273 @@ export interface paths {
         get: operations["get_post_detail_api_v1_posts__id__get"];
         put?: never;
         post?: never;
-        delete?: never;
+        /** Hapus Postingan Mandiri oleh Penulis */
+        delete: operations["delete_post_api_v1_posts__id__delete"];
         options?: never;
         head?: never;
         /** Perbarui Postingan (Hanya untuk Status Draft, Revisi, atau Ditolak) */
         patch: operations["update_post_api_v1_posts__id__patch"];
+        trace?: never;
+    };
+    "/api/v1/posts/{id}/takedown": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Takedown Postingan Pelanggar (Kaprodi Se-Prodi & Admin) */
+        post: operations["takedown_post_endpoint_api_v1_posts__id__takedown_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/posts/{id}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Pemulihan Postingan Takedown (Khusus Admin Kampus) */
+        post: operations["restore_post_endpoint_api_v1_posts__id__restore_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/friendships": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ambil Daftar Permohonan Pertemanan Masuk / Keluar (US-13) */
+        get: operations["list_friendship_requests_api_v1_friendships_get"];
+        put?: never;
+        /** Kirim Permohonan Pertemanan (US-13) */
+        post: operations["create_friendship_request_api_v1_friendships_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/friendships/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Batalkan Permintaan atau Putus Pertemanan (US-13 / FR-06) */
+        delete: operations["delete_friendship_api_v1_friendships__id__delete"];
+        options?: never;
+        head?: never;
+        /** Terima atau Tolak Permohonan Pertemanan (US-13) */
+        patch: operations["update_friendship_status_api_v1_friendships__id__patch"];
+        trace?: never;
+    };
+    "/api/v1/friends": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ambil Daftar Teman Aktif Mahasiswa (US-13) */
+        get: operations["list_active_friends_api_v1_friends_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/blocks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ambil Daftar Pengguna yang Diblokir (US-14) */
+        get: operations["list_blocked_users_api_v1_blocks_get"];
+        put?: never;
+        /** Blokir Profil Pengguna (US-14 / FR-07) */
+        post: operations["block_user_api_v1_blocks_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/blocks/{blocked_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Buka Blokir Pengguna (US-14) */
+        delete: operations["unblock_user_api_v1_blocks__blocked_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/portfolio/review-queue": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Antrean Verifikasi Portofolio FIFO Kaprodi & Admin */
+        get: operations["get_review_queue_api_v1_portfolio_review_queue_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/portfolio": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Daftar Portofolio (Milik Sendiri / Rekan / Publik) */
+        get: operations["list_portfolios_api_v1_portfolio_get"];
+        put?: never;
+        /** Unggah/Buat Portofolio Baru (Draft atau Proyek) */
+        post: operations["create_portfolio_item_api_v1_portfolio_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/portfolio/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ambil Detail Satu Portofolio */
+        get: operations["get_portfolio_item_api_v1_portfolio__id__get"];
+        put?: never;
+        post?: never;
+        /** Hapus Portofolio (Hanya saat status draft atau ditolak) */
+        delete: operations["delete_portfolio_item_api_v1_portfolio__id__delete"];
+        options?: never;
+        head?: never;
+        /** Perbarui Portofolio (Hanya saat status draft atau ditolak) */
+        patch: operations["update_portfolio_item_api_v1_portfolio__id__patch"];
+        trace?: never;
+    };
+    "/api/v1/portfolio/{id}/submit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Ajukan Portofolio untuk Verifikasi SKPI oleh Kaprodi */
+        post: operations["submit_portfolio_for_review_api_v1_portfolio__id__submit_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/portfolio/{id}/withdraw": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Tarik Kembali Portofolio dari Antrean Review ke Draft */
+        post: operations["withdraw_portfolio_from_review_api_v1_portfolio__id__withdraw_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/portfolio/{id}/review": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Verifikasi atau Tolak Pengajuan Portofolio SKPI (Kaprodi & Admin) */
+        patch: operations["review_portfolio_item_api_v1_portfolio__id__review_patch"];
+        trace?: never;
+    };
+    "/api/v1/portfolio/{id}/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cabut Status Verifikasi Portofolio Resmi (Admin Only) */
+        post: operations["revoke_portfolio_verification_api_v1_portfolio__id__revoke_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/portfolio/{id}/file": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Dapatkan Signed URL Berumur Pendek (120-300 detik) untuk Berkas Bukti Privat */
+        get: operations["get_portfolio_file_signed_url_api_v1_portfolio__id__file_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/v1/recommendations/match": {
@@ -267,9 +563,10 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Rekomendasi Kolaborator Mahasiswa (AI-1)
+         * Rekomendasi Kolaborator Mahasiswa Berdasarkan Kebutuhan (AI-1)
          * @description Endpoint AI-1: Menganalisis kemiripan semantik dan keahlian komplementer
          *     untuk merekomendasikan rekan proyek/lomba mahasiswa.
+         *     Pemohon selalu berasal dari token JWT (current_user).
          */
         post: operations["get_collaborator_recommendations_api_v1_recommendations_match_post"];
         delete?: never;
@@ -278,17 +575,44 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/recommendations/candidates": {
+    "/api/v1/recommendations/for-post/{post_id}": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Daftar Profil Mahasiswa (Dummy/Sample) */
-        get: operations["list_candidates_api_v1_recommendations_candidates_get"];
+        get?: never;
         put?: never;
-        post?: never;
+        /**
+         * Rekomendasi Rekan untuk Postingan Cari Anggota (US-08)
+         * @description Rekomendasi kolaborator spesifik untuk postingan bertipe 'cari_anggota'.
+         *     Hanya dapat diakses oleh penulis postingan (author) yang bersangkutan.
+         *     Mengembalikan 404 jika postingan tidak ditemukan, bukan cari_anggota, atau bukan milik pemohon.
+         */
+        post: operations["get_recommendations_for_post_api_v1_recommendations_for_post__post_id__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/recommendations/{rec_id}/feedback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Kirim Umpan Balik Relevansi Rekomendasi (Idempoten)
+         * @description Menyimpan umpan balik pengguna ('relevan' / 'tidak_relevan') untuk baris log rekomendasi.
+         *     Memeriksa kepemilikan log (404 jika bukan pemohon log untuk proteksi IDOR).
+         *     Operasi ini bersifat idempoten (dapat diubah kembali oleh pemohon).
+         */
+        post: operations["submit_recommendation_feedback_api_v1_recommendations__rec_id__feedback_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -305,7 +629,7 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Klasifikasi Awal Moderasi Postingan (AI-2)
+         * Klasifikasi Awal Moderasi Postingan (AI-2, Khusus Staf)
          * @description Endpoint AI-2: Memindai teks postingan sebelum/sesudah tayang.
          *     Hasil klasifikasi menentukan apakah postingan langsung tayang (aman),
          *     ditinjau admin (perlu_review), atau disembunyikan (berpotensi_melanggar).
@@ -315,6 +639,178 @@ export interface paths {
         options?: never;
         head?: never;
         patch?: never;
+        trace?: never;
+    };
+    "/api/v1/moderation/queue": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Antrean Postingan AI Triage & Berisiko (Kaprodi Se-Prodi & Admin)
+         * @description Mengambil antrean postingan yang membutuhkan peninjauan manusia:
+         *     - Status: 'menunggu_review' atau 'direview'
+         *     - Filter berdasarkan program studi Kaprodi (Admin global)
+         *     - Prioritas AI: 'berpotensi_melanggar' teratas, lalu 'perlu_review', lalu FIFO created_at.
+         */
+        get: operations["get_moderation_queue_api_v1_moderation_queue_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/moderation/{post_id}/decision": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Eksekusi Keputusan Moderasi Konten (Kaprodi Se-Prodi & Admin) */
+        post: operations["submit_moderation_decision_api_v1_moderation__post_id__decision_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/moderation/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ringkasan Metrik Moderasi & Tinjauan (Dashboard M11) */
+        get: operations["get_moderation_summary_api_v1_moderation_summary_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/reports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Daftar Antrean Laporan Pelanggaran (Kaprodi Se-Prodi & Admin) */
+        get: operations["get_reports_api_v1_reports_get"];
+        put?: never;
+        /** Laporkan Postingan Melanggar (Mahasiswa) */
+        post: operations["create_report_api_v1_reports_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/reports/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Tindak Lanjut Laporan Individu (Kaprodi Se-Prodi & Admin) */
+        patch: operations["update_report_action_api_v1_reports__id__patch"];
+        trace?: never;
+    };
+    "/api/v1/notifications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Daftar Notifikasi Pengguna
+         * @description Mengambil daftar riwayat notifikasi milik pengguna terautentikasi (terurut dari yang terbaru).
+         */
+        get: operations["get_user_notifications_api_v1_notifications_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/notifications/unread-count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Hitung Notifikasi Belum Dibaca
+         * @description Mengembalikan jumlah notifikasi aktif pengguna yang belum dibaca.
+         */
+        get: operations["get_unread_count_api_v1_notifications_unread_count_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/notifications/read-all": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Tandai Semua Notifikasi Sudah Dibaca
+         * @description Menandai semua notifikasi pengguna yang belum dibaca menjadi sudah dibaca.
+         */
+        patch: operations["mark_all_as_read_api_v1_notifications_read_all_patch"];
+        trace?: never;
+    };
+    "/api/v1/notifications/{notification_id}/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Tandai Satu Notifikasi Sudah Dibaca
+         * @description Menandai satu notifikasi spesifik sebagai sudah dibaca (HTTP 404 anti-leak jika bukan pemilik).
+         */
+        patch: operations["mark_notification_as_read_api_v1_notifications__notification_id__read_patch"];
         trace?: never;
     };
     "/": {
@@ -433,6 +929,47 @@ export interface components {
              */
             angkatan?: number | null;
         };
+        /** BlockedListResponse */
+        BlockedListResponse: {
+            /** Items */
+            items: components["schemas"]["BlockedUserSummary"][];
+            /** Total */
+            total: number;
+            /** Page */
+            page: number;
+            /** Limit */
+            limit: number;
+            /** Total Pages */
+            total_pages: number;
+        };
+        /** BlockedUserSummary */
+        BlockedUserSummary: {
+            /** Block Id */
+            block_id: number;
+            /** Blocked Id */
+            blocked_id: number;
+            /** Nama */
+            nama: string;
+            /** Jurusan */
+            jurusan?: string | null;
+            /** Angkatan */
+            angkatan?: number | null;
+            /** Alasan */
+            alasan?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
+        /** Body_upload_portfolio_document_api_v1_uploads_portfolio_doc_post */
+        Body_upload_portfolio_document_api_v1_uploads_portfolio_doc_post: {
+            /**
+             * File
+             * @description Berkas bukti SKPI (PDF maks 10MB atau Gambar maks 5MB)
+             */
+            file: string;
+        };
         /** Body_upload_post_image_api_v1_uploads_post_image_post */
         Body_upload_post_image_api_v1_uploads_post_image_post: {
             /**
@@ -441,29 +978,102 @@ export interface components {
              */
             file: string;
         };
-        /** CandidateProfile */
-        CandidateProfile: {
+        /** FriendListResponse */
+        FriendListResponse: {
+            /** Items */
+            items: components["schemas"]["FriendUserSummary"][];
+            /** Total */
+            total: number;
+            /** Page */
+            page: number;
+            /** Limit */
+            limit: number;
+            /** Total Pages */
+            total_pages: number;
+        };
+        /** FriendUserSummary */
+        FriendUserSummary: {
             /** User Id */
-            user_id: string;
-            /** Name */
-            name: string;
-            /** Department */
-            department: string;
+            user_id: number;
+            /** Nama */
+            nama: string;
+            /** Jurusan */
+            jurusan?: string | null;
+            /** Angkatan */
+            angkatan?: number | null;
+            /** Role */
+            role: string;
+            /** Avatar Url */
+            avatar_url?: string | null;
+            /** Friendship Id */
+            friendship_id?: number | null;
+        };
+        /** FriendshipCreate */
+        FriendshipCreate: {
             /**
-             * Bio
-             * @default
+             * Addressee Id
+             * @description User ID calon teman yang dituju
              */
-            bio: string;
+            addressee_id: number;
+        };
+        /** FriendshipDetailResponse */
+        FriendshipDetailResponse: {
+            /** Friendship Id */
+            friendship_id: number;
+            /** Requester Id */
+            requester_id: number;
+            /** Addressee Id */
+            addressee_id: number;
+            /** Status */
+            status: string;
             /**
-             * Skills
-             * @default []
+             * Created At
+             * Format: date-time
              */
-            skills: string[];
+            created_at: string;
+            /** Updated At */
+            updated_at?: string | null;
+            counterpart: components["schemas"]["FriendUserSummary"];
+        };
+        /** FriendshipListResponse */
+        FriendshipListResponse: {
+            /** Items */
+            items: components["schemas"]["FriendshipDetailResponse"][];
+            /** Total */
+            total: number;
+            /** Page */
+            page: number;
+            /** Limit */
+            limit: number;
+            /** Total Pages */
+            total_pages: number;
+        };
+        /** FriendshipResponse */
+        FriendshipResponse: {
+            /** Friendship Id */
+            friendship_id: number;
+            /** Requester Id */
+            requester_id: number;
+            /** Addressee Id */
+            addressee_id: number;
+            /** Status */
+            status: string;
             /**
-             * Interests
-             * @default []
+             * Created At
+             * Format: date-time
              */
-            interests: string[];
+            created_at: string;
+            /** Updated At */
+            updated_at?: string | null;
+        };
+        /** FriendshipStatusUpdate */
+        FriendshipStatusUpdate: {
+            /**
+             * Status
+             * @description Keputusan penerimaan pertemanan
+             * @enum {string}
+             */
+            status: "diterima" | "ditolak";
         };
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -482,6 +1092,59 @@ export interface components {
              * @description Kata sandi akun
              */
             password: string;
+        };
+        /** ModerationDecisionRequest */
+        ModerationDecisionRequest: {
+            /**
+             * Keputusan
+             * @description Keputusan manusia atas konten
+             * @enum {string}
+             */
+            keputusan: "setujui" | "tolak" | "minta_revisi" | "hapus_konten";
+            /**
+             * Catatan
+             * @description Catatan pertimbangan (wajib untuk tolak, minta_revisi, hapus_konten)
+             */
+            catatan?: string | null;
+        };
+        /** ModerationQueueItemResponse */
+        ModerationQueueItemResponse: {
+            /** Post Id */
+            post_id: number;
+            /** User Id */
+            user_id: number;
+            /** Author Name */
+            author_name: string;
+            /** Author Jurusan */
+            author_jurusan?: string | null;
+            /** Isi */
+            isi: string;
+            /** Gambar Url */
+            gambar_url?: string | null;
+            /** Tipe */
+            tipe: string;
+            /** Status */
+            status: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Label Ai */
+            label_ai?: string | null;
+            /** Kategori Ai */
+            kategori_ai?: string | null;
+            /** Confidence */
+            confidence?: number | null;
+            /** Penjelasan Ai */
+            penjelasan_ai?: string | null;
+            /**
+             * Jumlah Laporan Aktif
+             * @default 0
+             */
+            jumlah_laporan_aktif: number;
+            /** Kategori Laporan */
+            kategori_laporan?: string[];
         };
         /** ModerationRequest */
         ModerationRequest: {
@@ -517,6 +1180,15 @@ export interface components {
              */
             explanation: string;
         };
+        /** ModerationSummaryResponse */
+        ModerationSummaryResponse: {
+            /** Post Menunggu */
+            post_menunggu: number;
+            /** Laporan Baru */
+            laporan_baru: number;
+            /** Portofolio Menunggu */
+            portofolio_menunggu: number;
+        };
         /** MyProfileResponse */
         MyProfileResponse: {
             /** User Id */
@@ -549,6 +1221,227 @@ export interface components {
             skills: components["schemas"]["UserSkillResponse"][];
             /** Id */
             readonly id: number;
+        };
+        /** NotificationResponse */
+        NotificationResponse: {
+            /** Notification Id */
+            notification_id: number;
+            /** User Id */
+            user_id: number;
+            /** Jenis */
+            jenis: string;
+            /** Judul */
+            judul: string;
+            /** Isi */
+            isi: string;
+            /** Tautan */
+            tautan?: string | null;
+            /** Ref Type */
+            ref_type?: string | null;
+            /** Ref Id */
+            ref_id?: number | null;
+            /** Is Read */
+            is_read: boolean;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
+        /** PortfolioAuthorResponse */
+        PortfolioAuthorResponse: {
+            /** User Id */
+            user_id: number;
+            /** Nama Lengkap */
+            nama_lengkap: string;
+            /** Nim */
+            nim?: string | null;
+            /** Jurusan */
+            jurusan?: string | null;
+            /** Avatar Url */
+            avatar_url?: string | null;
+        };
+        /** PortfolioCreate */
+        PortfolioCreate: {
+            /** Judul */
+            judul: string;
+            /** Deskripsi */
+            deskripsi?: string | null;
+            /** Tautan Url */
+            tautan_url?: string | null;
+            /** Gambar Url */
+            gambar_url?: string | null;
+            /**
+             * Kategori
+             * @description Jenis portofolio/capaian
+             * @default proyek
+             * @enum {string}
+             */
+            kategori: "proyek" | "skpi" | "sertifikat" | "artikel_ilmiah";
+            /**
+             * Nomor Dokumen
+             * @description Nomor SKPI/Sertifikat/DOI
+             */
+            nomor_dokumen?: string | null;
+            /**
+             * Penerbit
+             * @description Penerbit jurnal / penyelenggara kegiatan
+             */
+            penerbit?: string | null;
+            /** Tanggal Terbit */
+            tanggal_terbit?: string | null;
+            /**
+             * File Url
+             * @description Path berkas dokumen PDF bukti
+             */
+            file_url?: string | null;
+            /**
+             * Skill Ids
+             * @description ID keahlian terkait (maksimal 10)
+             */
+            skill_ids?: number[];
+        };
+        /**
+         * PortfolioDetailResponse
+         * @description Lengkap untuk Pemilik, Kaprodi se-prodi, dan Admin
+         */
+        PortfolioDetailResponse: {
+            /** Portfolio Id */
+            portfolio_id: number;
+            /** User Id */
+            user_id: number;
+            /** Judul */
+            judul: string;
+            /** Deskripsi */
+            deskripsi?: string | null;
+            /** Tautan Url */
+            tautan_url?: string | null;
+            /** Gambar Url */
+            gambar_url?: string | null;
+            /** Kategori */
+            kategori: string;
+            /** Nomor Dokumen */
+            nomor_dokumen?: string | null;
+            /** Penerbit */
+            penerbit?: string | null;
+            /** Tanggal Terbit */
+            tanggal_terbit?: string | null;
+            /** File Url */
+            file_url?: string | null;
+            /**
+             * Has File
+             * @default false
+             */
+            has_file: boolean;
+            /** Status Verifikasi */
+            status_verifikasi: string;
+            /** Diverifikasi Oleh */
+            diverifikasi_oleh?: number | null;
+            /** Catatan Verifikasi */
+            catatan_verifikasi?: string | null;
+            /** Verified At */
+            verified_at?: string | null;
+            /** Submitted At */
+            submitted_at?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Skills
+             * @default []
+             */
+            skills: components["schemas"]["SkillBriefResponse"][];
+            author?: components["schemas"]["PortfolioAuthorResponse"] | null;
+        };
+        /**
+         * PortfolioPublicResponse
+         * @description Masked untuk pengguna lain / publik
+         */
+        PortfolioPublicResponse: {
+            /** Portfolio Id */
+            portfolio_id: number;
+            /** User Id */
+            user_id: number;
+            /** Judul */
+            judul: string;
+            /** Deskripsi */
+            deskripsi?: string | null;
+            /** Tautan Url */
+            tautan_url?: string | null;
+            /** Gambar Url */
+            gambar_url?: string | null;
+            /** Kategori */
+            kategori: string;
+            /** Nomor Dokumen */
+            nomor_dokumen?: string | null;
+            /** Penerbit */
+            penerbit?: string | null;
+            /** Tanggal Terbit */
+            tanggal_terbit?: string | null;
+            /**
+             * Has File
+             * @default false
+             */
+            has_file: boolean;
+            /** Status Verifikasi */
+            status_verifikasi: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Skills
+             * @default []
+             */
+            skills: components["schemas"]["SkillBriefResponse"][];
+            author?: components["schemas"]["PortfolioAuthorResponse"] | null;
+        };
+        /** PortfolioReviewRequest */
+        PortfolioReviewRequest: {
+            /**
+             * Status Verifikasi
+             * @enum {string}
+             */
+            status_verifikasi: "terverifikasi" | "ditolak";
+            /**
+             * Catatan Verifikasi
+             * @description Catatan hasil verifikasi dari Kaprodi/Admin
+             */
+            catatan_verifikasi?: string | null;
+        };
+        /** PortfolioRevokeRequest */
+        PortfolioRevokeRequest: {
+            /**
+             * Alasan
+             * @description Alasan pencabutan verifikasi portofolio untuk audit trail
+             */
+            alasan: string;
+        };
+        /** PortfolioUpdate */
+        PortfolioUpdate: {
+            /** Judul */
+            judul?: string | null;
+            /** Deskripsi */
+            deskripsi?: string | null;
+            /** Tautan Url */
+            tautan_url?: string | null;
+            /** Gambar Url */
+            gambar_url?: string | null;
+            /** Kategori */
+            kategori?: ("proyek" | "skpi" | "sertifikat" | "artikel_ilmiah") | null;
+            /** Nomor Dokumen */
+            nomor_dokumen?: string | null;
+            /** Penerbit */
+            penerbit?: string | null;
+            /** Tanggal Terbit */
+            tanggal_terbit?: string | null;
+            /** File Url */
+            file_url?: string | null;
+            /** Skill Ids */
+            skill_ids?: number[] | null;
         };
         /** PostAuthorResponse */
         PostAuthorResponse: {
@@ -652,6 +1545,14 @@ export interface components {
              */
             next_cursor?: string | null;
         };
+        /** PostRestoreRequest */
+        PostRestoreRequest: {
+            /**
+             * Alasan Pemulihan
+             * @description Alasan pemulihan takedown oleh Admin kampus (minimal 5 karakter)
+             */
+            alasan_pemulihan: string;
+        };
         /** PostSkillTagResponse */
         PostSkillTagResponse: {
             /** Skill Id */
@@ -660,6 +1561,14 @@ export interface components {
             nama: string;
             /** Tipe */
             tipe: string;
+        };
+        /** PostTakedownRequest */
+        PostTakedownRequest: {
+            /**
+             * Alasan Hapus
+             * @description Alasan penegakan takedown oleh staf kampus (minimal 5 karakter)
+             */
+            alasan_hapus: string;
         };
         /** PostUpdate */
         PostUpdate: {
@@ -710,6 +1619,10 @@ export interface components {
              * @enum {string}
              */
             friendship_status: "none" | "pending_sent" | "pending_received" | "friends";
+            /** Friendship Id */
+            friendship_id?: number | null;
+            /** Friendship Direction */
+            friendship_direction?: ("incoming" | "outgoing") | null;
             /**
              * Blocked By Me
              * @default false
@@ -722,52 +1635,83 @@ export interface components {
             /** Is Visible */
             readonly is_visible: boolean;
         };
+        /** ReadAllResponse */
+        ReadAllResponse: {
+            /**
+             * Updated Count
+             * @description Jumlah notifikasi yang ditandai sebagai dibaca
+             */
+            updated_count: number;
+        };
+        /** RecommendationFeedbackRequest */
+        RecommendationFeedbackRequest: {
+            /**
+             * Umpan Balik
+             * @description Evaluasi relevansi hasil rekomendasi
+             * @enum {string}
+             */
+            umpan_balik: "relevan" | "tidak_relevan";
+        };
         /** RecommendationItem */
         RecommendationItem: {
             /** User Id */
             user_id: string;
+            /**
+             * Rec Id
+             * @description ID log rekomendasi untuk feedback
+             */
+            rec_id?: number | null;
             /** Name */
             name?: string | null;
             /** Department */
             department?: string | null;
             /**
+             * Match Level
+             * @description Tingkat kecocokan (Sangat Cocok, Cukup Cocok, Potensial)
+             */
+            match_level?: string | null;
+            /**
              * Score
-             * @description Similarity score between 0.0 and 1.0
+             * @description Skor kemiripan/kecocokan (0.0 s.d. 1.0)
              */
             score: number;
             /**
              * Matched Terms
-             * @description Matched skills/interests
+             * @description Tag keahlian yang memiliki irisan
              */
             matched_terms?: string[];
             /**
              * Complementary Skills
-             * @description Skills that complement the seeker
+             * @description Keahlian kandidat yang melengkapi kebutuhan
              */
             complementary_skills?: string[];
             /**
              * Reason
-             * @description Natural language explanation of match
+             * @description Penjelasan bahasa alami mengenai alasan kecocokan
              */
             reason: string;
         };
-        /** RecommendationQuery */
-        RecommendationQuery: {
-            /** Query User Id */
-            query_user_id: string;
+        /** RecommendationMatchRequest */
+        RecommendationMatchRequest: {
             /**
              * Target Skills
-             * @description Skills specifically needed for project
+             * @description Daftar keahlian spesifik yang dibutuhkan (maks 10)
              */
             target_skills?: string[] | null;
             /**
+             * Target Skill Ids
+             * @description Daftar ID keahlian spesifik jika diketahui (maks 10)
+             */
+            target_skill_ids?: number[] | null;
+            /**
              * Project Description
-             * @description Optional project requirement text
+             * @description Deskripsi kebutuhan proyek (maks 1000 karakter)
              * @default
              */
             project_description: string | null;
             /**
              * Top K
+             * @description Jumlah rekomendasi maksimal (1 s.d. 20)
              * @default 5
              */
             top_k: number;
@@ -776,6 +1720,12 @@ export interface components {
         RecommendationResponse: {
             /** Query User Id */
             query_user_id: string;
+            /**
+             * Fallback
+             * @description Menandai apakah hasil berasal dari mode fallback
+             * @default false
+             */
+            fallback: boolean;
             /** Recommendations */
             recommendations: components["schemas"]["RecommendationItem"][];
         };
@@ -817,6 +1767,152 @@ export interface components {
              */
             role?: string | null;
         };
+        /** ReportActionRequest */
+        ReportActionRequest: {
+            /**
+             * Status
+             * @description Status baru laporan
+             * @enum {string}
+             */
+            status: "diproses" | "selesai" | "diabaikan";
+            /**
+             * Tindakan Diambil
+             * @description Tindakan yang diambil
+             */
+            tindakan_diambil?: ("postingan_dihapus" | "peringatan" | "laporan_ditolak" | "sedang_investigasi") | null;
+            /**
+             * Catatan Tinjauan
+             * @description Catatan tindakan moderator/admin
+             */
+            catatan_tinjauan?: string | null;
+        };
+        /** ReportCreate */
+        ReportCreate: {
+            /** Post Id */
+            post_id: number;
+            /**
+             * Alasan
+             * @description Penjelasan detail pelanggaran (minimal 5 karakter)
+             */
+            alasan: string;
+            /**
+             * Kategori Laporan
+             * @description Kategori pelanggaran
+             * @default konten_tidak_pantas
+             * @enum {string}
+             */
+            kategori_laporan: "spam" | "konten_tidak_pantas" | "ujaran_kebencian" | "misinformasi" | "plagiarisme" | "lainnya";
+        };
+        /** ReportResponse */
+        ReportResponse: {
+            /** Report Id */
+            report_id: number;
+            /** Post Id */
+            post_id: number;
+            /** Pelapor Id */
+            pelapor_id: number;
+            /** Pelapor Nama */
+            pelapor_nama?: string | null;
+            /** Post Isi Snippet */
+            post_isi_snippet?: string | null;
+            /** Alasan */
+            alasan: string;
+            /** Kategori Laporan */
+            kategori_laporan: string;
+            /** Status */
+            status: string;
+            /** Ditinjau Oleh */
+            ditinjau_oleh?: number | null;
+            /** Tindakan Diambil */
+            tindakan_diambil?: string | null;
+            /** Catatan Tinjauan */
+            catatan_tinjauan?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Resolved At */
+            resolved_at?: string | null;
+        };
+        /** ReviewQueueItemResponse */
+        ReviewQueueItemResponse: {
+            /** Portfolio Id */
+            portfolio_id: number;
+            /** User Id */
+            user_id: number;
+            /** Judul */
+            judul: string;
+            /** Deskripsi */
+            deskripsi?: string | null;
+            /** Kategori */
+            kategori: string;
+            /** Nomor Dokumen */
+            nomor_dokumen?: string | null;
+            /** Penerbit */
+            penerbit?: string | null;
+            /** Tanggal Terbit */
+            tanggal_terbit?: string | null;
+            /** File Url */
+            file_url?: string | null;
+            /**
+             * Has File
+             * @default false
+             */
+            has_file: boolean;
+            /** Status Verifikasi */
+            status_verifikasi: string;
+            /** Submitted At */
+            submitted_at?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Author Nama */
+            author_nama: string;
+            /** Author Nim */
+            author_nim?: string | null;
+            /** Author Jurusan */
+            author_jurusan?: string | null;
+            /** Author Avatar Url */
+            author_avatar_url?: string | null;
+            /**
+             * Is Duplicate Dokumen
+             * @default false
+             */
+            is_duplicate_dokumen: boolean;
+            /**
+             * Skills
+             * @default []
+             */
+            skills: components["schemas"]["SkillBriefResponse"][];
+        };
+        /** ReviewQueueListResponse */
+        ReviewQueueListResponse: {
+            /** Items */
+            items: components["schemas"]["ReviewQueueItemResponse"][];
+            /** Total */
+            total: number;
+            /** Jurusan */
+            jurusan?: string | null;
+        };
+        /** SignedUrlResponse */
+        SignedUrlResponse: {
+            /** Signed Url */
+            signed_url: string;
+            /** Expires In */
+            expires_in: number;
+        };
+        /** SkillBriefResponse */
+        SkillBriefResponse: {
+            /** Skill Id */
+            skill_id: number;
+            /** Nama */
+            nama: string;
+            /** Kategori */
+            kategori: string;
+        };
         /** SkillResponse */
         SkillResponse: {
             /** Skill Id */
@@ -825,6 +1921,30 @@ export interface components {
             nama: string;
             /** Tipe */
             tipe: string;
+        };
+        /** SkpiSummaryResponse */
+        SkpiSummaryResponse: {
+            /** User Id */
+            user_id: number;
+            /** Total Poin */
+            total_poin: number;
+            /** Total Terverifikasi */
+            total_terverifikasi: number;
+            /** Menunggu Review */
+            menunggu_review?: number | null;
+            /** Jumlah Per Kategori */
+            jumlah_per_kategori: {
+                [key: string]: number;
+            };
+            /** Poin Per Kategori */
+            poin_per_kategori: {
+                [key: string]: number;
+            };
+            /**
+             * Items
+             * @default []
+             */
+            items: components["schemas"]["PortfolioPublicResponse"][];
         };
         /** TokenResponse */
         TokenResponse: {
@@ -838,6 +1958,14 @@ export interface components {
             /** Expires In */
             expires_in: number;
             user: components["schemas"]["UserProfileResponse"];
+        };
+        /** UnreadCountResponse */
+        UnreadCountResponse: {
+            /**
+             * Unread Count
+             * @description Jumlah notifikasi yang belum dibaca
+             */
+            unread_count: number;
         };
         /** UpdateProfileRequest */
         UpdateProfileRequest: {
@@ -875,6 +2003,29 @@ export interface components {
              */
             items: components["schemas"]["UserSkillItem"][];
         };
+        /** UploadDocumentResponse */
+        UploadDocumentResponse: {
+            /**
+             * Path
+             * @description Path relatif dalam private storage bucket (e.g. 101/uuid.pdf)
+             */
+            path: string;
+            /**
+             * Filename
+             * @description Nama file unik
+             */
+            filename: string;
+            /**
+             * Content Type
+             * @description Tipe MIME dokumen (e.g. application/pdf)
+             */
+            content_type: string;
+            /**
+             * Size Bytes
+             * @description Ukuran berkas dalam byte
+             */
+            size_bytes: number;
+        };
         /** UploadImageResponse */
         UploadImageResponse: {
             /**
@@ -902,6 +2053,35 @@ export interface components {
              * @description Ukuran berkas dalam byte
              */
             size_bytes: number;
+        };
+        /** UserBlockRequest */
+        UserBlockRequest: {
+            /**
+             * Blocked Id
+             * @description User ID yang ingin diblokir
+             */
+            blocked_id: number;
+            /**
+             * Alasan
+             * @description Alasan pemblokiran (opsional, maks 500 karakter)
+             */
+            alasan?: string | null;
+        };
+        /** UserBlockResponse */
+        UserBlockResponse: {
+            /** Block Id */
+            block_id: number;
+            /** Blocker Id */
+            blocker_id: number;
+            /** Blocked Id */
+            blocked_id: number;
+            /** Alasan */
+            alasan: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
         };
         /** UserProfileResponse */
         UserProfileResponse: {
@@ -1245,6 +2425,37 @@ export interface operations {
             };
         };
     };
+    get_user_skpi_summary_api_v1_users__id__skpi_summary_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SkpiSummaryResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     get_skills_api_v1_skills_get: {
         parameters: {
             query?: {
@@ -1301,6 +2512,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["UploadImageResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    upload_portfolio_document_api_v1_uploads_portfolio_doc_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["Body_upload_portfolio_document_api_v1_uploads_portfolio_doc_post"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UploadDocumentResponse"];
                 };
             };
             /** @description Validation Error */
@@ -1450,6 +2694,37 @@ export interface operations {
             };
         };
     };
+    delete_post_api_v1_posts__id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     update_post_api_v1_posts__id__patch: {
         parameters: {
             query?: never;
@@ -1485,6 +2760,706 @@ export interface operations {
             };
         };
     };
+    takedown_post_endpoint_api_v1_posts__id__takedown_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostTakedownRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    restore_post_endpoint_api_v1_posts__id__restore_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostRestoreRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_friendship_requests_api_v1_friendships_get: {
+        parameters: {
+            query?: {
+                /** @description Arah permohonan: incoming (masuk) atau outgoing (keluar) */
+                direction?: "incoming" | "outgoing";
+                /** @description Nomor halaman */
+                page?: number;
+                /** @description Jumlah item per halaman */
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FriendshipListResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_friendship_request_api_v1_friendships_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FriendshipCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FriendshipResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_friendship_api_v1_friendships__id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_friendship_status_api_v1_friendships__id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FriendshipStatusUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FriendshipResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_active_friends_api_v1_friends_get: {
+        parameters: {
+            query?: {
+                /** @description Pencarian nama, jurusan, atau NIM teman */
+                q?: string | null;
+                /** @description Nomor halaman */
+                page?: number;
+                /** @description Jumlah item per halaman */
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FriendListResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_blocked_users_api_v1_blocks_get: {
+        parameters: {
+            query?: {
+                /** @description Nomor halaman */
+                page?: number;
+                /** @description Jumlah item per halaman */
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BlockedListResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    block_user_api_v1_blocks_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UserBlockRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserBlockResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    unblock_user_api_v1_blocks__blocked_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                blocked_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_review_queue_api_v1_portfolio_review_queue_get: {
+        parameters: {
+            query?: {
+                /** @description Filter jurusan (khusus Admin) */
+                jurusan?: string | null;
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewQueueListResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_portfolios_api_v1_portfolio_get: {
+        parameters: {
+            query?: {
+                /** @description Filter ID mahasiswa */
+                user_id?: number | null;
+                /** @description Filter kategori (proyek, skpi, sertifikat, artikel_ilmiah) */
+                kategori?: string | null;
+                /** @description Filter status verifikasi */
+                status_verifikasi?: string | null;
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": (components["schemas"]["PortfolioDetailResponse"] | components["schemas"]["PortfolioPublicResponse"])[];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_portfolio_item_api_v1_portfolio_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PortfolioCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PortfolioDetailResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_portfolio_item_api_v1_portfolio__id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PortfolioDetailResponse"] | components["schemas"]["PortfolioPublicResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_portfolio_item_api_v1_portfolio__id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_portfolio_item_api_v1_portfolio__id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PortfolioUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PortfolioDetailResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    submit_portfolio_for_review_api_v1_portfolio__id__submit_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PortfolioDetailResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    withdraw_portfolio_from_review_api_v1_portfolio__id__withdraw_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PortfolioDetailResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    review_portfolio_item_api_v1_portfolio__id__review_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PortfolioReviewRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PortfolioDetailResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    revoke_portfolio_verification_api_v1_portfolio__id__revoke_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PortfolioRevokeRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PortfolioDetailResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_portfolio_file_signed_url_api_v1_portfolio__id__file_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SignedUrlResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     get_collaborator_recommendations_api_v1_recommendations_match_post: {
         parameters: {
             query?: never;
@@ -1494,7 +3469,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["RecommendationQuery"];
+                "application/json": components["schemas"]["RecommendationMatchRequest"];
             };
         };
         responses: {
@@ -1518,11 +3493,16 @@ export interface operations {
             };
         };
     };
-    list_candidates_api_v1_recommendations_candidates_get: {
+    get_recommendations_for_post_api_v1_recommendations_for_post__post_id__post: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description Jumlah rekomendasi maksimal */
+                top_k?: number;
+            };
             header?: never;
-            path?: never;
+            path: {
+                post_id: number;
+            };
             cookie?: never;
         };
         requestBody?: never;
@@ -1533,7 +3513,51 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CandidateProfile"][];
+                    "application/json": components["schemas"]["RecommendationResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    submit_recommendation_feedback_api_v1_recommendations__rec_id__feedback_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                rec_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RecommendationFeedbackRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
@@ -1558,6 +3582,292 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ModerationResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_moderation_queue_api_v1_moderation_queue_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ModerationQueueItemResponse"][];
+                };
+            };
+        };
+    };
+    submit_moderation_decision_api_v1_moderation__post_id__decision_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                post_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ModerationDecisionRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_moderation_summary_api_v1_moderation_summary_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ModerationSummaryResponse"];
+                };
+            };
+        };
+    };
+    get_reports_api_v1_reports_get: {
+        parameters: {
+            query?: {
+                /** @description Filter berdasarkan status laporan */
+                status?: ("baru" | "diproses" | "selesai" | "diabaikan") | null;
+                /** @description Jumlah data per halaman (maksimal 50) */
+                limit?: number;
+                /** @description Offset pagination */
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReportResponse"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_report_api_v1_reports_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReportCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReportResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_report_action_api_v1_reports__id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReportActionRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReportResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_user_notifications_api_v1_notifications_get: {
+        parameters: {
+            query?: {
+                /** @description Filter hanya notifikasi yang belum dibaca */
+                unread_only?: boolean;
+                /** @description Jumlah data per halaman */
+                limit?: number;
+                /** @description Offset data */
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationResponse"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_unread_count_api_v1_notifications_unread_count_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnreadCountResponse"];
+                };
+            };
+        };
+    };
+    mark_all_as_read_api_v1_notifications_read_all_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReadAllResponse"];
+                };
+            };
+        };
+    };
+    mark_notification_as_read_api_v1_notifications__notification_id__read_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                notification_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationResponse"];
                 };
             };
             /** @description Validation Error */

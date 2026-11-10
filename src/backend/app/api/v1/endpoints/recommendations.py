@@ -68,6 +68,9 @@ def _safe_log_recommendations(
     """
     Mencatat luaran rekomendasi ke database secara non-blocking.
     Menerapkan debounce 1 jam untuk mencegah penumpukan baris duplikat.
+    Debounce memperhitungkan konteks pencarian:
+    - sumber 'for_post': dibedakan berdasarkan (pemohon_id, kandidat_id, sumber, post_id).
+    - sumber 'match': dibedakan berdasarkan (pemohon_id, kandidat_id, sumber, kebutuhan_teks).
     Kegagalan logging tidak membatalkan atau memicu error HTTP ke pengguna.
     """
     if not recommendations:
@@ -80,15 +83,21 @@ def _safe_log_recommendations(
             if cand_id == pemohon_id:
                 continue
 
-            existing = (
+            existing_query = (
                 db.query(RecommendationLog)
                 .filter(
                     RecommendationLog.pemohon_id == pemohon_id,
                     RecommendationLog.kandidat_id == cand_id,
+                    RecommendationLog.sumber == sumber,
                     RecommendationLog.created_at >= cutoff,
                 )
-                .first()
             )
+            if post_id is not None:
+                existing_query = existing_query.filter(RecommendationLog.post_id == post_id)
+            else:
+                existing_query = existing_query.filter(RecommendationLog.kebutuhan_teks == kebutuhan_teks)
+
+            existing = existing_query.first()
 
             if existing:
                 existing.skor = item.score
@@ -137,8 +146,14 @@ async def get_collaborator_recommendations(
     untuk merekomendasikan rekan proyek/lomba mahasiswa.
     Pemohon selalu berasal dari token JWT (current_user).
     """
-    # 1. Bangun profil pemohon dari DB
-    query_user_profile = _extract_candidate_profile(current_user)
+    # 1. Bangun profil pemohon dari DB dengan eager loading relasi skills
+    seeker_user = (
+        db.query(User)
+        .options(selectinload(User.skills).joinedload(UserSkill.skill))
+        .filter(User.user_id == current_user.user_id)
+        .first()
+    )
+    query_user_profile = _extract_candidate_profile(seeker_user or current_user)
 
     # 2. Pre-filter kandidat dari database (SQL)
     candidate_query = (
@@ -253,7 +268,14 @@ async def get_recommendations_for_post(
     target_skill_ids = [ps.skill_id for ps in post.skills if ps.skill]
     project_description = post.isi
 
-    query_user_profile = _extract_candidate_profile(current_user)
+    # Bangun profil pemohon dari DB dengan eager loading relasi skills
+    seeker_user = (
+        db.query(User)
+        .options(selectinload(User.skills).joinedload(UserSkill.skill))
+        .filter(User.user_id == current_user.user_id)
+        .first()
+    )
+    query_user_profile = _extract_candidate_profile(seeker_user or current_user)
 
     # Query kandidat dari database
     candidate_query = (
