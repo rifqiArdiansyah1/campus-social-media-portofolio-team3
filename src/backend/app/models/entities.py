@@ -304,13 +304,22 @@ class RecommendationLog(Base):
     skor = Column(REAL, nullable=False)
     alasan = Column(Text, nullable=True)
     umpan_balik = Column(String(15), nullable=True)
+    is_fallback = Column(Boolean, default=False, server_default=text("false"), nullable=False)
+    sumber = Column(String(20), default="match", server_default=text("'match'"), nullable=False)
+    post_id = Column(BigInteger, ForeignKey("posts.post_id", ondelete="SET NULL"), nullable=True)
+    model_version = Column(String(20), default="tfidf-v1", server_default=text("'tfidf-v1'"), nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow, server_default=text("CURRENT_TIMESTAMP"), nullable=False)
+
+    post = relationship("Post")
 
     __table_args__ = (
         CheckConstraint("pemohon_id <> kandidat_id", name="chk_recommendation_self"),
         CheckConstraint("skor BETWEEN 0 AND 1", name="recommendation_logs_skor_check"),
         CheckConstraint("umpan_balik IN ('relevan', 'tidak_relevan')", name="recommendation_logs_umpan_balik_check"),
+        CheckConstraint("sumber IN ('match', 'for_post')", name="recommendation_logs_sumber_check"),
         Index("idx_reclog_pemohon", "pemohon_id"),
+        Index("idx_reclog_eval", "pemohon_id", "created_at"),
+        Index("idx_reclog_post", "post_id"),
     )
 
 

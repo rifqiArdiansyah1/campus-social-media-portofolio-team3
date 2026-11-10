@@ -1,0 +1,242 @@
+[
+  {
+    "id": "eval_01",
+    "text": "Selamat pagi rekan-rekan, ada yang berminat ikut lomba hackathon nasional minggu depan?",
+    "expected_label": "aman",
+    "notes": "Pertanyaan kolaborasi normal"
+  },
+  {
+    "id": "eval_02",
+    "text": "Bang satu porsi lagi tolong dibungkus ya mas, terima kasih.",
+    "expected_label": "aman",
+    "notes": "False-positive trap: frasa 'Bang satu' tidak boleh memicu 'bangsat'"
+  },
+  {
+    "id": "eval_03",
+    "text": "Tanaman begonia merah di taman rektorat sedang mekar dengan indah sekali.",
+    "expected_label": "aman",
+    "notes": "False-positive trap: kata 'begonia' tidak boleh memicu 'bego'"
+  },
+  {
+    "id": "eval_04",
+    "text": "Aamiin ya rabbal alamin, semoga ujian komprehensif kita semua dilancarkan.",
+    "expected_label": "aman",
+    "notes": "Kata sah dengan pengulangan huruf 'aa' tidak boleh rusak"
+  },
+  {
+    "id": "eval_05",
+    "text": "Mohon maaf atas keterlambatan pengumpulan berkas administrasi praktikum.",
+    "expected_label": "aman",
+    "notes": "Kata sah dengan pengulangan huruf 'aa' (maaf) tidak boleh rusak"
+  },
+  {
+    "id": "eval_06",
+    "text": "Penelitian ini mengkaji pencegahan kanker serviks pada usia produktif menurut standar medis internasional.",
+    "expected_label": "aman",
+    "notes": "Konteks ilmiah kedokteran"
+  },
+  {
+    "id": "eval_07",
+    "text": "Analisis aspek hukum pidana terhadap tindak pencurian data pribadi di ranah siber.",
+    "expected_label": "aman",
+    "notes": "Konteks akademik fakultas hukum"
+  },
+  {
+    "id": "eval_08",
+    "text": "Kajian mendalam tentang upaya universitas meminimalisir praktik curang dalam ujian daring.",
+    "expected_label": "aman",
+    "notes": "Diskusi integritas akademik mengenai kecurangan"
+  },
+  {
+    "id": "eval_09",
+    "text": "Kucing di kantin teknik lucu banget kalau lagi minta makanan ke mahasiswa.",
+    "expected_label": "aman",
+    "notes": "Informal bahasa Indonesia wajar ('banget')"
+  },
+  {
+    "id": "eval_10",
+    "text": "Workshop pengenalan arsitektur microservices dan Docker container akan diadakan lusa.",
+    "expected_label": "aman",
+    "notes": "Pengumuman kegiatan kampus normal"
+  },
+  {
+    "id": "eval_11",
+    "text": "Dasar lu mahasiswa tolol ga punya otak bisanya cuma nyusahin orang doang!",
+    "expected_label": "berpotensi_melanggar",
+    "notes": "Ujaran kasar eksplisit (tolol)"
+  },
+  {
+    "id": "eval_12",
+    "text": "Bangsat bener lu ngerusak barang praktikum kelompok orang lain tanpa rasa tanggung jawab!",
+    "expected_label": "berpotensi_melanggar",
+    "notes": "Ujaran kasar eksplisit (bangsat)"
+  },
+  {
+    "id": "eval_13",
+    "text": "Kurang ajar bener anjing lu ya jangan sok jagoan di kampus ini!",
+    "expected_label": "berpotensi_melanggar",
+    "notes": "Ujaran kasar eksplisit (anjing)"
+  },
+  {
+    "id": "eval_14",
+    "text": "Otak lu goblok amat ga bisa mikir algoritma sederhana begini.",
+    "expected_label": "berpotensi_melanggar",
+    "notes": "Ujaran kasar eksplisit (goblok)"
+  },
+  {
+    "id": "eval_15",
+    "text": "Pelecehan verbal: open bo mahasiswa murah minat chat langsung ya kak.",
+    "expected_label": "berpotensi_melanggar",
+    "notes": "Pelecehan / prostitusi online ('open bo')"
+  },
+  {
+    "id": "eval_16",
+    "text": "Dasar lonte gatel ga usah caper sama cowok orang di organisasi.",
+    "expected_label": "berpotensi_melanggar",
+    "notes": "Pelecehan / hinaan seksual ('lonte')"
+  },
+  {
+    "id": "eval_17",
+    "text": "Jasa joki skripsi murah pasti lulus sidang A, garansi revisi sepuasnya.",
+    "expected_label": "berpotensi_melanggar",
+    "notes": "Penipuan / kecurangan akademik ('joki skripsi murah')"
+  },
+  {
+    "id": "eval_18",
+    "text": "Solusi cuan instan: investasi pasti untung 100% modal 100rb jadi 10jt dalam sehari!",
+    "expected_label": "berpotensi_melanggar",
+    "notes": "Penipuan finansial ('investasi pasti untung 100%')"
+  },
+  {
+    "id": "eval_19",
+    "text": "Minat saldo gratis 500k klik wa.me/628123456789 sekarang juga buruan kuota terbatas!",
+    "expected_label": "berpotensi_melanggar",
+    "notes": "Spam URL WhatsApp ('wa.me/')"
+  },
+  {
+    "id": "eval_20",
+    "text": "Mau follower gratis bertambah 10k tiap hari? Cek profil dan klik link ini gratis.",
+    "expected_label": "berpotensi_melanggar",
+    "notes": "Spam follower ('follower gratis', 'klik link ini gratis')"
+  },
+  {
+    "id": "eval_21",
+    "text": "Dasar 4nj1ng lu ga punya adab sama kating!",
+    "expected_label": "berpotensi_melanggar",
+    "notes": "Leetspeak ujaran kasar ('4nj1ng')"
+  },
+  {
+    "id": "eval_22",
+    "text": "Mukanya b3g0 banget waktu ditanya dosen penguji.",
+    "expected_label": "berpotensi_melanggar",
+    "notes": "Leetspeak ujaran kasar ('b3g0')"
+  },
+  {
+    "id": "eval_23",
+    "text": "Manusia t0l0l mana sih yang naruh sampah di atas meja lab komputer?",
+    "expected_label": "berpotensi_melanggar",
+    "notes": "Leetspeak ujaran kasar ('t0l0l')"
+  },
+  {
+    "id": "eval_24",
+    "text": "Anjiiiiiiiing kaget gue ada kucing lompat dari ventilasi atap lab!",
+    "expected_label": "berpotensi_melanggar",
+    "notes": "Pengulangan huruf berulang ('Anjiiiiiiiing')"
+  },
+  {
+    "id": "eval_25",
+    "text": "Lu tooolooool amat jadi partner kerja kelompok ga ada kontribusi sama sekali.",
+    "expected_label": "berpotensi_melanggar",
+    "notes": "Pengulangan huruf berulang ('tooolooool')"
+  },
+  {
+    "id": "eval_26",
+    "text": "Orang kayak lu mah bener-bener g0bl0kkkkk ga ketulungan.",
+    "expected_label": "berpotensi_melanggar",
+    "notes": "Kombinasi leetspeak dan pengulangan huruf ('g0bl0kkkkk')"
+  },
+  {
+    "id": "eval_27",
+    "text": "Emang dasar аnjing ga tahu diri ya lu!",
+    "expected_label": "berpotensi_melanggar",
+    "notes": "Homoglif Cyrillic (huruf 'а' \u0430)"
+  },
+  {
+    "id": "eval_28",
+    "text": "Kelakuan lu beneran kоntоl abis bikin malu satu angkatan.",
+    "expected_label": "berpotensi_melanggar",
+    "notes": "Homoglif Cyrillic (huruf 'о' \u043e)"
+  },
+  {
+    "id": "eval_29",
+    "text": "Dasar an​jing lu nyelak antrean kantin!",
+    "expected_label": "berpotensi_melanggar",
+    "notes": "Penyisipan zero-width space (\u200B) di antara karakter"
+  },
+  {
+    "id": "eval_30",
+    "text": "Woy t.o.l.o.l dengerin kalo dibilangin jangan bebal!",
+    "expected_label": "berpotensi_melanggar",
+    "notes": "Pemisah titik antar huruf tunggal ('t.o.l.o.l')"
+  },
+  {
+    "id": "eval_31",
+    "text": "Kelakuan b-a-n-g-s-a-t kayak gitu jangan dibiasain di lingkungan kampus.",
+    "expected_label": "berpotensi_melanggar",
+    "notes": "Pemisah strip antar huruf tunggal ('b-a-n-g-s-a-t')"
+  },
+  {
+    "id": "eval_32",
+    "text": "Tugas praktikum semester ini parah sih susahnya minta ampun.",
+    "expected_label": "perlu_review",
+    "notes": "Borderline / keluhan mahasiswa ('parah sih')"
+  },
+  {
+    "id": "eval_33",
+    "text": "Males banget rasanya besok harus kuliah pengganti jam 7 pagi di hari libur.",
+    "expected_label": "perlu_review",
+    "notes": "Borderline negatif ('males banget')"
+  },
+  {
+    "id": "eval_34",
+    "text": "Dosen ga jelas ngasih instruksi tugas besar tapi deadline besok lusa.",
+    "expected_label": "perlu_review",
+    "notes": "Borderline sentimen dosen ('dosen ga jelas')"
+  },
+  {
+    "id": "eval_35",
+    "text": "Sistem perwalian KRS kampus lemot banget pas rebutan kelas tadi siang.",
+    "expected_label": "aman",
+    "notes": "Keluhan sistemik umum tanpa kata kotor atau cercaan individu"
+  },
+  {
+    "id": "eval_36",
+    "text": "Jangan lupa kumpul di gazebo depan perpustakaan pusat jam 4 sore ya.",
+    "expected_label": "aman",
+    "notes": "Pesan koordinasi netral"
+  },
+  {
+    "id": "eval_37",
+    "text": "Ada yang punya buku referensi Pengantar Sistem Cerdas karangan Suyanto?",
+    "expected_label": "aman",
+    "notes": "Pencarian buku perkuliahan"
+  },
+  {
+    "id": "eval_38",
+    "text": "Selamat kepada tim delegasi universitas yang berhasil meraih medali emas gemastik!",
+    "expected_label": "aman",
+    "notes": "Apresiasi prestasi akademik"
+  },
+  {
+    "id": "eval_39",
+    "text": "Bagi teman-teman yang belum mengisi form evaluasi dosen, batas akhirnya malam ini.",
+    "expected_label": "aman",
+    "notes": "Pengingat administrasi perkuliahan"
+  },
+  {
+    "id": "eval_40",
+    "text": "Cari rekan tim yang menguasai React dan Node.js untuk lomba UI/UX dan web dev.",
+    "expected_label": "aman",
+    "notes": "Postingan rekrutmen rekan tim (US-08)"
+  }
+]

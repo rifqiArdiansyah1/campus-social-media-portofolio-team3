@@ -30,8 +30,8 @@ def test_method_not_allowed_standard_contract():
 
 
 def test_validation_error_contract():
-    # Calling POST /api/v1/moderation/check with empty payload (triggers 422)
-    res = client.post("/api/v1/moderation/check", json={})
+    # Calling POST /api/v1/auth/login with empty payload (triggers 422)
+    res = client.post("/api/v1/auth/login", json={})
     assert res.status_code == 422
     data = res.json()
     assert data["code"] == "VALIDATION_ERROR"

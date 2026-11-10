@@ -23,8 +23,8 @@ from app.services.storage import storage_service
 router = APIRouter()
 
 
-@router.post("/check", response_model=ModerationResponse, summary="Klasifikasi Awal Moderasi Postingan (AI-2)")
-def check_post_moderation(payload: ModerationRequest):
+@router.post("/check", response_model=ModerationResponse, summary="Klasifikasi Awal Moderasi Postingan (AI-2, Khusus Staf)")
+def check_post_moderation(payload: ModerationRequest, current_user: User = Depends(require_roles("moderator", "admin"))):
     """
     Endpoint AI-2: Memindai teks postingan sebelum/sesudah tayang.
     Hasil klasifikasi menentukan apakah postingan langsung tayang (aman),

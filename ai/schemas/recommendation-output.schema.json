@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "CollaboratorRecommendationOutput",
-  "description": "Skema output JSON untuk rekomendasi kolaborator mahasiswa",
+  "description": "Skema output JSON untuk rekomendasi kolaborator mahasiswa (V2)",
   "type": "object",
   "required": [
     "query_user_id",
@@ -11,6 +11,11 @@
     "query_user_id": {
       "type": "string",
       "description": "ID unik pengguna yang meminta rekomendasi"
+    },
+    "fallback": {
+      "type": "boolean",
+      "description": "Menandai apakah output dihasilkan dari mode fallback / degradasi cepat",
+      "default": false
     },
     "recommendations": {
       "type": "array",
@@ -29,11 +34,32 @@
             "type": "string",
             "description": "ID calon rekan kolaborator"
           },
+          "rec_id": {
+            "type": ["integer", "null"],
+            "description": "ID unik log rekomendasi untuk pengiriman feedback relevansi"
+          },
+          "name": {
+            "type": "string",
+            "description": "Nama lengkap mahasiswa kandidat"
+          },
+          "department": {
+            "type": "string",
+            "description": "Program studi kandidat"
+          },
+          "match_level": {
+            "type": "string",
+            "enum": [
+              "Sangat Cocok",
+              "Cukup Cocok",
+              "Potensial"
+            ],
+            "description": "Label tingkatan kecocokan ramah pengguna"
+          },
           "score": {
             "type": "number",
             "minimum": 0,
             "maximum": 1,
-            "description": "Skor kemiripan/kecocokan (0.0 sampai 1.0)"
+            "description": "Skor kemiripan/kecocokan relatif (0.0 sampai 1.0)"
           },
           "matched_terms": {
             "type": "array",
@@ -47,11 +73,11 @@
             "items": {
               "type": "string"
             },
-            "description": "Keahlian kandidat yang melengkapi kekurangan pengguna"
+            "description": "Keahlian kandidat yang melengkapi kekurangan proyek/pengguna"
           },
           "reason": {
             "type": "string",
-            "description": "Penjelasan bahasa alami mengenai alasan mengapa profil ini cocok"
+            "description": "Penjelasan bahasa alami transparan mengenai alasan kecocokan profil"
           }
         }
       }

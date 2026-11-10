@@ -2164,14 +2164,14 @@
         "tags": [
           "AI Recommendations (AI-1)"
         ],
-        "summary": "Rekomendasi Kolaborator Mahasiswa (AI-1)",
-        "description": "Endpoint AI-1: Menganalisis kemiripan semantik dan keahlian komplementer\nuntuk merekomendasikan rekan proyek/lomba mahasiswa.",
+        "summary": "Rekomendasi Kolaborator Mahasiswa Berdasarkan Kebutuhan (AI-1)",
+        "description": "Endpoint AI-1: Menganalisis kemiripan semantik dan keahlian komplementer\nuntuk merekomendasikan rekan proyek/lomba mahasiswa.\nPemohon selalu berasal dari token JWT (current_user).",
         "operationId": "get_collaborator_recommendations_api_v1_recommendations_match_post",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/RecommendationQuery"
+                "$ref": "#/components/schemas/RecommendationMatchRequest"
               }
             }
           },
@@ -2198,27 +2198,125 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       }
     },
-    "/api/v1/recommendations/candidates": {
-      "get": {
+    "/api/v1/recommendations/for-post/{post_id}": {
+      "post": {
         "tags": [
           "AI Recommendations (AI-1)"
         ],
-        "summary": "Daftar Profil Mahasiswa (Dummy/Sample)",
-        "operationId": "list_candidates_api_v1_recommendations_candidates_get",
+        "summary": "Rekomendasi Rekan untuk Postingan Cari Anggota (US-08)",
+        "description": "Rekomendasi kolaborator spesifik untuk postingan bertipe 'cari_anggota'.\nHanya dapat diakses oleh penulis postingan (author) yang bersangkutan.\nMengembalikan 404 jika postingan tidak ditemukan, bukan cari_anggota, atau bukan milik pemohon.",
+        "operationId": "get_recommendations_for_post_api_v1_recommendations_for_post__post_id__post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "post_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Post Id"
+            }
+          },
+          {
+            "name": "top_k",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 20,
+              "minimum": 1,
+              "description": "Jumlah rekomendasi maksimal",
+              "default": 5,
+              "title": "Top K"
+            },
+            "description": "Jumlah rekomendasi maksimal"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/CandidateProfile"
-                  },
-                  "type": "array",
-                  "title": "Response List Candidates Api V1 Recommendations Candidates Get"
+                  "$ref": "#/components/schemas/RecommendationResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/recommendations/{rec_id}/feedback": {
+      "post": {
+        "tags": [
+          "AI Recommendations (AI-1)"
+        ],
+        "summary": "Kirim Umpan Balik Relevansi Rekomendasi (Idempoten)",
+        "description": "Menyimpan umpan balik pengguna ('relevan' / 'tidak_relevan') untuk baris log rekomendasi.\nMemeriksa kepemilikan log (404 jika bukan pemohon log untuk proteksi IDOR).\nOperasi ini bersifat idempoten (dapat diubah kembali oleh pemohon).",
+        "operationId": "submit_recommendation_feedback_api_v1_recommendations__rec_id__feedback_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "rec_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Rec Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecommendationFeedbackRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
                 }
               }
             }
@@ -2231,7 +2329,7 @@
         "tags": [
           "AI Content Moderation (AI-2)"
         ],
-        "summary": "Klasifikasi Awal Moderasi Postingan (AI-2)",
+        "summary": "Klasifikasi Awal Moderasi Postingan (AI-2, Khusus Staf)",
         "description": "Endpoint AI-2: Memindai teks postingan sebelum/sesudah tayang.\nHasil klasifikasi menentukan apakah postingan langsung tayang (aman),\nditinjau admin (perlu_review), atau disembunyikan (berpotensi_melanggar).",
         "operationId": "check_post_moderation_api_v1_moderation_check_post",
         "requestBody": {
@@ -2265,7 +2363,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       }
     },
     "/api/v1/moderation/queue": {
@@ -3034,50 +3137,6 @@
           "file"
         ],
         "title": "Body_upload_post_image_api_v1_uploads_post_image_post"
-      },
-      "CandidateProfile": {
-        "properties": {
-          "user_id": {
-            "type": "string",
-            "title": "User Id"
-          },
-          "name": {
-            "type": "string",
-            "title": "Name"
-          },
-          "department": {
-            "type": "string",
-            "title": "Department"
-          },
-          "bio": {
-            "type": "string",
-            "title": "Bio",
-            "default": ""
-          },
-          "skills": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array",
-            "title": "Skills",
-            "default": []
-          },
-          "interests": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array",
-            "title": "Interests",
-            "default": []
-          }
-        },
-        "type": "object",
-        "required": [
-          "user_id",
-          "name",
-          "department"
-        ],
-        "title": "CandidateProfile"
       },
       "FriendListResponse": {
         "properties": {
@@ -4976,11 +5035,41 @@
         ],
         "title": "ReadAllResponse"
       },
+      "RecommendationFeedbackRequest": {
+        "properties": {
+          "umpan_balik": {
+            "type": "string",
+            "enum": [
+              "relevan",
+              "tidak_relevan"
+            ],
+            "title": "Umpan Balik",
+            "description": "Evaluasi relevansi hasil rekomendasi"
+          }
+        },
+        "type": "object",
+        "required": [
+          "umpan_balik"
+        ],
+        "title": "RecommendationFeedbackRequest"
+      },
       "RecommendationItem": {
         "properties": {
           "user_id": {
             "type": "string",
             "title": "User Id"
+          },
+          "rec_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rec Id",
+            "description": "ID log rekomendasi untuk feedback"
           },
           "name": {
             "anyOf": [
@@ -5004,12 +5093,24 @@
             ],
             "title": "Department"
           },
+          "match_level": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Match Level",
+            "description": "Tingkat kecocokan (Sangat Cocok, Cukup Cocok, Potensial)"
+          },
           "score": {
             "type": "number",
             "maximum": 1.0,
             "minimum": 0.0,
             "title": "Score",
-            "description": "Similarity score between 0.0 and 1.0"
+            "description": "Skor kemiripan/kecocokan (0.0 s.d. 1.0)"
           },
           "matched_terms": {
             "items": {
@@ -5017,7 +5118,7 @@
             },
             "type": "array",
             "title": "Matched Terms",
-            "description": "Matched skills/interests"
+            "description": "Tag keahlian yang memiliki irisan"
           },
           "complementary_skills": {
             "items": {
@@ -5025,12 +5126,12 @@
             },
             "type": "array",
             "title": "Complementary Skills",
-            "description": "Skills that complement the seeker"
+            "description": "Keahlian kandidat yang melengkapi kebutuhan"
           },
           "reason": {
             "type": "string",
             "title": "Reason",
-            "description": "Natural language explanation of match"
+            "description": "Penjelasan bahasa alami mengenai alasan kecocokan"
           }
         },
         "type": "object",
@@ -5041,38 +5142,52 @@
         ],
         "title": "RecommendationItem"
       },
-      "RecommendationQuery": {
+      "RecommendationMatchRequest": {
         "properties": {
-          "query_user_id": {
-            "type": "string",
-            "title": "Query User Id"
-          },
           "target_skills": {
             "anyOf": [
               {
                 "items": {
                   "type": "string"
                 },
-                "type": "array"
+                "type": "array",
+                "maxItems": 10
               },
               {
                 "type": "null"
               }
             ],
             "title": "Target Skills",
-            "description": "Skills specifically needed for project"
+            "description": "Daftar keahlian spesifik yang dibutuhkan (maks 10)"
+          },
+          "target_skill_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "integer"
+                },
+                "type": "array",
+                "maxItems": 10
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Skill Ids",
+            "description": "Daftar ID keahlian spesifik jika diketahui (maks 10)"
           },
           "project_description": {
             "anyOf": [
               {
-                "type": "string"
+                "type": "string",
+                "maxLength": 1000
               },
               {
                 "type": "null"
               }
             ],
             "title": "Project Description",
-            "description": "Optional project requirement text",
+            "description": "Deskripsi kebutuhan proyek (maks 1000 karakter)",
             "default": ""
           },
           "top_k": {
@@ -5080,20 +5195,24 @@
             "maximum": 20.0,
             "minimum": 1.0,
             "title": "Top K",
+            "description": "Jumlah rekomendasi maksimal (1 s.d. 20)",
             "default": 5
           }
         },
         "type": "object",
-        "required": [
-          "query_user_id"
-        ],
-        "title": "RecommendationQuery"
+        "title": "RecommendationMatchRequest"
       },
       "RecommendationResponse": {
         "properties": {
           "query_user_id": {
             "type": "string",
             "title": "Query User Id"
+          },
+          "fallback": {
+            "type": "boolean",
+            "title": "Fallback",
+            "description": "Menandai apakah hasil berasal dari mode fallback",
+            "default": false
           },
           "recommendations": {
             "items": {

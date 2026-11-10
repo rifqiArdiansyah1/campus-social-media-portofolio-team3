@@ -55,33 +55,37 @@ Format JSON terstruktur memuat skor relevansi, istilah yang cocok, dan penjelasa
 ## AI-2: Klasifikasi Awal Konten untuk Moderasi Feed
 
 ### 1. Masalah yang Diselesaikan
-Penyaringan proaktif atas postingan teks mahasiswa untuk mencegah ujaran kebencian, perundungan (*bullying*), pelecehan, dan penipuan sebelum menyebar luas.
+Penyaringan proaktif atas postingan teks mahasiswa untuk mendeteksi ujaran kebencian, perundungan (*bullying*), pelecehan, dan penipuan sebelum menyebar luas di lingkungan akademik kampus.
 
-### 2. Mengapa Bukan If-Else / Blacklist Kata?
-Daftar kata terlarang (*bad words blacklist*) sangat mudah dikelabui (menggunakan singkatan, plesetan karakter alfanumerik) dan sering menimbulkan *false positive* terhadap diskusi akademik normal (misal konteks diskusi medis atau hukum). AI mampu menganalisis sentimen dan konteks kalimat secara utuh.
+### 2. Mengapa Bukan If-Else / Blacklist Kata Konvensional?
+Pencocokan string biasa (*naive blacklist*) sangat rapuh terhadap teknik pengelabuan sederhana: variasi leetspeak (`"4nj1ng"`), karakter homoglif Cyrillic, penyisipan spasi lebar-nol (*zero-width spaces*), dan pengulangan huruf (`"anjiiiing"`). Sebaliknya, pencocokan substring liar memicu *false positive* tinggi pada kata umum (misal: *"begonia"*, *"bang satu"*, *"Aamiin"*) dan istilah medis/hukum.
+
+Oleh karena itu, sistem menerapkan pendekatan bertahap:
+- **Baseline Implementasi (M09):** *Deterministic Heuristic Baseline* dengan pipeline pra-pemrosesan tingkat lanjut (Unicode NFKC, pembersihan zero-width, normalisasi homoglyphs, decoding leetspeak selektif, pemadatan pengulangan huruf terkontrol $\ge 3 \to 2$, deteksi multi-tahap raw regex + word-boundary tokenization). Tingkat akurasi dievaluasi secara kuantitatif melalui dataset pengujian (`ai/eval/eval-moderation-dataset.json` & `evaluate_moderation.py`).
+- **Tahap Lanjutan (M13):** Pelatihan model klasifikasi teks statistik / fine-tuned embedding / LLM API untuk memahami konteks semantik kalimat secara mendalam, yang diukur *head-to-head* terhadap baseline M09.
 
 ### 3. Spesifikasi Input
-Teks postingan pengguna beserta laporan aduan (jika berasal dari laporan pengguna).
+Teks postingan pengguna beserta laporan aduan (jika berasal dari laporan pengguna). Panjang masukan dibatasi maksimal 5.000 karakter.
 
 ### 4. Spesifikasi Output
-Format JSON terstruktur dengan label klasifikasi, tingkat kepercayaan (*confidence score*), kategori, dan keterangan ringkas.
+Format JSON terstruktur dengan label klasifikasi, skor keparahan heuristik (*severity score* / *confidence*), kategori, dan keterangan transparan berlabel *"Saran AI"*.
 ```json
 {
   "post_id": "p_881",
   "label": "perlu_review",
   "categories": ["ujaran_kasar"],
   "confidence": 0.74,
-  "explanation": "Mengandung indikasi kata kasar atau bernada merendahkan yang ditujukan kepada individu."
+  "explanation": "[Saran AI] Konten mengandung indikasi kata kasar atau bernada merendahkan yang disarankan untuk diverifikasi admin."
 }
 ```
 
 ### 5. Penanganan Kegagalan & Etika Moderasi
-- **Label Status:**
-  - `aman` (Confidence aman tinggi): Konten langsung tayang.
+- **Label Status & Rekomendasi:**
+  - `aman`: Skor keparahan rendah, konten langsung tayang.
   - `perlu_review`: Konten ditahan sementara di antrean moderator manusia.
   - `berpotensi_melanggar`: Konten disembunyikan dan diprioritaskan di antrean admin.
-- **Prinsip Human-in-the-Loop:** AI tidak pernah menghapus postingan secara permanen tanpa review admin kampus.
-- **Log Keputusan:** Seluruh riwayat keputusan moderasi disimpan di database untuk audit.
+- **Prinsip Human-in-the-Loop:** AI hanya berfungsi sebagai asisten penyaring awal (*first-line triage*). AI tidak pernah menghapus atau menolak postingan secara sepihak tanpa review manusia berwenang (Kaprodi / Moderator / Admin).
+- **Log Keputusan:** Seluruh riwayat analisis AI dicatat ke tabel `moderation_records` untuk audit dan evaluasi performa model.
 
 ---
 
