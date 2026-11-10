@@ -9,6 +9,7 @@ import {
   XCircle,
   Loader2,
   FolderOpen,
+  Sparkles,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/context/ToastContext";
@@ -17,6 +18,16 @@ import { PostCard, PostViewModel } from "@/components/features/PostCard";
 import { ReportPostModal } from "@/components/features/ReportPostModal";
 import { TakedownPostModal } from "@/components/features/TakedownPostModal";
 import { EmptyState } from "@/components/common/EmptyState";
+import {
+  RecommendationCard,
+} from "@/components/explore/RecommendationCard";
+import {
+  CollaborationModal,
+} from "@/components/explore/CollaborationModal";
+import {
+  RecommendationItem,
+  getRecommendationsForPost,
+} from "@/services/recommendationService";
 
 interface PostSkillApi {
   skill_id: number;
@@ -65,6 +76,12 @@ export default function PostDetailPage() {
   const [reportingPostId, setReportingPostId] = useState<number | null>(null);
   const [takedownPostId, setTakedownPostId] = useState<number | null>(null);
 
+  // US-08: AI Recommendation state for recruitment post
+  const [postRecs, setPostRecs] = useState<RecommendationItem[]>([]);
+  const [isLoadingPostRecs, setIsLoadingPostRecs] = useState(false);
+  const [isFallbackPostRecs, setIsFallbackPostRecs] = useState(false);
+  const [selectedCollabCandidate, setSelectedCollabCandidate] = useState<RecommendationItem | null>(null);
+
   const fetchPost = useCallback(async () => {
     if (!postId) return;
     try {
@@ -107,6 +124,24 @@ export default function PostDetailPage() {
   useEffect(() => {
     fetchPost();
   }, [fetchPost]);
+
+  // US-08: Fetch AI collaborator recommendations for recruiting post owner
+  useEffect(() => {
+    if (post && post.is_owner && post.tipe === "cari_anggota") {
+      setIsLoadingPostRecs(true);
+      getRecommendationsForPost(post.id)
+        .then((res) => {
+          setPostRecs(res.recommendations);
+          setIsFallbackPostRecs(res.fallback);
+        })
+        .catch(() => {
+          // Non-blocking for post page
+        })
+        .finally(() => {
+          setIsLoadingPostRecs(false);
+        });
+    }
+  }, [post]);
 
   const handleLike = () => {
     toast.info("Fitur apresiasi / suka akan hadir di pembaruan linimasa.");
@@ -203,8 +238,52 @@ export default function PostDetailPage() {
               toast.info(`Membuka mode perbaikan postingan #${post.id}.`);
             }}
           />
+
+          {/* US-08: AI Candidates Recommendation for Recruitment Post Owner */}
+          {post.is_owner && post.tipe === "cari_anggota" && (
+            <section className="pt-6 border-t border-border-subtle space-y-4">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-primary" />
+                <h3 className="text-base font-bold text-slate-900 font-heading">
+                  Rekomendasi Kandidat Tim untuk Postingan Anda (US-08)
+                </h3>
+              </div>
+              <p className="text-xs text-slate-500 font-body">
+                Algoritma AI menganalisis deskripsi kebutuhan proyek dan tag keahlian postingan ini untuk mencocokkan mahasiswa yang paling relevan.
+              </p>
+
+              {isLoadingPostRecs ? (
+                <div className="p-6 bg-white border border-border-subtle rounded-2xl flex items-center justify-center gap-2 text-xs text-slate-500">
+                  <Loader2 className="w-4 h-4 animate-spin text-primary" />
+                  <span>Mencocokkan kandidat kolaborator...</span>
+                </div>
+              ) : postRecs.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {postRecs.map((rec) => (
+                    <RecommendationCard
+                      key={rec.user_id}
+                      item={rec}
+                      isFallback={isFallbackPostRecs}
+                      onCollaborationInvite={(c) => setSelectedCollabCandidate(c)}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-600 font-body">
+                  Belum ditemukan kandidat yang cocok dengan tag keahlian postingan saat ini.
+                </div>
+              )}
+            </section>
+          )}
         </div>
       )}
+
+      {/* Collaboration Modal */}
+      <CollaborationModal
+        isOpen={selectedCollabCandidate !== null}
+        candidate={selectedCollabCandidate}
+        onClose={() => setSelectedCollabCandidate(null)}
+      />
 
       {/* Report Modal */}
       <ReportPostModal

@@ -813,6 +813,31 @@ export interface paths {
         patch: operations["mark_notification_as_read_api_v1_notifications__notification_id__read_patch"];
         trace?: never;
     };
+    "/api/v1/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Pencarian Terpadu Mahasiswa, Postingan, dan Portofolio (US-05, UC-10)
+         * @description Endpoint Pencarian Terpadu:
+         *     - Mahasiswa: Mencocokkan nama, bio, dan keahlian/minat. Mendukung filter jurusan & skill_id.
+         *     - Postingan: Hanya postingan tayang dan belum dihapus. Mencocokkan teks narasi (isi) & post_skills.
+         *     - Portofolio: Hanya karya publik berstatus terverifikasi. Mencocokkan judul, deskripsi, & skill.
+         *     - Proteksi Blokir Timbal Balik: Seluruh entitas menyaring akun yang diblokir dua arah (exclude_hidden).
+         *     - Validasi: q kosong dengan filter tetap valid; q dan filter kosong semua menghasilkan 422.
+         */
+        get: operations["search_entities_api_v1_search_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/": {
         parameters: {
             query?: never;
@@ -1420,6 +1445,36 @@ export interface components {
              */
             alasan: string;
         };
+        /** PortfolioSearchResult */
+        PortfolioSearchResult: {
+            /** Portfolio Id */
+            portfolio_id: number;
+            /** User Id */
+            user_id: number;
+            /** Author Nama */
+            author_nama: string;
+            /** Author Jurusan */
+            author_jurusan?: string | null;
+            /** Judul */
+            judul: string;
+            /** Deskripsi */
+            deskripsi?: string | null;
+            /** Kategori */
+            kategori: string;
+            /** Tautan Url */
+            tautan_url?: string | null;
+            /** Gambar Url */
+            gambar_url?: string | null;
+            /** Status Verifikasi */
+            status_verifikasi: string;
+            /** Skills */
+            skills?: components["schemas"]["SearchSkillItem"][];
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
         /** PortfolioUpdate */
         PortfolioUpdate: {
             /** Judul */
@@ -1552,6 +1607,30 @@ export interface components {
              * @description Alasan pemulihan takedown oleh Admin kampus (minimal 5 karakter)
              */
             alasan_pemulihan: string;
+        };
+        /** PostSearchResult */
+        PostSearchResult: {
+            /** Post Id */
+            post_id: number;
+            /** User Id */
+            user_id: number;
+            /** Author Nama */
+            author_nama: string;
+            /** Author Jurusan */
+            author_jurusan?: string | null;
+            /** Isi */
+            isi: string;
+            /** Gambar Url */
+            gambar_url?: string | null;
+            /** Tipe */
+            tipe: string;
+            /** Skills */
+            skills?: components["schemas"]["SearchSkillItem"][];
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
         };
         /** PostSkillTagResponse */
         PostSkillTagResponse: {
@@ -1897,6 +1976,31 @@ export interface components {
             /** Jurusan */
             jurusan?: string | null;
         };
+        /** SearchResponse */
+        SearchResponse: {
+            /** Total */
+            total: number;
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
+            /** Tipe */
+            tipe: string;
+            /** Items */
+            items: components["schemas"]["StudentSearchResult"][] | components["schemas"]["PostSearchResult"][] | components["schemas"]["PortfolioSearchResult"][];
+        };
+        /** SearchSkillItem */
+        SearchSkillItem: {
+            /** Skill Id */
+            skill_id: number;
+            /** Nama */
+            nama: string;
+            /**
+             * Tipe
+             * @default skill
+             */
+            tipe: string;
+        };
         /** SignedUrlResponse */
         SignedUrlResponse: {
             /** Signed Url */
@@ -1945,6 +2049,32 @@ export interface components {
              * @default []
              */
             items: components["schemas"]["PortfolioPublicResponse"][];
+        };
+        /** StudentSearchResult */
+        StudentSearchResult: {
+            /** User Id */
+            user_id: number;
+            /** Nama */
+            nama: string;
+            /** Nim */
+            nim: string;
+            /** Jurusan */
+            jurusan?: string | null;
+            /** Angkatan */
+            angkatan?: number | null;
+            /** Bio */
+            bio?: string | null;
+            /** Kontak Url */
+            kontak_url?: string | null;
+            /** Skills */
+            skills?: components["schemas"]["SearchSkillItem"][];
+            /** Friendship Status */
+            friendship_status?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
         };
         /** TokenResponse */
         TokenResponse: {
@@ -3868,6 +3998,48 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["NotificationResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    search_entities_api_v1_search_get: {
+        parameters: {
+            query?: {
+                /** @description Kata kunci teks pencarian */
+                q?: string | null;
+                /** @description Tipe entitas yang dicari */
+                tipe?: string;
+                /** @description Filter berdasarkan ID keahlian */
+                skill_id?: number | null;
+                /** @description Filter program studi */
+                jurusan?: string | null;
+                /** @description Jumlah data per halaman (1-50) */
+                limit?: number;
+                /** @description Offset data untuk pagination */
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SearchResponse"];
                 };
             };
             /** @description Validation Error */

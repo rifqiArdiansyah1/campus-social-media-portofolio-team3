@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import {
@@ -12,51 +12,11 @@ import {
   GraduationCap,
   Layers,
   LayoutDashboard,
+  Compass,
 } from "lucide-react";
 
 export default function Home() {
   const { isAuthenticated, user } = useAuth();
-  const [targetSkill, setTargetSkill] = useState("");
-  const [recommendations, setRecommendations] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  const sampleStudents = [
-    {
-      id: "u_01",
-      name: "Moh. Rifqi Dwi Ardiansyah",
-      role: "Hacker / Backend Engineer",
-      dept: "Teknik Informatika",
-      skills: ["FastAPI", "Python", "PostgreSQL", "Git", "AI/ML"],
-      match: 95,
-      reason: "Memiliki keahlian backend & database yang siap mengintegrasikan API proyek Anda.",
-    },
-    {
-      id: "u_02",
-      name: "Hakim",
-      role: "Hipster / UI/UX & Mobile",
-      dept: "Sistem Informasi",
-      skills: ["React", "Next.js", "Expo", "Figma", "UI/UX"],
-      match: 92,
-      reason: "Mampu merancang antarmuka intuitif dan mengembangkan aplikasi web/mobile responsif.",
-    },
-    {
-      id: "u_03",
-      name: "Ramadhan (Rama)",
-      role: "Hustler / Product Lead",
-      dept: "Manajemen Bisnis",
-      skills: ["Product Strategy", "Market Research", "Business Plan", "Pitching"],
-      match: 88,
-      reason: "Berpengalaman dalam validasi problem-solution fit dan strategi kompetisi inovasi.",
-    },
-  ];
-
-  const handleSimulateMatch = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setRecommendations(sampleStudents);
-      setLoading(false);
-    }, 400);
-  };
 
   return (
     <main className="min-h-screen bg-surface-canvas text-slate-800">
@@ -124,14 +84,23 @@ export default function Home() {
         </p>
         <div className="flex flex-wrap gap-4 justify-center">
           {isAuthenticated ? (
-            <Link
-              href="/home"
-              className="bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-xl font-semibold shadow-md hover:shadow-lg transition flex items-center gap-2"
-            >
-              Masuk ke Linimasa Kampus <ArrowRight className="w-4 h-4" />
-            </Link>
+            <div className="flex flex-wrap gap-3 justify-center">
+              <Link
+                href="/home"
+                className="bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-xl font-semibold shadow-md hover:shadow-lg transition flex items-center gap-2"
+              >
+                Masuk ke Linimasa Kampus <ArrowRight className="w-4 h-4" />
+              </Link>
+              <Link
+                href="/explore"
+                className="bg-white hover:bg-slate-50 border border-border-subtle text-slate-700 px-6 py-3 rounded-xl font-semibold transition flex items-center gap-2"
+              >
+                <Compass className="w-4 h-4 text-primary" />
+                Jelajah & Rekomendasi AI
+              </Link>
+            </div>
           ) : (
-            <>
+            <div className="flex flex-wrap gap-3 justify-center">
               <Link
                 href="/login"
                 className="bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-xl font-semibold shadow-md hover:shadow-lg transition flex items-center gap-2"
@@ -139,13 +108,13 @@ export default function Home() {
                 Masuk Sekarang <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
-                href="/demo"
+                href="/explore"
                 className="bg-white hover:bg-slate-50 border border-border-subtle text-slate-700 px-6 py-3 rounded-xl font-semibold transition flex items-center gap-2"
               >
-                <Layers className="w-4 h-4 text-primary" />
-                Lihat Galeri Komponen
+                <Compass className="w-4 h-4 text-primary" />
+                Jelajah Kolaborator
               </Link>
-            </>
+            </div>
           )}
         </div>
       </section>

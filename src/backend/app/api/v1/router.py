@@ -12,6 +12,7 @@ from app.api.v1.endpoints import (
     posts,
     recommendations,
     reports,
+    search,
     skills,
     uploads,
     users,
@@ -34,3 +35,4 @@ api_router.include_router(recommendations.router, prefix="/recommendations", tag
 api_router.include_router(moderation.router, prefix="/moderation", tags=["AI Content Moderation (AI-2)"])
 api_router.include_router(reports.router, prefix="/reports", tags=["Reports & Moderation (M08)"])
 api_router.include_router(notifications.router, prefix="/notifications", tags=["Notifications (M08/US-10)"])
+api_router.include_router(search.router, prefix="/search", tags=["Search & Explore (M10/US-05)"])
