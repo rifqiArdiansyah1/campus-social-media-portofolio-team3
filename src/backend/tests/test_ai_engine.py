@@ -448,3 +448,75 @@ def test_api_moderation_check_restricted_to_staff(client: TestClient, db_session
     )
     assert res_ok.status_code == 200
     assert res_ok.json()["label"] == "aman"
+
+
+def test_schema_validation_runtime_enforcement(client: TestClient, db_session: Session, monkeypatch):
+    import jsonschema
+    import pytest
+
+    # 1. Invalid recommendation schema raises ValidationError
+    bad_rec_data = {
+        "query_user_id": "1",
+        "recommendations": [
+            {
+                "user_id": "2",
+                "score": 2.5,  # Invalid: score > 1.0
+                "matched_terms": [],
+                "complementary_skills": [],
+                "reason": "Invalid score",
+            }
+        ],
+    }
+    with pytest.raises(jsonschema.ValidationError):
+        validate_recommendation_output(bad_rec_data)
+
+    # 2. Invalid moderation schema raises ValidationError
+    bad_mod_data = {
+        "post_id": "p1",
+        "label": "bukan_label_valid",  # Invalid enum value
+        "categories": [],
+        "confidence": 0.5,
+        "explanation": "Invalid label",
+    }
+    with pytest.raises(jsonschema.ValidationError):
+        validate_moderation_output(bad_mod_data)
+
+    # 3. Runtime API fallback triggered when schema validation fails
+    db = db_session
+    u_seeker = User(nim="888881", nama="Seeker", email="seeker@univ.ac.id", password_hash="hash", role="mahasiswa")
+    u_cand = User(nim="888882", nama="Candidate", email="cand@univ.ac.id", password_hash="hash", role="mahasiswa")
+    db.add_all([u_seeker, u_cand])
+    db.commit()
+
+    token_seeker = create_access_token(subject=u_seeker.user_id)
+
+    # Mock recommender.recommend to return an item that violates schema validation
+    from app.schemas.recommendation import RecommendationItem, RecommendationResponse
+    from app.services.ai_engine.recommender import TFIDFRecommender
+
+    def bad_recommend(*args, **kwargs):
+        return RecommendationResponse(
+            query_user_id=str(u_seeker.user_id),
+            recommendations=[
+                RecommendationItem(
+                    user_id=str(u_cand.user_id),
+                    score=0.8,
+                    matched_terms=[],
+                    complementary_skills=[],
+                    reason="Test reason",
+                    match_level="LabelIlegalYangTidakAdaDiEnum",  # Schema violation!
+                )
+            ]
+        )
+
+    monkeypatch.setattr(TFIDFRecommender, "recommend", bad_recommend)
+
+    # Request ke /api/v1/recommendations/match harus mengalihkan ke mode fallback, bukan error 500
+    res = client.post(
+        "/api/v1/recommendations/match",
+        headers={"Authorization": f"Bearer {token_seeker}"},
+        json={"target_skills": ["Python"]}
+    )
+    assert res.status_code == 200
+    data = res.json()
+    assert data["fallback"] is True

@@ -3,6 +3,7 @@ import unicodedata
 from typing import Dict, List, Pattern, Set
 
 from app.schemas.moderation import ModerationResponse
+from app.services.ai_engine.validator import validate_moderation_output
 
 
 class ContentModerator:
@@ -171,13 +172,15 @@ class ContentModerator:
         Tahap 2: Evaluasi teks ternormalisasi dengan word boundaries
         """
         if not content:
-            return ModerationResponse(
-                post_id=post_id,
+            resp = ModerationResponse(
+                post_id=str(post_id),
                 label="aman",
                 categories=[],
                 confidence=0.95,
                 explanation="[Saran AI] Konten kosong aman untuk dipublikasikan."
             )
+            validate_moderation_output(resp.model_dump())
+            return resp
 
         # Batasi panjang masukan
         sanitized_content = content[:self.MAX_CONTENT_LENGTH]
@@ -237,13 +240,15 @@ class ContentModerator:
             confidence = 0.95
             explanation = "[Saran AI] Konten tidak mengandung indikasi pelanggaran norma dan aman untuk dipublikasikan."
 
-        return ModerationResponse(
+        resp = ModerationResponse(
             post_id=str(post_id),
             label=label,
             categories=categories_list,
             confidence=confidence,
-            explanation=explanation
+            explanation=explanation,
         )
+        validate_moderation_output(resp.model_dump())
+        return resp
 
 
 # Singleton instance
