@@ -2861,6 +2861,141 @@
         }
       }
     },
+    "/api/v1/search": {
+      "get": {
+        "tags": [
+          "Search & Explore (M10/US-05)"
+        ],
+        "summary": "Pencarian Terpadu Mahasiswa, Postingan, dan Portofolio (US-05, UC-10)",
+        "description": "Endpoint Pencarian Terpadu:\n- Mahasiswa: Mencocokkan nama, bio, dan keahlian/minat. Mendukung filter jurusan & skill_id.\n- Postingan: Hanya postingan tayang dan belum dihapus. Mencocokkan teks narasi (isi) & post_skills.\n- Portofolio: Hanya karya publik berstatus terverifikasi. Mencocokkan judul, deskripsi, & skill.\n- Proteksi Blokir Timbal Balik: Seluruh entitas menyaring akun yang diblokir dua arah (exclude_hidden).\n- Validasi: q kosong dengan filter tetap valid; q dan filter kosong semua menghasilkan 422.",
+        "operationId": "search_entities_api_v1_search_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 100
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kata kunci teks pencarian",
+              "title": "Q"
+            },
+            "description": "Kata kunci teks pencarian"
+          },
+          {
+            "name": "tipe",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^(mahasiswa|postingan|portofolio)$",
+              "description": "Tipe entitas yang dicari",
+              "default": "mahasiswa",
+              "title": "Tipe"
+            },
+            "description": "Tipe entitas yang dicari"
+          },
+          {
+            "name": "skill_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter berdasarkan ID keahlian",
+              "title": "Skill Id"
+            },
+            "description": "Filter berdasarkan ID keahlian"
+          },
+          {
+            "name": "jurusan",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 100
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter program studi",
+              "title": "Jurusan"
+            },
+            "description": "Filter program studi"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "description": "Jumlah data per halaman (1-50)",
+              "default": 20,
+              "title": "Limit"
+            },
+            "description": "Jumlah data per halaman (1-50)"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Offset data untuk pagination",
+              "default": 0,
+              "title": "Offset"
+            },
+            "description": "Offset data untuk pagination"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/": {
       "get": {
         "tags": [
@@ -4403,6 +4538,101 @@
         ],
         "title": "PortfolioRevokeRequest"
       },
+      "PortfolioSearchResult": {
+        "properties": {
+          "portfolio_id": {
+            "type": "integer",
+            "title": "Portfolio Id"
+          },
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "author_nama": {
+            "type": "string",
+            "title": "Author Nama"
+          },
+          "author_jurusan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Author Jurusan"
+          },
+          "judul": {
+            "type": "string",
+            "title": "Judul"
+          },
+          "deskripsi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deskripsi"
+          },
+          "kategori": {
+            "type": "string",
+            "title": "Kategori"
+          },
+          "tautan_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tautan Url"
+          },
+          "gambar_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gambar Url"
+          },
+          "status_verifikasi": {
+            "type": "string",
+            "title": "Status Verifikasi"
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/SearchSkillItem"
+            },
+            "type": "array",
+            "title": "Skills"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "portfolio_id",
+          "user_id",
+          "author_nama",
+          "judul",
+          "kategori",
+          "status_verifikasi",
+          "created_at"
+        ],
+        "title": "PortfolioSearchResult"
+      },
       "PortfolioUpdate": {
         "properties": {
           "judul": {
@@ -4772,6 +5002,74 @@
           "alasan_pemulihan"
         ],
         "title": "PostRestoreRequest"
+      },
+      "PostSearchResult": {
+        "properties": {
+          "post_id": {
+            "type": "integer",
+            "title": "Post Id"
+          },
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "author_nama": {
+            "type": "string",
+            "title": "Author Nama"
+          },
+          "author_jurusan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Author Jurusan"
+          },
+          "isi": {
+            "type": "string",
+            "title": "Isi"
+          },
+          "gambar_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gambar Url"
+          },
+          "tipe": {
+            "type": "string",
+            "title": "Tipe"
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/SearchSkillItem"
+            },
+            "type": "array",
+            "title": "Skills"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "post_id",
+          "user_id",
+          "author_nama",
+          "isi",
+          "tipe",
+          "created_at"
+        ],
+        "title": "PostSearchResult"
       },
       "PostSkillTagResponse": {
         "properties": {
@@ -5680,6 +5978,81 @@
         ],
         "title": "ReviewQueueListResponse"
       },
+      "SearchResponse": {
+        "properties": {
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          },
+          "tipe": {
+            "type": "string",
+            "title": "Tipe"
+          },
+          "items": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/StudentSearchResult"
+                },
+                "type": "array"
+              },
+              {
+                "items": {
+                  "$ref": "#/components/schemas/PostSearchResult"
+                },
+                "type": "array"
+              },
+              {
+                "items": {
+                  "$ref": "#/components/schemas/PortfolioSearchResult"
+                },
+                "type": "array"
+              }
+            ],
+            "title": "Items"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total",
+          "limit",
+          "offset",
+          "tipe",
+          "items"
+        ],
+        "title": "SearchResponse"
+      },
+      "SearchSkillItem": {
+        "properties": {
+          "skill_id": {
+            "type": "integer",
+            "title": "Skill Id"
+          },
+          "nama": {
+            "type": "string",
+            "title": "Nama"
+          },
+          "tipe": {
+            "type": "string",
+            "title": "Tipe",
+            "default": "skill"
+          }
+        },
+        "type": "object",
+        "required": [
+          "skill_id",
+          "nama"
+        ],
+        "title": "SearchSkillItem"
+      },
       "SignedUrlResponse": {
         "properties": {
           "signed_url": {
@@ -5801,6 +6174,97 @@
           "poin_per_kategori"
         ],
         "title": "SkpiSummaryResponse"
+      },
+      "StudentSearchResult": {
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "nama": {
+            "type": "string",
+            "title": "Nama"
+          },
+          "nim": {
+            "type": "string",
+            "title": "Nim"
+          },
+          "jurusan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jurusan"
+          },
+          "angkatan": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Angkatan"
+          },
+          "bio": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bio"
+          },
+          "kontak_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kontak Url"
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/SearchSkillItem"
+            },
+            "type": "array",
+            "title": "Skills"
+          },
+          "friendship_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Friendship Status"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "nama",
+          "nim",
+          "created_at"
+        ],
+        "title": "StudentSearchResult"
       },
       "TokenResponse": {
         "properties": {
