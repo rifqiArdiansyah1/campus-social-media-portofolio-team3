@@ -7,8 +7,16 @@ import jsonschema
 
 logger = logging.getLogger(__name__)
 
-# Base directory for schemas
-SCHEMAS_DIR = Path(__file__).resolve().parent.parent.parent.parent.parent / "ai" / "schemas"
+def _get_schemas_dir() -> Path:
+    current = Path(__file__).resolve()
+    for parent in current.parents:
+        candidate = parent / "ai" / "schemas"
+        if candidate.is_dir():
+            return candidate
+    return current.parents[5] / "ai" / "schemas"
+
+
+SCHEMAS_DIR = _get_schemas_dir()
 
 
 def _load_schema(schema_name: str) -> Dict[str, Any]:

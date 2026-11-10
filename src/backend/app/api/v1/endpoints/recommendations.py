@@ -22,6 +22,7 @@ from app.services.ai_engine.recommender import (
     TFIDFRecommender,
     get_recommender_engine,
 )
+from app.services.ai_engine.validator import validate_recommendation_output
 from app.services.visibility import exclude_hidden
 
 logger = logging.getLogger(__name__)
@@ -193,8 +194,10 @@ async def get_collaborator_recommendations(
             ),
             timeout=settings.AI_TIMEOUT_SECONDS,
         )
+        # Validasi formal terhadap JSON Schema ai/schemas/recommendation-output.schema.json
+        validate_recommendation_output(response.model_dump())
     except (asyncio.TimeoutError, Exception) as exc:
-        logger.warning(f"Rekomendasi TF-IDF mengalami timeout/galat ({exc}), mengalihkan ke mode fallback.")
+        logger.warning(f"Rekomendasi TF-IDF mengalami timeout/galat/skema tidak valid ({exc}), mengalihkan ke mode fallback.")
         is_fallback = True
         try:
             response = recommender.keyword_fallback_recommend(
@@ -203,6 +206,7 @@ async def get_collaborator_recommendations(
                 target_skills=payload.target_skills,
                 top_k=payload.top_k,
             )
+            validate_recommendation_output(response.model_dump())
         except Exception as fallback_exc:
             logger.error(f"Fallback rekomendasi juga gagal: {fallback_exc}")
             response = RecommendationResponse(
@@ -308,8 +312,10 @@ async def get_recommendations_for_post(
             ),
             timeout=settings.AI_TIMEOUT_SECONDS,
         )
+        # Validasi formal terhadap JSON Schema ai/schemas/recommendation-output.schema.json
+        validate_recommendation_output(response.model_dump())
     except (asyncio.TimeoutError, Exception) as exc:
-        logger.warning(f"Rekomendasi for-post #{post_id} timeout/galat ({exc}), mengalihkan ke mode fallback.")
+        logger.warning(f"Rekomendasi for-post #{post_id} timeout/galat/skema tidak valid ({exc}), mengalihkan ke mode fallback.")
         is_fallback = True
         try:
             response = recommender.keyword_fallback_recommend(
@@ -318,6 +324,7 @@ async def get_recommendations_for_post(
                 target_skills=target_skills,
                 top_k=top_k,
             )
+            validate_recommendation_output(response.model_dump())
         except Exception as fallback_exc:
             logger.error(f"Fallback rekomendasi for-post juga gagal: {fallback_exc}")
             response = RecommendationResponse(
