@@ -121,7 +121,7 @@ export function MySkpiSummaryWidget({ summary, isLoading = false }: MySkpiSummar
       </div>
 
       <Link
-        href="/portfolio/create"
+        href="/portfolio"
         className="block w-full py-2 px-3 text-center text-xs font-semibold text-white bg-primary hover:bg-primary/90 rounded-xl transition-colors shadow-xs"
       >
         + Tambah Karya Portofolio
