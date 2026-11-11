@@ -1,6 +1,7 @@
 import React from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { CreatePostCard } from "@/components/features/CreatePostCard";
 import { PostCard, PostViewModel } from "@/components/features/PostCard";
 import HomePage from "@/app/(app)/home/page";
@@ -42,6 +43,13 @@ vi.mock("@/lib/api", () => ({
     patch: vi.fn(),
   },
 }));
+
+function renderWithClient(ui: React.ReactElement) {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
+  return render(<QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>);
+}
 
 describe("M05 Feed & Post Creation Frontend Tests", () => {
   beforeEach(() => {
@@ -210,7 +218,7 @@ describe("M05 Feed & Post Creation Frontend Tests", () => {
         });
       });
 
-      render(<HomePage />);
+      renderWithClient(<HomePage />);
 
       expect(await screen.findByText("Feed Postingan Pertama")).toBeInTheDocument();
       expect(screen.getByText("Ahmad Fauzi Penulis")).toBeInTheDocument();
@@ -226,7 +234,7 @@ describe("M05 Feed & Post Creation Frontend Tests", () => {
         });
       });
 
-      render(<HomePage />);
+      renderWithClient(<HomePage />);
 
       const recruitingTab = screen.getByRole("button", { name: /Rekrutmen Tim/i });
       fireEvent.click(recruitingTab);

@@ -1,15 +1,26 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef } from "react";
+import Link from "next/link";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/context/ToastContext";
 import { apiClient } from "@/lib/api";
 import { PostCard, PostViewModel } from "@/components/features/PostCard";
 import { CreatePostCard } from "@/components/features/CreatePostCard";
 import { FriendRequestWidget, FriendRequestItem } from "@/components/features/FriendRequestWidget";
+import { DashboardReviewAlert } from "@/components/dashboard/DashboardReviewAlert";
+import { MySkpiSummaryWidget } from "@/components/dashboard/MySkpiSummaryWidget";
+import { MiniAiRecommendationWidget } from "@/components/dashboard/MiniAiRecommendationWidget";
 import { ReportPostModal } from "@/components/features/ReportPostModal";
 import { TakedownPostModal } from "@/components/features/TakedownPostModal";
 import { EmptyState } from "@/components/common/EmptyState";
+import {
+  getDashboardSummary,
+  StudentDashboardSummary,
+  ModeratorDashboardSummary,
+  AdminDashboardSummary,
+} from "@/services/dashboardService";
 import {
   Sparkles,
   Compass,
@@ -17,6 +28,9 @@ import {
   UserCheck,
   Loader2,
   FolderOpen,
+  GraduationCap,
+  ShieldCheck,
+  ArrowRight,
 } from "lucide-react";
 
 interface PostSkillApi {
@@ -98,8 +112,23 @@ export default function HomePage() {
   const toast = useToast();
   const toastRef = useRef(toast);
   toastRef.current = toast;
+  const queryClient = useQueryClient();
 
-  const [activeTab, setActiveTab] = useState<"all" | "friends" | "recruiting">("all");
+  // Role helpers
+  const isStudent = user?.role === "mahasiswa";
+  const isModerator = user?.role === "moderator";
+  const isAdmin = user?.role === "admin";
+  const isStaff = isModerator || isAdmin;
+
+  // Unified Dashboard Summary Query
+  const { data: summary, isLoading: isSummaryLoading } = useQuery({
+    queryKey: ["dashboard", "summary"],
+    queryFn: getDashboardSummary,
+    staleTime: 30 * 1000,
+    retry: 1,
+  });
+
+  const [activeTab, setActiveTab] = useState<"all" | "friends" | "recruiting" | "prodi">("all");
   const [posts, setPosts] = useState<PostViewModel[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -110,11 +139,12 @@ export default function HomePage() {
   const [reportModalPost, setReportModalPost] = useState<{ id: number; authorName: string } | null>(null);
   const [takedownModalPost, setTakedownModalPost] = useState<{ id: number; authorName: string } | null>(null);
 
-  // Live Friend requests for M06
+  // Live Friend requests for Mahasiswa only
   const [friendRequests, setFriendRequests] = useState<FriendRequestItem[]>([]);
   const [isLoadingRequests, setIsLoadingRequests] = useState(false);
 
   const fetchFriendRequests = useCallback(async () => {
+    if (!isStudent) return;
     try {
       setIsLoadingRequests(true);
       const res = await apiClient.get<FriendRequestsApiResponse>("/friendships", {
@@ -134,60 +164,65 @@ export default function HomePage() {
     } finally {
       setIsLoadingRequests(false);
     }
-  }, []);
+  }, [isStudent]);
 
-  const fetchFeed = useCallback(async (scope: "all" | "friends" | "recruiting", cursor?: string | null) => {
-    try {
-      if (!cursor) {
-        setIsLoading(true);
-      } else {
-        setIsLoadingMore(true);
+  const fetchFeed = useCallback(
+    async (scope: "all" | "friends" | "recruiting" | "prodi", cursor?: string | null) => {
+      try {
+        if (!cursor) {
+          setIsLoading(true);
+        } else {
+          setIsLoadingMore(true);
+        }
+
+        const params: Record<string, any> = {
+          scope,
+          limit: 10,
+        };
+        if (cursor) {
+          params.cursor = cursor;
+        }
+
+        const res = await apiClient.get<PostFeedApiResponse>("/posts", { params });
+        const data = res.data;
+        const mapped = data.items.map(mapApiToViewModel);
+
+        if (!cursor) {
+          setPosts(mapped);
+        } else {
+          setPosts((prev) => [...prev, ...mapped]);
+        }
+
+        setHasMore(data.has_more);
+        setNextCursor(data.next_cursor);
+      } catch (err: any) {
+        toastRef.current.error(err.response?.data?.detail || "Gagal memuat linimasa postingan");
+      } finally {
+        setIsLoading(false);
+        setIsLoadingMore(false);
       }
-
-      const params: Record<string, any> = {
-        scope,
-        limit: 10,
-      };
-      if (cursor) {
-        params.cursor = cursor;
-      }
-
-      const res = await apiClient.get<PostFeedApiResponse>("/posts", { params });
-      const data = res.data;
-      const mapped = data.items.map(mapApiToViewModel);
-
-      if (!cursor) {
-        setPosts(mapped);
-      } else {
-        setPosts((prev) => [...prev, ...mapped]);
-      }
-
-      setHasMore(data.has_more);
-      setNextCursor(data.next_cursor);
-    } catch (err: any) {
-      toastRef.current.error(err.response?.data?.detail || "Gagal memuat linimasa postingan");
-    } finally {
-      setIsLoading(false);
-      setIsLoadingMore(false);
-    }
-  }, []);
+    },
+    []
+  );
 
   useEffect(() => {
     fetchFeed(activeTab, null);
   }, [activeTab, fetchFeed]);
 
   useEffect(() => {
-    fetchFriendRequests();
-  }, [fetchFriendRequests]);
+    if (isStudent) {
+      fetchFriendRequests();
+    }
+  }, [isStudent, fetchFriendRequests]);
 
   const handlePostCreated = (newPostApi: PostDetailApi) => {
-    // Only display in public feed if status is 'tayang'
     if (newPostApi.status === "tayang") {
       const viewModel = mapApiToViewModel(newPostApi);
       if (
         activeTab === "all" ||
         (activeTab === "recruiting" && newPostApi.tipe === "cari_anggota") ||
-        activeTab === "friends"
+        (activeTab === "friends" && isStudent) ||
+        (activeTab === "prodi" && isModerator)
       ) {
         setPosts((prev) => [viewModel, ...prev]);
       }
@@ -224,6 +259,7 @@ export default function HomePage() {
     try {
       await apiClient.patch(`/friendships/${reqId}`, { status: "diterima" });
       toast.success("Permohonan koneksi diterima!");
+      queryClient.invalidateQueries({ queryKey: ["dashboard", "summary"] });
       if (activeTab === "friends") {
         fetchFeed("friends", null);
       }
@@ -239,6 +275,7 @@ export default function HomePage() {
     try {
       await apiClient.patch(`/friendships/${reqId}`, { status: "ditolak" });
       toast.info("Permohonan koneksi ditolak.");
+      queryClient.invalidateQueries({ queryKey: ["dashboard", "summary"] });
     } catch (err: any) {
       setFriendRequests(prev);
       toast.error(err.response?.data?.detail || "Gagal menolak permohonan koneksi.");
@@ -247,27 +284,40 @@ export default function HomePage() {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-      {/* Main Feed Column */}
+      {/* Main Column */}
       <section className="lg:col-span-2 space-y-5">
+        {/* Role-Adaptive Alert Banner for Moderator & Admin */}
+        {summary && isStaff && (
+          <DashboardReviewAlert summary={summary as ModeratorDashboardSummary | AdminDashboardSummary} />
+        )}
+
         {/* Welcome Greeting Banner */}
         <div className="p-6 rounded-2xl bg-gradient-to-r from-primary to-primary-container text-white shadow-sm flex items-start justify-between">
           <div>
             <div className="flex items-center gap-2 mb-1">
               <Sparkles className="w-4 h-4 text-secondary-container" />
               <span className="text-xs font-semibold text-secondary-container uppercase tracking-wider">
-                Beranda Kolaborasi
+                {isModerator
+                  ? "Panel Program Studi"
+                  : isAdmin
+                  ? "Pusat Administrator Kampus"
+                  : "Beranda Kolaborasi Mahasiswa"}
               </span>
             </div>
             <h1 className="text-xl font-extrabold font-heading">
-              Halo, {user?.nama || "Mahasiswa"}! 👋
+              Halo, {user?.nama || "Pengguna"}! 👋
             </h1>
             <p className="mt-1 text-xs sm:text-sm text-white/80 max-w-lg font-body">
-              Temukan inovasi karya kampus, diskusikan proyek riset, dan temukan mitra kolaborasi terbaikmu.
+              {isModerator
+                ? "Pantau dan kelola kurasi karya ilmiah, portofolio SKPI mahasiswa, serta postingan prodi."
+                : isAdmin
+                ? "Kelola ekosistem karya, kepatuhan moderasi konten, dan pertumbuhan portofolio seluruh kampus."
+                : "Temukan inovasi karya kampus, diskusikan proyek riset, dan temukan mitra kolaborasi terbaikmu."}
             </p>
           </div>
         </div>
 
-        {/* Create Post Card Widget */}
+        {/* Quick Post Card Widget (Allowed for all authenticated users) */}
         <CreatePostCard onPostCreated={handlePostCreated} />
 
         {/* Feed Scope Navigation Tabs */}
@@ -285,18 +335,37 @@ export default function HomePage() {
             <span>Semua</span>
           </button>
 
-          <button
-            type="button"
-            onClick={() => setActiveTab("friends")}
-            className={`px-4 py-2 text-xs font-semibold rounded-xl flex items-center gap-1.5 transition-all ${
-              activeTab === "friends"
-                ? "bg-primary text-white shadow-sm"
-                : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-            }`}
-          >
-            <Users className="w-3.5 h-3.5" />
-            <span>Teman</span>
-          </button>
+          {/* Student Only: Teman Tab */}
+          {isStudent && (
+            <button
+              type="button"
+              onClick={() => setActiveTab("friends")}
+              className={`px-4 py-2 text-xs font-semibold rounded-xl flex items-center gap-1.5 transition-all ${
+                activeTab === "friends"
+                  ? "bg-primary text-white shadow-sm"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+              }`}
+            >
+              <Users className="w-3.5 h-3.5" />
+              <span>Teman</span>
+            </button>
+          )}
+
+          {/* Moderator Only: Prodi Saya Tab */}
+          {isModerator && (
+            <button
+              type="button"
+              onClick={() => setActiveTab("prodi")}
+              className={`px-4 py-2 text-xs font-semibold rounded-xl flex items-center gap-1.5 transition-all ${
+                activeTab === "prodi"
+                  ? "bg-primary text-white shadow-sm"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+              }`}
+            >
+              <GraduationCap className="w-3.5 h-3.5" />
+              <span>Prodi Saya</span>
+            </button>
+          )}
 
           <button
             type="button"
@@ -337,6 +406,8 @@ export default function HomePage() {
               title={
                 activeTab === "friends"
                   ? "Belum Ada Postingan dari Teman"
+                  : activeTab === "prodi"
+                  ? "Belum Ada Postingan di Program Studi Anda"
                   : activeTab === "recruiting"
                   ? "Belum Ada Lowongan Rekrutmen Tim"
                   : "Belum Ada Postingan di Kampus"
@@ -344,6 +415,8 @@ export default function HomePage() {
               description={
                 activeTab === "friends"
                   ? "Tambahkan teman baru untuk melihat aktivitas karya dan riset rekan mahasiswa di kampusmu."
+                  : activeTab === "prodi"
+                  ? "Mahasiswa dari program studi Anda belum membagikan postingan publik."
                   : activeTab === "recruiting"
                   ? "Jadilah yang pertama membuka kesempatan rekrutmen tim untuk proyek kolaborasimu!"
                   : "Bagikan progres proyek, ide inovasi, atau diskusikan riset pertamamu hari ini."
@@ -387,13 +460,56 @@ export default function HomePage() {
 
       {/* Side Widgets Column */}
       <aside className="space-y-5">
-        <FriendRequestWidget
-          requests={friendRequests}
-          onAccept={handleAcceptFriend}
-          onReject={handleRejectFriend}
-          isLoading={isLoadingRequests}
-        />
+        {/* STUDENT VIEW: Friend Requests, Mini AI Matchmaker, SKPI Summary */}
+        {isStudent && (
+          <>
+            <FriendRequestWidget
+              requests={friendRequests}
+              onAccept={handleAcceptFriend}
+              onReject={handleRejectFriend}
+              isLoading={isLoadingRequests}
+            />
 
+            <MiniAiRecommendationWidget />
+
+            {summary && summary.role === "mahasiswa" ? (
+              <MySkpiSummaryWidget
+                summary={summary as StudentDashboardSummary}
+                isLoading={isSummaryLoading}
+              />
+            ) : null}
+          </>
+        )}
+
+        {/* STAFF VIEW: Quick Actions & Navigation Shortcuts */}
+        {isStaff && (
+          <div className="p-5 rounded-2xl border border-border-subtle bg-white shadow-sm space-y-3">
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-primary" />
+              <h2 className="text-xs font-bold text-slate-900 font-heading uppercase tracking-wider">
+                Pintasan Staf & Verifikasi
+              </h2>
+            </div>
+            <div className="space-y-2 pt-1 text-xs font-medium">
+              <Link
+                href="/moderation"
+                className="flex items-center justify-between p-2.5 rounded-xl border border-border-subtle hover:bg-slate-50 hover:text-primary transition-all group"
+              >
+                <span>Pusat Moderasi Konten & Laporan</span>
+                <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-primary group-hover:translate-x-0.5 transition-all" />
+              </Link>
+              <Link
+                href="/portfolio/review"
+                className="flex items-center justify-between p-2.5 rounded-xl border border-border-subtle hover:bg-slate-50 hover:text-primary transition-all group"
+              >
+                <span>Tinjauan Portofolio & SKPI</span>
+                <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-primary group-hover:translate-x-0.5 transition-all" />
+              </Link>
+            </div>
+          </div>
+        )}
+
+        {/* About CampusFolio Platform */}
         <div className="p-5 rounded-2xl border border-border-subtle bg-white shadow-sm space-y-3">
           <h2 className="text-xs font-bold text-slate-900 font-heading uppercase tracking-wider">
             Tentang CampusFolio

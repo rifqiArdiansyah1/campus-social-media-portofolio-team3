@@ -8,7 +8,7 @@ from typing import Literal, Optional, Tuple
 from urllib.parse import urlparse
 
 from fastapi import APIRouter, Depends, Query, status
-from sqlalchemy import and_, or_
+from sqlalchemy import and_, false, func, or_
 from sqlalchemy.orm import Session, joinedload, selectinload
 
 from app.core.config import settings
@@ -392,7 +392,7 @@ def get_my_posts(
     summary="Linimasa Feed Postingan Kampus (Keyset Pagination & Scope Filtering)",
 )
 def get_posts_feed(
-    scope: Literal["all", "friends", "recruiting"] = Query("all", description="Cakupan linimasa"),
+    scope: Literal["all", "friends", "recruiting", "prodi"] = Query("all", description="Cakupan linimasa"),
     skill_id: Optional[int] = Query(None, description="Filter berdasarkan ID keahlian"),
     limit: int = Query(10, ge=1, le=50, description="Batas jumlah item"),
     cursor: Optional[str] = Query(None, description="Opaque keyset cursor untuk navigasi"),
@@ -436,6 +436,13 @@ def get_posts_feed(
         )
         # Include friends' posts OR current user's own posts
         query = query.filter(or_(Post.user_id == viewer_id, friend_subquery.exists()))
+    elif scope == "prodi":
+        if current_user.jurusan:
+            query = query.join(User, Post.user_id == User.user_id).filter(
+                func.lower(func.trim(User.jurusan)) == current_user.jurusan.strip().lower()
+            )
+        else:
+            query = query.filter(false())
 
     # 4. Optional Skill Filter
     if skill_id is not None:

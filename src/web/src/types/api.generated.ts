@@ -838,6 +838,30 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/dashboard/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Ringkasan Dashboard Beranda Terpadu Berdasarkan Peran (US-18, UC-04)
+         * @description Endpoint agregasi terpadu untuk Dashboard Home (US-18).
+         *     Menghitung seluruh ringkasan aktivitas dalam satu panggilan API efisien:
+         *     - Mahasiswa: Poin SKPI, item portofolio, item perlu revisi, permohonan teman masuk, dan unread notifikasi.
+         *     - Moderator (Kaprodi): Antrean review portofolio, antrean postingan, dan antrean laporan se-prodi.
+         *     - Admin (Kemahasiswaan): Ringkasan metrik moderasi, review portofolio seluruh kampus, dan total mahasiswa.
+         */
+        get: operations["get_dashboard_summary_api_v1_dashboard_summary_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/": {
         parameters: {
             query?: never;
@@ -954,6 +978,26 @@ export interface components {
              */
             angkatan?: number | null;
         };
+        /** AdminDashboardSummary */
+        AdminDashboardSummary: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            role: "admin";
+            /** Total Mahasiswa */
+            total_mahasiswa: number;
+            /** Total Portofolio Terverifikasi */
+            total_portofolio_terverifikasi: number;
+            /** Pending Portfolio Reviews */
+            pending_portfolio_reviews: number;
+            /** Pending Reports */
+            pending_reports: number;
+            /** Pending Posts */
+            pending_posts: number;
+            /** Total Takedown */
+            total_takedown: number;
+        };
         /** BlockedListResponse */
         BlockedListResponse: {
             /** Items */
@@ -1002,6 +1046,11 @@ export interface components {
              * @description Berkas foto (JPEG, PNG, WEBP maks 5MB)
              */
             file: string;
+        };
+        /** DashboardSummaryResponse */
+        DashboardSummaryResponse: {
+            /** Summary */
+            summary: components["schemas"]["StudentDashboardSummary"] | components["schemas"]["ModeratorDashboardSummary"] | components["schemas"]["AdminDashboardSummary"];
         };
         /** FriendListResponse */
         FriendListResponse: {
@@ -1213,6 +1262,27 @@ export interface components {
             laporan_baru: number;
             /** Portofolio Menunggu */
             portofolio_menunggu: number;
+        };
+        /** ModeratorDashboardSummary */
+        ModeratorDashboardSummary: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            role: "moderator";
+            /** Jurusan */
+            jurusan?: string | null;
+            /**
+             * Is Jurusan Configured
+             * @default true
+             */
+            is_jurusan_configured: boolean;
+            /** Pending Portfolio Reviews */
+            pending_portfolio_reviews: number;
+            /** Pending Reports */
+            pending_reports: number;
+            /** Pending Posts */
+            pending_posts: number;
         };
         /** MyProfileResponse */
         MyProfileResponse: {
@@ -1722,6 +1792,20 @@ export interface components {
              */
             updated_count: number;
         };
+        /** RecentPortfolioItemSummary */
+        RecentPortfolioItemSummary: {
+            /** Portfolio Id */
+            portfolio_id: number;
+            /** Judul */
+            judul: string;
+            /** Kategori */
+            kategori: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
         /** RecommendationFeedbackRequest */
         RecommendationFeedbackRequest: {
             /**
@@ -2049,6 +2133,31 @@ export interface components {
              * @default []
              */
             items: components["schemas"]["PortfolioPublicResponse"][];
+        };
+        /** StudentDashboardSummary */
+        StudentDashboardSummary: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            role: "mahasiswa";
+            /** Total Skpi Poin */
+            total_skpi_poin: number;
+            /** Total Portofolio Terverifikasi */
+            total_portofolio_terverifikasi: number;
+            /** Total Portofolio Menunggu */
+            total_portofolio_menunggu: number;
+            /** Total Portofolio Perlu Revisi */
+            total_portofolio_perlu_revisi: number;
+            /** Pending Friend Requests */
+            pending_friend_requests: number;
+            /** Unread Notifications Count */
+            unread_notifications_count: number;
+            /**
+             * Recent Verified Portfolios
+             * @default []
+             */
+            recent_verified_portfolios: components["schemas"]["RecentPortfolioItemSummary"][];
         };
         /** StudentSearchResult */
         StudentSearchResult: {
@@ -2692,7 +2801,7 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description Cakupan linimasa */
-                scope?: "all" | "friends" | "recruiting";
+                scope?: "all" | "friends" | "recruiting" | "prodi";
                 /** @description Filter berdasarkan ID keahlian */
                 skill_id?: number | null;
                 /** @description Batas jumlah item */
@@ -4049,6 +4158,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_dashboard_summary_api_v1_dashboard_summary_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DashboardSummaryResponse"];
                 };
             };
         };

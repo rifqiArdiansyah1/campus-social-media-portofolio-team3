@@ -444,3 +444,25 @@ def test_get_my_posts_and_route_order(client, db_session: Session):
     statuses = {item["status"] for item in data["items"]}
     assert "tayang" in statuses
     assert "menunggu_review" in statuses
+
+
+def test_feed_scope_prodi(client, db_session: Session):
+    uid = uuid4().hex[:6]
+    jurusan_ti = f"Teknik Informatika {uid}"
+    jurusan_si = f"Sistem Informasi {uid}"
+
+    u_ti = create_unique_user(db_session, nama="User TI", jurusan=jurusan_ti)
+    u_si = create_unique_user(db_session, nama="User SI", jurusan=jurusan_si)
+
+    p_ti = Post(user_id=u_ti.user_id, isi="Post dari Mahasiswa TI", tipe="umum", status="tayang")
+    p_si = Post(user_id=u_si.user_id, isi="Post dari Mahasiswa SI", tipe="umum", status="tayang")
+    db_session.add_all([p_ti, p_si])
+    db_session.commit()
+
+    # Query with scope=prodi as u_ti -> should see p_ti but not p_si
+    res = client.get("/api/v1/posts?scope=prodi", headers=auth_headers(u_ti))
+    assert res.status_code == 200
+    ids = [item["post_id"] for item in res.json()["items"]]
+    assert p_ti.post_id in ids
+    assert p_si.post_id not in ids
+
