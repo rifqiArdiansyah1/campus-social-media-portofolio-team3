@@ -100,3 +100,30 @@ jobs:
         env:
           NEXT_PUBLIC_API_URL: http://localhost:8000/api/v1
         run: npm run build
+
+  mobile:
+    name: Mobile Typecheck & Tests (Expo)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: src/mobile
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: src/mobile/package-lock.json
+
+      - name: Install Mobile Dependencies
+        run: npm ci
+
+      - name: Run Mobile Typecheck (TypeScript)
+        run: npm run typecheck
+
+      - name: Run Mobile Unit Tests
+        run: npm test
