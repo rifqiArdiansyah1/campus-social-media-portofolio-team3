@@ -4,6 +4,7 @@ from app.api.v1.endpoints import (
     admin,
     auth,
     blocks,
+    dashboard,
     friends,
     friendships,
     moderation,
@@ -36,3 +37,4 @@ api_router.include_router(moderation.router, prefix="/moderation", tags=["AI Con
 api_router.include_router(reports.router, prefix="/reports", tags=["Reports & Moderation (M08)"])
 api_router.include_router(notifications.router, prefix="/notifications", tags=["Notifications (M08/US-10)"])
 api_router.include_router(search.router, prefix="/search", tags=["Search & Explore (M10/US-05)"])
+api_router.include_router(dashboard.router, prefix="/dashboard", tags=["Dashboard (M11/US-18)"])

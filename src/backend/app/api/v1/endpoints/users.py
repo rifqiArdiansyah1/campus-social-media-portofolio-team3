@@ -24,6 +24,7 @@ from app.schemas.profile import (
     UserSkillResponse,
 )
 from app.services.friendship import get_friendship_relation
+from app.services.skpi_calculator import calculate_skpi_summary
 from app.services.visibility import is_target_blocking_viewer, is_viewer_blocking_target
 
 router = APIRouter()
@@ -296,25 +297,11 @@ def get_user_skpi_summary(
     )
 
     all_items = items_query.all()
-
-    categories = ["proyek", "skpi", "sertifikat", "artikel_ilmiah"]
-    jumlah_per_kategori = {cat: 0 for cat in categories}
-    poin_weights = {"proyek": 0, "skpi": 1, "sertifikat": 1, "artikel_ilmiah": 2}
-    poin_per_kategori = {cat: 0 for cat in categories}
-
-    menunggu_count = 0
-    total_terverifikasi = 0
+    skpi_calc = calculate_skpi_summary(all_items)
 
     public_items = []
     for item in all_items:
-        if item.status_verifikasi == "menunggu_review":
-            menunggu_count += 1
-        elif item.status_verifikasi == "terverifikasi":
-            cat = item.kategori if item.kategori in categories else "skpi"
-            jumlah_per_kategori[cat] += 1
-            poin_per_kategori[cat] += poin_weights.get(cat, 1)
-            total_terverifikasi += 1
-
+        if item.status_verifikasi == "terverifikasi" or (item.kategori == "proyek" and item.status_verifikasi != "menunggu_review"):
             skills = [
                 SkillBriefResponse(
                     skill_id=ps.skill.skill_id,
@@ -333,7 +320,7 @@ def get_user_skpi_summary(
                     tautan_url=item.tautan_url,
                     gambar_url=item.gambar_url,
                     kategori=item.kategori,
-                    nomor_dokumen=mask_document_number(item.nomor_dokumen),
+                    nomor_dokumen=mask_document_number(item.nomor_dokumen) if item.kategori != "proyek" else None,
                     penerbit=item.penerbit,
                     tanggal_terbit=item.tanggal_terbit,
                     has_file=bool(item.file_url),
@@ -342,44 +329,13 @@ def get_user_skpi_summary(
                     skills=skills,
                 )
             )
-        elif item.kategori == "proyek":
-            jumlah_per_kategori["proyek"] += 1
-            skills = [
-                SkillBriefResponse(
-                    skill_id=ps.skill.skill_id,
-                    nama=ps.skill.nama,
-                    kategori=ps.skill.tipe,
-                )
-                for ps in item.skills
-                if ps.skill is not None
-            ]
-            public_items.append(
-                PortfolioPublicResponse(
-                    portfolio_id=item.portfolio_id,
-                    user_id=item.user_id,
-                    judul=item.judul,
-                    deskripsi=item.deskripsi,
-                    tautan_url=item.tautan_url,
-                    gambar_url=item.gambar_url,
-                    kategori=item.kategori,
-                    nomor_dokumen=None,
-                    penerbit=item.penerbit,
-                    tanggal_terbit=item.tanggal_terbit,
-                    has_file=bool(item.file_url),
-                    status_verifikasi=item.status_verifikasi,
-                    created_at=item.created_at,
-                    skills=skills,
-                )
-            )
-
-    total_poin = sum(poin_per_kategori.values())
 
     return SkpiSummaryResponse(
         user_id=id,
-        total_poin=total_poin,
-        total_terverifikasi=total_terverifikasi,
-        menunggu_review=menunggu_count if can_view_private else None,
-        jumlah_per_kategori=jumlah_per_kategori,
-        poin_per_kategori=poin_per_kategori,
+        total_poin=skpi_calc["total_poin"],
+        total_terverifikasi=skpi_calc["total_terverifikasi"],
+        menunggu_review=skpi_calc["total_menunggu"] if can_view_private else None,
+        jumlah_per_kategori=skpi_calc["jumlah_per_kategori"],
+        poin_per_kategori=skpi_calc["poin_per_kategori"],
         items=public_items,
     )

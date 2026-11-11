@@ -641,7 +641,8 @@
               "enum": [
                 "all",
                 "friends",
-                "recruiting"
+                "recruiting",
+                "prodi"
               ],
               "type": "string",
               "description": "Cakupan linimasa",
@@ -2996,6 +2997,33 @@
         }
       }
     },
+    "/api/v1/dashboard/summary": {
+      "get": {
+        "tags": [
+          "Dashboard (M11/US-18)"
+        ],
+        "summary": "Ringkasan Dashboard Beranda Terpadu Berdasarkan Peran (US-18, UC-04)",
+        "description": "Endpoint agregasi terpadu untuk Dashboard Home (US-18).\nMenghitung seluruh ringkasan aktivitas dalam satu panggilan API efisien:\n- Mahasiswa: Poin SKPI, item portofolio, item perlu revisi, permohonan teman masuk, dan unread notifikasi.\n- Moderator (Kaprodi): Antrean review portofolio, antrean postingan, dan antrean laporan se-prodi.\n- Admin (Kemahasiswaan): Ringkasan metrik moderasi, review portofolio seluruh kampus, dan total mahasiswa.",
+        "operationId": "get_dashboard_summary_api_v1_dashboard_summary_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardSummaryResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
     "/": {
       "get": {
         "tags": [
@@ -3145,6 +3173,50 @@
         ],
         "title": "AdminCreateUserRequest"
       },
+      "AdminDashboardSummary": {
+        "properties": {
+          "role": {
+            "type": "string",
+            "const": "admin",
+            "title": "Role",
+            "default": "admin"
+          },
+          "total_mahasiswa": {
+            "type": "integer",
+            "title": "Total Mahasiswa"
+          },
+          "total_portofolio_terverifikasi": {
+            "type": "integer",
+            "title": "Total Portofolio Terverifikasi"
+          },
+          "pending_portfolio_reviews": {
+            "type": "integer",
+            "title": "Pending Portfolio Reviews"
+          },
+          "pending_reports": {
+            "type": "integer",
+            "title": "Pending Reports"
+          },
+          "pending_posts": {
+            "type": "integer",
+            "title": "Pending Posts"
+          },
+          "total_takedown": {
+            "type": "integer",
+            "title": "Total Takedown"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total_mahasiswa",
+          "total_portofolio_terverifikasi",
+          "pending_portfolio_reviews",
+          "pending_reports",
+          "pending_posts",
+          "total_takedown"
+        ],
+        "title": "AdminDashboardSummary"
+      },
       "BlockedListResponse": {
         "properties": {
           "items": {
@@ -3272,6 +3344,37 @@
           "file"
         ],
         "title": "Body_upload_post_image_api_v1_uploads_post_image_post"
+      },
+      "DashboardSummaryResponse": {
+        "properties": {
+          "summary": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/StudentDashboardSummary"
+              },
+              {
+                "$ref": "#/components/schemas/ModeratorDashboardSummary"
+              },
+              {
+                "$ref": "#/components/schemas/AdminDashboardSummary"
+              }
+            ],
+            "title": "Summary",
+            "discriminator": {
+              "propertyName": "role",
+              "mapping": {
+                "admin": "#/components/schemas/AdminDashboardSummary",
+                "mahasiswa": "#/components/schemas/StudentDashboardSummary",
+                "moderator": "#/components/schemas/ModeratorDashboardSummary"
+              }
+            }
+          }
+        },
+        "type": "object",
+        "required": [
+          "summary"
+        ],
+        "title": "DashboardSummaryResponse"
       },
       "FriendListResponse": {
         "properties": {
@@ -3824,6 +3927,51 @@
           "portofolio_menunggu"
         ],
         "title": "ModerationSummaryResponse"
+      },
+      "ModeratorDashboardSummary": {
+        "properties": {
+          "role": {
+            "type": "string",
+            "const": "moderator",
+            "title": "Role",
+            "default": "moderator"
+          },
+          "jurusan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jurusan"
+          },
+          "is_jurusan_configured": {
+            "type": "boolean",
+            "title": "Is Jurusan Configured",
+            "default": true
+          },
+          "pending_portfolio_reviews": {
+            "type": "integer",
+            "title": "Pending Portfolio Reviews"
+          },
+          "pending_reports": {
+            "type": "integer",
+            "title": "Pending Reports"
+          },
+          "pending_posts": {
+            "type": "integer",
+            "title": "Pending Posts"
+          }
+        },
+        "type": "object",
+        "required": [
+          "pending_portfolio_reviews",
+          "pending_reports",
+          "pending_posts"
+        ],
+        "title": "ModeratorDashboardSummary"
       },
       "MyProfileResponse": {
         "properties": {
@@ -5333,6 +5481,35 @@
         ],
         "title": "ReadAllResponse"
       },
+      "RecentPortfolioItemSummary": {
+        "properties": {
+          "portfolio_id": {
+            "type": "integer",
+            "title": "Portfolio Id"
+          },
+          "judul": {
+            "type": "string",
+            "title": "Judul"
+          },
+          "kategori": {
+            "type": "string",
+            "title": "Kategori"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "portfolio_id",
+          "judul",
+          "kategori",
+          "created_at"
+        ],
+        "title": "RecentPortfolioItemSummary"
+      },
       "RecommendationFeedbackRequest": {
         "properties": {
           "umpan_balik": {
@@ -6174,6 +6351,58 @@
           "poin_per_kategori"
         ],
         "title": "SkpiSummaryResponse"
+      },
+      "StudentDashboardSummary": {
+        "properties": {
+          "role": {
+            "type": "string",
+            "const": "mahasiswa",
+            "title": "Role",
+            "default": "mahasiswa"
+          },
+          "total_skpi_poin": {
+            "type": "integer",
+            "title": "Total Skpi Poin"
+          },
+          "total_portofolio_terverifikasi": {
+            "type": "integer",
+            "title": "Total Portofolio Terverifikasi"
+          },
+          "total_portofolio_menunggu": {
+            "type": "integer",
+            "title": "Total Portofolio Menunggu"
+          },
+          "total_portofolio_perlu_revisi": {
+            "type": "integer",
+            "title": "Total Portofolio Perlu Revisi"
+          },
+          "pending_friend_requests": {
+            "type": "integer",
+            "title": "Pending Friend Requests"
+          },
+          "unread_notifications_count": {
+            "type": "integer",
+            "title": "Unread Notifications Count"
+          },
+          "recent_verified_portfolios": {
+            "items": {
+              "$ref": "#/components/schemas/RecentPortfolioItemSummary"
+            },
+            "type": "array",
+            "title": "Recent Verified Portfolios",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "total_skpi_poin",
+          "total_portofolio_terverifikasi",
+          "total_portofolio_menunggu",
+          "total_portofolio_perlu_revisi",
+          "pending_friend_requests",
+          "unread_notifications_count"
+        ],
+        "title": "StudentDashboardSummary"
       },
       "StudentSearchResult": {
         "properties": {

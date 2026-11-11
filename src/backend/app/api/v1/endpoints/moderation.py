@@ -2,13 +2,12 @@ from datetime import datetime
 from typing import List
 
 from fastapi import APIRouter, Depends, status
-from sqlalchemy import func
 from sqlalchemy.orm import Session, joinedload, selectinload
 
 from app.core.database import get_db
 from app.core.exceptions import ConflictError, ForbiddenError, NotFoundError
 from app.core.security import apply_moderation_scope, can_moderate, require_roles
-from app.models.entities import ModerationRecord, PortfolioItem, Post, Report, User
+from app.models.entities import ModerationRecord, Post, Report, User
 from app.schemas.moderation import (
     ModerationDecisionRequest,
     ModerationQueueItemResponse,
@@ -18,6 +17,7 @@ from app.schemas.moderation import (
 )
 from app.services.ai_engine.moderator import moderator_engine
 from app.services.notification import create_notification
+from app.services.queue_counts import get_staff_queue_counts
 from app.services.storage import storage_service
 
 router = APIRouter()
@@ -318,39 +318,9 @@ def get_moderation_summary(
     db: Session = Depends(get_db),
     current_user: User = Depends(require_roles("moderator", "admin")),
 ):
-    # 1. Post menunggu review
-    post_q = (
-        db.query(func.count(Post.post_id))
-        .join(User, Post.user_id == User.user_id)
-        .filter(
-            Post.is_deleted == False,  # noqa: E712
-            Post.status.in_(["menunggu_review", "direview"]),
-        )
-    )
-    post_q = apply_moderation_scope(post_q, User, current_user)
-    post_menunggu = post_q.scalar() or 0
-
-    # 2. Laporan baru / diproses
-    rep_q = (
-        db.query(func.count(Report.report_id))
-        .join(Post, Report.post_id == Post.post_id)
-        .join(User, Post.user_id == User.user_id)
-        .filter(Report.status.in_(["baru", "diproses"]))
-    )
-    rep_q = apply_moderation_scope(rep_q, User, current_user)
-    laporan_baru = rep_q.scalar() or 0
-
-    # 3. Portofolio menunggu review
-    port_q = (
-        db.query(func.count(PortfolioItem.portfolio_id))
-        .join(User, PortfolioItem.user_id == User.user_id)
-        .filter(PortfolioItem.status_verifikasi == "menunggu_review")
-    )
-    port_q = apply_moderation_scope(port_q, User, current_user)
-    portofolio_menunggu = port_q.scalar() or 0
-
+    counts = get_staff_queue_counts(db, current_user)
     return ModerationSummaryResponse(
-        post_menunggu=post_menunggu,
-        laporan_baru=laporan_baru,
-        portofolio_menunggu=portofolio_menunggu,
+        post_menunggu=counts["post_menunggu"],
+        laporan_baru=counts["laporan_baru"],
+        portofolio_menunggu=counts["portofolio_menunggu"],
     )
