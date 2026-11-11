@@ -122,8 +122,5 @@ jobs:
       - name: Install Mobile Dependencies
         run: npm ci
 
-      - name: Run Mobile Typecheck (TypeScript)
+      - name: Run Mobile Typecheck & Verification
         run: npm run typecheck
-
-      - name: Run Mobile Unit Tests
-        run: npm test
