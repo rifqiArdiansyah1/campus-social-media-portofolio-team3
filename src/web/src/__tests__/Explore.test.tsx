@@ -202,4 +202,138 @@ describe("M10 Explore & Search Frontend Tests (/explore)", () => {
 
     expect(screen.queryByText("AI Matchmaker Engine")).not.toBeInTheDocument();
   });
+
+  it("sends friendship request from recommendation card using POST /friendships", async () => {
+    (apiClient.post as any).mockImplementation((url: string) => {
+      if (url === "/recommendations/match") {
+        return Promise.resolve({
+          data: {
+            query_user_id: "101",
+            fallback: false,
+            recommendations: [
+              {
+                user_id: "205",
+                rec_id: 105,
+                name: "Dewi Lestari",
+                department: "Teknik Elektro",
+                match_level: "Sangat Cocok",
+                score: 0.95,
+                matched_terms: ["IoT"],
+                complementary_skills: ["Embedded C"],
+                reason: "Cocok untuk proyek hardware.",
+              },
+            ],
+          },
+        });
+      }
+      if (url === "/friendships") {
+        return Promise.resolve({
+          data: { friendship_id: 50, requester_id: 101, addressee_id: 205, status: "menunggu" },
+        });
+      }
+      return Promise.reject(new Error("Not found"));
+    });
+
+    render(<ExplorePage />);
+
+    await waitFor(() => {
+      expect(screen.getByText("Dewi Lestari")).toBeInTheDocument();
+    });
+
+    const addFriendBtn = screen.getByRole("button", { name: /Tambah Teman/i });
+    fireEvent.click(addFriendBtn);
+
+    await waitFor(() => {
+      expect(apiClient.post).toHaveBeenCalledWith("/friendships", {
+        addressee_id: 205,
+      });
+      expect(screen.getByText("Terkirim")).toBeInTheDocument();
+    });
+  });
+
+  it("sends friendship request and supports clicking skill tags from student search results", async () => {
+    (apiClient.post as any).mockImplementation((url: string) => {
+      if (url === "/recommendations/match") {
+        return Promise.resolve({
+          data: { query_user_id: "101", fallback: false, recommendations: [] },
+        });
+      }
+      if (url === "/friendships") {
+        return Promise.resolve({
+          data: { friendship_id: 51, requester_id: 101, addressee_id: 302, status: "menunggu" },
+        });
+      }
+      return Promise.reject(new Error("Not found"));
+    });
+
+    (apiClient.get as any).mockResolvedValueOnce({
+      data: {
+        total: 1,
+        limit: 15,
+        offset: 0,
+        tipe: "mahasiswa",
+        items: [
+          {
+            user_id: 302,
+            nama: "Fajar Nugraha",
+            nim: "2021008",
+            jurusan: "Teknik Informatika",
+            angkatan: 2021,
+            bio: "Fullstack dev",
+            kontak_url: null,
+            skills: [{ skill_id: 10, nama: "TypeScript", tipe: "skill" }],
+            friendship_status: null,
+            created_at: "2026-11-10T00:00:00Z",
+          },
+        ],
+      },
+    });
+
+    render(<ExplorePage />);
+
+    const searchInput = screen.getByPlaceholderText("Cari mahasiswa, keahlian, topik proyek linimasa...");
+    fireEvent.change(searchInput, { target: { value: "Fajar" } });
+    fireEvent.submit(searchInput.closest("form")!);
+
+    await waitFor(() => {
+      expect(screen.getByText("Fajar Nugraha")).toBeInTheDocument();
+      expect(screen.getByText("TypeScript")).toBeInTheDocument();
+    });
+
+    // Test send friend request
+    const addFriendBtn = screen.getByRole("button", { name: /Tambah Teman/i });
+    fireEvent.click(addFriendBtn);
+
+    await waitFor(() => {
+      expect(apiClient.post).toHaveBeenCalledWith("/friendships", {
+        addressee_id: 302,
+      });
+      expect(screen.getByText("Menunggu")).toBeInTheDocument();
+    });
+
+    // Test clicking skill tag
+    (apiClient.get as any).mockResolvedValueOnce({
+      data: {
+        total: 1,
+        limit: 15,
+        offset: 0,
+        tipe: "mahasiswa",
+        items: [],
+      },
+    });
+
+    const skillBtn = screen.getByRole("button", { name: "TypeScript" });
+    fireEvent.click(skillBtn);
+
+    await waitFor(() => {
+      expect(apiClient.get).toHaveBeenCalledWith("/search", {
+        params: {
+          tipe: "mahasiswa",
+          limit: 15,
+          offset: 0,
+          q: "TypeScript",
+        },
+      });
+    });
+  });
 });

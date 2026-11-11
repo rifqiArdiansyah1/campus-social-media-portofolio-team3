@@ -64,8 +64,8 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({
 
     try {
       setIsRequestingFriend(true);
-      await apiClient.post("/friends/request", {
-        target_user_id: candidateId,
+      await apiClient.post("/friendships", {
+        addressee_id: candidateId,
       });
       setFriendRequested(true);
       toast.success(`Permintaan pertemanan terkirim ke ${item.name || "mahasiswa"}.`);
