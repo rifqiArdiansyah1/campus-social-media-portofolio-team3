@@ -280,3 +280,47 @@ def test_search_pagination_and_deterministic_order(client: TestClient, db_sessio
     ids_p1 = {it["post_id"] for it in data_p1["items"]}
     ids_p2 = {it["post_id"] for it in data_p2["items"]}
     assert ids_p1.isdisjoint(ids_p2)
+
+
+def test_search_mahasiswa_excludes_current_user(client: TestClient, db_session: Session):
+    db = db_session
+    u_me = User(nim="901099", nama="Diri Sendiri", email="dirisendiri@univ.ac.id", password_hash="hash", jurusan="Teknik Nuklir", role="mahasiswa")
+    u_other = User(nim="901098", nama="Rekan Sekelas", email="rekansekelas@univ.ac.id", password_hash="hash", jurusan="Teknik Nuklir", role="mahasiswa")
+    db.add_all([u_me, u_other])
+    db.commit()
+
+    token = create_access_token(subject=u_me.user_id)
+    headers = {"Authorization": f"Bearer {token}"}
+
+    # 1. Cari berdasarkan nama sendiri -> tidak boleh muncul
+    res_self = client.get("/api/v1/search?tipe=mahasiswa&q=Diri%20Sendiri", headers=headers)
+    assert res_self.status_code == 200
+    assert not any(it["user_id"] == u_me.user_id for it in res_self.json()["items"])
+
+    # 2. Cari dengan filter jurusan yang sama -> hanya rekan yang muncul, bukan diri sendiri
+    res_jurusan = client.get("/api/v1/search?tipe=mahasiswa&jurusan=Teknik%20Nuklir", headers=headers)
+    assert res_jurusan.status_code == 200
+    items = res_jurusan.json()["items"]
+    assert any(it["user_id"] == u_other.user_id for it in items)
+    assert not any(it["user_id"] == u_me.user_id for it in items)
+
+
+def test_search_wildcard_escaping(client: TestClient, db_session: Session):
+    db = db_session
+    u_viewer = User(nim="901097", nama="Wildcard Viewer", email="wildcard@univ.ac.id", password_hash="hash", role="mahasiswa")
+    db.add(u_viewer)
+    db.commit()
+
+    p_special = Post(user_id=u_viewer.user_id, isi="Belajar diskon 50% di kampus", status="tayang", is_deleted=False)
+    p_normal = Post(user_id=u_viewer.user_id, isi="Belajar algoritma pemrograman", status="tayang", is_deleted=False)
+    db.add_all([p_special, p_normal])
+    db.commit()
+
+    token = create_access_token(subject=u_viewer.user_id)
+    headers = {"Authorization": f"Bearer {token}"}
+
+    # Cari karakter '%' harus mencocokkan p_special secara spesifik
+    res = client.get("/api/v1/search?tipe=postingan&q=50%", headers=headers)
+    assert res.status_code == 200
+    items = res.json()["items"]
+    assert any(it["post_id"] == p_special.post_id for it in items)

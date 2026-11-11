@@ -141,6 +141,32 @@ export default function ExplorePage() {
     setOffset(0);
   };
 
+  const handleSkillClick = (skillName: string) => {
+    setSearchQuery(skillName);
+    setIsSearching(true);
+    setIsLoadingSearch(true);
+    searchEntities({
+      q: skillName,
+      tipe: activeTab,
+      jurusan: selectedJurusan.trim() || undefined,
+      limit: 15,
+      offset: 0,
+    })
+      .then((res) => {
+        setTotalResults(res.total);
+        setOffset(0);
+        if (activeTab === "mahasiswa") setStudents(res.items as StudentSearchResult[]);
+        else if (activeTab === "postingan") setPosts(res.items as PostSearchResult[]);
+        else setPortfolios(res.items as PortfolioSearchResult[]);
+      })
+      .catch((err) => {
+        toast.error(err.response?.data?.detail || "Gagal melakukan pencarian.");
+      })
+      .finally(() => {
+        setIsLoadingSearch(false);
+      });
+  };
+
   const handleLoadMore = () => {
     const nextOffset = offset + 15;
     executeSearch(nextOffset, true);
@@ -323,6 +349,7 @@ export default function ExplorePage() {
                     <StudentResultCard
                       key={s.user_id}
                       student={s}
+                      onSkillClick={handleSkillClick}
                       onCollaborationInvite={(stud) => {
                         setCollaborationCandidate({
                           user_id: String(stud.user_id),
@@ -342,7 +369,7 @@ export default function ExplorePage() {
               {activeTab === "postingan" && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {posts.map((p) => (
-                    <PostResultCard key={p.post_id} post={p} />
+                    <PostResultCard key={p.post_id} post={p} onSkillClick={handleSkillClick} />
                   ))}
                 </div>
               )}
@@ -350,7 +377,7 @@ export default function ExplorePage() {
               {activeTab === "portofolio" && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {portfolios.map((item) => (
-                    <PortfolioResultCard key={item.portfolio_id} portfolio={item} />
+                    <PortfolioResultCard key={item.portfolio_id} portfolio={item} onSkillClick={handleSkillClick} />
                   ))}
                 </div>
               )}

@@ -8,9 +8,11 @@ import { PortfolioSearchResult } from "@/services/searchService";
 
 interface PortfolioResultCardProps {
   portfolio: PortfolioSearchResult;
+  onSkillClick?: (skillName: string) => void;
 }
 
-export const PortfolioResultCard: React.FC<PortfolioResultCardProps> = ({ portfolio }) => {
+export const PortfolioResultCard: React.FC<PortfolioResultCardProps> = ({ portfolio, onSkillClick }) => {
+  const [imgError, setImgError] = React.useState(false);
   const getCategoryBadge = (kategori: string) => {
     switch (kategori) {
       case "skpi":
@@ -47,7 +49,7 @@ export const PortfolioResultCard: React.FC<PortfolioResultCardProps> = ({ portfo
         </div>
 
         {/* Thumbnail Image if available */}
-        {portfolio.gambar_url && (
+        {portfolio.gambar_url && !imgError && (
           <div className="relative w-full h-36 rounded-xl overflow-hidden bg-slate-100 border border-slate-200">
             <Image
               src={portfolio.gambar_url}
@@ -55,6 +57,7 @@ export const PortfolioResultCard: React.FC<PortfolioResultCardProps> = ({ portfo
               fill
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 400px"
+              onError={() => setImgError(true)}
             />
           </div>
         )}
@@ -81,12 +84,17 @@ export const PortfolioResultCard: React.FC<PortfolioResultCardProps> = ({ portfo
         {portfolio.skills && portfolio.skills.length > 0 && (
           <div className="flex flex-wrap gap-1.5 pt-1">
             {portfolio.skills.map((s) => (
-              <span
+              <button
                 key={s.skill_id}
-                className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-700 border border-slate-200"
+                type="button"
+                onClick={() => onSkillClick?.(s.nama)}
+                className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200 transition ${
+                  onSkillClick ? "cursor-pointer" : ""
+                }`}
+                title={onSkillClick ? `Cari portofolio dengan keahlian ${s.nama}` : undefined}
               >
                 {s.nama}
-              </span>
+              </button>
             ))}
           </div>
         )}

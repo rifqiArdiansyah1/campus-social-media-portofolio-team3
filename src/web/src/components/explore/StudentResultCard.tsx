@@ -10,11 +10,13 @@ import { apiClient } from "@/lib/api";
 interface StudentResultCardProps {
   student: StudentSearchResult;
   onCollaborationInvite?: (student: StudentSearchResult) => void;
+  onSkillClick?: (skillName: string) => void;
 }
 
 export const StudentResultCard: React.FC<StudentResultCardProps> = ({
   student,
   onCollaborationInvite,
+  onSkillClick,
 }) => {
   const toast = useToast();
   const [friendStatus, setFriendStatus] = useState<string | null>(student.friendship_status);
@@ -32,8 +34,8 @@ export const StudentResultCard: React.FC<StudentResultCardProps> = ({
   const handleSendFriendRequest = async () => {
     try {
       setIsSubmitting(true);
-      await apiClient.post("/friends/request", {
-        target_user_id: student.user_id,
+      await apiClient.post("/friendships", {
+        addressee_id: student.user_id,
       });
       setFriendStatus("menunggu");
       toast.success(`Permintaan pertemanan terkirim ke ${student.nama}.`);
@@ -85,16 +87,19 @@ export const StudentResultCard: React.FC<StudentResultCardProps> = ({
         {student.skills && student.skills.length > 0 && (
           <div className="flex flex-wrap gap-1.5 pt-1">
             {student.skills.slice(0, 5).map((s) => (
-              <span
+              <button
                 key={s.skill_id}
-                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-medium ${
+                type="button"
+                onClick={() => onSkillClick?.(s.nama)}
+                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-medium transition ${
                   s.tipe === "minat"
-                    ? "bg-amber-50 text-amber-800 border border-amber-200"
-                    : "bg-slate-100 text-slate-700 border border-slate-200"
-                }`}
+                    ? "bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100"
+                    : "bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200"
+                } ${onSkillClick ? "cursor-pointer" : ""}`}
+                title={onSkillClick ? `Cari mahasiswa dengan keahlian ${s.nama}` : undefined}
               >
                 {s.nama}
-              </span>
+              </button>
             ))}
             {student.skills.length > 5 && (
               <span className="text-[10px] text-slate-400 self-center">

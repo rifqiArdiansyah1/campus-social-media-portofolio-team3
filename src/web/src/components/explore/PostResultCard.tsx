@@ -8,9 +8,11 @@ import { PostSearchResult } from "@/services/searchService";
 
 interface PostResultCardProps {
   post: PostSearchResult;
+  onSkillClick?: (skillName: string) => void;
 }
 
-export const PostResultCard: React.FC<PostResultCardProps> = ({ post }) => {
+export const PostResultCard: React.FC<PostResultCardProps> = ({ post, onSkillClick }) => {
+  const [imgError, setImgError] = React.useState(false);
   const isRecruiting = post.tipe === "cari_anggota";
 
   const dateFormatted = new Date(post.created_at).toLocaleDateString("id-ID", {
@@ -61,7 +63,7 @@ export const PostResultCard: React.FC<PostResultCardProps> = ({ post }) => {
         </p>
 
         {/* Post Image Thumbnail if available */}
-        {post.gambar_url && (
+        {post.gambar_url && !imgError && (
           <div className="relative w-full h-36 rounded-xl overflow-hidden bg-slate-100 border border-slate-200">
             <Image
               src={post.gambar_url}
@@ -69,6 +71,7 @@ export const PostResultCard: React.FC<PostResultCardProps> = ({ post }) => {
               fill
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 400px"
+              onError={() => setImgError(true)}
             />
           </div>
         )}
@@ -77,12 +80,17 @@ export const PostResultCard: React.FC<PostResultCardProps> = ({ post }) => {
         {post.skills && post.skills.length > 0 && (
           <div className="flex flex-wrap gap-1.5 pt-1">
             {post.skills.map((s) => (
-              <span
+              <button
                 key={s.skill_id}
-                className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-700 border border-slate-200"
+                type="button"
+                onClick={() => onSkillClick?.(s.nama)}
+                className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200 transition ${
+                  onSkillClick ? "cursor-pointer" : ""
+                }`}
+                title={onSkillClick ? `Cari postingan dengan topik #${s.nama}` : undefined}
               >
                 #{s.nama}
-              </span>
+              </button>
             ))}
           </div>
         )}

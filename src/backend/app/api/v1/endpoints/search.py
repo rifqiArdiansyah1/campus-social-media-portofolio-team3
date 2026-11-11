@@ -43,6 +43,11 @@ def _format_post_image_url(path: Optional[str]) -> Optional[str]:
     return storage_service.get_public_url(settings.POST_IMAGES_BUCKET, path)
 
 
+def _escape_like_pattern(text: str) -> str:
+    """Escapes SQL LIKE / ILIKE wildcards to prevent unintended pattern matching."""
+    return text.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
+
+
 @router.get(
     "",
     response_model=SearchResponse,
@@ -68,6 +73,8 @@ def search_entities(
     """
     clean_q = q.strip() if q else None
     clean_jurusan = jurusan.strip() if jurusan else None
+    escaped_q = _escape_like_pattern(clean_q) if clean_q else None
+    escaped_jurusan = _escape_like_pattern(clean_jurusan) if clean_jurusan else None
 
     # Validasi: Minimal salah satu dari q, skill_id, atau jurusan harus terisi
     if not clean_q and skill_id is None and not clean_jurusan:
@@ -87,33 +94,34 @@ def search_entities(
             )
             .filter(
                 User.role == "mahasiswa",
+                User.user_id != current_user.user_id,
             )
         )
 
         # Proteksi blokir timbal balik (M06)
         query = exclude_hidden(query, current_user.user_id, User.user_id)
 
-        if clean_jurusan:
-            query = query.filter(User.jurusan.ilike(f"%{clean_jurusan}%"))
+        if escaped_jurusan:
+            query = query.filter(User.jurusan.ilike(f"%{escaped_jurusan}%"))
 
         if skill_id is not None:
             query = query.filter(User.skills.any(UserSkill.skill_id == skill_id))
 
-        if clean_q:
+        if escaped_q:
             query = query.filter(
                 or_(
-                    User.nama.ilike(f"%{clean_q}%"),
-                    User.bio.ilike(f"%{clean_q}%"),
-                    User.skills.any(UserSkill.skill.has(Skill.nama.ilike(f"%{clean_q}%"))),
+                    User.nama.ilike(f"%{escaped_q}%"),
+                    User.bio.ilike(f"%{escaped_q}%"),
+                    User.skills.any(UserSkill.skill.has(Skill.nama.ilike(f"%{escaped_q}%"))),
                 )
             )
 
         total = query.count()
 
         # Urutan: kecocokan nama diutamakan jika q ada, lalu created_at DESC, user_id DESC
-        if clean_q:
+        if escaped_q:
             query = query.order_by(
-                case((User.nama.ilike(f"%{clean_q}%"), 0), else_=1).asc(),
+                case((User.nama.ilike(f"%{escaped_q}%"), 0), else_=1).asc(),
                 User.created_at.desc(),
                 User.user_id.desc(),
             )
@@ -201,14 +209,14 @@ def search_entities(
         # Proteksi blokir timbal balik terhadap penulis post
         query = exclude_hidden(query, current_user.user_id, Post.user_id)
 
-        if clean_jurusan:
-            query = query.filter(Post.user.has(User.jurusan.ilike(f"%{clean_jurusan}%")))
+        if escaped_jurusan:
+            query = query.filter(Post.user.has(User.jurusan.ilike(f"%{escaped_jurusan}%")))
 
         if skill_id is not None:
             query = query.filter(Post.skills.any(PostSkill.skill_id == skill_id))
 
-        if clean_q:
-            query = query.filter(Post.isi.ilike(f"%{clean_q}%"))
+        if escaped_q:
+            query = query.filter(Post.isi.ilike(f"%{escaped_q}%"))
 
         total = query.count()
         posts = query.order_by(Post.created_at.desc(), Post.post_id.desc()).offset(offset).limit(limit).all()
@@ -266,17 +274,17 @@ def search_entities(
         # Proteksi blokir timbal balik terhadap pemilik portofolio
         query = exclude_hidden(query, current_user.user_id, PortfolioItem.user_id)
 
-        if clean_jurusan:
-            query = query.filter(PortfolioItem.user.has(User.jurusan.ilike(f"%{clean_jurusan}%")))
+        if escaped_jurusan:
+            query = query.filter(PortfolioItem.user.has(User.jurusan.ilike(f"%{escaped_jurusan}%")))
 
         if skill_id is not None:
             query = query.filter(PortfolioItem.skills.any(PortfolioSkill.skill_id == skill_id))
 
-        if clean_q:
+        if escaped_q:
             query = query.filter(
                 or_(
-                    PortfolioItem.judul.ilike(f"%{clean_q}%"),
-                    PortfolioItem.deskripsi.ilike(f"%{clean_q}%"),
+                    PortfolioItem.judul.ilike(f"%{escaped_q}%"),
+                    PortfolioItem.deskripsi.ilike(f"%{escaped_q}%"),
                 )
             )
 
