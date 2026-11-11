@@ -31,6 +31,7 @@ import {
   GraduationCap,
   ShieldCheck,
   ArrowRight,
+  Bell,
 } from "lucide-react";
 
 interface PostSkillApi {
@@ -139,18 +140,14 @@ export default function HomePage() {
   const [reportModalPost, setReportModalPost] = useState<{ id: number; authorName: string } | null>(null);
   const [takedownModalPost, setTakedownModalPost] = useState<{ id: number; authorName: string } | null>(null);
 
-  // Live Friend requests for Mahasiswa only
-  const [friendRequests, setFriendRequests] = useState<FriendRequestItem[]>([]);
-  const [isLoadingRequests, setIsLoadingRequests] = useState(false);
-
-  const fetchFriendRequests = useCallback(async () => {
-    if (!isStudent) return;
-    try {
-      setIsLoadingRequests(true);
+  // Unified Incoming Friend Requests Query (Mahasiswa Only)
+  const { data: friendRequests = [], isLoading: isLoadingRequests } = useQuery<FriendRequestItem[]>({
+    queryKey: ["friendships", "incoming"],
+    queryFn: async () => {
       const res = await apiClient.get<FriendRequestsApiResponse>("/friendships", {
         params: { direction: "incoming" },
       });
-      const mapped: FriendRequestItem[] = res.data.items.map((item) => ({
+      return res.data.items.map((item) => ({
         id: item.friendship_id,
         sender_id: item.counterpart.user_id,
         sender_name: item.counterpart.nama,
@@ -158,13 +155,10 @@ export default function HomePage() {
         sender_avatar: item.counterpart.avatar_url,
         created_at: item.created_at,
       }));
-      setFriendRequests(mapped);
-    } catch {
-      // Quiet fail if not yet authenticated
-    } finally {
-      setIsLoadingRequests(false);
-    }
-  }, [isStudent]);
+    },
+    enabled: isStudent,
+    staleTime: 30 * 1000,
+  });
 
   const fetchFeed = useCallback(
     async (scope: "all" | "friends" | "recruiting" | "prodi", cursor?: string | null) => {
@@ -209,12 +203,6 @@ export default function HomePage() {
     fetchFeed(activeTab, null);
   }, [activeTab, fetchFeed]);
 
-  useEffect(() => {
-    if (isStudent) {
-      fetchFriendRequests();
-    }
-  }, [isStudent, fetchFriendRequests]);
-
   const handlePostCreated = (newPostApi: PostDetailApi) => {
     if (newPostApi.status === "tayang") {
       const viewModel = mapApiToViewModel(newPostApi);
@@ -222,7 +210,7 @@ export default function HomePage() {
         activeTab === "all" ||
         (activeTab === "recruiting" && newPostApi.tipe === "cari_anggota") ||
         (activeTab === "friends" && isStudent) ||
-        (activeTab === "prodi" && isModerator)
+        (activeTab === "prodi" && Boolean(user?.jurusan))
       ) {
         setPosts((prev) => [viewModel, ...prev]);
       }
@@ -254,30 +242,26 @@ export default function HomePage() {
   };
 
   const handleAcceptFriend = async (reqId: number) => {
-    const prev = [...friendRequests];
-    setFriendRequests((old) => old.filter((r) => r.id !== reqId));
     try {
       await apiClient.patch(`/friendships/${reqId}`, { status: "diterima" });
       toast.success("Permohonan koneksi diterima!");
+      queryClient.invalidateQueries({ queryKey: ["friendships", "incoming"] });
       queryClient.invalidateQueries({ queryKey: ["dashboard", "summary"] });
       if (activeTab === "friends") {
         fetchFeed("friends", null);
       }
     } catch (err: any) {
-      setFriendRequests(prev);
       toast.error(err.response?.data?.detail || "Gagal menerima permohonan koneksi.");
     }
   };
 
   const handleRejectFriend = async (reqId: number) => {
-    const prev = [...friendRequests];
-    setFriendRequests((old) => old.filter((r) => r.id !== reqId));
     try {
       await apiClient.patch(`/friendships/${reqId}`, { status: "ditolak" });
       toast.info("Permohonan koneksi ditolak.");
+      queryClient.invalidateQueries({ queryKey: ["friendships", "incoming"] });
       queryClient.invalidateQueries({ queryKey: ["dashboard", "summary"] });
     } catch (err: any) {
-      setFriendRequests(prev);
       toast.error(err.response?.data?.detail || "Gagal menolak permohonan koneksi.");
     }
   };
@@ -292,7 +276,7 @@ export default function HomePage() {
         )}
 
         {/* Welcome Greeting Banner */}
-        <div className="p-6 rounded-2xl bg-gradient-to-r from-primary to-primary-container text-white shadow-sm flex items-start justify-between">
+        <div className="p-6 rounded-2xl bg-gradient-to-r from-primary to-primary-container text-white shadow-sm flex flex-col sm:flex-row sm:items-start justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
               <Sparkles className="w-4 h-4 text-secondary-container" />
@@ -315,6 +299,17 @@ export default function HomePage() {
                 : "Temukan inovasi karya kampus, diskusikan proyek riset, dan temukan mitra kolaborasi terbaikmu."}
             </p>
           </div>
+
+          {/* Student Unread Notifications Alert Pill */}
+          {isStudent && summary && summary.role === "mahasiswa" && summary.unread_notifications_count > 0 && (
+            <div
+              data-testid="student-unread-notifs-pill"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/20 backdrop-blur-xs text-white text-xs font-semibold border border-white/30 self-start sm:self-auto shrink-0 shadow-xs"
+            >
+              <Bell className="w-3.5 h-3.5 text-amber-300" />
+              <span>{summary.unread_notifications_count} Notifikasi Baru</span>
+            </div>
+          )}
         </div>
 
         {/* Quick Post Card Widget (Allowed for all authenticated users) */}
@@ -335,6 +330,22 @@ export default function HomePage() {
             <span>Semua</span>
           </button>
 
+          {/* Prodi Saya Tab: For users with configured jurusan (Mahasiswa & Moderator) */}
+          {Boolean(user?.jurusan) && (
+            <button
+              type="button"
+              onClick={() => setActiveTab("prodi")}
+              className={`px-4 py-2 text-xs font-semibold rounded-xl flex items-center gap-1.5 transition-all ${
+                activeTab === "prodi"
+                  ? "bg-primary text-white shadow-sm"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+              }`}
+            >
+              <GraduationCap className="w-3.5 h-3.5" />
+              <span>Prodi Saya</span>
+            </button>
+          )}
+
           {/* Student Only: Teman Tab */}
           {isStudent && (
             <button
@@ -348,22 +359,6 @@ export default function HomePage() {
             >
               <Users className="w-3.5 h-3.5" />
               <span>Teman</span>
-            </button>
-          )}
-
-          {/* Moderator Only: Prodi Saya Tab */}
-          {isModerator && (
-            <button
-              type="button"
-              onClick={() => setActiveTab("prodi")}
-              className={`px-4 py-2 text-xs font-semibold rounded-xl flex items-center gap-1.5 transition-all ${
-                activeTab === "prodi"
-                  ? "bg-primary text-white shadow-sm"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-              }`}
-            >
-              <GraduationCap className="w-3.5 h-3.5" />
-              <span>Prodi Saya</span>
             </button>
           )}
 

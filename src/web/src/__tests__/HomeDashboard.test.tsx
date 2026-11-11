@@ -174,15 +174,21 @@ describe("M11 Home Dashboard Integration Tests (/home)", () => {
 
     renderWithClient(<HomePage />);
 
-    // 1. Verify Greeting & Student Tab
+    // 1. Verify Greeting & Student Tabs (Semua, Prodi Saya, Teman, Rekrutmen Tim)
     expect(screen.getByText(/Halo, Siswa Pengguna!/i)).toBeInTheDocument();
+    expect(screen.getByText("Semua")).toBeInTheDocument();
+    expect(screen.getByText("Prodi Saya")).toBeInTheDocument();
     expect(screen.getByText("Teman")).toBeInTheDocument();
+    expect(screen.getByText("Rekrutmen Tim")).toBeInTheDocument();
 
-    // 2. Verify SKPI Summary Widget
+    // 2. Verify Unread Notifications Pill & SKPI Summary Widget
     await waitFor(() => {
+      expect(screen.getByTestId("student-unread-notifs-pill")).toHaveTextContent("2 Notifikasi Baru");
       expect(screen.getByTestId("skpi-total-points")).toHaveTextContent("12");
       expect(screen.getByTestId("skpi-revision-alert")).toBeInTheDocument();
       expect(screen.getByText("Juara 1 Hackathon Nasional")).toBeInTheDocument();
+      const addPortLink = screen.getByRole("link", { name: /\+ Tambah Karya Portofolio/i });
+      expect(addPortLink).toHaveAttribute("href", "/portfolio");
     });
 
     // 3. Verify Mini AI Recommendation Widget
