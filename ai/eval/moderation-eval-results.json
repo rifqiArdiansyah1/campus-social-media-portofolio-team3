@@ -1,0 +1,81 @@
+{
+  "benchmark_date": "2026-11-12 12:35:11",
+  "test_set_count": 50,
+  "comparison": {
+    "naive_blacklist": {
+      "accuracy": 72.0,
+      "macro_f1": 74.93,
+      "false_positive_rate_aman": 0.0,
+      "false_negative_rate_violation": 59.09,
+      "per_class": {
+        "aman": {
+          "tp": 18,
+          "fp": 14,
+          "fn": 0,
+          "precision": 56.25,
+          "recall": 100.0,
+          "f1": 72.0
+        },
+        "perlu_review": {
+          "tp": 9,
+          "fp": 0,
+          "fn": 1,
+          "precision": 100.0,
+          "recall": 90.0,
+          "f1": 94.74
+        },
+        "berpotensi_melanggar": {
+          "tp": 9,
+          "fp": 0,
+          "fn": 13,
+          "precision": 100.0,
+          "recall": 40.91,
+          "f1": 58.06
+        }
+      }
+    },
+    "advanced_heuristic_pipeline": {
+      "accuracy": 98.0,
+      "macro_f1": 97.35,
+      "false_positive_rate_aman": 0.0,
+      "false_negative_rate_violation": 0.0,
+      "per_class": {
+        "aman": {
+          "tp": 18,
+          "fp": 1,
+          "fn": 0,
+          "precision": 94.74,
+          "recall": 100.0,
+          "f1": 97.3
+        },
+        "perlu_review": {
+          "tp": 9,
+          "fp": 0,
+          "fn": 1,
+          "precision": 100.0,
+          "recall": 90.0,
+          "f1": 94.74
+        },
+        "berpotensi_melanggar": {
+          "tp": 22,
+          "fp": 0,
+          "fn": 0,
+          "precision": 100.0,
+          "recall": 100.0,
+          "f1": 100.0
+        }
+      }
+    }
+  },
+  "mismatches": [
+    {
+      "id": "test_25",
+      "text": "Dosen pembimbing ga jelas susah banget ditemuin padahal udah nunggu 4 jam.",
+      "expected": "perlu_review",
+      "predicted": "aman",
+      "confidence": 0.95,
+      "explanation": "[Saran AI] Konten tidak mengandung indikasi pelanggaran norma dan aman untuk dipublikasikan.",
+      "notes": "Sentimen dosen pembimbing"
+    }
+  ]
+}
