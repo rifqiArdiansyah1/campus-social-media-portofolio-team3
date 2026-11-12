@@ -1,20 +1,42 @@
+import argparse
 import os
-import bcrypt
-from datetime import datetime, date
-from sqlalchemy.orm import Session
-from dotenv import load_dotenv
+import sys
+from datetime import date, datetime, timedelta
 
-# Load .env
-backend_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-env_path = os.path.join(backend_dir, '.env')
+import bcrypt
+from dotenv import load_dotenv
+from sqlalchemy import text
+from sqlalchemy.orm import Session
+
+# Ensure backend directory is in sys.path
+backend_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+if backend_dir not in sys.path:
+    sys.path.insert(0, backend_dir)
+
+env_path = os.path.join(backend_dir, ".env")
 if os.path.exists(env_path):
     load_dotenv(env_path)
 
+from app.core.config import settings
 from app.core.database import SessionLocal
-from app.models.entities import User, Skill, UserSkill, Post, PortfolioItem, Friendship, Report
+from app.models.entities import (
+    Friendship,
+    ModerationRecord,
+    Notification,
+    PortfolioItem,
+    Post,
+    PostSkill,
+    Report,
+    Skill,
+    User,
+    UserBlock,
+    UserSkill,
+)
+
 
 def hash_password(password: str) -> str:
-    return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+
 
 INITIAL_SKILLS = [
     # Keahlian (Skills)
@@ -109,7 +131,7 @@ INITIAL_USERS = [
         "skills": [("Python", "mahir"), ("Machine Learning", "mahir"), ("Data Science", "menengah"), ("Artificial Intelligence", "mahir")]
     },
 
-    # Moderator (Digunakan oleh masing-masing Kaprodi)
+    # Moderator (Kaprodi TI & SI)
     {
         "nim": "198005122005011001",
         "nama": "Dr. Ir. Budi Santoso, M.Kom (Kaprodi TI)",
@@ -150,68 +172,342 @@ INITIAL_USERS = [
     }
 ]
 
-def seed_database():
+
+def reset_database(db: Session):
+    print("-> Mereset seluruh tabel data (mode --reset)...")
+    tables = [
+        "notifications",
+        "reports",
+        "moderation_records",
+        "post_skills",
+        "posts",
+        "user_skills",
+        "portfolio_items",
+        "friendships",
+        "user_blocks",
+        "recommendation_logs",
+        "users",
+        "skills",
+    ]
+    for tbl in tables:
+        try:
+            db.execute(text(f"DELETE FROM {tbl};"))
+        except Exception as e:
+            print(f"   ! Warning membersihkan tabel {tbl}: {e}")
+    db.commit()
+    print("   [OK] Seluruh data lama berhasil dibersihkan secara aman.")
+
+
+def seed_core_data(db: Session):
+    print("-> Seeding Master Skills & Interests...")
+    skill_map = {}
+    for s in INITIAL_SKILLS:
+        existing = db.query(Skill).filter(Skill.nama == s["nama"]).first()
+        if not existing:
+            new_skill = Skill(nama=s["nama"], tipe=s["tipe"])
+            db.add(new_skill)
+            db.flush()
+            skill_map[s["nama"]] = new_skill.skill_id
+        else:
+            skill_map[s["nama"]] = existing.skill_id
+
+    print(f"   [OK] {len(INITIAL_SKILLS)} Keahlian & Minat terverifikasi.")
+
+    print("-> Seeding Akun Pengguna & Role...")
+    user_map = {}
+    for u in INITIAL_USERS:
+        existing_user = db.query(User).filter(User.email == u["email"]).first()
+        if not existing_user:
+            hashed_pw = hash_password(u["password"])
+            user = User(
+                nim=u["nim"],
+                nama=u["nama"],
+                email=u["email"],
+                password_hash=hashed_pw,
+                jurusan=u["jurusan"],
+                angkatan=u["angkatan"],
+                bio=u["bio"],
+                kontak_url=u["kontak_url"],
+                role=u["role"]
+            )
+            db.add(user)
+            db.flush()
+            user_map[u["email"]] = user.user_id
+
+            for skill_name, level in u["skills"]:
+                if skill_name in skill_map:
+                    user_skill = UserSkill(
+                        user_id=user.user_id,
+                        skill_id=skill_map[skill_name],
+                        level=level
+                    )
+                    db.add(user_skill)
+            print(f"   + User dibuat: {user.nama} ({user.role} - {user.jurusan})")
+        else:
+            user_map[u["email"]] = existing_user.user_id
+            print(f"   . User sudah ada: {existing_user.nama} ({existing_user.role})")
+
+    db.commit()
+    return user_map, skill_map
+
+
+def seed_demo_data(db: Session, user_map: dict, skill_map: dict):
+    print("\n-> Seeding Demo Activities (--demo mode) dengan Relative Timestamps...")
+    now = datetime.utcnow()
+
+    # 1. Demo Friendships
+    rifqi_id = user_map.get("rifqi@campus.ac.id")
+    hakim_id = user_map.get("hakim@campus.ac.id")
+    rama_id = user_map.get("ramadhan@campus.ac.id")
+    aisyah_id = user_map.get("aisyah@campus.ac.id")
+    dimas_id = user_map.get("dimas@campus.ac.id")
+
+    if rifqi_id and hakim_id:
+        f1 = db.query(Friendship).filter(Friendship.requester_id == rifqi_id, Friendship.addressee_id == hakim_id).first()
+        if not f1:
+            db.add(Friendship(requester_id=rifqi_id, addressee_id=hakim_id, status="diterima", created_at=now - timedelta(days=5)))
+            print("   + Pertemanan aktif: Rifqi <-> Hakim")
+
+    if rama_id and rifqi_id:
+        f2 = db.query(Friendship).filter(Friendship.requester_id == rama_id, Friendship.addressee_id == rifqi_id).first()
+        if not f2:
+            db.add(Friendship(requester_id=rama_id, addressee_id=rifqi_id, status="menunggu", created_at=now - timedelta(hours=3)))
+            print("   + Permintaan teman: Rama -> Rifqi (menunggu)")
+
+    # 2. Demo User Block (Aisyah memblokir Dimas untuk demo privacy filter US-14)
+    if aisyah_id and dimas_id:
+        b1 = db.query(UserBlock).filter(UserBlock.blocker_id == aisyah_id, UserBlock.blocked_id == dimas_id).first()
+        if not b1:
+            db.add(UserBlock(blocker_id=aisyah_id, blocked_id=dimas_id, alasan="Akun spam di linimasa", created_at=now - timedelta(days=2)))
+            print("   + Blokir demo: Aisyah memblokir Dimas")
+
+    # 3. Demo Portfolio Items
+    kaprodi_ti_id = user_map.get("kaprodi.ti@campus.ac.id")
+    kaprodi_si_id = user_map.get("kaprodi.si@campus.ac.id")
+
+    demo_portfolios = [
+        {
+            "user_id": rifqi_id,
+            "judul": "Sistem Rekomendasi Kolaborator Proyek Kampus",
+            "deskripsi": "Pengembangan modul NLP cerdas menggunakan Cosine Similarity dan TF-IDF untuk mencocokkan keterampilan mahasiswa secara otomatis.",
+            "tautan_url": "https://github.com/campusfolio/ai-recommender",
+            "kategori": "proyek",
+            "nomor_dokumen": None,
+            "penerbit": None,
+            "status_verifikasi": "draft",
+            "diverifikasi_oleh": None,
+            "submitted_at": None,
+            "verified_at": None,
+        },
+        {
+            "user_id": rifqi_id,
+            "judul": "Sertifikasi Kompetensi Associate Data Scientist (BNSP)",
+            "deskripsi": "Sertifikat resmi kompetensi bidang Data Science dan Machine Learning berskala nasional.",
+            "tautan_url": "https://bnsp.go.id/cert/2026-DS-01",
+            "kategori": "sertifikat",
+            "nomor_dokumen": "BNSP-DS-2026-9912",
+            "penerbit": "Badan Nasional Sertifikasi Profesi (BNSP)",
+            "status_verifikasi": "terverifikasi",
+            "diverifikasi_oleh": kaprodi_ti_id,
+            "submitted_at": now - timedelta(days=10),
+            "verified_at": now - timedelta(days=8),
+        },
+        {
+            "user_id": rifqi_id,
+            "judul": "Analisis Efektivitas Algoritma Cosine Similarity pada Perekrutan Tim Proyek Kampus",
+            "deskripsi": "Publikasi artikel ilmiah pada Jurnal Nasional Terakreditasi SINTA 2 mengenai information retrieval.",
+            "tautan_url": "https://doi.org/10.1234/campusfolio.demo.5678",
+            "kategori": "artikel_ilmiah",
+            "nomor_dokumen": "10.1234/campusfolio.demo.5678",
+            "penerbit": "Jurnal Teknologi Informasi dan Sistem Komputer",
+            "status_verifikasi": "menunggu_review",
+            "diverifikasi_oleh": None,
+            "submitted_at": now - timedelta(hours=6),
+            "verified_at": None,
+        },
+        {
+            "user_id": hakim_id,
+            "judul": "Desain Sistem UI/UX Aplikasi CampusFolio",
+            "deskripsi": "Perancangan wireframe, interaksi, dan token desain mobile Academic Modernist menggunakan Figma dan Google Stitch.",
+            "tautan_url": "https://stitch.withgoogle.com",
+            "kategori": "skpi",
+            "nomor_dokumen": "SKPI-SI-2026-0042",
+            "penerbit": "Fakultas Sains dan Matematika",
+            "status_verifikasi": "terverifikasi",
+            "diverifikasi_oleh": kaprodi_si_id,
+            "submitted_at": now - timedelta(days=14),
+            "verified_at": now - timedelta(days=12),
+        }
+    ]
+
+    for p in demo_portfolios:
+        if p["user_id"]:
+            existing_p = db.query(PortfolioItem).filter(
+                PortfolioItem.user_id == p["user_id"],
+                PortfolioItem.judul == p["judul"]
+            ).first()
+            if not existing_p:
+                port = PortfolioItem(
+                    user_id=p["user_id"],
+                    judul=p["judul"],
+                    deskripsi=p["deskripsi"],
+                    tautan_url=p["tautan_url"],
+                    kategori=p["kategori"],
+                    nomor_dokumen=p["nomor_dokumen"],
+                    penerbit=p["penerbit"],
+                    tanggal_terbit=(now - timedelta(days=30)).date(),
+                    status_verifikasi=p["status_verifikasi"],
+                    diverifikasi_oleh=p["diverifikasi_oleh"],
+                    submitted_at=p["submitted_at"],
+                    verified_at=p["verified_at"],
+                    created_at=now - timedelta(days=20),
+                )
+                db.add(port)
+                print(f"   + Portofolio: {p['judul']} [{p['kategori']} - {p['status_verifikasi']}]")
+
+    # 4. Demo Posts
+    demo_posts = [
+        {
+            "user_id": rifqi_id,
+            "isi": "Halo rekan-rekan! Kami dari Team 3 sedang mencari 1 anggota Frontend Engineer yang menguasai Next.js dan TailwindCSS untuk kolaborasi proyek Hackathon Inovasi Kampus 2026. Yuk join!",
+            "tipe": "cari_anggota",
+            "status": "tayang",
+            "created_at": now - timedelta(hours=2),
+            "skills": ["Next.js", "TailwindCSS"],
+        },
+        {
+            "user_id": hakim_id,
+            "isi": "Eksplorasi komponen desain Stitch UI/UX baru saja rampung. Menggabungkan palet Academic Modernist dengan navigasi mobile Expo. Bagaimana menurut kalian?",
+            "tipe": "umum",
+            "status": "tayang",
+            "created_at": now - timedelta(hours=5),
+            "skills": ["UI/UX Design", "Figma", "Flutter"],
+        },
+        {
+            "user_id": dimas_id,
+            "isi": "Testing postingan dengan potensi kata kunci sensitif untuk pengujian modul AI moderasi teks kampus.",
+            "tipe": "umum",
+            "status": "menunggu_review",
+            "created_at": now - timedelta(minutes=45),
+            "skills": [],
+        },
+        {
+            "user_id": rama_id,
+            "isi": "Postingan ini berpotensi dilaporkan untuk mendemonstrasikan antrean triase laporan pelanggaran admin pada sesi sidang.",
+            "tipe": "umum",
+            "status": "tayang",
+            "created_at": now - timedelta(hours=8),
+            "skills": [],
+        }
+    ]
+
+    for post_data in demo_posts:
+        if post_data["user_id"]:
+            existing_post = db.query(Post).filter(
+                Post.user_id == post_data["user_id"],
+                Post.isi == post_data["isi"]
+            ).first()
+            if not existing_post:
+                new_post = Post(
+                    user_id=post_data["user_id"],
+                    isi=post_data["isi"],
+                    tipe=post_data["tipe"],
+                    status=post_data["status"],
+                    created_at=post_data["created_at"],
+                )
+                db.add(new_post)
+                db.flush()
+
+                # Hubungkan skills ke post
+                for sk_name in post_data["skills"]:
+                    if sk_name in skill_map:
+                        db.add(PostSkill(post_id=new_post.post_id, skill_id=skill_map[sk_name]))
+
+                # Catatan moderasi AI untuk post menunggu review
+                if post_data["status"] == "menunggu_review":
+                    mod_rec = ModerationRecord(
+                        post_id=new_post.post_id,
+                        label_ai="perlu_review",
+                        kategori_ai="konten_sensitif_kampus",
+                        confidence=0.78,
+                        penjelasan_ai="Teks mengandung istilah sensitif yang memerlukan verifikasi manual oleh Kaprodi/Admin.",
+                        created_at=post_data["created_at"],
+                    )
+                    db.add(mod_rec)
+
+                # Laporan demo untuk post Rama
+                if post_data["user_id"] == rama_id and aisyah_id:
+                    rep = Report(
+                        post_id=new_post.post_id,
+                        reporter_id=aisyah_id,
+                        kategori_laporan="konten_tidak_pantas",
+                        alasan="Demo pengujian alur penanganan laporan pelanggaran feed kampus.",
+                        status="pending",
+                        created_at=now - timedelta(hours=1),
+                    )
+                    db.add(rep)
+
+                print(f"   + Postingan: [{post_data['tipe']}] {post_data['isi'][:60]}... ({post_data['status']})")
+
+    # 5. Demo Notifications
+    if rifqi_id and rama_id:
+        notif1 = Notification(
+            user_id=rifqi_id,
+            actor_id=rama_id,
+            jenis="pertemanan_baru",
+            judul="Permohonan Pertemanan Masuk",
+            isi="Ramadhan (Rama) mengirimkan permohonan pertemanan kepada Anda.",
+            ref_type="friendship",
+            ref_id=1,
+            is_read=False,
+            created_at=now - timedelta(hours=3),
+        )
+        db.add(notif1)
+
+    db.commit()
+    print("   [OK] Data aktivitas demo berhasil dimuat.")
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Seeding database CampusFolio")
+    parser.add_argument("--demo", action="store_true", help="Muat data demo linimasa, portofolio, dan pertemanan")
+    parser.add_argument("--reset", action="store_true", help="Bersihkan seluruh data lama sebelum seeding (idempoten)")
+    args = parser.parse_args()
+
+    # Fail-fast security check for production
+    if settings.ENV.lower() in ("production", "prod"):
+        print("[ABORT] Seeding dilarang keras berjalan pada environment 'production' demi keamanan data.")
+        sys.exit(1)
+
+    print(f"=== Memulai Seeding CampusFolio DB [Environment: {settings.ENV}] ===")
     db: Session = SessionLocal()
-    print("Memulai proses seeding database CampusFolio...")
 
     try:
-        # 1. Seed Skills & Interests
-        skill_map = {}
-        for s in INITIAL_SKILLS:
-            existing = db.query(Skill).filter(Skill.nama == s["nama"]).first()
-            if not existing:
-                new_skill = Skill(nama=s["nama"], tipe=s["tipe"])
-                db.add(new_skill)
-                db.flush()
-                skill_map[s["nama"]] = new_skill.skill_id
-            else:
-                skill_map[s["nama"]] = existing.skill_id
-        
-        print(f"[OK] {len(INITIAL_SKILLS)} Keahlian & Minat diverifikasi.")
+        if args.reset:
+            reset_database(db)
 
-        # 2. Seed Users & User Skills
-        user_map = {}
-        for u in INITIAL_USERS:
-            existing_user = db.query(User).filter(User.email == u["email"]).first()
-            if not existing_user:
-                hashed_pw = hash_password(u["password"])
-                user = User(
-                    nim=u["nim"],
-                    nama=u["nama"],
-                    email=u["email"],
-                    password_hash=hashed_pw,
-                    jurusan=u["jurusan"],
-                    angkatan=u["angkatan"],
-                    bio=u["bio"],
-                    kontak_url=u["kontak_url"],
-                    role=u["role"]
-                )
-                db.add(user)
-                db.flush()
-                user_map[u["email"]] = user.user_id
+        user_map, skill_map = seed_core_data(db)
+        if args.demo:
+            seed_demo_data(db, user_map, skill_map)
 
-                for skill_name, level in u["skills"]:
-                    if skill_name in skill_map:
-                        user_skill = UserSkill(
-                            user_id=user.user_id,
-                            skill_id=skill_map[skill_name],
-                            level=level
-                        )
-                        db.add(user_skill)
-
-                print(f" + User dibuat: {user.nama} ({user.role} - {user.jurusan})")
-            else:
-                user_map[u["email"]] = existing_user.user_id
-                print(f" . User sudah ada: {existing_user.nama} ({existing_user.role})")
-
-        db.commit()
-        print("\n[SUCCESS] Seeding pengguna & role berhasil!")
-
+        print("\n" + "=" * 60)
+        print(" [SUCCESS] Seeding database selesai dengan sukses!")
+        print("=" * 60)
+        print(" Kredensial Akun Demo Sidang:")
+        print(" 1. Mahasiswa (Hacker):  rifqi@campus.ac.id     / password123")
+        print(" 2. Mahasiswa (Hipster): hakim@campus.ac.id     / password123")
+        print(" 3. Mahasiswa (Hustler): ramadhan@campus.ac.id  / password123")
+        print(" 4. Kaprodi TI:          kaprodi.ti@campus.ac.id/ kaprodipassword123")
+        print(" 5. Kaprodi SI:          kaprodi.si@campus.ac.id/ kaprodipassword123")
+        print(" 6. Admin Kampus:        admin@campus.ac.id     / adminpassword123")
+        print("=" * 60)
     except Exception as e:
         db.rollback()
-        print(f"[ERROR] saat seeding: {e}")
+        print(f"\n[FATAL ERROR] Terjadi kegagalan saat proses seeding: {e}")
+        sys.exit(1)
     finally:
         db.close()
 
+
 if __name__ == "__main__":
-    seed_database()
+    main()

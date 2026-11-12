@@ -1,0 +1,6992 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "CampusFolio API",
+    "description": "Backend API & Layanan AI untuk CampusFolio — Campus Social Media & Portfolio (Team 3)",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/api/v1/auth/register": {
+      "post": {
+        "tags": [
+          "Authentication & RBAC (M02)"
+        ],
+        "summary": "Registrasi Akun Mahasiswa Baru",
+        "description": "Mendaftarkan akun mahasiswa baru (US-01).\n- Memvalidasi domain email resmi kampus (@campus.ac.id / @students.campus.ac.id)\n- Memvalidasi daftar prodi resmi kampus\n- Membatasi kata sandi antara 8 hingga 72 byte UTF-8\n- Memaksa peran akun selalu menjadi 'mahasiswa' (mencegah eskalasi hak akses)\n- Menangani duplikasi NIM dan email dengan status 409 (NIM_TAKEN / EMAIL_TAKEN)",
+        "operationId": "register_api_v1_auth_register_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserProfileResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "tags": [
+          "Authentication & RBAC (M02)"
+        ],
+        "summary": "Masuk / Otentikasi Pengguna",
+        "description": "Masuk ke sistem menggunakan email dan kata sandi.\n- Dilindungi rate limiter 2 lapis (IP+Email dan Global Email)\n- Mitigasi timing attack dengan dummy bcrypt hashing saat email tidak ditemukan\n- Menangani kata sandi > 72 byte secara elegan sebagai 401 INVALID_CREDENTIALS\n- Mengembalikan JWT stateless dengan masa berlaku 24 jam",
+        "operationId": "login_api_v1_auth_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/me": {
+      "get": {
+        "tags": [
+          "Authentication & RBAC (M02)"
+        ],
+        "summary": "Profil Pengguna Sesi Aktif",
+        "description": "Mengambil data profil pengguna yang sedang login berdasarkan token JWT aktif.",
+        "operationId": "get_current_user_profile_api_v1_auth_me_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserProfileResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "tags": [
+          "Authentication & RBAC (M02)"
+        ],
+        "summary": "Keluar dari Sesi",
+        "description": "Keluar dari sesi (stateless JWT).\nKlien diharapkan menghapus token dari storage lokal / cookie.",
+        "operationId": "logout_api_v1_auth_logout_post",
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/users": {
+      "post": {
+        "tags": [
+          "Administration (M02)"
+        ],
+        "summary": "Pembuatan Akun Staf/Moderator/Admin (Khusus Administrator)",
+        "description": "Endpoint khusus administrator untuk membuat akun baru berwenang (moderator/admin).\n- Menolak pembuatan moderator tanpa jurusan spesifik (422 MODERATOR_JURUSAN_REQUIRED)\n- Memvalidasi jurusan moderator terhadap daftar prodi resmi kampus (422 INVALID_JURUSAN)\n- Mengizinkan unit administratif untuk akun role 'admin'\n- Menangani duplikasi email dan identitas unik",
+        "operationId": "admin_create_user_api_v1_admin_users_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminCreateUserRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserProfileResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/users/me": {
+      "get": {
+        "tags": [
+          "Users & Profiles (M04)"
+        ],
+        "summary": "Ambil Profil Pengguna Aktif Beserta Skills",
+        "operationId": "get_my_profile_api_v1_users_me_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MyProfileResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "Users & Profiles (M04)"
+        ],
+        "summary": "Perbarui Data Profil Mandiri",
+        "operationId": "update_my_profile_api_v1_users_me_patch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProfileRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MyProfileResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/users/me/skills": {
+      "put": {
+        "tags": [
+          "Users & Profiles (M04)"
+        ],
+        "summary": "Perbarui Seluruh Keahlian & Minat Mahasiswa",
+        "operationId": "update_my_skills_api_v1_users_me_skills_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserSkillsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/UserSkillResponse"
+                  },
+                  "type": "array",
+                  "title": "Response Update My Skills Api V1 Users Me Skills Put"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/users/{id}": {
+      "get": {
+        "tags": [
+          "Users & Profiles (M04)"
+        ],
+        "summary": "Ambil Profil Publik Mahasiswa",
+        "operationId": "get_user_public_profile_api_v1_users__id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicProfileResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/{id}/skpi-summary": {
+      "get": {
+        "tags": [
+          "Users & Profiles (M04)"
+        ],
+        "summary": "Ambil Ringkasan Poin SKPI Resmi & Capaian Mahasiswa",
+        "operationId": "get_user_skpi_summary_api_v1_users__id__skpi_summary_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SkpiSummaryResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/skills": {
+      "get": {
+        "tags": [
+          "Skills (M04)"
+        ],
+        "summary": "Daftar Master Keahlian & Minat",
+        "operationId": "get_skills_api_v1_skills_get",
+        "parameters": [
+          {
+            "name": "tipe",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "skill",
+                    "minat"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter berdasarkan kategori tag ('skill' atau 'minat')",
+              "title": "Tipe"
+            },
+            "description": "Filter berdasarkan kategori tag ('skill' atau 'minat')"
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Pencarian nama keahlian/minat (case-insensitive)",
+              "title": "Q"
+            },
+            "description": "Pencarian nama keahlian/minat (case-insensitive)"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "description": "Jumlah maksimal item yang dikembalikan",
+              "default": 50,
+              "title": "Limit"
+            },
+            "description": "Jumlah maksimal item yang dikembalikan"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SkillResponse"
+                  },
+                  "title": "Response Get Skills Api V1 Skills Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/uploads/post-image": {
+      "post": {
+        "tags": [
+          "Uploads & Media (M05)"
+        ],
+        "summary": "Unggah Foto untuk Postingan Linimasa",
+        "operationId": "upload_post_image_api_v1_uploads_post_image_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_upload_post_image_api_v1_uploads_post_image_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadImageResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/uploads/portfolio-doc": {
+      "post": {
+        "tags": [
+          "Uploads & Media (M05)"
+        ],
+        "summary": "Unggah Dokumen Bukti Portofolio / SKPI (Private)",
+        "operationId": "upload_portfolio_document_api_v1_uploads_portfolio_doc_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_upload_portfolio_document_api_v1_uploads_portfolio_doc_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadDocumentResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/posts": {
+      "post": {
+        "tags": [
+          "Posts & Feed (M05)"
+        ],
+        "summary": "Buat Postingan Baru dengan Moderasi Otomatis AI (AD-01)",
+        "operationId": "create_post_api_v1_posts_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostDetailResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Posts & Feed (M05)"
+        ],
+        "summary": "Linimasa Feed Postingan Kampus (Keyset Pagination & Scope Filtering)",
+        "operationId": "get_posts_feed_api_v1_posts_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "scope",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "all",
+                "friends",
+                "recruiting",
+                "prodi"
+              ],
+              "type": "string",
+              "description": "Cakupan linimasa",
+              "default": "all",
+              "title": "Scope"
+            },
+            "description": "Cakupan linimasa"
+          },
+          {
+            "name": "skill_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter berdasarkan ID keahlian",
+              "title": "Skill Id"
+            },
+            "description": "Filter berdasarkan ID keahlian"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "description": "Batas jumlah item",
+              "default": 10,
+              "title": "Limit"
+            },
+            "description": "Batas jumlah item"
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Opaque keyset cursor untuk navigasi",
+              "title": "Cursor"
+            },
+            "description": "Opaque keyset cursor untuk navigasi"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostFeedResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/posts/me": {
+      "get": {
+        "tags": [
+          "Posts & Feed (M05)"
+        ],
+        "summary": "Ambil Seluruh Postingan Milik Sendiri (Draft, Menunggu Review, Tayang, Revisi)",
+        "operationId": "get_my_posts_api_v1_posts_me_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "description": "Jumlah postingan per halaman",
+              "default": 10,
+              "title": "Limit"
+            },
+            "description": "Jumlah postingan per halaman"
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Opaque cursor untuk pagination",
+              "title": "Cursor"
+            },
+            "description": "Opaque cursor untuk pagination"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostFeedResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/posts/{id}": {
+      "get": {
+        "tags": [
+          "Posts & Feed (M05)"
+        ],
+        "summary": "Ambil Detail Satu Postingan",
+        "operationId": "get_post_detail_api_v1_posts__id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostDetailResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Posts & Feed (M05)"
+        ],
+        "summary": "Perbarui Postingan (Hanya untuk Status Draft, Revisi, atau Ditolak)",
+        "operationId": "update_post_api_v1_posts__id__patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostDetailResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Posts & Feed (M05)"
+        ],
+        "summary": "Hapus Postingan Mandiri oleh Penulis",
+        "operationId": "delete_post_api_v1_posts__id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/posts/{id}/takedown": {
+      "post": {
+        "tags": [
+          "Posts & Feed (M05)"
+        ],
+        "summary": "Takedown Postingan Pelanggar (Kaprodi Se-Prodi & Admin)",
+        "operationId": "takedown_post_endpoint_api_v1_posts__id__takedown_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostTakedownRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/posts/{id}/restore": {
+      "post": {
+        "tags": [
+          "Posts & Feed (M05)"
+        ],
+        "summary": "Pemulihan Postingan Takedown (Khusus Admin Kampus)",
+        "operationId": "restore_post_endpoint_api_v1_posts__id__restore_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostRestoreRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/friendships": {
+      "post": {
+        "tags": [
+          "Friendships (M06)"
+        ],
+        "summary": "Kirim Permohonan Pertemanan (US-13)",
+        "operationId": "create_friendship_request_api_v1_friendships_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FriendshipCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FriendshipResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Friendships (M06)"
+        ],
+        "summary": "Ambil Daftar Permohonan Pertemanan Masuk / Keluar (US-13)",
+        "operationId": "list_friendship_requests_api_v1_friendships_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "direction",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "incoming",
+                "outgoing"
+              ],
+              "type": "string",
+              "description": "Arah permohonan: incoming (masuk) atau outgoing (keluar)",
+              "default": "incoming",
+              "title": "Direction"
+            },
+            "description": "Arah permohonan: incoming (masuk) atau outgoing (keluar)"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Nomor halaman",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "Nomor halaman"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "description": "Jumlah item per halaman",
+              "default": 20,
+              "title": "Limit"
+            },
+            "description": "Jumlah item per halaman"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FriendshipListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/friendships/{id}": {
+      "patch": {
+        "tags": [
+          "Friendships (M06)"
+        ],
+        "summary": "Terima atau Tolak Permohonan Pertemanan (US-13)",
+        "operationId": "update_friendship_status_api_v1_friendships__id__patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FriendshipStatusUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FriendshipResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Friendships (M06)"
+        ],
+        "summary": "Batalkan Permintaan atau Putus Pertemanan (US-13 / FR-06)",
+        "operationId": "delete_friendship_api_v1_friendships__id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/friends": {
+      "get": {
+        "tags": [
+          "Friends (M06)"
+        ],
+        "summary": "Ambil Daftar Teman Aktif Mahasiswa (US-13)",
+        "operationId": "list_active_friends_api_v1_friends_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Pencarian nama, jurusan, atau NIM teman",
+              "title": "Q"
+            },
+            "description": "Pencarian nama, jurusan, atau NIM teman"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Nomor halaman",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "Nomor halaman"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "description": "Jumlah item per halaman",
+              "default": 20,
+              "title": "Limit"
+            },
+            "description": "Jumlah item per halaman"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FriendListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/blocks": {
+      "post": {
+        "tags": [
+          "User Blocks (M06)"
+        ],
+        "summary": "Blokir Profil Pengguna (US-14 / FR-07)",
+        "operationId": "block_user_api_v1_blocks_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserBlockRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserBlockResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "User Blocks (M06)"
+        ],
+        "summary": "Ambil Daftar Pengguna yang Diblokir (US-14)",
+        "operationId": "list_blocked_users_api_v1_blocks_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Nomor halaman",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "Nomor halaman"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "description": "Jumlah item per halaman",
+              "default": 20,
+              "title": "Limit"
+            },
+            "description": "Jumlah item per halaman"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BlockedListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/blocks/{blocked_id}": {
+      "delete": {
+        "tags": [
+          "User Blocks (M06)"
+        ],
+        "summary": "Buka Blokir Pengguna (US-14)",
+        "operationId": "unblock_user_api_v1_blocks__blocked_id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "blocked_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Blocked Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/portfolio/review-queue": {
+      "get": {
+        "tags": [
+          "Portfolio & SKPI (M07)"
+        ],
+        "summary": "Antrean Verifikasi Portofolio FIFO Kaprodi & Admin",
+        "operationId": "get_review_queue_api_v1_portfolio_review_queue_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "jurusan",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter jurusan (khusus Admin)",
+              "title": "Jurusan"
+            },
+            "description": "Filter jurusan (khusus Admin)"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewQueueListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/portfolio": {
+      "post": {
+        "tags": [
+          "Portfolio & SKPI (M07)"
+        ],
+        "summary": "Unggah/Buat Portofolio Baru (Draft atau Proyek)",
+        "operationId": "create_portfolio_item_api_v1_portfolio_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PortfolioCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PortfolioDetailResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Portfolio & SKPI (M07)"
+        ],
+        "summary": "Daftar Portofolio (Milik Sendiri / Rekan / Publik)",
+        "operationId": "list_portfolios_api_v1_portfolio_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter ID mahasiswa",
+              "title": "User Id"
+            },
+            "description": "Filter ID mahasiswa"
+          },
+          {
+            "name": "kategori",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter kategori (proyek, skpi, sertifikat, artikel_ilmiah)",
+              "title": "Kategori"
+            },
+            "description": "Filter kategori (proyek, skpi, sertifikat, artikel_ilmiah)"
+          },
+          {
+            "name": "status_verifikasi",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter status verifikasi",
+              "title": "Status Verifikasi"
+            },
+            "description": "Filter status verifikasi"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/components/schemas/PortfolioDetailResponse"
+                      },
+                      {
+                        "$ref": "#/components/schemas/PortfolioPublicResponse"
+                      }
+                    ]
+                  },
+                  "title": "Response List Portfolios Api V1 Portfolio Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/portfolio/{id}": {
+      "get": {
+        "tags": [
+          "Portfolio & SKPI (M07)"
+        ],
+        "summary": "Ambil Detail Satu Portofolio",
+        "operationId": "get_portfolio_item_api_v1_portfolio__id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/PortfolioDetailResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/PortfolioPublicResponse"
+                    }
+                  ],
+                  "title": "Response Get Portfolio Item Api V1 Portfolio  Id  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Portfolio & SKPI (M07)"
+        ],
+        "summary": "Perbarui Portofolio (Hanya saat status draft atau ditolak)",
+        "operationId": "update_portfolio_item_api_v1_portfolio__id__patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PortfolioUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PortfolioDetailResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Portfolio & SKPI (M07)"
+        ],
+        "summary": "Hapus Portofolio (Hanya saat status draft atau ditolak)",
+        "operationId": "delete_portfolio_item_api_v1_portfolio__id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/portfolio/{id}/submit": {
+      "post": {
+        "tags": [
+          "Portfolio & SKPI (M07)"
+        ],
+        "summary": "Ajukan Portofolio untuk Verifikasi SKPI oleh Kaprodi",
+        "operationId": "submit_portfolio_for_review_api_v1_portfolio__id__submit_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PortfolioDetailResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/portfolio/{id}/withdraw": {
+      "post": {
+        "tags": [
+          "Portfolio & SKPI (M07)"
+        ],
+        "summary": "Tarik Kembali Portofolio dari Antrean Review ke Draft",
+        "operationId": "withdraw_portfolio_from_review_api_v1_portfolio__id__withdraw_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PortfolioDetailResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/portfolio/{id}/review": {
+      "patch": {
+        "tags": [
+          "Portfolio & SKPI (M07)"
+        ],
+        "summary": "Verifikasi atau Tolak Pengajuan Portofolio SKPI (Kaprodi & Admin)",
+        "operationId": "review_portfolio_item_api_v1_portfolio__id__review_patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PortfolioReviewRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PortfolioDetailResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/portfolio/{id}/revoke": {
+      "post": {
+        "tags": [
+          "Portfolio & SKPI (M07)"
+        ],
+        "summary": "Cabut Status Verifikasi Portofolio Resmi (Admin Only)",
+        "operationId": "revoke_portfolio_verification_api_v1_portfolio__id__revoke_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PortfolioRevokeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PortfolioDetailResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/portfolio/{id}/file": {
+      "get": {
+        "tags": [
+          "Portfolio & SKPI (M07)"
+        ],
+        "summary": "Dapatkan Signed URL Berumur Pendek (120-300 detik) untuk Berkas Bukti Privat",
+        "operationId": "get_portfolio_file_signed_url_api_v1_portfolio__id__file_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignedUrlResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/recommendations/match": {
+      "post": {
+        "tags": [
+          "AI Recommendations (AI-1)"
+        ],
+        "summary": "Rekomendasi Kolaborator Mahasiswa Berdasarkan Kebutuhan (AI-1)",
+        "description": "Endpoint AI-1: Menganalisis kemiripan semantik dan keahlian komplementer\nuntuk merekomendasikan rekan proyek/lomba mahasiswa.\nPemohon selalu berasal dari token JWT (current_user).",
+        "operationId": "get_collaborator_recommendations_api_v1_recommendations_match_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecommendationMatchRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecommendationResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/recommendations/for-post/{post_id}": {
+      "post": {
+        "tags": [
+          "AI Recommendations (AI-1)"
+        ],
+        "summary": "Rekomendasi Rekan untuk Postingan Cari Anggota (US-08)",
+        "description": "Rekomendasi kolaborator spesifik untuk postingan bertipe 'cari_anggota'.\nHanya dapat diakses oleh penulis postingan (author) yang bersangkutan.\nMengembalikan 404 jika postingan tidak ditemukan, bukan cari_anggota, atau bukan milik pemohon.",
+        "operationId": "get_recommendations_for_post_api_v1_recommendations_for_post__post_id__post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "post_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Post Id"
+            }
+          },
+          {
+            "name": "top_k",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 20,
+              "minimum": 1,
+              "description": "Jumlah rekomendasi maksimal",
+              "default": 5,
+              "title": "Top K"
+            },
+            "description": "Jumlah rekomendasi maksimal"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecommendationResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/recommendations/{rec_id}/feedback": {
+      "post": {
+        "tags": [
+          "AI Recommendations (AI-1)"
+        ],
+        "summary": "Kirim Umpan Balik Relevansi Rekomendasi (Idempoten)",
+        "description": "Menyimpan umpan balik pengguna ('relevan' / 'tidak_relevan') untuk baris log rekomendasi.\nMemeriksa kepemilikan log (404 jika bukan pemohon log untuk proteksi IDOR).\nOperasi ini bersifat idempoten (dapat diubah kembali oleh pemohon).",
+        "operationId": "submit_recommendation_feedback_api_v1_recommendations__rec_id__feedback_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "rec_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Rec Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecommendationFeedbackRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/moderation/check": {
+      "post": {
+        "tags": [
+          "AI Content Moderation (AI-2)"
+        ],
+        "summary": "Klasifikasi Awal Moderasi Postingan (AI-2, Khusus Staf)",
+        "description": "Endpoint AI-2: Memindai teks postingan sebelum/sesudah tayang.\nHasil klasifikasi menentukan apakah postingan langsung tayang (aman),\nditinjau admin (perlu_review), atau disembunyikan (berpotensi_melanggar).",
+        "operationId": "check_post_moderation_api_v1_moderation_check_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ModerationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModerationResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/moderation/queue": {
+      "get": {
+        "tags": [
+          "AI Content Moderation (AI-2)"
+        ],
+        "summary": "Antrean Postingan AI Triage & Berisiko (Kaprodi Se-Prodi & Admin)",
+        "description": "Mengambil antrean postingan yang membutuhkan peninjauan manusia:\n- Status: 'menunggu_review' atau 'direview'\n- Filter berdasarkan program studi Kaprodi (Admin global)\n- Prioritas AI: 'berpotensi_melanggar' teratas, lalu 'perlu_review', lalu FIFO created_at.",
+        "operationId": "get_moderation_queue_api_v1_moderation_queue_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ModerationQueueItemResponse"
+                  },
+                  "type": "array",
+                  "title": "Response Get Moderation Queue Api V1 Moderation Queue Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/moderation/{post_id}/decision": {
+      "post": {
+        "tags": [
+          "AI Content Moderation (AI-2)"
+        ],
+        "summary": "Eksekusi Keputusan Moderasi Konten (Kaprodi Se-Prodi & Admin)",
+        "operationId": "submit_moderation_decision_api_v1_moderation__post_id__decision_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "post_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Post Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ModerationDecisionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/moderation/summary": {
+      "get": {
+        "tags": [
+          "AI Content Moderation (AI-2)"
+        ],
+        "summary": "Ringkasan Metrik Moderasi & Tinjauan (Dashboard M11)",
+        "operationId": "get_moderation_summary_api_v1_moderation_summary_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModerationSummaryResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/reports": {
+      "post": {
+        "tags": [
+          "Reports & Moderation (M08)"
+        ],
+        "summary": "Laporkan Postingan Melanggar (Mahasiswa)",
+        "operationId": "create_report_api_v1_reports_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReportCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Reports & Moderation (M08)"
+        ],
+        "summary": "Daftar Antrean Laporan Pelanggaran (Kaprodi Se-Prodi & Admin)",
+        "operationId": "get_reports_api_v1_reports_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "baru",
+                    "diproses",
+                    "selesai",
+                    "diabaikan"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter berdasarkan status laporan",
+              "title": "Status"
+            },
+            "description": "Filter berdasarkan status laporan"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "description": "Jumlah data per halaman (maksimal 50)",
+              "default": 20,
+              "title": "Limit"
+            },
+            "description": "Jumlah data per halaman (maksimal 50)"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Offset pagination",
+              "default": 0,
+              "title": "Offset"
+            },
+            "description": "Offset pagination"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReportResponse"
+                  },
+                  "title": "Response Get Reports Api V1 Reports Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/reports/{id}": {
+      "patch": {
+        "tags": [
+          "Reports & Moderation (M08)"
+        ],
+        "summary": "Tindak Lanjut Laporan Individu (Kaprodi Se-Prodi & Admin)",
+        "operationId": "update_report_action_api_v1_reports__id__patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReportActionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/notifications": {
+      "get": {
+        "tags": [
+          "Notifications (M08/US-10)"
+        ],
+        "summary": "Daftar Notifikasi Pengguna",
+        "description": "Mengambil daftar riwayat notifikasi milik pengguna terautentikasi (terurut dari yang terbaru).",
+        "operationId": "get_user_notifications_api_v1_notifications_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "unread_only",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "description": "Filter hanya notifikasi yang belum dibaca",
+              "default": false,
+              "title": "Unread Only"
+            },
+            "description": "Filter hanya notifikasi yang belum dibaca"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "description": "Jumlah data per halaman",
+              "default": 20,
+              "title": "Limit"
+            },
+            "description": "Jumlah data per halaman"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Offset data",
+              "default": 0,
+              "title": "Offset"
+            },
+            "description": "Offset data"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NotificationResponse"
+                  },
+                  "title": "Response Get User Notifications Api V1 Notifications Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/notifications/unread-count": {
+      "get": {
+        "tags": [
+          "Notifications (M08/US-10)"
+        ],
+        "summary": "Hitung Notifikasi Belum Dibaca",
+        "description": "Mengembalikan jumlah notifikasi aktif pengguna yang belum dibaca.",
+        "operationId": "get_unread_count_api_v1_notifications_unread_count_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnreadCountResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/notifications/read-all": {
+      "patch": {
+        "tags": [
+          "Notifications (M08/US-10)"
+        ],
+        "summary": "Tandai Semua Notifikasi Sudah Dibaca",
+        "description": "Menandai semua notifikasi pengguna yang belum dibaca menjadi sudah dibaca.",
+        "operationId": "mark_all_as_read_api_v1_notifications_read_all_patch",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReadAllResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/notifications/{notification_id}/read": {
+      "patch": {
+        "tags": [
+          "Notifications (M08/US-10)"
+        ],
+        "summary": "Tandai Satu Notifikasi Sudah Dibaca",
+        "description": "Menandai satu notifikasi spesifik sebagai sudah dibaca (HTTP 404 anti-leak jika bukan pemilik).",
+        "operationId": "mark_notification_as_read_api_v1_notifications__notification_id__read_patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "notification_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Notification Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/search": {
+      "get": {
+        "tags": [
+          "Search & Explore (M10/US-05)"
+        ],
+        "summary": "Pencarian Terpadu Mahasiswa, Postingan, dan Portofolio (US-05, UC-10)",
+        "description": "Endpoint Pencarian Terpadu:\n- Mahasiswa: Mencocokkan nama, bio, dan keahlian/minat. Mendukung filter jurusan & skill_id.\n- Postingan: Hanya postingan tayang dan belum dihapus. Mencocokkan teks narasi (isi) & post_skills.\n- Portofolio: Hanya karya publik berstatus terverifikasi. Mencocokkan judul, deskripsi, & skill.\n- Proteksi Blokir Timbal Balik: Seluruh entitas menyaring akun yang diblokir dua arah (exclude_hidden).\n- Validasi: q kosong dengan filter tetap valid; q dan filter kosong semua menghasilkan 422.",
+        "operationId": "search_entities_api_v1_search_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 100
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kata kunci teks pencarian",
+              "title": "Q"
+            },
+            "description": "Kata kunci teks pencarian"
+          },
+          {
+            "name": "tipe",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^(mahasiswa|postingan|portofolio)$",
+              "description": "Tipe entitas yang dicari",
+              "default": "mahasiswa",
+              "title": "Tipe"
+            },
+            "description": "Tipe entitas yang dicari"
+          },
+          {
+            "name": "skill_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter berdasarkan ID keahlian",
+              "title": "Skill Id"
+            },
+            "description": "Filter berdasarkan ID keahlian"
+          },
+          {
+            "name": "jurusan",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 100
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter program studi",
+              "title": "Jurusan"
+            },
+            "description": "Filter program studi"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "description": "Jumlah data per halaman (1-50)",
+              "default": 20,
+              "title": "Limit"
+            },
+            "description": "Jumlah data per halaman (1-50)"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Offset data untuk pagination",
+              "default": 0,
+              "title": "Offset"
+            },
+            "description": "Offset data untuk pagination"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/dashboard/summary": {
+      "get": {
+        "tags": [
+          "Dashboard (M11/US-18)"
+        ],
+        "summary": "Ringkasan Dashboard Beranda Terpadu Berdasarkan Peran (US-18, UC-04)",
+        "description": "Endpoint agregasi terpadu untuk Dashboard Home (US-18).\nMenghitung seluruh ringkasan aktivitas dalam satu panggilan API efisien:\n- Mahasiswa: Poin SKPI, item portofolio, item perlu revisi, permohonan teman masuk, dan unread notifikasi.\n- Moderator (Kaprodi): Antrean review portofolio, antrean postingan, dan antrean laporan se-prodi.\n- Admin (Kemahasiswaan): Ringkasan metrik moderasi, review portofolio seluruh kampus, dan total mahasiswa.",
+        "operationId": "get_dashboard_summary_api_v1_dashboard_summary_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardSummaryResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/": {
+      "get": {
+        "tags": [
+          "Health Check"
+        ],
+        "summary": "Root",
+        "operationId": "root__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "tags": [
+          "Health Check"
+        ],
+        "summary": "Health Check",
+        "operationId": "health_check_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/health/db": {
+      "get": {
+        "tags": [
+          "Health Check"
+        ],
+        "summary": "Database Health Check",
+        "description": "Verifikasi koneksi aktif ke PostgreSQL di Supabase Cloud.",
+        "operationId": "database_health_check_api_v1_health_db_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/health/storage": {
+      "get": {
+        "tags": [
+          "Health Check"
+        ],
+        "summary": "Storage Health Check",
+        "description": "Verifikasi status storage backend.",
+        "operationId": "storage_health_check_api_v1_health_storage_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AdminCreateUserRequest": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "maxLength": 100,
+            "title": "Email",
+            "description": "Email resmi staf/admin"
+          },
+          "nama": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 2,
+            "title": "Nama",
+            "description": "Nama staf/admin"
+          },
+          "password": {
+            "type": "string",
+            "title": "Password",
+            "description": "Kata sandi sementara (minimal 8 karakter, maksimal 72 byte UTF-8)"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role",
+            "description": "Peran akun baru: 'moderator' atau 'admin'"
+          },
+          "jurusan": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jurusan",
+            "description": "Program studi binaan (wajib untuk moderator)"
+          },
+          "nim": {
+            "type": "string",
+            "maxLength": 20,
+            "minLength": 3,
+            "title": "Nim",
+            "description": "Nomor identitas/NIP staf"
+          },
+          "angkatan": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Angkatan",
+            "description": "Tahun angkatan opsional"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email",
+          "nama",
+          "password",
+          "role",
+          "nim"
+        ],
+        "title": "AdminCreateUserRequest"
+      },
+      "AdminDashboardSummary": {
+        "properties": {
+          "role": {
+            "type": "string",
+            "const": "admin",
+            "title": "Role",
+            "default": "admin"
+          },
+          "total_mahasiswa": {
+            "type": "integer",
+            "title": "Total Mahasiswa"
+          },
+          "total_portofolio_terverifikasi": {
+            "type": "integer",
+            "title": "Total Portofolio Terverifikasi"
+          },
+          "pending_portfolio_reviews": {
+            "type": "integer",
+            "title": "Pending Portfolio Reviews"
+          },
+          "pending_reports": {
+            "type": "integer",
+            "title": "Pending Reports"
+          },
+          "pending_posts": {
+            "type": "integer",
+            "title": "Pending Posts"
+          },
+          "total_takedown": {
+            "type": "integer",
+            "title": "Total Takedown"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total_mahasiswa",
+          "total_portofolio_terverifikasi",
+          "pending_portfolio_reviews",
+          "pending_reports",
+          "pending_posts",
+          "total_takedown"
+        ],
+        "title": "AdminDashboardSummary"
+      },
+      "BlockedListResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/BlockedUserSummary"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "page": {
+            "type": "integer",
+            "title": "Page"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "total_pages": {
+            "type": "integer",
+            "title": "Total Pages"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "page",
+          "limit",
+          "total_pages"
+        ],
+        "title": "BlockedListResponse"
+      },
+      "BlockedUserSummary": {
+        "properties": {
+          "block_id": {
+            "type": "integer",
+            "title": "Block Id"
+          },
+          "blocked_id": {
+            "type": "integer",
+            "title": "Blocked Id"
+          },
+          "nama": {
+            "type": "string",
+            "title": "Nama"
+          },
+          "jurusan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jurusan"
+          },
+          "angkatan": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Angkatan"
+          },
+          "alasan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alasan"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "block_id",
+          "blocked_id",
+          "nama",
+          "created_at"
+        ],
+        "title": "BlockedUserSummary"
+      },
+      "Body_upload_portfolio_document_api_v1_uploads_portfolio_doc_post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream",
+            "title": "File",
+            "description": "Berkas bukti SKPI (PDF maks 10MB atau Gambar maks 5MB)"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file"
+        ],
+        "title": "Body_upload_portfolio_document_api_v1_uploads_portfolio_doc_post"
+      },
+      "Body_upload_post_image_api_v1_uploads_post_image_post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream",
+            "title": "File",
+            "description": "Berkas foto (JPEG, PNG, WEBP maks 5MB)"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file"
+        ],
+        "title": "Body_upload_post_image_api_v1_uploads_post_image_post"
+      },
+      "DashboardSummaryResponse": {
+        "properties": {
+          "summary": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/StudentDashboardSummary"
+              },
+              {
+                "$ref": "#/components/schemas/ModeratorDashboardSummary"
+              },
+              {
+                "$ref": "#/components/schemas/AdminDashboardSummary"
+              }
+            ],
+            "title": "Summary",
+            "discriminator": {
+              "propertyName": "role",
+              "mapping": {
+                "admin": "#/components/schemas/AdminDashboardSummary",
+                "mahasiswa": "#/components/schemas/StudentDashboardSummary",
+                "moderator": "#/components/schemas/ModeratorDashboardSummary"
+              }
+            }
+          }
+        },
+        "type": "object",
+        "required": [
+          "summary"
+        ],
+        "title": "DashboardSummaryResponse"
+      },
+      "FriendListResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/FriendUserSummary"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "page": {
+            "type": "integer",
+            "title": "Page"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "total_pages": {
+            "type": "integer",
+            "title": "Total Pages"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "page",
+          "limit",
+          "total_pages"
+        ],
+        "title": "FriendListResponse"
+      },
+      "FriendUserSummary": {
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "nama": {
+            "type": "string",
+            "title": "Nama"
+          },
+          "jurusan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jurusan"
+          },
+          "angkatan": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Angkatan"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          },
+          "avatar_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avatar Url"
+          },
+          "friendship_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Friendship Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "nama",
+          "role"
+        ],
+        "title": "FriendUserSummary"
+      },
+      "FriendshipCreate": {
+        "properties": {
+          "addressee_id": {
+            "type": "integer",
+            "title": "Addressee Id",
+            "description": "User ID calon teman yang dituju"
+          }
+        },
+        "type": "object",
+        "required": [
+          "addressee_id"
+        ],
+        "title": "FriendshipCreate"
+      },
+      "FriendshipDetailResponse": {
+        "properties": {
+          "friendship_id": {
+            "type": "integer",
+            "title": "Friendship Id"
+          },
+          "requester_id": {
+            "type": "integer",
+            "title": "Requester Id"
+          },
+          "addressee_id": {
+            "type": "integer",
+            "title": "Addressee Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          },
+          "counterpart": {
+            "$ref": "#/components/schemas/FriendUserSummary"
+          }
+        },
+        "type": "object",
+        "required": [
+          "friendship_id",
+          "requester_id",
+          "addressee_id",
+          "status",
+          "created_at",
+          "counterpart"
+        ],
+        "title": "FriendshipDetailResponse"
+      },
+      "FriendshipListResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/FriendshipDetailResponse"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "page": {
+            "type": "integer",
+            "title": "Page"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "total_pages": {
+            "type": "integer",
+            "title": "Total Pages"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "page",
+          "limit",
+          "total_pages"
+        ],
+        "title": "FriendshipListResponse"
+      },
+      "FriendshipResponse": {
+        "properties": {
+          "friendship_id": {
+            "type": "integer",
+            "title": "Friendship Id"
+          },
+          "requester_id": {
+            "type": "integer",
+            "title": "Requester Id"
+          },
+          "addressee_id": {
+            "type": "integer",
+            "title": "Addressee Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "friendship_id",
+          "requester_id",
+          "addressee_id",
+          "status",
+          "created_at"
+        ],
+        "title": "FriendshipResponse"
+      },
+      "FriendshipStatusUpdate": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "diterima",
+              "ditolak"
+            ],
+            "title": "Status",
+            "description": "Keputusan penerimaan pertemanan"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "title": "FriendshipStatusUpdate"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "LoginRequest": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "maxLength": 100,
+            "title": "Email",
+            "description": "Email kampus atau NIM terdaftar"
+          },
+          "password": {
+            "type": "string",
+            "title": "Password",
+            "description": "Kata sandi akun"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "title": "LoginRequest"
+      },
+      "ModerationDecisionRequest": {
+        "properties": {
+          "keputusan": {
+            "type": "string",
+            "enum": [
+              "setujui",
+              "tolak",
+              "minta_revisi",
+              "hapus_konten"
+            ],
+            "title": "Keputusan",
+            "description": "Keputusan manusia atas konten"
+          },
+          "catatan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Catatan",
+            "description": "Catatan pertimbangan (wajib untuk tolak, minta_revisi, hapus_konten)"
+          }
+        },
+        "type": "object",
+        "required": [
+          "keputusan"
+        ],
+        "title": "ModerationDecisionRequest"
+      },
+      "ModerationQueueItemResponse": {
+        "properties": {
+          "post_id": {
+            "type": "integer",
+            "title": "Post Id"
+          },
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "author_name": {
+            "type": "string",
+            "title": "Author Name"
+          },
+          "author_jurusan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Author Jurusan"
+          },
+          "isi": {
+            "type": "string",
+            "title": "Isi"
+          },
+          "gambar_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gambar Url"
+          },
+          "tipe": {
+            "type": "string",
+            "title": "Tipe"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "label_ai": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label Ai"
+          },
+          "kategori_ai": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kategori Ai"
+          },
+          "confidence": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Confidence"
+          },
+          "penjelasan_ai": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Penjelasan Ai"
+          },
+          "jumlah_laporan_aktif": {
+            "type": "integer",
+            "title": "Jumlah Laporan Aktif",
+            "default": 0
+          },
+          "kategori_laporan": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Kategori Laporan"
+          }
+        },
+        "type": "object",
+        "required": [
+          "post_id",
+          "user_id",
+          "author_name",
+          "isi",
+          "tipe",
+          "status",
+          "created_at"
+        ],
+        "title": "ModerationQueueItemResponse"
+      },
+      "ModerationRequest": {
+        "properties": {
+          "post_id": {
+            "type": "string",
+            "title": "Post Id"
+          },
+          "content": {
+            "type": "string",
+            "title": "Content"
+          },
+          "user_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "post_id",
+          "content"
+        ],
+        "title": "ModerationRequest"
+      },
+      "ModerationResponse": {
+        "properties": {
+          "post_id": {
+            "type": "string",
+            "title": "Post Id"
+          },
+          "label": {
+            "type": "string",
+            "enum": [
+              "aman",
+              "perlu_review",
+              "berpotensi_melanggar"
+            ],
+            "title": "Label"
+          },
+          "categories": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Categories",
+            "description": "Violation categories (e.g. ujaran_kasar, pelecehan, spam)"
+          },
+          "confidence": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Confidence",
+            "description": "Confidence score"
+          },
+          "explanation": {
+            "type": "string",
+            "title": "Explanation",
+            "description": "Explanation of classification"
+          }
+        },
+        "type": "object",
+        "required": [
+          "post_id",
+          "label",
+          "confidence",
+          "explanation"
+        ],
+        "title": "ModerationResponse"
+      },
+      "ModerationSummaryResponse": {
+        "properties": {
+          "post_menunggu": {
+            "type": "integer",
+            "title": "Post Menunggu"
+          },
+          "laporan_baru": {
+            "type": "integer",
+            "title": "Laporan Baru"
+          },
+          "portofolio_menunggu": {
+            "type": "integer",
+            "title": "Portofolio Menunggu"
+          }
+        },
+        "type": "object",
+        "required": [
+          "post_menunggu",
+          "laporan_baru",
+          "portofolio_menunggu"
+        ],
+        "title": "ModerationSummaryResponse"
+      },
+      "ModeratorDashboardSummary": {
+        "properties": {
+          "role": {
+            "type": "string",
+            "const": "moderator",
+            "title": "Role",
+            "default": "moderator"
+          },
+          "jurusan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jurusan"
+          },
+          "is_jurusan_configured": {
+            "type": "boolean",
+            "title": "Is Jurusan Configured",
+            "default": true
+          },
+          "pending_portfolio_reviews": {
+            "type": "integer",
+            "title": "Pending Portfolio Reviews"
+          },
+          "pending_reports": {
+            "type": "integer",
+            "title": "Pending Reports"
+          },
+          "pending_posts": {
+            "type": "integer",
+            "title": "Pending Posts"
+          }
+        },
+        "type": "object",
+        "required": [
+          "pending_portfolio_reviews",
+          "pending_reports",
+          "pending_posts"
+        ],
+        "title": "ModeratorDashboardSummary"
+      },
+      "MyProfileResponse": {
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "nim": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nim"
+          },
+          "nama": {
+            "type": "string",
+            "title": "Nama"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          },
+          "jurusan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jurusan"
+          },
+          "angkatan": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Angkatan"
+          },
+          "bio": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bio"
+          },
+          "kontak_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kontak Url"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/UserSkillResponse"
+            },
+            "type": "array",
+            "title": "Skills",
+            "default": []
+          },
+          "id": {
+            "type": "integer",
+            "title": "Id",
+            "readOnly": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "nama",
+          "email",
+          "role",
+          "created_at",
+          "id"
+        ],
+        "title": "MyProfileResponse"
+      },
+      "NotificationResponse": {
+        "properties": {
+          "notification_id": {
+            "type": "integer",
+            "title": "Notification Id"
+          },
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "jenis": {
+            "type": "string",
+            "title": "Jenis"
+          },
+          "judul": {
+            "type": "string",
+            "title": "Judul"
+          },
+          "isi": {
+            "type": "string",
+            "title": "Isi"
+          },
+          "tautan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tautan"
+          },
+          "ref_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ref Type"
+          },
+          "ref_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ref Id"
+          },
+          "is_read": {
+            "type": "boolean",
+            "title": "Is Read"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "notification_id",
+          "user_id",
+          "jenis",
+          "judul",
+          "isi",
+          "is_read",
+          "created_at"
+        ],
+        "title": "NotificationResponse"
+      },
+      "PortfolioAuthorResponse": {
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "nama_lengkap": {
+            "type": "string",
+            "title": "Nama Lengkap"
+          },
+          "nim": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nim"
+          },
+          "jurusan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jurusan"
+          },
+          "avatar_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avatar Url"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "nama_lengkap"
+        ],
+        "title": "PortfolioAuthorResponse"
+      },
+      "PortfolioCreate": {
+        "properties": {
+          "judul": {
+            "type": "string",
+            "maxLength": 150,
+            "minLength": 3,
+            "title": "Judul"
+          },
+          "deskripsi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deskripsi"
+          },
+          "tautan_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tautan Url"
+          },
+          "gambar_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gambar Url"
+          },
+          "kategori": {
+            "type": "string",
+            "enum": [
+              "proyek",
+              "skpi",
+              "sertifikat",
+              "artikel_ilmiah"
+            ],
+            "title": "Kategori",
+            "description": "Jenis portofolio/capaian",
+            "default": "proyek"
+          },
+          "nomor_dokumen": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nomor Dokumen",
+            "description": "Nomor SKPI/Sertifikat/DOI"
+          },
+          "penerbit": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 150
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Penerbit",
+            "description": "Penerbit jurnal / penyelenggara kegiatan"
+          },
+          "tanggal_terbit": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tanggal Terbit"
+          },
+          "file_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "File Url",
+            "description": "Path berkas dokumen PDF bukti"
+          },
+          "skill_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Skill Ids",
+            "description": "ID keahlian terkait (maksimal 10)"
+          }
+        },
+        "type": "object",
+        "required": [
+          "judul"
+        ],
+        "title": "PortfolioCreate"
+      },
+      "PortfolioDetailResponse": {
+        "properties": {
+          "portfolio_id": {
+            "type": "integer",
+            "title": "Portfolio Id"
+          },
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "judul": {
+            "type": "string",
+            "title": "Judul"
+          },
+          "deskripsi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deskripsi"
+          },
+          "tautan_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tautan Url"
+          },
+          "gambar_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gambar Url"
+          },
+          "kategori": {
+            "type": "string",
+            "title": "Kategori"
+          },
+          "nomor_dokumen": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nomor Dokumen"
+          },
+          "penerbit": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Penerbit"
+          },
+          "tanggal_terbit": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tanggal Terbit"
+          },
+          "file_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "File Url"
+          },
+          "has_file": {
+            "type": "boolean",
+            "title": "Has File",
+            "default": false
+          },
+          "status_verifikasi": {
+            "type": "string",
+            "title": "Status Verifikasi"
+          },
+          "diverifikasi_oleh": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Diverifikasi Oleh"
+          },
+          "catatan_verifikasi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Catatan Verifikasi"
+          },
+          "verified_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Verified At"
+          },
+          "submitted_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Submitted At"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/SkillBriefResponse"
+            },
+            "type": "array",
+            "title": "Skills",
+            "default": []
+          },
+          "author": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PortfolioAuthorResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "portfolio_id",
+          "user_id",
+          "judul",
+          "kategori",
+          "status_verifikasi",
+          "created_at"
+        ],
+        "title": "PortfolioDetailResponse",
+        "description": "Lengkap untuk Pemilik, Kaprodi se-prodi, dan Admin"
+      },
+      "PortfolioPublicResponse": {
+        "properties": {
+          "portfolio_id": {
+            "type": "integer",
+            "title": "Portfolio Id"
+          },
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "judul": {
+            "type": "string",
+            "title": "Judul"
+          },
+          "deskripsi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deskripsi"
+          },
+          "tautan_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tautan Url"
+          },
+          "gambar_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gambar Url"
+          },
+          "kategori": {
+            "type": "string",
+            "title": "Kategori"
+          },
+          "nomor_dokumen": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nomor Dokumen"
+          },
+          "penerbit": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Penerbit"
+          },
+          "tanggal_terbit": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tanggal Terbit"
+          },
+          "has_file": {
+            "type": "boolean",
+            "title": "Has File",
+            "default": false
+          },
+          "status_verifikasi": {
+            "type": "string",
+            "title": "Status Verifikasi"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/SkillBriefResponse"
+            },
+            "type": "array",
+            "title": "Skills",
+            "default": []
+          },
+          "author": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PortfolioAuthorResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "portfolio_id",
+          "user_id",
+          "judul",
+          "kategori",
+          "status_verifikasi",
+          "created_at"
+        ],
+        "title": "PortfolioPublicResponse",
+        "description": "Masked untuk pengguna lain / publik"
+      },
+      "PortfolioReviewRequest": {
+        "properties": {
+          "status_verifikasi": {
+            "type": "string",
+            "enum": [
+              "terverifikasi",
+              "ditolak"
+            ],
+            "title": "Status Verifikasi"
+          },
+          "catatan_verifikasi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Catatan Verifikasi",
+            "description": "Catatan hasil verifikasi dari Kaprodi/Admin"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status_verifikasi"
+        ],
+        "title": "PortfolioReviewRequest"
+      },
+      "PortfolioRevokeRequest": {
+        "properties": {
+          "alasan": {
+            "type": "string",
+            "minLength": 5,
+            "title": "Alasan",
+            "description": "Alasan pencabutan verifikasi portofolio untuk audit trail"
+          }
+        },
+        "type": "object",
+        "required": [
+          "alasan"
+        ],
+        "title": "PortfolioRevokeRequest"
+      },
+      "PortfolioSearchResult": {
+        "properties": {
+          "portfolio_id": {
+            "type": "integer",
+            "title": "Portfolio Id"
+          },
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "author_nama": {
+            "type": "string",
+            "title": "Author Nama"
+          },
+          "author_jurusan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Author Jurusan"
+          },
+          "judul": {
+            "type": "string",
+            "title": "Judul"
+          },
+          "deskripsi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deskripsi"
+          },
+          "kategori": {
+            "type": "string",
+            "title": "Kategori"
+          },
+          "tautan_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tautan Url"
+          },
+          "gambar_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gambar Url"
+          },
+          "status_verifikasi": {
+            "type": "string",
+            "title": "Status Verifikasi"
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/SearchSkillItem"
+            },
+            "type": "array",
+            "title": "Skills"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "portfolio_id",
+          "user_id",
+          "author_nama",
+          "judul",
+          "kategori",
+          "status_verifikasi",
+          "created_at"
+        ],
+        "title": "PortfolioSearchResult"
+      },
+      "PortfolioUpdate": {
+        "properties": {
+          "judul": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 150,
+                "minLength": 3
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Judul"
+          },
+          "deskripsi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deskripsi"
+          },
+          "tautan_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tautan Url"
+          },
+          "gambar_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gambar Url"
+          },
+          "kategori": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "proyek",
+                  "skpi",
+                  "sertifikat",
+                  "artikel_ilmiah"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kategori"
+          },
+          "nomor_dokumen": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nomor Dokumen"
+          },
+          "penerbit": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 150
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Penerbit"
+          },
+          "tanggal_terbit": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tanggal Terbit"
+          },
+          "file_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "File Url"
+          },
+          "skill_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "integer"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Skill Ids"
+          }
+        },
+        "type": "object",
+        "title": "PortfolioUpdate"
+      },
+      "PostAuthorResponse": {
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "nama": {
+            "type": "string",
+            "title": "Nama"
+          },
+          "jurusan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jurusan"
+          },
+          "angkatan": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Angkatan"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "nama",
+          "role"
+        ],
+        "title": "PostAuthorResponse"
+      },
+      "PostCreate": {
+        "properties": {
+          "isi": {
+            "type": "string",
+            "title": "Isi",
+            "description": "Isi caption atau teks postingan"
+          },
+          "gambar_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gambar Url",
+            "description": "Tautan atau path foto pendukung dari bucket post-images"
+          },
+          "tipe": {
+            "type": "string",
+            "enum": [
+              "umum",
+              "cari_anggota"
+            ],
+            "title": "Tipe",
+            "default": "umum"
+          },
+          "skill_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Skill Ids",
+            "description": "Daftar ID keahlian relevan (maksimal 10)"
+          }
+        },
+        "type": "object",
+        "required": [
+          "isi"
+        ],
+        "title": "PostCreate"
+      },
+      "PostDetailResponse": {
+        "properties": {
+          "post_id": {
+            "type": "integer",
+            "title": "Post Id"
+          },
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "author": {
+            "$ref": "#/components/schemas/PostAuthorResponse"
+          },
+          "isi": {
+            "type": "string",
+            "title": "Isi"
+          },
+          "gambar_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gambar Url"
+          },
+          "tipe": {
+            "type": "string",
+            "enum": [
+              "umum",
+              "cari_anggota"
+            ],
+            "title": "Tipe"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "is_deleted": {
+            "type": "boolean",
+            "title": "Is Deleted"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/PostSkillTagResponse"
+            },
+            "type": "array",
+            "title": "Skills",
+            "default": []
+          },
+          "moderation_note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Moderation Note"
+          },
+          "is_owner": {
+            "type": "boolean",
+            "title": "Is Owner",
+            "default": false
+          },
+          "can_takedown": {
+            "type": "boolean",
+            "title": "Can Takedown",
+            "default": false
+          },
+          "can_report": {
+            "type": "boolean",
+            "title": "Can Report",
+            "default": false
+          },
+          "can_edit": {
+            "type": "boolean",
+            "title": "Can Edit",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "post_id",
+          "user_id",
+          "author",
+          "isi",
+          "tipe",
+          "status",
+          "is_deleted",
+          "created_at"
+        ],
+        "title": "PostDetailResponse"
+      },
+      "PostFeedResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/PostDetailResponse"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "has_more": {
+            "type": "boolean",
+            "title": "Has More"
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Cursor",
+            "description": "Opaque cursor string base4 untuk pagination keyset stabil"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "has_more"
+        ],
+        "title": "PostFeedResponse"
+      },
+      "PostRestoreRequest": {
+        "properties": {
+          "alasan_pemulihan": {
+            "type": "string",
+            "title": "Alasan Pemulihan",
+            "description": "Alasan pemulihan takedown oleh Admin kampus (minimal 5 karakter)"
+          }
+        },
+        "type": "object",
+        "required": [
+          "alasan_pemulihan"
+        ],
+        "title": "PostRestoreRequest"
+      },
+      "PostSearchResult": {
+        "properties": {
+          "post_id": {
+            "type": "integer",
+            "title": "Post Id"
+          },
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "author_nama": {
+            "type": "string",
+            "title": "Author Nama"
+          },
+          "author_jurusan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Author Jurusan"
+          },
+          "isi": {
+            "type": "string",
+            "title": "Isi"
+          },
+          "gambar_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gambar Url"
+          },
+          "tipe": {
+            "type": "string",
+            "title": "Tipe"
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/SearchSkillItem"
+            },
+            "type": "array",
+            "title": "Skills"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "post_id",
+          "user_id",
+          "author_nama",
+          "isi",
+          "tipe",
+          "created_at"
+        ],
+        "title": "PostSearchResult"
+      },
+      "PostSkillTagResponse": {
+        "properties": {
+          "skill_id": {
+            "type": "integer",
+            "title": "Skill Id"
+          },
+          "nama": {
+            "type": "string",
+            "title": "Nama"
+          },
+          "tipe": {
+            "type": "string",
+            "title": "Tipe"
+          }
+        },
+        "type": "object",
+        "required": [
+          "skill_id",
+          "nama",
+          "tipe"
+        ],
+        "title": "PostSkillTagResponse"
+      },
+      "PostTakedownRequest": {
+        "properties": {
+          "alasan_hapus": {
+            "type": "string",
+            "title": "Alasan Hapus",
+            "description": "Alasan penegakan takedown oleh staf kampus (minimal 5 karakter)"
+          }
+        },
+        "type": "object",
+        "required": [
+          "alasan_hapus"
+        ],
+        "title": "PostTakedownRequest"
+      },
+      "PostUpdate": {
+        "properties": {
+          "isi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Isi",
+            "description": "Caption teks yang diperbarui"
+          },
+          "gambar_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gambar Url",
+            "description": "Path atau URL gambar baru"
+          },
+          "tipe": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "umum",
+                  "cari_anggota"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tipe"
+          },
+          "skill_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "integer"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Skill Ids"
+          }
+        },
+        "type": "object",
+        "title": "PostUpdate"
+      },
+      "PublicProfileResponse": {
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "nama": {
+            "type": "string",
+            "title": "Nama"
+          },
+          "jurusan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jurusan"
+          },
+          "angkatan": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Angkatan"
+          },
+          "bio": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bio"
+          },
+          "kontak_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kontak Url"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/UserSkillResponse"
+            },
+            "type": "array",
+            "title": "Skills",
+            "default": []
+          },
+          "friendship_status": {
+            "type": "string",
+            "enum": [
+              "none",
+              "pending_sent",
+              "pending_received",
+              "friends"
+            ],
+            "title": "Friendship Status",
+            "default": "none"
+          },
+          "friendship_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Friendship Id"
+          },
+          "friendship_direction": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "incoming",
+                  "outgoing"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Friendship Direction"
+          },
+          "blocked_by_me": {
+            "type": "boolean",
+            "title": "Blocked By Me",
+            "default": false
+          },
+          "nim": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nim"
+          },
+          "email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email"
+          },
+          "is_visible": {
+            "type": "boolean",
+            "title": "Is Visible",
+            "readOnly": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "nama",
+          "role",
+          "created_at",
+          "is_visible"
+        ],
+        "title": "PublicProfileResponse"
+      },
+      "ReadAllResponse": {
+        "properties": {
+          "updated_count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Updated Count",
+            "description": "Jumlah notifikasi yang ditandai sebagai dibaca"
+          }
+        },
+        "type": "object",
+        "required": [
+          "updated_count"
+        ],
+        "title": "ReadAllResponse"
+      },
+      "RecentPortfolioItemSummary": {
+        "properties": {
+          "portfolio_id": {
+            "type": "integer",
+            "title": "Portfolio Id"
+          },
+          "judul": {
+            "type": "string",
+            "title": "Judul"
+          },
+          "kategori": {
+            "type": "string",
+            "title": "Kategori"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "portfolio_id",
+          "judul",
+          "kategori",
+          "created_at"
+        ],
+        "title": "RecentPortfolioItemSummary"
+      },
+      "RecommendationFeedbackRequest": {
+        "properties": {
+          "umpan_balik": {
+            "type": "string",
+            "enum": [
+              "relevan",
+              "tidak_relevan"
+            ],
+            "title": "Umpan Balik",
+            "description": "Evaluasi relevansi hasil rekomendasi"
+          }
+        },
+        "type": "object",
+        "required": [
+          "umpan_balik"
+        ],
+        "title": "RecommendationFeedbackRequest"
+      },
+      "RecommendationItem": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id"
+          },
+          "rec_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rec Id",
+            "description": "ID log rekomendasi untuk feedback"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "department": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Department"
+          },
+          "match_level": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Match Level",
+            "description": "Tingkat kecocokan (Sangat Cocok, Cukup Cocok, Potensial)"
+          },
+          "score": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Score",
+            "description": "Skor kemiripan/kecocokan (0.0 s.d. 1.0)"
+          },
+          "matched_terms": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Matched Terms",
+            "description": "Tag keahlian yang memiliki irisan"
+          },
+          "complementary_skills": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Complementary Skills",
+            "description": "Keahlian kandidat yang melengkapi kebutuhan"
+          },
+          "reason": {
+            "type": "string",
+            "title": "Reason",
+            "description": "Penjelasan bahasa alami mengenai alasan kecocokan"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "score",
+          "reason"
+        ],
+        "title": "RecommendationItem"
+      },
+      "RecommendationMatchRequest": {
+        "properties": {
+          "target_skills": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array",
+                "maxItems": 10
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Skills",
+            "description": "Daftar keahlian spesifik yang dibutuhkan (maks 10)"
+          },
+          "target_skill_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "integer"
+                },
+                "type": "array",
+                "maxItems": 10
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Skill Ids",
+            "description": "Daftar ID keahlian spesifik jika diketahui (maks 10)"
+          },
+          "project_description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Project Description",
+            "description": "Deskripsi kebutuhan proyek (maks 1000 karakter)",
+            "default": ""
+          },
+          "top_k": {
+            "type": "integer",
+            "maximum": 20.0,
+            "minimum": 1.0,
+            "title": "Top K",
+            "description": "Jumlah rekomendasi maksimal (1 s.d. 20)",
+            "default": 5
+          }
+        },
+        "type": "object",
+        "title": "RecommendationMatchRequest"
+      },
+      "RecommendationResponse": {
+        "properties": {
+          "query_user_id": {
+            "type": "string",
+            "title": "Query User Id"
+          },
+          "fallback": {
+            "type": "boolean",
+            "title": "Fallback",
+            "description": "Menandai apakah hasil berasal dari mode fallback",
+            "default": false
+          },
+          "recommendations": {
+            "items": {
+              "$ref": "#/components/schemas/RecommendationItem"
+            },
+            "type": "array",
+            "title": "Recommendations"
+          }
+        },
+        "type": "object",
+        "required": [
+          "query_user_id",
+          "recommendations"
+        ],
+        "title": "RecommendationResponse"
+      },
+      "RegisterRequest": {
+        "properties": {
+          "nim": {
+            "type": "string",
+            "maxLength": 20,
+            "minLength": 5,
+            "title": "Nim",
+            "description": "Nomor Induk Mahasiswa"
+          },
+          "nama": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 2,
+            "title": "Nama",
+            "description": "Nama lengkap mahasiswa"
+          },
+          "email": {
+            "type": "string",
+            "maxLength": 100,
+            "title": "Email",
+            "description": "Email resmi kampus"
+          },
+          "password": {
+            "type": "string",
+            "title": "Password",
+            "description": "Kata sandi (minimal 8 karakter, maksimal 72 byte UTF-8)"
+          },
+          "jurusan": {
+            "type": "string",
+            "maxLength": 100,
+            "title": "Jurusan",
+            "description": "Program studi / Jurusan resmi"
+          },
+          "angkatan": {
+            "type": "integer",
+            "minimum": 2015.0,
+            "title": "Angkatan",
+            "description": "Tahun angkatan masuk"
+          },
+          "role": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Role",
+            "description": "Diabaikan untuk registrasi mandiri, selalu dipaksa 'mahasiswa'"
+          }
+        },
+        "type": "object",
+        "required": [
+          "nim",
+          "nama",
+          "email",
+          "password",
+          "jurusan",
+          "angkatan"
+        ],
+        "title": "RegisterRequest"
+      },
+      "ReportActionRequest": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "diproses",
+              "selesai",
+              "diabaikan"
+            ],
+            "title": "Status",
+            "description": "Status baru laporan"
+          },
+          "tindakan_diambil": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "postingan_dihapus",
+                  "peringatan",
+                  "laporan_ditolak",
+                  "sedang_investigasi"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tindakan Diambil",
+            "description": "Tindakan yang diambil"
+          },
+          "catatan_tinjauan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Catatan Tinjauan",
+            "description": "Catatan tindakan moderator/admin"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "title": "ReportActionRequest"
+      },
+      "ReportCreate": {
+        "properties": {
+          "post_id": {
+            "type": "integer",
+            "title": "Post Id"
+          },
+          "alasan": {
+            "type": "string",
+            "title": "Alasan",
+            "description": "Penjelasan detail pelanggaran (minimal 5 karakter)"
+          },
+          "kategori_laporan": {
+            "type": "string",
+            "enum": [
+              "spam",
+              "konten_tidak_pantas",
+              "ujaran_kebencian",
+              "misinformasi",
+              "plagiarisme",
+              "lainnya"
+            ],
+            "title": "Kategori Laporan",
+            "description": "Kategori pelanggaran",
+            "default": "konten_tidak_pantas"
+          }
+        },
+        "type": "object",
+        "required": [
+          "post_id",
+          "alasan"
+        ],
+        "title": "ReportCreate"
+      },
+      "ReportResponse": {
+        "properties": {
+          "report_id": {
+            "type": "integer",
+            "title": "Report Id"
+          },
+          "post_id": {
+            "type": "integer",
+            "title": "Post Id"
+          },
+          "pelapor_id": {
+            "type": "integer",
+            "title": "Pelapor Id"
+          },
+          "pelapor_nama": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pelapor Nama"
+          },
+          "post_isi_snippet": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Post Isi Snippet"
+          },
+          "alasan": {
+            "type": "string",
+            "title": "Alasan"
+          },
+          "kategori_laporan": {
+            "type": "string",
+            "title": "Kategori Laporan"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "ditinjau_oleh": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ditinjau Oleh"
+          },
+          "tindakan_diambil": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tindakan Diambil"
+          },
+          "catatan_tinjauan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Catatan Tinjauan"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "resolved_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Resolved At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "report_id",
+          "post_id",
+          "pelapor_id",
+          "alasan",
+          "kategori_laporan",
+          "status",
+          "created_at"
+        ],
+        "title": "ReportResponse"
+      },
+      "ReviewQueueItemResponse": {
+        "properties": {
+          "portfolio_id": {
+            "type": "integer",
+            "title": "Portfolio Id"
+          },
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "judul": {
+            "type": "string",
+            "title": "Judul"
+          },
+          "deskripsi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deskripsi"
+          },
+          "kategori": {
+            "type": "string",
+            "title": "Kategori"
+          },
+          "nomor_dokumen": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nomor Dokumen"
+          },
+          "penerbit": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Penerbit"
+          },
+          "tanggal_terbit": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tanggal Terbit"
+          },
+          "file_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "File Url"
+          },
+          "has_file": {
+            "type": "boolean",
+            "title": "Has File",
+            "default": false
+          },
+          "status_verifikasi": {
+            "type": "string",
+            "title": "Status Verifikasi"
+          },
+          "submitted_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Submitted At"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "author_nama": {
+            "type": "string",
+            "title": "Author Nama"
+          },
+          "author_nim": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Author Nim"
+          },
+          "author_jurusan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Author Jurusan"
+          },
+          "author_avatar_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Author Avatar Url"
+          },
+          "is_duplicate_dokumen": {
+            "type": "boolean",
+            "title": "Is Duplicate Dokumen",
+            "default": false
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/SkillBriefResponse"
+            },
+            "type": "array",
+            "title": "Skills",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "portfolio_id",
+          "user_id",
+          "judul",
+          "kategori",
+          "status_verifikasi",
+          "created_at",
+          "author_nama"
+        ],
+        "title": "ReviewQueueItemResponse"
+      },
+      "ReviewQueueListResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ReviewQueueItemResponse"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "jurusan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jurusan"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total"
+        ],
+        "title": "ReviewQueueListResponse"
+      },
+      "SearchResponse": {
+        "properties": {
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          },
+          "tipe": {
+            "type": "string",
+            "title": "Tipe"
+          },
+          "items": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/StudentSearchResult"
+                },
+                "type": "array"
+              },
+              {
+                "items": {
+                  "$ref": "#/components/schemas/PostSearchResult"
+                },
+                "type": "array"
+              },
+              {
+                "items": {
+                  "$ref": "#/components/schemas/PortfolioSearchResult"
+                },
+                "type": "array"
+              }
+            ],
+            "title": "Items"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total",
+          "limit",
+          "offset",
+          "tipe",
+          "items"
+        ],
+        "title": "SearchResponse"
+      },
+      "SearchSkillItem": {
+        "properties": {
+          "skill_id": {
+            "type": "integer",
+            "title": "Skill Id"
+          },
+          "nama": {
+            "type": "string",
+            "title": "Nama"
+          },
+          "tipe": {
+            "type": "string",
+            "title": "Tipe",
+            "default": "skill"
+          }
+        },
+        "type": "object",
+        "required": [
+          "skill_id",
+          "nama"
+        ],
+        "title": "SearchSkillItem"
+      },
+      "SignedUrlResponse": {
+        "properties": {
+          "signed_url": {
+            "type": "string",
+            "title": "Signed Url"
+          },
+          "expires_in": {
+            "type": "integer",
+            "title": "Expires In"
+          }
+        },
+        "type": "object",
+        "required": [
+          "signed_url",
+          "expires_in"
+        ],
+        "title": "SignedUrlResponse"
+      },
+      "SkillBriefResponse": {
+        "properties": {
+          "skill_id": {
+            "type": "integer",
+            "title": "Skill Id"
+          },
+          "nama": {
+            "type": "string",
+            "title": "Nama"
+          },
+          "kategori": {
+            "type": "string",
+            "title": "Kategori"
+          }
+        },
+        "type": "object",
+        "required": [
+          "skill_id",
+          "nama",
+          "kategori"
+        ],
+        "title": "SkillBriefResponse"
+      },
+      "SkillResponse": {
+        "properties": {
+          "skill_id": {
+            "type": "integer",
+            "title": "Skill Id"
+          },
+          "nama": {
+            "type": "string",
+            "title": "Nama"
+          },
+          "tipe": {
+            "type": "string",
+            "title": "Tipe"
+          }
+        },
+        "type": "object",
+        "required": [
+          "skill_id",
+          "nama",
+          "tipe"
+        ],
+        "title": "SkillResponse"
+      },
+      "SkpiSummaryResponse": {
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "total_poin": {
+            "type": "integer",
+            "title": "Total Poin"
+          },
+          "total_terverifikasi": {
+            "type": "integer",
+            "title": "Total Terverifikasi"
+          },
+          "menunggu_review": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Menunggu Review"
+          },
+          "jumlah_per_kategori": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Jumlah Per Kategori"
+          },
+          "poin_per_kategori": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Poin Per Kategori"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/PortfolioPublicResponse"
+            },
+            "type": "array",
+            "title": "Items",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "total_poin",
+          "total_terverifikasi",
+          "jumlah_per_kategori",
+          "poin_per_kategori"
+        ],
+        "title": "SkpiSummaryResponse"
+      },
+      "StudentDashboardSummary": {
+        "properties": {
+          "role": {
+            "type": "string",
+            "const": "mahasiswa",
+            "title": "Role",
+            "default": "mahasiswa"
+          },
+          "total_skpi_poin": {
+            "type": "integer",
+            "title": "Total Skpi Poin"
+          },
+          "total_portofolio_terverifikasi": {
+            "type": "integer",
+            "title": "Total Portofolio Terverifikasi"
+          },
+          "total_portofolio_menunggu": {
+            "type": "integer",
+            "title": "Total Portofolio Menunggu"
+          },
+          "total_portofolio_perlu_revisi": {
+            "type": "integer",
+            "title": "Total Portofolio Perlu Revisi"
+          },
+          "pending_friend_requests": {
+            "type": "integer",
+            "title": "Pending Friend Requests"
+          },
+          "unread_notifications_count": {
+            "type": "integer",
+            "title": "Unread Notifications Count"
+          },
+          "recent_verified_portfolios": {
+            "items": {
+              "$ref": "#/components/schemas/RecentPortfolioItemSummary"
+            },
+            "type": "array",
+            "title": "Recent Verified Portfolios",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "total_skpi_poin",
+          "total_portofolio_terverifikasi",
+          "total_portofolio_menunggu",
+          "total_portofolio_perlu_revisi",
+          "pending_friend_requests",
+          "unread_notifications_count"
+        ],
+        "title": "StudentDashboardSummary"
+      },
+      "StudentSearchResult": {
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "nama": {
+            "type": "string",
+            "title": "Nama"
+          },
+          "nim": {
+            "type": "string",
+            "title": "Nim"
+          },
+          "jurusan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jurusan"
+          },
+          "angkatan": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Angkatan"
+          },
+          "bio": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bio"
+          },
+          "kontak_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kontak Url"
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/SearchSkillItem"
+            },
+            "type": "array",
+            "title": "Skills"
+          },
+          "friendship_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Friendship Status"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "nama",
+          "nim",
+          "created_at"
+        ],
+        "title": "StudentSearchResult"
+      },
+      "TokenResponse": {
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "title": "Access Token"
+          },
+          "token_type": {
+            "type": "string",
+            "title": "Token Type",
+            "default": "bearer"
+          },
+          "expires_in": {
+            "type": "integer",
+            "title": "Expires In"
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserProfileResponse"
+          }
+        },
+        "type": "object",
+        "required": [
+          "access_token",
+          "expires_in",
+          "user"
+        ],
+        "title": "TokenResponse"
+      },
+      "UnreadCountResponse": {
+        "properties": {
+          "unread_count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Unread Count",
+            "description": "Jumlah notifikasi yang belum dibaca"
+          }
+        },
+        "type": "object",
+        "required": [
+          "unread_count"
+        ],
+        "title": "UnreadCountResponse"
+      },
+      "UpdateProfileRequest": {
+        "properties": {
+          "nama": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nama",
+            "description": "Nama lengkap"
+          },
+          "bio": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bio",
+            "description": "Biografi singkat mahasiswa"
+          },
+          "kontak_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kontak Url",
+            "description": "Tautan profil eksternal (LinkedIn, GitHub, Portofolio)"
+          },
+          "jurusan": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jurusan",
+            "description": "Program studi"
+          },
+          "angkatan": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 2100.0,
+                "minimum": 2000.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Angkatan",
+            "description": "Tahun angkatan"
+          }
+        },
+        "type": "object",
+        "title": "UpdateProfileRequest"
+      },
+      "UpdateUserSkillsRequest": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/UserSkillItem"
+            },
+            "type": "array",
+            "maxItems": 20,
+            "title": "Items",
+            "description": "Daftar keahlian & minat maksimal 20 item total per pengguna"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "title": "UpdateUserSkillsRequest"
+      },
+      "UploadDocumentResponse": {
+        "properties": {
+          "path": {
+            "type": "string",
+            "title": "Path",
+            "description": "Path relatif dalam private storage bucket (e.g. 101/uuid.pdf)"
+          },
+          "filename": {
+            "type": "string",
+            "title": "Filename",
+            "description": "Nama file unik"
+          },
+          "content_type": {
+            "type": "string",
+            "title": "Content Type",
+            "description": "Tipe MIME dokumen (e.g. application/pdf)"
+          },
+          "size_bytes": {
+            "type": "integer",
+            "title": "Size Bytes",
+            "description": "Ukuran berkas dalam byte"
+          }
+        },
+        "type": "object",
+        "required": [
+          "path",
+          "filename",
+          "content_type",
+          "size_bytes"
+        ],
+        "title": "UploadDocumentResponse"
+      },
+      "UploadImageResponse": {
+        "properties": {
+          "path": {
+            "type": "string",
+            "title": "Path",
+            "description": "Path relatif dalam storage bucket (e.g. 101/uuid.jpg)"
+          },
+          "url": {
+            "type": "string",
+            "title": "Url",
+            "description": "URL publik berkas gambar yang dapat diakses langsung"
+          },
+          "filename": {
+            "type": "string",
+            "title": "Filename",
+            "description": "Nama file unik"
+          },
+          "content_type": {
+            "type": "string",
+            "title": "Content Type",
+            "description": "Tipe MIME gambar (e.g. image/jpeg)"
+          },
+          "size_bytes": {
+            "type": "integer",
+            "title": "Size Bytes",
+            "description": "Ukuran berkas dalam byte"
+          }
+        },
+        "type": "object",
+        "required": [
+          "path",
+          "url",
+          "filename",
+          "content_type",
+          "size_bytes"
+        ],
+        "title": "UploadImageResponse"
+      },
+      "UserBlockRequest": {
+        "properties": {
+          "blocked_id": {
+            "type": "integer",
+            "title": "Blocked Id",
+            "description": "User ID yang ingin diblokir"
+          },
+          "alasan": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alasan",
+            "description": "Alasan pemblokiran (opsional, maks 500 karakter)"
+          }
+        },
+        "type": "object",
+        "required": [
+          "blocked_id"
+        ],
+        "title": "UserBlockRequest"
+      },
+      "UserBlockResponse": {
+        "properties": {
+          "block_id": {
+            "type": "integer",
+            "title": "Block Id"
+          },
+          "blocker_id": {
+            "type": "integer",
+            "title": "Blocker Id"
+          },
+          "blocked_id": {
+            "type": "integer",
+            "title": "Blocked Id"
+          },
+          "alasan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alasan"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "block_id",
+          "blocker_id",
+          "blocked_id",
+          "alasan",
+          "created_at"
+        ],
+        "title": "UserBlockResponse"
+      },
+      "UserProfileResponse": {
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "nim": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nim"
+          },
+          "nama": {
+            "type": "string",
+            "title": "Nama"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          },
+          "jurusan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jurusan"
+          },
+          "angkatan": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Angkatan"
+          },
+          "bio": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bio"
+          },
+          "kontak_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kontak Url"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "id": {
+            "type": "integer",
+            "title": "Id",
+            "readOnly": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "nama",
+          "email",
+          "role",
+          "created_at",
+          "id"
+        ],
+        "title": "UserProfileResponse"
+      },
+      "UserSkillItem": {
+        "properties": {
+          "skill_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Skill Id",
+            "description": "ID skill master jika sudah ada"
+          },
+          "nama": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 60
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nama",
+            "description": "Nama keahlian atau minat kustom"
+          },
+          "tipe": {
+            "type": "string",
+            "enum": [
+              "skill",
+              "minat"
+            ],
+            "title": "Tipe",
+            "description": "Tipe tag: 'skill' atau 'minat'",
+            "default": "skill"
+          },
+          "level": {
+            "type": "string",
+            "enum": [
+              "pemula",
+              "menengah",
+              "mahir"
+            ],
+            "title": "Level",
+            "description": "Tingkat kemahiran",
+            "default": "pemula"
+          }
+        },
+        "type": "object",
+        "title": "UserSkillItem"
+      },
+      "UserSkillResponse": {
+        "properties": {
+          "skill_id": {
+            "type": "integer",
+            "title": "Skill Id"
+          },
+          "nama": {
+            "type": "string",
+            "title": "Nama"
+          },
+          "tipe": {
+            "type": "string",
+            "title": "Tipe"
+          },
+          "level": {
+            "type": "string",
+            "title": "Level"
+          }
+        },
+        "type": "object",
+        "required": [
+          "skill_id",
+          "nama",
+          "tipe",
+          "level"
+        ],
+        "title": "UserSkillResponse"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    },
+    "securitySchemes": {
+      "HTTPBearer": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}

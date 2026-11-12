@@ -1,0 +1,1413 @@
+{
+  "metadata": {
+    "dataset_name": "CampusFolio AI-1 Collaborator Recommendation Benchmark",
+    "version": "1.0",
+    "total_profiles": 50,
+    "total_queries": 12,
+    "inter_annotator_agreement": {
+      "annotator_1": "Hustler (Product Owner & Strategy)",
+      "annotator_2": "Hacker (Tech Lead & Engineering)",
+      "total_pair_evaluations": 600,
+      "percent_agreement": 97.67,
+      "cohens_kappa": 0.8246,
+      "agreement_strength": "Substantial / Near Perfect Agreement"
+    }
+  },
+  "profiles": [
+    {
+      "user_id": "u_01",
+      "name": "Budi Pratama",
+      "department": "Teknik Informatika",
+      "bio": "Spesialis Mobile Flutter dan Dart. Tertarik lomba hackathon dan IoT.",
+      "skills": [
+        "Flutter",
+        "Dart",
+        "Firebase",
+        "Git",
+        "Mobile Development"
+      ],
+      "interests": [
+        "Hackathon",
+        "Mobile Development",
+        "Open Source"
+      ]
+    },
+    {
+      "user_id": "u_02",
+      "name": "Siti Rahma",
+      "department": "Teknik Informatika",
+      "bio": "Frontend Web Developer dengan keahlian React, Next.js, dan TailwindCSS.",
+      "skills": [
+        "React",
+        "Next.js",
+        "TypeScript",
+        "TailwindCSS",
+        "Web Development"
+      ],
+      "interests": [
+        "Web Development",
+        "UI/UX Design",
+        "Hackathon"
+      ]
+    },
+    {
+      "user_id": "u_03",
+      "name": "Fajar Hidayat",
+      "department": "Teknik Informatika",
+      "bio": "Backend Engineer fokus Python FastAPI, PostgreSQL, Docker, dan Redis.",
+      "skills": [
+        "Python",
+        "FastAPI",
+        "PostgreSQL",
+        "Docker",
+        "Git"
+      ],
+      "interests": [
+        "Open Source",
+        "Artificial Intelligence",
+        "Cloud Computing"
+      ]
+    },
+    {
+      "user_id": "u_04",
+      "name": "Alya Putri",
+      "department": "Teknik Informatika",
+      "bio": "Fullstack Web Developer, menyukai arsitektur microservices dan REST API.",
+      "skills": [
+        "Node.js",
+        "Express",
+        "React",
+        "PostgreSQL",
+        "Web Development"
+      ],
+      "interests": [
+        "Start-up & Bisnis",
+        "Web Development"
+      ]
+    },
+    {
+      "user_id": "u_05",
+      "name": "Dimas Nugraha",
+      "department": "Teknik Informatika",
+      "bio": "Android Native Developer dengan Kotlin dan Jetpack Compose.",
+      "skills": [
+        "Kotlin",
+        "Android",
+        "Jetpack Compose",
+        "Git",
+        "Mobile Development"
+      ],
+      "interests": [
+        "Mobile Development",
+        "Hackathon"
+      ]
+    },
+    {
+      "user_id": "u_06",
+      "name": "Reza Gunawan",
+      "department": "Teknik Informatika",
+      "bio": "Machine Learning engineer, NLP, PyTorch, dan riset model klasifikasi teks.",
+      "skills": [
+        "Python",
+        "Machine Learning",
+        "PyTorch",
+        "Data Science",
+        "Scikit-Learn"
+      ],
+      "interests": [
+        "Artificial Intelligence",
+        "Riset Ilmiah"
+      ]
+    },
+    {
+      "user_id": "u_07",
+      "name": "Nadya Eka",
+      "department": "Teknik Informatika",
+      "bio": "Data Scientist dan visualisasi data statistik menggunakan Python dan Tableau.",
+      "skills": [
+        "Python",
+        "Data Science",
+        "Pandas",
+        "Tableau",
+        "Statistics"
+      ],
+      "interests": [
+        "Riset Ilmiah",
+        "Artificial Intelligence"
+      ]
+    },
+    {
+      "user_id": "u_08",
+      "name": "Bambang Wijaya",
+      "department": "Teknik Informatika",
+      "bio": "Computer Vision engineer, OpenCV, deteksi objek citra medis.",
+      "skills": [
+        "Python",
+        "Computer Vision",
+        "OpenCV",
+        "TensorFlow",
+        "Deep Learning"
+      ],
+      "interests": [
+        "Artificial Intelligence",
+        "Riset Ilmiah"
+      ]
+    },
+    {
+      "user_id": "u_09",
+      "name": "Annisa Fitri",
+      "department": "Teknik Informatika",
+      "bio": "Data Analyst dengan keahlian SQL, ETL pipeline, dan data warehousing.",
+      "skills": [
+        "SQL",
+        "PostgreSQL",
+        "Python",
+        "Data Science",
+        "Power BI"
+      ],
+      "interests": [
+        "Riset Ilmiah",
+        "Start-up & Bisnis"
+      ]
+    },
+    {
+      "user_id": "u_10",
+      "name": "Ilham Saputra",
+      "department": "Teknik Informatika",
+      "bio": "AI Researcher fokus pada LLM prompting dan Retrieval-Augmented Generation.",
+      "skills": [
+        "Python",
+        "NLP",
+        "LangChain",
+        "FastAPI",
+        "Machine Learning"
+      ],
+      "interests": [
+        "Artificial Intelligence",
+        "Open Source"
+      ]
+    },
+    {
+      "user_id": "u_11",
+      "name": "Aditya Putra",
+      "department": "Teknik Informatika",
+      "bio": "DevOps enthusiast, Kubernetes, CI/CD GitHub Actions, Linux administration.",
+      "skills": [
+        "Docker",
+        "Kubernetes",
+        "Linux",
+        "Git",
+        "CI/CD"
+      ],
+      "interests": [
+        "Cloud Computing",
+        "Open Source"
+      ]
+    },
+    {
+      "user_id": "u_12",
+      "name": "Maya Kusuma",
+      "department": "Teknik Informatika",
+      "bio": "Cybersecurity researcher, Penetration Testing, dan secure code review.",
+      "skills": [
+        "Cybersecurity",
+        "Linux",
+        "Python",
+        "Networking",
+        "Ethical Hacking"
+      ],
+      "interests": [
+        "Riset Ilmiah",
+        "Open Source"
+      ]
+    },
+    {
+      "user_id": "u_13",
+      "name": "Gilang Ramadhan",
+      "department": "Teknik Informatika",
+      "bio": "Cloud Solutions Architect, AWS, Terraform, serverless architecture.",
+      "skills": [
+        "AWS",
+        "Docker",
+        "Terraform",
+        "Python",
+        "Cloud Computing"
+      ],
+      "interests": [
+        "Cloud Computing",
+        "Hackathon"
+      ]
+    },
+    {
+      "user_id": "u_14",
+      "name": "Hendra Kurniawan",
+      "department": "Teknik Informatika",
+      "bio": "Game developer Unity C#, gameplay mechanics, dan VR development.",
+      "skills": [
+        "Unity",
+        "C#",
+        "Game Development",
+        "3D Modeling",
+        "Git"
+      ],
+      "interests": [
+        "Hackathon",
+        "Game Development"
+      ]
+    },
+    {
+      "user_id": "u_15",
+      "name": "Farhan Alamsyah",
+      "department": "Teknik Informatika",
+      "bio": "IoT engineer, ESP32, Arduino, MQTT, dan integrasi sensor pintar.",
+      "skills": [
+        "Arduino",
+        "C++",
+        "IoT",
+        "MQTT",
+        "Python"
+      ],
+      "interests": [
+        "Hackathon",
+        "Open Source"
+      ]
+    },
+    {
+      "user_id": "u_16",
+      "name": "Clara Devina",
+      "department": "Sistem Informasi",
+      "bio": "UI/UX Designer dan User Researcher, Figma, Design System, usability testing.",
+      "skills": [
+        "UI/UX Design",
+        "Figma",
+        "Design Thinking",
+        "User Research",
+        "Wireframing"
+      ],
+      "interests": [
+        "Design Thinking",
+        "Start-up & Bisnis"
+      ]
+    },
+    {
+      "user_id": "u_17",
+      "name": "Denny Saputra",
+      "department": "Sistem Informasi",
+      "bio": "Product Designer berfokus pada web accessibility dan micro-interactions.",
+      "skills": [
+        "Figma",
+        "UI/UX Design",
+        "HTML",
+        "CSS",
+        "Prototyping"
+      ],
+      "interests": [
+        "Design Thinking",
+        "Web Development"
+      ]
+    },
+    {
+      "user_id": "u_18",
+      "name": "Tiara Lestari",
+      "department": "Sistem Informasi",
+      "bio": "UX Researcher yang senang wawancara pengguna dan perumusan persona.",
+      "skills": [
+        "User Research",
+        "Design Thinking",
+        "UI/UX Design",
+        "Figma",
+        "Product Strategy"
+      ],
+      "interests": [
+        "Riset Ilmiah",
+        "Design Thinking"
+      ]
+    },
+    {
+      "user_id": "u_19",
+      "name": "Yoga Pratama",
+      "department": "Sistem Informasi",
+      "bio": "UI Designer spesialis antarmuka aplikasi mobile e-commerce dan fintech.",
+      "skills": [
+        "UI/UX Design",
+        "Figma",
+        "Adobe Illustrator",
+        "Prototyping"
+      ],
+      "interests": [
+        "Mobile Development",
+        "Design Thinking"
+      ]
+    },
+    {
+      "user_id": "u_20",
+      "name": "Rina Anggraini",
+      "department": "Sistem Informasi",
+      "bio": "Interactions designer dan perancang alur onboarding aplikasi.",
+      "skills": [
+        "Figma",
+        "UI/UX Design",
+        "Usability Testing",
+        "Design Systems"
+      ],
+      "interests": [
+        "Design Thinking",
+        "Hackathon"
+      ]
+    },
+    {
+      "user_id": "u_21",
+      "name": "Agus Salim",
+      "department": "Sistem Informasi",
+      "bio": "Business Analyst, Business Process Modeling (BPMN), analisa kebutuhan software.",
+      "skills": [
+        "Business Analysis",
+        "BPMN",
+        "Product Management",
+        "UML",
+        "SQL"
+      ],
+      "interests": [
+        "Start-up & Bisnis",
+        "Riset Ilmiah"
+      ]
+    },
+    {
+      "user_id": "u_22",
+      "name": "Cindy Natalia",
+      "department": "Sistem Informasi",
+      "bio": "Associate Product Manager, agile sprint planning, perumusan backlog MVP.",
+      "skills": [
+        "Product Management",
+        "Agile",
+        "Scrum",
+        "Business Analysis",
+        "Jira"
+      ],
+      "interests": [
+        "Start-up & Bisnis",
+        "Hackathon"
+      ]
+    },
+    {
+      "user_id": "u_23",
+      "name": "Kevin Sanjaya",
+      "department": "Sistem Informasi",
+      "bio": "IT Consultant, IT Governance, COBIT framework, dan enterprise architecture.",
+      "skills": [
+        "IT Governance",
+        "Business Analysis",
+        "Enterprise Architecture",
+        "UML"
+      ],
+      "interests": [
+        "Riset Ilmiah",
+        "Start-up & Bisnis"
+      ]
+    },
+    {
+      "user_id": "u_24",
+      "name": "Bella Safira",
+      "department": "Sistem Informasi",
+      "bio": "Data-driven Product Analyst, A/B testing, metrik retensi pengguna.",
+      "skills": [
+        "Product Management",
+        "Data Science",
+        "SQL",
+        "Tableau",
+        "Analytics"
+      ],
+      "interests": [
+        "Start-up & Bisnis",
+        "Riset Ilmiah"
+      ]
+    },
+    {
+      "user_id": "u_25",
+      "name": "Taufik Hidayat",
+      "department": "Sistem Informasi",
+      "bio": "ERP specialist, SAP, integrasi sistem informasi pergudangan dan logistik.",
+      "skills": [
+        "ERP",
+        "Business Analysis",
+        "SQL",
+        "Supply Chain",
+        "BPMN"
+      ],
+      "interests": [
+        "Start-up & Bisnis"
+      ]
+    },
+    {
+      "user_id": "u_26",
+      "name": "Jessica Iskandar",
+      "department": "Desain Komunikasi Visual",
+      "bio": "Brand Identity Designer, logo maker, ilustrator vektor, tipografi.",
+      "skills": [
+        "Graphic Design",
+        "Adobe Illustrator",
+        "Branding",
+        "Typography"
+      ],
+      "interests": [
+        "Design Thinking",
+        "Start-up & Bisnis"
+      ]
+    },
+    {
+      "user_id": "u_27",
+      "name": "Rian Ardiansyah",
+      "department": "Desain Komunikasi Visual",
+      "bio": "3D Artist dan Motion Designer, Blender, animasi aset game dan produk.",
+      "skills": [
+        "3D Modeling",
+        "Blender",
+        "Motion Graphics",
+        "After Effects",
+        "Unity"
+      ],
+      "interests": [
+        "Game Development",
+        "Design Thinking"
+      ]
+    },
+    {
+      "user_id": "u_28",
+      "name": "Putri Maharani",
+      "department": "Desain Komunikasi Visual",
+      "bio": "Visual Storyteller, video editor, pembuatan konten promo media sosial.",
+      "skills": [
+        "Video Editing",
+        "Premiere Pro",
+        "Motion Graphics",
+        "Content Strategy"
+      ],
+      "interests": [
+        "Design Thinking",
+        "Start-up & Bisnis"
+      ]
+    },
+    {
+      "user_id": "u_29",
+      "name": "Bagus Wicaksono",
+      "department": "Desain Komunikasi Visual",
+      "bio": "Concept artist game, sketsa karakter, digital painting di Photoshop.",
+      "skills": [
+        "Digital Painting",
+        "Photoshop",
+        "Concept Art",
+        "Illustration"
+      ],
+      "interests": [
+        "Game Development",
+        "Open Source"
+      ]
+    },
+    {
+      "user_id": "u_30",
+      "name": "Salma Hayek",
+      "department": "Desain Komunikasi Visual",
+      "bio": "UI Illustrator dan Icon Designer, aset grafis vektor modern untuk mobile app.",
+      "skills": [
+        "Graphic Design",
+        "Adobe Illustrator",
+        "Figma",
+        "UI/UX Design"
+      ],
+      "interests": [
+        "Design Thinking",
+        "Mobile Development"
+      ]
+    },
+    {
+      "user_id": "u_31",
+      "name": "Arya Saloka",
+      "department": "Manajemen Bisnis",
+      "bio": "Business Strategist, perancangan Business Model Canvas (BMC), market sizing TAM SAM SOM.",
+      "skills": [
+        "Business Strategy",
+        "Market Research",
+        "Financial Modeling",
+        "Pitching"
+      ],
+      "interests": [
+        "Start-up & Bisnis",
+        "Hackathon"
+      ]
+    },
+    {
+      "user_id": "u_32",
+      "name": "Dian Sastrowardoyo",
+      "department": "Manajemen Bisnis",
+      "bio": "Pitch Master dan Public Speaker, pemenang lomba inovasi bisnis tingkat nasional.",
+      "skills": [
+        "Pitching",
+        "Public Speaking",
+        "Business Strategy",
+        "Storytelling"
+      ],
+      "interests": [
+        "Start-up & Bisnis",
+        "Hackathon"
+      ]
+    },
+    {
+      "user_id": "u_33",
+      "name": "Gading Marten",
+      "department": "Manajemen Bisnis",
+      "bio": "Financial Analyst, valuasi startup, laporan kelayakan finansial dan cashflow.",
+      "skills": [
+        "Financial Modeling",
+        "Excel",
+        "Accounting",
+        "Business Strategy"
+      ],
+      "interests": [
+        "Start-up & Bisnis",
+        "Riset Ilmiah"
+      ]
+    },
+    {
+      "user_id": "u_34",
+      "name": "Chelsea Islan",
+      "department": "Manajemen Bisnis",
+      "bio": "Digital Marketer, Growth Hacking, Google Ads, optimasi funnel konversi.",
+      "skills": [
+        "Digital Marketing",
+        "SEO",
+        "Growth Hacking",
+        "Market Research"
+      ],
+      "interests": [
+        "Start-up & Bisnis",
+        "Web Development"
+      ]
+    },
+    {
+      "user_id": "u_35",
+      "name": "Raffi Ahmad",
+      "department": "Manajemen Bisnis",
+      "bio": "Partnership and Business Development, negosiasi kemitraan dan sponsorship.",
+      "skills": [
+        "Business Development",
+        "Partnership",
+        "Negotiation",
+        "Pitching"
+      ],
+      "interests": [
+        "Start-up & Bisnis",
+        "Hackathon"
+      ]
+    },
+    {
+      "user_id": "u_36",
+      "name": "Eko Prasetyo",
+      "department": "Teknik Informatika",
+      "bio": "Backend Go / Golang, gRPC, high-throughput microservices.",
+      "skills": [
+        "Go",
+        "gRPC",
+        "Docker",
+        "PostgreSQL",
+        "Git"
+      ],
+      "interests": [
+        "Open Source",
+        "Cloud Computing"
+      ]
+    },
+    {
+      "user_id": "u_37",
+      "name": "Gita Gutawa",
+      "department": "Sistem Informasi",
+      "bio": "Scrum Master tersertifikasi, fasilitator retrospektif tim mahasiswa.",
+      "skills": [
+        "Scrum",
+        "Agile",
+        "Product Management",
+        "Team Leadership"
+      ],
+      "interests": [
+        "Start-up & Bisnis",
+        "Hackathon"
+      ]
+    },
+    {
+      "user_id": "u_38",
+      "name": "Haris Rusdi",
+      "department": "Teknik Informatika",
+      "bio": "Spesialis Flutter dan integrasi REST API backend, siap lomba.",
+      "skills": [
+        "Flutter",
+        "Dart",
+        "REST API",
+        "Git",
+        "Mobile Development"
+      ],
+      "interests": [
+        "Hackathon",
+        "Mobile Development"
+      ]
+    },
+    {
+      "user_id": "u_39",
+      "name": "Intan Nuraini",
+      "department": "Teknik Informatika",
+      "bio": "Frontend Web developer, Vue.js, Nuxt, CSS animasi.",
+      "skills": [
+        "Vue.js",
+        "JavaScript",
+        "HTML",
+        "CSS",
+        "Web Development"
+      ],
+      "interests": [
+        "Web Development",
+        "UI/UX Design"
+      ]
+    },
+    {
+      "user_id": "u_40",
+      "name": "Joko Anwar",
+      "department": "Desain Komunikasi Visual",
+      "bio": "Storyboarder animasi dan ilustrator komik edukatif.",
+      "skills": [
+        "Illustration",
+        "Storyboarding",
+        "Photoshop",
+        "Graphic Design"
+      ],
+      "interests": [
+        "Design Thinking",
+        "Riset Ilmiah"
+      ]
+    },
+    {
+      "user_id": "u_41",
+      "name": "Kiki Amalia",
+      "department": "Manajemen Bisnis",
+      "bio": "Riset pasar kualitatif, wawancara customer validation mendalam.",
+      "skills": [
+        "Market Research",
+        "Customer Discovery",
+        "Business Strategy"
+      ],
+      "interests": [
+        "Start-up & Bisnis",
+        "Riset Ilmiah"
+      ]
+    },
+    {
+      "user_id": "u_42",
+      "name": "Lukman Sardi",
+      "department": "Teknik Informatika",
+      "bio": "Peneliti AI, Deep Learning for Speech Processing dan Audio.",
+      "skills": [
+        "Python",
+        "PyTorch",
+        "Deep Learning",
+        "Signal Processing"
+      ],
+      "interests": [
+        "Artificial Intelligence",
+        "Riset Ilmiah"
+      ]
+    },
+    {
+      "user_id": "u_43",
+      "name": "Mona Ratuliu",
+      "department": "Sistem Informasi",
+      "bio": "Quality Assurance tester, automated testing dengan Cypress dan Selenium.",
+      "skills": [
+        "Software Testing",
+        "Cypress",
+        "QA",
+        "JavaScript",
+        "Git"
+      ],
+      "interests": [
+        "Web Development",
+        "Open Source"
+      ]
+    },
+    {
+      "user_id": "u_44",
+      "name": "Niko Al-Hakim",
+      "department": "Teknik Informatika",
+      "bio": "Blockchain developer, Solidity smart contracts, Web3 dApps.",
+      "skills": [
+        "Solidity",
+        "Ethereum",
+        "JavaScript",
+        "Web3",
+        "Git"
+      ],
+      "interests": [
+        "Start-up & Bisnis",
+        "Open Source"
+      ]
+    },
+    {
+      "user_id": "u_45",
+      "name": "Olla Ramlan",
+      "department": "Manajemen Bisnis",
+      "bio": "Operations Manager, efisiensi rantai pasok dan SOP bisnis.",
+      "skills": [
+        "Operations",
+        "Business Strategy",
+        "Project Management"
+      ],
+      "interests": [
+        "Start-up & Bisnis"
+      ]
+    },
+    {
+      "user_id": "u_46",
+      "name": "Panji Petualang",
+      "department": "Teknik Informatika",
+      "bio": "Embedded C programmer, mikrokontroler sensor lingkungan.",
+      "skills": [
+        "C",
+        "C++",
+        "Embedded Systems",
+        "Hardware",
+        "IoT"
+      ],
+      "interests": [
+        "Hackathon",
+        "Open Source"
+      ]
+    },
+    {
+      "user_id": "u_47",
+      "name": "Qory Sandioriva",
+      "department": "Desain Komunikasi Visual",
+      "bio": "Desainer grafis presentasi pitch deck profesional untuk kompetisi bisnis.",
+      "skills": [
+        "Presentation Design",
+        "Figma",
+        "Canva",
+        "Graphic Design"
+      ],
+      "interests": [
+        "Start-up & Bisnis",
+        "Hackathon"
+      ]
+    },
+    {
+      "user_id": "u_48",
+      "name": "Raditya Dika",
+      "department": "Manajemen Bisnis",
+      "bio": "Copywriter produk digital, perumusan copywriting antarmuka aplikasi.",
+      "skills": [
+        "Copywriting",
+        "Content Strategy",
+        "Digital Marketing",
+        "Storytelling"
+      ],
+      "interests": [
+        "Start-up & Bisnis",
+        "Design Thinking"
+      ]
+    },
+    {
+      "user_id": "u_49",
+      "name": "Sheila Dara",
+      "department": "Sistem Informasi",
+      "bio": "Perancang sistem informasi kesehatan rekam medis elektronik.",
+      "skills": [
+        "Health Informatics",
+        "Business Analysis",
+        "Database",
+        "SQL"
+      ],
+      "interests": [
+        "Riset Ilmiah",
+        "Web Development"
+      ]
+    },
+    {
+      "user_id": "u_50",
+      "name": "Tora Sudiro",
+      "department": "Teknik Informatika",
+      "bio": "Security white-hat, audit keamanan web, OWASP Top 10 hardening.",
+      "skills": [
+        "Cybersecurity",
+        "Web Security",
+        "Linux",
+        "Python",
+        "Networking"
+      ],
+      "interests": [
+        "Open Source",
+        "Hackathon"
+      ]
+    }
+  ],
+  "queries": [
+    {
+      "query_id": "Q01",
+      "title": "Hackathon Aplikasi Mobile",
+      "seeker_profile": {
+        "user_id": "seeker_01",
+        "department": "Sistem Informasi",
+        "bio": "Saya UI/UX designer yang butuh rekan developer Flutter dan backend untuk membangun prototype aplikasi mobile dalam hackathon 48 jam.",
+        "skills": [
+          "UI/UX Design",
+          "Figma",
+          "Design Thinking"
+        ],
+        "interests": [
+          "Hackathon",
+          "Mobile Development"
+        ]
+      },
+      "target_skills": [
+        "Flutter",
+        "FastAPI",
+        "Python",
+        "Dart"
+      ],
+      "project_description": "Membangun aplikasi mobile kampus dengan antarmuka Flutter dan backend REST API Python.",
+      "annotated_relevant_ids": [
+        "u_01",
+        "u_03",
+        "u_38",
+        "u_05"
+      ],
+      "annotated_complementary_skills": [
+        "Flutter",
+        "Dart",
+        "FastAPI",
+        "Python"
+      ],
+      "evaluator_1_ids": [
+        "u_01",
+        "u_03",
+        "u_38",
+        "u_05"
+      ],
+      "evaluator_2_ids": [
+        "u_01",
+        "u_03",
+        "u_38",
+        "u_04"
+      ]
+    },
+    {
+      "query_id": "Q02",
+      "title": "Proyek Capstone Web E-Commerce",
+      "seeker_profile": {
+        "user_id": "seeker_02",
+        "department": "Teknik Informatika",
+        "bio": "Frontend developer menguasai React dan Next.js, mencari rekan backend developer database PostgreSQL untuk tugas akhir e-commerce.",
+        "skills": [
+          "React",
+          "Next.js",
+          "TypeScript",
+          "TailwindCSS"
+        ],
+        "interests": [
+          "Web Development"
+        ]
+      },
+      "target_skills": [
+        "Python",
+        "FastAPI",
+        "PostgreSQL",
+        "Docker"
+      ],
+      "project_description": "Pengembangan backend e-commerce multi-tenant dengan API performa tinggi dan skema basis data relational PostgreSQL.",
+      "annotated_relevant_ids": [
+        "u_03",
+        "u_04",
+        "u_36"
+      ],
+      "annotated_complementary_skills": [
+        "Python",
+        "FastAPI",
+        "PostgreSQL",
+        "Docker"
+      ],
+      "evaluator_1_ids": [
+        "u_03",
+        "u_04",
+        "u_36"
+      ],
+      "evaluator_2_ids": [
+        "u_03",
+        "u_04",
+        "u_36"
+      ]
+    },
+    {
+      "query_id": "Q03",
+      "title": "Riset Paper Artificial Intelligence Kesehatan",
+      "seeker_profile": {
+        "user_id": "seeker_03",
+        "department": "Teknik Informatika",
+        "bio": "Mahasiswa yang ingin menyusun publikasi paper jurnal ilmiah tentang deep learning citra medis dan NLP diagnosis.",
+        "skills": [
+          "Python",
+          "Statistics"
+        ],
+        "interests": [
+          "Artificial Intelligence",
+          "Riset Ilmiah"
+        ]
+      },
+      "target_skills": [
+        "PyTorch",
+        "Machine Learning",
+        "Computer Vision",
+        "NLP"
+      ],
+      "project_description": "Riset eksperimen klasifikasi teks resume medis dan deteksi citra X-Ray dengan arsitektur PyTorch.",
+      "annotated_relevant_ids": [
+        "u_06",
+        "u_08",
+        "u_10",
+        "u_42"
+      ],
+      "annotated_complementary_skills": [
+        "PyTorch",
+        "Machine Learning",
+        "Computer Vision",
+        "NLP"
+      ],
+      "evaluator_1_ids": [
+        "u_06",
+        "u_08",
+        "u_10",
+        "u_42"
+      ],
+      "evaluator_2_ids": [
+        "u_06",
+        "u_07",
+        "u_08",
+        "u_10"
+      ]
+    },
+    {
+      "query_id": "Q04",
+      "title": "Kompetisi Business Plan Nasional",
+      "seeker_profile": {
+        "user_id": "seeker_04",
+        "department": "Teknik Informatika",
+        "bio": "Programmer aplikasi mencari mahasiswa bisnis untuk menyusun feasibility study, financial modeling, dan presentasi pitch deck.",
+        "skills": [
+          "Python",
+          "Flutter",
+          "Web Development"
+        ],
+        "interests": [
+          "Start-up & Bisnis",
+          "Hackathon"
+        ]
+      },
+      "target_skills": [
+        "Business Strategy",
+        "Pitching",
+        "Financial Modeling",
+        "Market Research"
+      ],
+      "project_description": "Menyusun proposal bisnis startup teknologi dan presentasi di hadapan juri investor kompetisi nasional.",
+      "annotated_relevant_ids": [
+        "u_31",
+        "u_32",
+        "u_33",
+        "u_35",
+        "u_47"
+      ],
+      "annotated_complementary_skills": [
+        "Business Strategy",
+        "Pitching",
+        "Financial Modeling",
+        "Presentation Design"
+      ],
+      "evaluator_1_ids": [
+        "u_31",
+        "u_32",
+        "u_33",
+        "u_35",
+        "u_47"
+      ],
+      "evaluator_2_ids": [
+        "u_31",
+        "u_32",
+        "u_33",
+        "u_34",
+        "u_47"
+      ]
+    },
+    {
+      "query_id": "Q05",
+      "title": "Proyek Game Edukasi 3D",
+      "seeker_profile": {
+        "user_id": "seeker_05",
+        "department": "Desain Komunikasi Visual",
+        "bio": "3D artist yang memiliki aset karakter Blender dan butuh programmer Unity C# untuk merancang gameplay dan mekanik.",
+        "skills": [
+          "3D Modeling",
+          "Blender",
+          "Digital Painting"
+        ],
+        "interests": [
+          "Game Development"
+        ]
+      },
+      "target_skills": [
+        "Unity",
+        "C#",
+        "Game Development"
+      ],
+      "project_description": "Membuat prototipe game edukasi sejarah interaktif berbasis engine Unity 3D.",
+      "annotated_relevant_ids": [
+        "u_14",
+        "u_27"
+      ],
+      "annotated_complementary_skills": [
+        "Unity",
+        "C#",
+        "Game Development"
+      ],
+      "evaluator_1_ids": [
+        "u_14",
+        "u_27"
+      ],
+      "evaluator_2_ids": [
+        "u_14",
+        "u_27"
+      ]
+    },
+    {
+      "query_id": "Q06",
+      "title": "Audit Keamanan Jaringan & Web Kampus",
+      "seeker_profile": {
+        "user_id": "seeker_06",
+        "department": "Teknik Informatika",
+        "bio": "Meneliti celah keamanan aplikasi web dan butuh rekan spesialis Linux penetration testing dan hardening.",
+        "skills": [
+          "Python",
+          "Networking"
+        ],
+        "interests": [
+          "Open Source",
+          "Riset Ilmiah"
+        ]
+      },
+      "target_skills": [
+        "Cybersecurity",
+        "Ethical Hacking",
+        "Linux",
+        "Web Security"
+      ],
+      "project_description": "Melakukan vulnerability assessment dan vulnerability disclosure secara etis terhadap infrastruktur server.",
+      "annotated_relevant_ids": [
+        "u_12",
+        "u_50"
+      ],
+      "annotated_complementary_skills": [
+        "Cybersecurity",
+        "Ethical Hacking",
+        "Linux",
+        "Web Security"
+      ],
+      "evaluator_1_ids": [
+        "u_12",
+        "u_50"
+      ],
+      "evaluator_2_ids": [
+        "u_12",
+        "u_50",
+        "u_11"
+      ]
+    },
+    {
+      "query_id": "Q07",
+      "title": "Prototipe IoT Smart Farming",
+      "seeker_profile": {
+        "user_id": "seeker_07",
+        "department": "Teknik Informatika",
+        "bio": "Hardware programmer mikrokontroler sensor membutuhkan rekan mobile app untuk dashboard pemantauan jarak jauh.",
+        "skills": [
+          "Arduino",
+          "C++",
+          "Hardware",
+          "IoT"
+        ],
+        "interests": [
+          "Hackathon",
+          "Open Source"
+        ]
+      },
+      "target_skills": [
+        "Flutter",
+        "Mobile Development",
+        "MQTT",
+        "Python"
+      ],
+      "project_description": "Integrasi telemetry sensor kelembapan tanah dengan protokol MQTT dan visualisasi antarmuka aplikasi ponsel.",
+      "annotated_relevant_ids": [
+        "u_01",
+        "u_15",
+        "u_38",
+        "u_46"
+      ],
+      "annotated_complementary_skills": [
+        "Flutter",
+        "Mobile Development",
+        "MQTT",
+        "Python"
+      ],
+      "evaluator_1_ids": [
+        "u_01",
+        "u_15",
+        "u_38",
+        "u_46"
+      ],
+      "evaluator_2_ids": [
+        "u_01",
+        "u_15",
+        "u_38",
+        "u_05"
+      ]
+    },
+    {
+      "query_id": "Q08",
+      "title": "FinTech Startup Inovasi Pembayaran Mahasiswa",
+      "seeker_profile": {
+        "user_id": "seeker_08",
+        "department": "Teknik Informatika",
+        "bio": "Backend dev memiliki REST API transaksi butuh UI/UX designer dan ahli strategi bisnis untuk pitching inkubator kampus.",
+        "skills": [
+          "FastAPI",
+          "PostgreSQL",
+          "Docker"
+        ],
+        "interests": [
+          "Start-up & Bisnis"
+        ]
+      },
+      "target_skills": [
+        "UI/UX Design",
+        "Figma",
+        "Business Strategy",
+        "Financial Modeling"
+      ],
+      "project_description": "Mempersiapkan MVP dompet digital kampus lengkap dengan prototype visual Figma dan proyeksi finansial bisnis.",
+      "annotated_relevant_ids": [
+        "u_16",
+        "u_19",
+        "u_31",
+        "u_33"
+      ],
+      "annotated_complementary_skills": [
+        "UI/UX Design",
+        "Figma",
+        "Business Strategy",
+        "Financial Modeling"
+      ],
+      "evaluator_1_ids": [
+        "u_16",
+        "u_19",
+        "u_31",
+        "u_33"
+      ],
+      "evaluator_2_ids": [
+        "u_16",
+        "u_17",
+        "u_31",
+        "u_33"
+      ]
+    },
+    {
+      "query_id": "Q09",
+      "title": "Otomasi Analisis Data Jurnal Ilmiah",
+      "seeker_profile": {
+        "user_id": "seeker_09",
+        "department": "Sistem Informasi",
+        "bio": "Mengerjakan bab 4 skripsi analisis tren adopsi teknologi butuh partner statistik olah data kuantitatif.",
+        "skills": [
+          "Business Analysis",
+          "UML"
+        ],
+        "interests": [
+          "Riset Ilmiah"
+        ]
+      },
+      "target_skills": [
+        "Data Science",
+        "Python",
+        "Statistics",
+        "Tableau"
+      ],
+      "project_description": "Mengolah kuesioner 500 responden dengan regresi linier berganda dan visualisasi grafik publikasi.",
+      "annotated_relevant_ids": [
+        "u_07",
+        "u_09",
+        "u_24"
+      ],
+      "annotated_complementary_skills": [
+        "Data Science",
+        "Python",
+        "Statistics",
+        "Tableau"
+      ],
+      "evaluator_1_ids": [
+        "u_07",
+        "u_09",
+        "u_24"
+      ],
+      "evaluator_2_ids": [
+        "u_07",
+        "u_09",
+        "u_24",
+        "u_06"
+      ]
+    },
+    {
+      "query_id": "Q10",
+      "title": "Aplikasi Edukasi Gamifikasi Anak",
+      "seeker_profile": {
+        "user_id": "seeker_10",
+        "department": "Desain Komunikasi Visual",
+        "bio": "Ilustrator buku anak ingin mentransformasi karya ke aplikasi mobile interaktif dengan animasi ceria.",
+        "skills": [
+          "Illustration",
+          "Photoshop",
+          "Graphic Design"
+        ],
+        "interests": [
+          "Design Thinking",
+          "Mobile Development"
+        ]
+      },
+      "target_skills": [
+        "Flutter",
+        "React Native",
+        "UI/UX Design",
+        "Mobile Development"
+      ],
+      "project_description": "Membangun mobile game edukasi membaca balita dengan interaksi sentuh dan audio dongeng.",
+      "annotated_relevant_ids": [
+        "u_01",
+        "u_19",
+        "u_30",
+        "u_38"
+      ],
+      "annotated_complementary_skills": [
+        "Flutter",
+        "UI/UX Design",
+        "Mobile Development"
+      ],
+      "evaluator_1_ids": [
+        "u_01",
+        "u_19",
+        "u_30",
+        "u_38"
+      ],
+      "evaluator_2_ids": [
+        "u_01",
+        "u_16",
+        "u_30",
+        "u_38"
+      ]
+    },
+    {
+      "query_id": "Q11",
+      "title": "Komunitas Open Source Cloud Native",
+      "seeker_profile": {
+        "user_id": "seeker_11",
+        "department": "Teknik Informatika",
+        "bio": "Pengembang sistem terdistribusi mencari kontributor Go dan Kubernetes untuk proyek open-source CLI.",
+        "skills": [
+          "Go",
+          "Linux",
+          "Git"
+        ],
+        "interests": [
+          "Open Source",
+          "Cloud Computing"
+        ]
+      },
+      "target_skills": [
+        "Docker",
+        "Kubernetes",
+        "gRPC",
+        "CI/CD"
+      ],
+      "project_description": "Pengembangan open-source container monitoring CLI tool berbasis Go dan terminal TUI.",
+      "annotated_relevant_ids": [
+        "u_11",
+        "u_13",
+        "u_36"
+      ],
+      "annotated_complementary_skills": [
+        "Docker",
+        "Kubernetes",
+        "gRPC",
+        "CI/CD"
+      ],
+      "evaluator_1_ids": [
+        "u_11",
+        "u_13",
+        "u_36"
+      ],
+      "evaluator_2_ids": [
+        "u_11",
+        "u_13",
+        "u_36"
+      ]
+    },
+    {
+      "query_id": "Q12",
+      "title": "Redesain UI/UX & Design System Web Kampus",
+      "seeker_profile": {
+        "user_id": "seeker_12",
+        "department": "Teknik Informatika",
+        "bio": "Frontend engineer butuh UI/UX designer profesional untuk merancang design system Figma komponen web.",
+        "skills": [
+          "React",
+          "CSS",
+          "Web Development"
+        ],
+        "interests": [
+          "Web Development",
+          "Design Thinking"
+        ]
+      },
+      "target_skills": [
+        "Figma",
+        "UI/UX Design",
+        "Design Thinking",
+        "Design Systems"
+      ],
+      "project_description": "Menyusun token warna, tipografi, dan atomic design system di Figma yang siap dikonversi ke TailwindCSS.",
+      "annotated_relevant_ids": [
+        "u_16",
+        "u_17",
+        "u_18",
+        "u_20"
+      ],
+      "annotated_complementary_skills": [
+        "Figma",
+        "UI/UX Design",
+        "Design Thinking",
+        "Design Systems"
+      ],
+      "evaluator_1_ids": [
+        "u_16",
+        "u_17",
+        "u_18",
+        "u_20"
+      ],
+      "evaluator_2_ids": [
+        "u_16",
+        "u_17",
+        "u_18",
+        "u_20"
+      ]
+    }
+  ]
+}

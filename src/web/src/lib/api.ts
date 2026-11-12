@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
 
@@ -9,31 +9,81 @@ export const apiClient = axios.create({
   },
 });
 
-export interface CandidateProfile {
-  user_id: string;
-  name: string;
-  department: string;
-  bio: string;
-  skills: string[];
-  interests: string[];
+/**
+ * Standardized API Error contract matching Backend AppError & FastAPI Validation
+ */
+export interface AppErrorDetail {
+  loc?: (string | number)[];
+  msg?: string;
+  type?: string;
 }
 
-export interface RecommendationQuery {
-  query_user_id: string;
-  target_skills?: string[];
-  project_description?: string;
-  top_k?: number;
+export interface AppErrorResponse {
+  detail: string | AppErrorDetail[];
+  code?: string;
+  errors?: AppErrorDetail[];
 }
 
-export const fetchRecommendations = async (query: RecommendationQuery) => {
-  const response = await apiClient.post("/recommendations/match", query);
-  return response.data;
-};
+type UnauthorizedCallback = () => void;
+const unauthorizedCallbacks: UnauthorizedCallback[] = [];
 
-export const checkModeration = async (postId: string, content: string) => {
-  const response = await apiClient.post("/moderation/check", {
-    post_id: postId,
-    content: content,
-  });
-  return response.data;
-};
+/**
+ * Register a callback to be executed when a 401 Unauthorized response is encountered
+ * e.g., to clear react-query cache and reset user session.
+ */
+export function registerOnUnauthorized(callback: UnauthorizedCallback): () => void {
+  unauthorizedCallbacks.push(callback);
+  return () => {
+    const index = unauthorizedCallbacks.indexOf(callback);
+    if (index !== -1) {
+      unauthorizedCallbacks.splice(index, 1);
+    }
+  };
+}
+
+function triggerUnauthorized(): void {
+  for (const cb of unauthorizedCallbacks) {
+    try {
+      cb();
+    } catch {
+      // ignore callback error
+    }
+  }
+}
+
+// Request interceptor to automatically attach JWT token for authenticated requests
+apiClient.interceptors.request.use((config) => {
+  if (typeof window !== "undefined") {
+    const token = localStorage.getItem("campusfolio_token");
+    if (token && config.headers) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+  }
+  return config;
+});
+
+// Response interceptor to format error message from backend contract & handle session expiration
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error: AxiosError<AppErrorResponse>) => {
+    if (error.response?.status === 401) {
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("campusfolio_token");
+        localStorage.removeItem("campusfolio_user");
+      }
+      triggerUnauthorized();
+    }
+
+    const detail = error.response?.data?.detail;
+    if (typeof detail === "string") {
+      error.message = detail;
+    } else if (Array.isArray(detail)) {
+      error.message = detail
+        .map((d: any) => d.msg || JSON.stringify(d))
+        .filter(Boolean)
+        .join(", ");
+    }
+
+    return Promise.reject(error);
+  }
+);
