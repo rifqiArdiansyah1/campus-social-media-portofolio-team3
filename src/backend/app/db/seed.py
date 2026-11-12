@@ -1,7 +1,7 @@
 import argparse
 import os
 import sys
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 
 import bcrypt
 from dotenv import load_dotenv
@@ -182,6 +182,7 @@ def reset_database(db: Session):
         "post_skills",
         "posts",
         "user_skills",
+        "portfolio_skills",
         "portfolio_items",
         "friendships",
         "user_blocks",
@@ -439,10 +440,10 @@ def seed_demo_data(db: Session, user_map: dict, skill_map: dict):
                 if post_data["user_id"] == rama_id and aisyah_id:
                     rep = Report(
                         post_id=new_post.post_id,
-                        reporter_id=aisyah_id,
+                        pelapor_id=aisyah_id,
                         kategori_laporan="konten_tidak_pantas",
                         alasan="Demo pengujian alur penanganan laporan pelanggaran feed kampus.",
-                        status="pending",
+                        status="baru",
                         created_at=now - timedelta(hours=1),
                     )
                     db.add(rep)
@@ -453,10 +454,10 @@ def seed_demo_data(db: Session, user_map: dict, skill_map: dict):
     if rifqi_id and rama_id:
         notif1 = Notification(
             user_id=rifqi_id,
-            actor_id=rama_id,
             jenis="pertemanan_baru",
             judul="Permohonan Pertemanan Masuk",
             isi="Ramadhan (Rama) mengirimkan permohonan pertemanan kepada Anda.",
+            tautan="/friends",
             ref_type="friendship",
             ref_id=1,
             is_read=False,

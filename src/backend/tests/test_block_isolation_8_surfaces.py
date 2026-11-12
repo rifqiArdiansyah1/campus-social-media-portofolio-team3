@@ -1,10 +1,10 @@
 from uuid import uuid4
-import pytest
+
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
 from app.core.security import create_access_token, hash_password
-from app.models.entities import Post, User, UserBlock, Skill, UserSkill
+from app.models.entities import Post, Skill, User, UserBlock, UserSkill
 
 
 def make_user(
@@ -59,7 +59,7 @@ def test_block_isolation_across_8_surfaces(client: TestClient, db_session: Sessi
         db_session.add(skill_react)
         db_session.commit()
         db_session.refresh(skill_react)
-    
+
     db_session.add(UserSkill(user_id=bob.user_id, skill_id=skill_react.skill_id))
     db_session.commit()
 

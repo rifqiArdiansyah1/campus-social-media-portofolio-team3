@@ -44,3 +44,13 @@
 | Tinjau Konten & Terima Laporan (US-10, US-11) | - | V (Khusus Prodi) | V (Seluruh Prodi) |
 | Hapus / Takedown Postingan (US-17) | - | V | V |
 | Dashboard Home Sentral (US-18) | V (Versi Mhs) | V (Versi Moderator) | V (Versi Admin) |
+
+---
+
+## Fitur Ditunda / Out-of-Scope (Rencana Pengembangan v2.0.0)
+
+| Fitur / Modul | Deskripsi Kebutuhan | Prioritas Awal | Alasan Penundaan & Justifikasi Teknis |
+| :--- | :--- | :---: | :--- |
+| **Suka (Likes)** | Mahasiswa dapat menyukai (*like*) postingan rekan dan melihat jumlah likes. | **Won't (v1.0)** | Menghindari kompleksitas polling/counter race condition dan notifikasi spam sebelum ada batasan frekuensi interaksi. |
+| **Komentar (Comments)**| Mahasiswa dapat memberikan tanggapan teks langsung di bawah postingan linimasa. | **Won't (v1.0)** | Membutuhkan arsitektur moderasi relasional penuh (`reports.comment_id`, AI-2 comment filter, takedown audit trail) demi etika kampus. |
+| **Chat Direct Message**| Kirim pesan instan dua arah antar mahasiswa yang berteman via WebSocket. | **Won't (v1.0)** | Komunikasi kolaborasi diarahkan secara aman ke kontak resmi profil mahasiswa (Email Kampus, LinkedIn). |

@@ -40,10 +40,12 @@
    - Rekomendasi kolaborator AI (TF-IDF & Cosine Similarity Matcher).
    - *Quick Action Alert* bagi Moderator/Admin (jumlah postingan pending, laporan masuk, & tinjauan SKPI).
 
-### Out-of-Scope:
-- Fitur chat real-time direct message berbasis socket (komunikasi kolaborasi tetap diarahkan ke kontak profil/WhatsApp/LinkedIn).
-- Video hosting berdurasi panjang (fokus media pada foto + teks ringan).
-- Integrasi otomatis payment gateway untuk pembelian sertifikat.
+### Out-of-Scope (Rilis v1.0.0 — Academic Capstone):
+- **Fitur Suka (Likes) & Komentar (Comments):** Ditunda (*deferred*) ke versi rilis berikutnya (v2.0.0).  
+  *Justifikasi Teknis & Moderasi Kampus:* Fitur komentar merupakan jalur pembuatan konten pengguna (*UGC*) baru yang membutuhkan arsitektur moderasi relasional tersendiri (sistem pelaporan komentar `reports.comment_id`, penyaringan otomatis AI-2 untuk komentar, audit trail takedown komentar prodi, serta isolasi mutual-block). Demi menjamin integritas dan keamanan ruang lingkup etika kampus pada rilis v1.0.0, interaksi difokuskan pada kolaborasi proyek, jejaring pertemanan, dan linimasa postingan terverifikasi.
+- **Fitur Chat Real-Time Direct Message Berbasis Socket:** Komunikasi kolaborasi langsung diarahkan secara aman ke kontak resmi profil mahasiswa (Email Kampus, LinkedIn, GitHub).
+- **Video Hosting Berdurasi Panjang:** Fokus media linimasa pada foto kegiatan/hasil karya + teks caption informatif.
+- **Integrasi Otomatis Payment Gateway:** Verifikasi portofolio SKPI berfokus pada validasi dokumen akademik oleh Kaprodi/Admin, bukan transaksi komersial.
 
 ---
 
