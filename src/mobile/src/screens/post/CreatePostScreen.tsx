@@ -14,6 +14,7 @@ import {
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { ImagePlus, X, Users, ArrowLeft, Send } from 'lucide-react-native';
+import { useQueryClient } from '@tanstack/react-query';
 import { colors } from '../../theme/colors';
 import { apiClient } from '../../api/client';
 import { Button } from '../../components/common/Button';
@@ -24,6 +25,7 @@ export interface CreatePostScreenProps {
 }
 
 export function CreatePostScreen({ onBack, onSuccess }: CreatePostScreenProps) {
+  const queryClient = useQueryClient();
   const [isi, setIsi] = useState('');
   const [tipe, setTipe] = useState<'umum' | 'cari_anggota'>('umum');
   const [selectedImageUri, setSelectedImageUri] = useState<string | null>(null);
@@ -79,10 +81,10 @@ export function CreatePostScreen({ onBack, onSuccess }: CreatePostScreenProps) {
           type,
         } as any);
 
-        const uploadRes = await apiClient.post<{ url: string }>('/uploads/post-image', formData, {
+        const uploadRes = await apiClient.post<{ path?: string; url: string }>('/uploads/post-image', formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
-        uploadedImageUrl = uploadRes.data.url;
+        uploadedImageUrl = uploadRes.data.path || uploadRes.data.url;
         setIsUploadingPhoto(false);
       }
 
@@ -92,6 +94,9 @@ export function CreatePostScreen({ onBack, onSuccess }: CreatePostScreenProps) {
         tipe,
         gambar_url: uploadedImageUrl,
       });
+
+      // 3. Invalidate feed cache immediately
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
 
       Alert.alert('Berhasil Dipublikasikan', 'Postingan Anda telah berhasil tayang di linimasa kampus!');
       onSuccess();

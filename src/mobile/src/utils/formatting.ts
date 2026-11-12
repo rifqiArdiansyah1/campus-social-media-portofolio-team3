@@ -1,3 +1,5 @@
+const DEFAULT_FALLBACK_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+
 export function formatRelativeTime(dateString?: string | null): string {
   if (!dateString) return '';
   const date = new Date(dateString);
@@ -30,3 +32,23 @@ export function getInitials(name?: string | null): string {
   if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
+
+/**
+ * Resolves a media file path (such as /static/post-images/... or Supabase storage key)
+ * into a full absolute URL for React Native / Expo image loaders.
+ */
+export function resolveMediaUrl(
+  url?: string | null,
+  baseUrl: string = DEFAULT_FALLBACK_URL
+): string | null {
+  if (!url) return null;
+  const trimmed = url.trim();
+  if (!trimmed) return null;
+  if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+    return trimmed;
+  }
+  const hostRoot = baseUrl.replace(/\/api\/v1\/?$/, '');
+  const cleanPath = trimmed.startsWith('/') ? trimmed : `/${trimmed}`;
+  return `${hostRoot}${cleanPath}`;
+}
+

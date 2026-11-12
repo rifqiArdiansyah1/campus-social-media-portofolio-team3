@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { apiClient, registerOnUnauthorized } from '../api/client';
 import {
   UserProfileResponse,
@@ -34,6 +35,7 @@ interface AuthContextValue {
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const queryClient = useQueryClient();
   const [user, setUser] = useState<AuthUser | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -43,7 +45,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await removeStoredUser();
     setToken(null);
     setUser(null);
-  }, []);
+    queryClient.clear();
+  }, [queryClient]);
 
   const refreshUser = useCallback(async () => {
     try {
@@ -95,6 +98,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (isMounted) {
         setUser(null);
         setToken(null);
+        queryClient.clear();
       }
     });
 

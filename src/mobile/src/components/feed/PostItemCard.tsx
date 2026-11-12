@@ -4,7 +4,7 @@ import { Image } from 'expo-image';
 import { Flag, Users, Clock } from 'lucide-react-native';
 import { colors } from '../../theme/colors';
 import { PostDetailResponse } from '../../api/types';
-import { formatRelativeTime, getInitials } from '../../utils/formatting';
+import { formatRelativeTime, getInitials, resolveMediaUrl } from '../../utils/formatting';
 import { Badge } from '../common/Badge';
 import { SkillTagChip } from './SkillTagChip';
 
@@ -18,6 +18,8 @@ export function PostItemCard({ post, onPressAuthor, onReport }: PostItemCardProp
   const authorName = post.author?.nama || 'Pengguna Kampus';
   const authorProdi = post.author?.jurusan || 'Mahasiswa';
   const isRecruiting = post.tipe === 'cari_anggota';
+
+  const resolvedImageUrl = resolveMediaUrl(post.gambar_url);
 
   return (
     <View style={styles.card}>
@@ -61,10 +63,10 @@ export function PostItemCard({ post, onPressAuthor, onReport }: PostItemCardProp
       <Text style={styles.content}>{post.isi}</Text>
 
       {/* Media Image if present */}
-      {Boolean(post.gambar_url) && (
+      {Boolean(resolvedImageUrl) && (
         <View style={styles.imageContainer}>
           <Image
-            source={{ uri: post.gambar_url! }}
+            source={{ uri: resolvedImageUrl! }}
             style={styles.image}
             contentFit="cover"
             transition={300}
