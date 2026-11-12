@@ -54,5 +54,11 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Raised CI mobile runner node version to Node 22 for React Native & Vitest compatibility.
 - Hardened database schemas to 13 official tables (`docs/schema.sql`).
 
+### Fixed
+- Fixed seeder demo keyword argument mismatch (`pelapor_id` and status `"baru"` on `Report`, and removed `actor_id` on `Notification`).
+- Migrated FastAPI startup handler from deprecated `@app.on_event("startup")` to Starlette/FastAPI `lifespan` async context manager.
+- Resolved Ruff linter issues across backend and AI evaluation scripts (`F401`, `I001`, `W293`, `E741`, `F841`).
+- Enhanced seeder table reset sequence to cleanly drop `portfolio_skills` before `portfolio_items`.
+
 ### Excluded (Out of Scope for v1.0.0)
 - Likes, comments, and direct message chat are excluded from this release to adhere strictly to the approved 18 User Stories and preserve content moderation boundaries.

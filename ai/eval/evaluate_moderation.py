@@ -157,8 +157,8 @@ def run_evaluation():
     acc_naive, metrics_naive, fpr_aman_naive, fnr_viol_naive = compute_metrics(y_true, y_pred_naive, labels)
     acc_adv, metrics_adv, fpr_aman_adv, fnr_viol_adv = compute_metrics(y_true, y_pred_adv, labels)
 
-    macro_f1_naive = sum(metrics_naive[l]["f1"] for l in labels) / len(labels)
-    macro_f1_adv = sum(metrics_adv[l]["f1"] for l in labels) / len(labels)
+    macro_f1_naive = sum(metrics_naive[lbl]["f1"] for lbl in labels) / len(labels)
+    macro_f1_adv = sum(metrics_adv[lbl]["f1"] for lbl in labels) / len(labels)
 
     # Cetak Perbandingan Head-to-Head
     print(f"{'Metrik Evaluasi Moderasi':<36} | {'Naive Blacklist':<15} | {'Advanced Pipeline':<18}")
@@ -172,9 +172,9 @@ def run_evaluation():
     print("DETAIL PER-KELAS (ADVANCED HEURISTIC PIPELINE PRODUKSI):")
     print(f"{'Kelas':<24} | {'Precision':<12} | {'Recall':<12} | {'F1-Score':<12}")
     print("-" * 75)
-    for l in labels:
-        m = metrics_adv[l]
-        print(f"{l:<24} | {m['precision']:>11.2f}% | {m['recall']:>11.2f}% | {m['f1']:>11.2f}%")
+    for lbl in labels:
+        m = metrics_adv[lbl]
+        print(f"{lbl:<24} | {m['precision']:>11.2f}% | {m['recall']:>11.2f}% | {m['f1']:>11.2f}%")
 
     if adv_mismatches:
         print(f"\n[Catatan Error Analysis: Ditemukan {len(adv_mismatches)} Mismatch]")

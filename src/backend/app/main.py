@@ -1,5 +1,6 @@
 import logging
 import os
+from contextlib import asynccontextmanager
 
 from fastapi import Depends, FastAPI, Request
 from fastapi.encoders import jsonable_encoder
@@ -20,26 +21,9 @@ from app.services.storage import storage_service
 logger = logging.getLogger("campusfolio")
 logging.basicConfig(level=logging.INFO)
 
-app = FastAPI(
-    title=settings.PROJECT_NAME,
-    version=settings.VERSION,
-    description="Backend API & Layanan AI untuk CampusFolio — Campus Social Media & Portfolio (Team 3)",
-    docs_url="/docs",
-    redoc_url="/redoc"
-)
 
-# Setup CORS middleware for Next.js Web Client & Mobile
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=settings.CORS_ORIGINS,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-
-@app.on_event("startup")
-def startup_production_gate_guard():
+@asynccontextmanager
+async def lifespan(app: FastAPI):
     """
     Production Gate Guard: Memastikan platform menolak startup apabila konfigurasi
     keamanan kritis (SECRET_KEY atau CORS_ORIGINS) masih dalam konfigurasi default tidak aman.
@@ -59,6 +43,26 @@ def startup_production_gate_guard():
             raise RuntimeError(
                 "CRITICAL SECURITY ERROR: Production environment requires a secure custom SECRET_KEY (min 32 chars)."
             )
+    yield
+
+
+app = FastAPI(
+    title=settings.PROJECT_NAME,
+    version=settings.VERSION,
+    description="Backend API & Layanan AI untuk CampusFolio — Campus Social Media & Portfolio (Team 3)",
+    docs_url="/docs",
+    redoc_url="/redoc",
+    lifespan=lifespan,
+)
+
+# Setup CORS middleware for Next.js Web Client & Mobile
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.CORS_ORIGINS,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Exception Handlers
 @app.exception_handler(AppError)
