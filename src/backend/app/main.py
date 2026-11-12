@@ -37,6 +37,29 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+@app.on_event("startup")
+def startup_production_gate_guard():
+    """
+    Production Gate Guard: Memastikan platform menolak startup apabila konfigurasi
+    keamanan kritis (SECRET_KEY atau CORS_ORIGINS) masih dalam konfigurasi default tidak aman.
+    """
+    logger.info(f"Starting CampusFolio API v{settings.VERSION} [Environment: {settings.ENV}]")
+    if settings.ENV.lower() in ("production", "prod"):
+        if "*" in settings.CORS_ORIGINS:
+            raise RuntimeError(
+                "CRITICAL SECURITY ERROR: Wildcard '*' in CORS_ORIGINS is strictly forbidden in production with credentials enabled."
+            )
+        insecure_keys = {
+            "",
+            "campusfolio-secret-key-change-in-production-2026",
+            "ganti-dengan-secret-key-aman-milik-tim-campusfolio",
+        }
+        if settings.SECRET_KEY in insecure_keys or len(settings.SECRET_KEY) < 32:
+            raise RuntimeError(
+                "CRITICAL SECURITY ERROR: Production environment requires a secure custom SECRET_KEY (min 32 chars)."
+            )
+
 # Exception Handlers
 @app.exception_handler(AppError)
 async def app_error_handler(request: Request, exc: AppError):

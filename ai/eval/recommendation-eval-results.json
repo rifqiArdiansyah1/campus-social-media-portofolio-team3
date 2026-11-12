@@ -1,0 +1,73 @@
+{
+  "benchmark_date": "2026-11-12 12:33:27",
+  "corpus_total": 50,
+  "queries_total": 12,
+  "metrics_head_to_head": {
+    "hr1": {
+      "random": 8.33,
+      "exact_tag": 66.67,
+      "tfidf_proposed": 100.0
+    },
+    "hr3": {
+      "random": 8.33,
+      "exact_tag": 100.0,
+      "tfidf_proposed": 100.0
+    },
+    "hr5": {
+      "random": 25.0,
+      "exact_tag": 100.0,
+      "tfidf_proposed": 100.0
+    },
+    "p3": {
+      "random": 2.78,
+      "exact_tag": 66.67,
+      "tfidf_proposed": 83.33
+    },
+    "p5": {
+      "random": 6.67,
+      "exact_tag": 53.33,
+      "tfidf_proposed": 65.0
+    },
+    "mrr": {
+      "random": 12.08,
+      "exact_tag": 81.94,
+      "tfidf_proposed": 100.0
+    },
+    "comp_prec": {
+      "random": 19.44,
+      "exact_tag": 72.22,
+      "tfidf_proposed": 88.89
+    }
+  },
+  "scalability_latency": {
+    "N=50": {
+      "size": 50,
+      "mean_ms": 6.58,
+      "p50_ms": 5.81,
+      "p95_ms": 9.25,
+      "p99_ms": 9.37
+    },
+    "N=500": {
+      "size": 500,
+      "mean_ms": 30.21,
+      "p50_ms": 30.07,
+      "p95_ms": 32.7,
+      "p99_ms": 32.87
+    },
+    "N=5000": {
+      "size": 5000,
+      "mean_ms": 284.69,
+      "p50_ms": 271.95,
+      "p95_ms": 345.99,
+      "p99_ms": 389.82
+    }
+  },
+  "inter_annotator_agreement": {
+    "annotator_1": "Hustler (Product Owner & Strategy)",
+    "annotator_2": "Hacker (Tech Lead & Engineering)",
+    "total_pair_evaluations": 600,
+    "percent_agreement": 97.67,
+    "cohens_kappa": 0.8246,
+    "agreement_strength": "Substantial / Near Perfect Agreement"
+  }
+}
