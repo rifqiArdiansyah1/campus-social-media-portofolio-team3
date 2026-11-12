@@ -196,17 +196,32 @@ export function ExploreScreen({ onNavigateToUserProfile }: ExploreScreenProps) {
 
                 {searchCategory === 'postingan' &&
                   (searchItems as PostSearchResult[]).map((post) => (
-                    <View key={post.post_id} style={styles.postSnippetCard}>
-                      <Text style={styles.authorTitle}>{post.author_nama}</Text>
+                    <TouchableOpacity
+                      key={post.post_id}
+                      style={styles.postSnippetCard}
+                      activeOpacity={0.7}
+                      onPress={() => onNavigateToUserProfile(post.user_id)}
+                    >
+                      <View style={styles.postSnippetHeader}>
+                        <Text style={styles.authorTitle}>{post.author_nama}</Text>
+                        {Boolean(post.author_jurusan) && (
+                          <Text style={styles.postSnippetProdi}>• {post.author_jurusan}</Text>
+                        )}
+                      </View>
                       <Text style={styles.postSnippetText} numberOfLines={3}>
                         {post.isi}
                       </Text>
-                    </View>
+                    </TouchableOpacity>
                   ))}
 
                 {searchCategory === 'portofolio' &&
                   (searchItems as PortfolioSearchResult[]).map((item) => (
-                    <View key={item.portfolio_id} style={styles.portfolioCard}>
+                    <TouchableOpacity
+                      key={item.portfolio_id}
+                      style={styles.portfolioCard}
+                      activeOpacity={0.7}
+                      onPress={() => onNavigateToUserProfile(item.user_id)}
+                    >
                       <FileText size={18} color={colors.primary} />
                       <View style={styles.portfolioInfo}>
                         <Text style={styles.portfolioTitle}>{item.judul}</Text>
@@ -214,7 +229,7 @@ export function ExploreScreen({ onNavigateToUserProfile }: ExploreScreenProps) {
                           {item.kategori.toUpperCase()} • {item.author_nama}
                         </Text>
                       </View>
-                    </View>
+                    </TouchableOpacity>
                   ))}
               </View>
             ) : (
@@ -412,11 +427,20 @@ const styles = StyleSheet.create({
     color: colors.primary,
     fontWeight: '500',
   },
+  postSnippetHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: 4,
+  },
+  postSnippetProdi: {
+    fontSize: 12,
+    color: colors.onSurfaceVariant,
+  },
   authorTitle: {
     fontSize: 13,
     fontWeight: '700',
     color: colors.onSurface,
-    marginBottom: 4,
   },
   portfolioCard: {
     flexDirection: 'row',

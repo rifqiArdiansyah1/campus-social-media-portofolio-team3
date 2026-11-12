@@ -93,6 +93,7 @@ export function ModerationQueueScreen({ onBack }: ModerationQueueScreenProps) {
     onSuccess: () => {
       Alert.alert('Keputusan Diterapkan', 'Status postingan berhasil diperbarui.');
       queryClient.invalidateQueries({ queryKey: ['moderation'] });
+      queryClient.invalidateQueries({ queryKey: ['reports'] });
       queryClient.invalidateQueries({ queryKey: ['dashboard', 'summary'] });
     },
     onError: (err: any) => {
