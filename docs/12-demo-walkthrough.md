@@ -126,7 +126,7 @@ flowchart LR
 
 | Kendala Saat Sidang | Penyebab Potensial | Tindakan Mitigasi Cepat (SOP) |
 | :--- | :--- | :--- |
-| **Koneksi Internet Kampus Terputus** | Gangguan WiFi ruangan sidang | Backend dan database lokal dapat dijalankan sepenuhnya secara luring (*offline*) pada `localhost:8000` dan PostgreSQL lokal. |
+| **Koneksi Internet Kampus Terputus / Throttled** | Gangguan WiFi ruangan sidang | Nyalakan container DB lokal: `docker run --name campusfolio-db -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=campusfolio_db -p 5432:5432 -d postgres:15`, jalankan migrasi `alembic upgrade head`, lalu seeder `python src/backend/app/db/seed.py --reset --demo`. Seluruh sistem berjalan 100% luring (*offline*) di `localhost:8000`. |
 | **Data Demo Rusak / Berantakan Akibat Pengujian Spontan Penguji** | Penguji meminta mencoba input acak | Buka terminal dan ketik satu baris perintah: `python src/backend/app/db/seed.py --reset --demo`. Dalam 3 detik seluruh data kembali ke kondisi sempurna. |
 | **Layanan AI Lambat / Timeout** | Beban memori CPU laptop | Sistem secara otomatis mengaktifkan mekanisme degradasi anggun (*Graceful Degradation* / Batasan AI #4) ke pencocokan kata kunci dasar tanpa memicu error HTTP 500. |
 | **Gambar Portofolio Gagal Terunggah** | Supabase Storage unreachable | Sistem otomatis beralih (*fallback*) menyimpan file ke direktori lokal `static/` yang tetap dapat diakses di browser demo. |

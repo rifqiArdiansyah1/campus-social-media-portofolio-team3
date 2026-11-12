@@ -16,12 +16,11 @@ Mengukur:
 
 import copy
 import json
-import os
 import random
 import sys
 import time
 from pathlib import Path
-from typing import Dict, List, Set
+from typing import List, Set
 
 import numpy as np
 
@@ -146,7 +145,6 @@ def run_evaluation():
     print("-" * 70)
 
     for q in queries_raw:
-        q_id = q["query_id"]
         target_skills = q.get("target_skills", [])
         desc = q.get("project_description", "")
         ground_truth_relevant = set(q["annotated_relevant_ids"])
