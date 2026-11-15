@@ -1,0 +1,424 @@
+{
+  "item": {
+    "key": "detail_portofolio",
+    "title": "Detail Showcase Portofolio Mahasiswa",
+    "prompt": "Halaman Detail Showcase Portofolio Mahasiswa untuk aplikasi CampusFolio.\nDesain mobile app elegan bertema Academic Modernist tanpa emoji kasual, menggunakan ikon Material Symbols Outlined.\nElemen halaman:\n- Header dengan tombol kembali, bookmark, dan share link\n- Hero Visual Carousel: Mockup proyek resolusi tinggi dengan pagination dots\n- Judul Karya: EcoTrack - Smart Energy Monitoring System\n- Kategori Badge: Web Application & IoT Campus\n- Profil Pemilik Portofolio: Foto profil, Rafi Alamsyah (Teknik Elektro 22), badge terverifikasi, tombol Lihat Profil\n- Deskripsi & Studi Kasus: Latar belakang masalah, metodologi, dan hasil pencapaian efisiensi energi\n- Tech Stack Chips: React, Next.js, Go, MQTT, InfluxDB, Tailwind CSS\n- Tautan Bukti Karya Interaktif:\n  * Tombol Buka Repositori GitHub (ikon code)\n  * Tombol Kunjungi Live Demo (ikon public)\n  * Tombol Baca Paper / Laporan PDF (ikon article)\n- Kolaborator Proyek: Daftar rekan satu tim dengan avatar dan perannya\n- Apresiasi & Komentar Akademik:\n  * Tombol Apresiasi / Endorse Skill (ikon thumb_up) dengan counter\n  * Kolom diskusi teknis antar mahasiswa."
+  },
+  "res": {
+    "id": 1793431854121,
+    "jsonrpc": "2.0",
+    "result": {
+      "content": [
+        {
+          "text": "{\"projectId\":\"10744711964413240245\",\"sessionId\":\"3935939848166415493\",\"outputComponents\":[{\"design\":{\"screens\":[{\"screenshot\":{\"name\":\"projects/10744711964413240245/files/01f4ed797b4043349efe67f6417b2048\",\"downloadUrl\":\"https://stitch.googleapis.com/v1/projects/10744711964413240245/files/01f4ed797b4043349efe67f6417b2048:download\"},\"id\":\"c125af00c7e74f0ea7e5a67be9d3ab41\",\"generatedBy\":\"interactive_ui_controller\",\"width\":\"1376\",\"height\":\"768\",\"title\":\"Clean high-fidelity mockup showcase of EcoTrack IoT Smart Energy Monitoring System dashboard, displaying real-time kilowatt telemetry charts, energy consumption metrics, hardware sensor telemetry nodes, modern dark-themed web app interface displayed on sleek modern laptop and tablet mockup, university lab background, clean aesthetic photo presentation, 8k resolution, professional tech product portfolio presentation\",\"prompt\":\"Clean high-fidelity mockup showcase of EcoTrack IoT Smart Energy Monitoring System dashboard, displaying real-time kilowatt telemetry charts, energy consumption metrics, hardware sensor telemetry nodes, modern dark-themed web app interface displayed on sleek modern laptop and tablet mockup, university lab background, clean aesthetic photo presentation, 8k resolution, professional tech product portfolio presentation\",\"name\":\"projects/10744711964413240245/screens/c125af00c7e74f0ea7e5a67be9d3ab41\",\"theme\":{},\"screenType\":\"IMAGE\",\"screenMetadata\":{\"agentType\":\"PRO_AGENT\",\"status\":\"COMPLETE\"}},{\"screenshot\":{\"name\":\"projects/10744711964413240245/files/68bfabf880d24ebb9edfb8e59fd4570f\",\"downloadUrl\":\"https://stitch.googleapis.com/v1/projects/10744711964413240245/files/68bfabf880d24ebb9edfb8e59fd4570f:download\"},\"htmlCode\":{\"name\":\"projects/10744711964413240245/files/d0e610e840ca4a7a85d3f8cc8ecf56a0\",\"downloadUrl\":\"https://stitch.googleapis.com/v1/projects/10744711964413240245/files/d0e610e840ca4a7a85d3f8cc8ecf56a0:download\",\"mimeType\":\"text/html\"},\"id\":\"98a4bd0e1d3b42a8b7355860e0e2f0c4\",\"generatedBy\":\"figaro_agent\",\"width\":\"780\",\"height\":\"5608\",\"title\":\"Detail Portofolio - EcoTrack IoT\",\"prompt\":\"Rancang Halaman Detail Showcase Portofolio Mahasiswa (Mobile screen, max-w-md mx-auto) untuk aplikasi CampusFolio dengan tema elegan Academic Modernist. Tanpa emoji kasual, gunakan ikon Material Symbols Outlined secara konsisten.\\n\\nSertakan elemen-elemen berikut secara lengkap dan mendalam:\\n\\n1. Top App Bar / Header:\\n   - Tombol kembali (arrow_back) bertuliskan atau dengan tooltip \\\"Kembali\\\"\\n   - Headline/Title: \\\"Detail Portofolio\\\"\\n   - Trailing actions: Ikon bookmark (bookmark_border) untuk simpan referensi, dan ikon bagikan (share) untuk tautan proyek.\\n\\n2. Hero Visual Showcase / Mockup Slider:\\n   - Tampilkan foto mockup proyek resolusi tinggi menggunakan {{DATA:IMAGE:IMAGE_21}} sebagai cover utama showcase (aspek 16:9).\\n   - Badge overlay: \\\"Showcase Terverifikasi Dosen\\\" dengan ikon verified_user.\\n   - Indikator pagination dots (3 slide: slide 1 aktif dengan pill indigo).\\n   - Tombol kecil floating di sudut bawah hero: ikon zoom_in atau fullscreen \\\"Lihat Resolusi Penuh\\\".\\n\\n3. Judul & Header Informasi Karya:\\n   - Kategori badges: \\\"Web Application & IoT Campus\\\" dan \\\"Proyek Riset & Capstone\\\".\\n   - Judul Karya: \\\"EcoTrack - Smart Energy Monitoring System\\\" (teks headline-lg font-bold text-on-surface).\\n   - Periode pengerjaan: \\\"September 2025 - Januari 2026 (5 Bulan)\\\" dengan ikon schedule.\\n   - Metrik dampak singkat di bawah judul: 3 pill info seperti \\\"18.4% Reduksi Daya\\\", \\\"14 Node Sensor IoT\\\", \\\"99.2% Uptime Sistem\\\".\\n\\n4. Profil Pemilik Portofolio:\\n   - Kartu profil pemilik elegan (bg-surface-container-low border border-outline-variant/30 rounded-2xl p-4):\\n   - Foto profil mahasiswa (avatar pria teknik/mahasiswa rapi), nama: \\\"Rafi Alamsyah\\\", badge centang biru terverifikasi (verified), keterangan: \\\"Teknik Elektro '22 • Universitas Indonesia\\\".\\n   - Peran di proyek: \\\"Lead IoT Systems & Fullstack Developer\\\".\\n   - Tombol aksi sekunder: \\\"Lihat Profil\\\" (open_in_new) dan tombol \\\"Ajak Kolaborasi\\\" (handshake / group_add).\\n\\n5. Studi Kasus & Ringkasan Riset:\\n   - Bagian terstruktur dengan tab atau seksi akademis:\\n     * Latar Belakang Masalah: \\\"Tingginya pemborosan energi listrik di gedung laboratorium fakultas teknik tanpa pemantauan terpusat real-time.\\\"\\n     * Metodologi & Solusi: \\\"Penerapan edge IoT gateway berbasis micro-controller dengan protokol MQTT terenkripsi dan dashboard analisis time-series terdistribusi.\\\"\\n     * Hasil & Dampak: \\\"Mencapai efisiensi konsumsi daya listrik rata-rata 18.4% per bulan dan deteksi anomali lonjakan beban dalam kurang dari 2 detik.\\\"\\n   - Kutipan / Validasi Akademik: Catatan review dosen pembimbing dengan ikon format_quote.\\n\\n6. Tech Stack & Keahlian Digunakan:\\n   - Tech stack chips terorganisir:\\n     * Frontend: React, Next.js, Tailwind CSS\\n     * Backend & Telemetry: Go, MQTT, InfluxDB, Docker\\n     * Hardware: ESP32, SCT-013 Current Sensor\\n   - Setiap chip memiliki ikon rapi atau badge teknis.\\n\\n7. Tautan Bukti Karya Autentik (Interactive Links):\\n   - Kartu aksi tautan pembuktian kerja nyata:\\n     * Tombol Buka Repositori GitHub: ikon code, teks \\\"github.com/campusfolio/ecotrack-iot-core\\\", label \\\"Kode Sumber & CI/CD\\\", tombol eksternal.\\n     * Tombol Kunjungi Live Demo: ikon public / language, teks \\\"ecotrack.campusfolio.ac.id\\\", label \\\"Aplikasi Web Live Telemetri\\\".\\n     * Tombol Baca Paper / Laporan PDF: ikon article / picture_as_pdf, teks \\\"Laporan Capstone & Whitepaper PDF (14 Hlm)\\\", label \\\"Dokumen Akademik\\\".\\n\\n8. Tim & Kolaborator Proyek:\\n   - Daftar 3 rekan satu tim dengan avatar bulat, nama, program studi, dan peranan spesifik:\\n     * \\\"Nadia Eka Pramudita\\\" (Ilmu Komputer '23) — UI/UX & Dashboard Visualizer\\n     * \\\"Dimas Prasetyo\\\" (Teknik Elektro '22) — Hardware & Circuitry Engineer\\n     * \\\"Siti Maharani\\\" (Sains Data '23) — Time-Series Data Analyst\\n\\n9. Apresiasi & Komentar Akademik (Peer Review):\\n   - Counter apresiasi: Tombol Endorse / Apresiasi Proyek dengan ikon thumb_up (\\\"142 Mahasiswa Memberikan Apresiasi\\\").\\n   - Kolom diskusi teknis:\\n     * Form input komentar singkat dengan avatar aktif, placeholder \\\"Tulis tanggapan atau pertanyaan teknis...\\\", dan tombol Kirim (send).\\n     * Contoh 2 komentar akademik dari mahasiswa lain (misal: pertanyaan mengenai latency broker MQTT dan pujian mengenai arsitektur InfluxDB).\\n\\n10. Sticky Bottom Bar Aksi Cepat:\\n    - Tombol Bookmark Proyek, tombol Apresiasi cepat (+1 Endorse), dan tombol utama \\\"Ajak Diskusi Kolaborasi\\\" (ikon chat).\\n\\nSemua gaya visual mengikuti design system Academic Modernist: warna primary #4338ca (Electric Indigo), font Plus Jakarta Sans, kontras tinggi, border halus, rounded-2xl, bersih, tanpa emoji kasual.\",\"name\":\"projects/10744711964413240245/screens/98a4bd0e1d3b42a8b7355860e0e2f0c4\",\"theme\":{\"colorMode\":\"LIGHT\",\"font\":\"PLUS_JAKARTA_SANS\",\"roundness\":\"ROUND_EIGHT\",\"customColor\":\"#4338ca\",\"headlineFont\":\"PLUS_JAKARTA_SANS\",\"bodyFont\":\"PLUS_JAKARTA_SANS\",\"labelFont\":\"INTER\",\"namedColors\":{\"surface\":\"#faf8ff\",\"on_error\":\"#ffffff\",\"surface_container_high\":\"#e2e7ff\",\"primary_container\":\"#4338ca\",\"surface_variant\":\"#dae2fd\",\"surface-card\":\"#FFFFFF\",\"border-subtle\":\"#E2E8F0\",\"primary\":\"#2a14b4\",\"tertiary_fixed_dim\":\"#ffb95f\",\"primary_fixed\":\"#e3dfff\",\"on_primary_container\":\"#c1beff\",\"error_container\":\"#ffdad6\",\"match-emerald\":\"#10B981\",\"on_secondary_fixed\":\"#00201d\",\"on_tertiary_fixed\":\"#2a1700\",\"tertiary\":\"#553300\",\"on_tertiary_fixed_variant\":\"#653e00\",\"secondary_fixed\":\"#89f5e7\",\"inverse_on_surface\":\"#eef0ff\",\"surface_bright\":\"#faf8ff\",\"surface_container_lowest\":\"#ffffff\",\"on_secondary_container\":\"#006f66\",\"on_tertiary\":\"#ffffff\",\"tertiary_fixed\":\"#ffddb8\",\"surface_container\":\"#eaedff\",\"surface-canvas\":\"#F8FAFC\",\"outline_variant\":\"#c7c4d7\",\"secondary\":\"#006a61\",\"on_primary_fixed\":\"#100069\",\"tertiary_container\":\"#744800\",\"surface_dim\":\"#d2d9f4\",\"on_error_container\":\"#93000a\",\"surface_tint\":\"#5148d7\",\"on_secondary_fixed_variant\":\"#005049\",\"outline\":\"#777586\",\"on_tertiary_container\":\"#ffb759\",\"inverse_primary\":\"#c3c0ff\",\"on_primary\":\"#ffffff\",\"secondary_container\":\"#86f2e4\",\"inverse_surface\":\"#283044\",\"error\":\"#ba1a1a\",\"background\":\"#faf8ff\",\"on_surface_variant\":\"#464554\",\"secondary_fixed_dim\":\"#6bd8cb\",\"on_secondary\":\"#ffffff\",\"primary_fixed_dim\":\"#c3c0ff\",\"surface_container_low\":\"#f2f3ff\",\"recruiting-coral\":\"#F43F5E\",\"on_background\":\"#131b2e\",\"on_surface\":\"#131b2e\",\"surface_container_highest\":\"#dae2fd\",\"on_primary_fixed_variant\":\"#372abf\"},\"colorVariant\":\"FIDELITY\",\"overridePrimaryColor\":\"#4338ca\",\"overrideSecondaryColor\":\"#0d9488\",\"overrideTertiaryColor\":\"#f59e0b\",\"overrideNeutralColor\":\"#0f172a\",\"spacingScale\":2,\"typography\":{\"label-md\":{\"fontFamily\":\"Inter\",\"fontSize\":\"12px\",\"fontWeight\":\"500\",\"lineHeight\":\"16px\",\"letterSpacing\":\"0.02em\"},\"headline-md\":{\"fontFamily\":\"Plus Jakarta Sans\",\"fontSize\":\"20px\",\"fontWeight\":\"600\",\"lineHeight\":\"28px\",\"letterSpacing\":\"-0.01em\"},\"display\":{\"fontFamily\":\"Plus Jakarta Sans\",\"fontSize\":\"36px\",\"fontWeight\":\"800\",\"lineHeight\":\"44px\",\"letterSpacing\":\"-0.02em\"},\"headline-lg\":{\"fontFamily\":\"Plus Jakarta Sans\",\"fontSize\":\"28px\",\"fontWeight\":\"700\",\"lineHeight\":\"36px\",\"letterSpacing\":\"-0.015em\"},\"body-lg\":{\"fontFamily\":\"Plus Jakarta Sans\",\"fontSize\":\"16px\",\"fontWeight\":\"400\",\"lineHeight\":\"24px\"},\"headline-sm\":{\"fontFamily\":\"Plus Jakarta Sans\",\"fontSize\":\"18px\",\"fontWeight\":\"600\",\"lineHeight\":\"24px\"},\"body-md\":{\"fontFamily\":\"Plus Jakarta Sans\",\"fontSize\":\"14px\",\"fontWeight\":\"400\",\"lineHeight\":\"20px\"},\"label-sm\":{\"fontFamily\":\"Inter\",\"fontSize\":\"10px\",\"fontWeight\":\"600\",\"lineHeight\":\"14px\",\"letterSpacing\":\"0.04em\"},\"code\":{\"fontFamily\":\"Inter\",\"fontSize\":\"12px\",\"fontWeight\":\"500\",\"lineHeight\":\"16px\"},\"headline-lg-mobile\":{\"fontFamily\":\"Plus Jakarta Sans\",\"fontSize\":\"24px\",\"fontWeight\":\"700\",\"lineHeight\":\"32px\",\"letterSpacing\":\"-0.01em\"},\"label-lg\":{\"fontFamily\":\"Inter\",\"fontSize\":\"14px\",\"fontWeight\":\"600\",\"lineHeight\":\"20px\",\"letterSpacing\":\"0.01em\"},\"body-sm\":{\"fontFamily\":\"Plus Jakarta Sans\",\"fontSize\":\"12px\",\"fontWeight\":\"400\",\"lineHeight\":\"16px\"}},\"spacing\":{\"space-xs\":\"0.25rem\",\"margin-mobile\":\"1rem\",\"gutter-mobile\":\"0.75rem\",\"space-lg\":\"1.5rem\",\"space-sm\":\"0.5rem\",\"margin\":\"1.5rem\",\"space-md\":\"1rem\",\"gutter\":\"1rem\",\"space-xl\":\"2rem\"},\"headlineFontFamily\":\"Plus Jakarta Sans\",\"bodyFontFamily\":\"Plus Jakarta Sans\",\"labelFontFamily\":\"Inter\"},\"deviceType\":\"MOBILE\",\"screenType\":\"DESIGN\",\"screenMetadata\":{\"agentType\":\"PRO_AGENT\",\"status\":\"COMPLETE\"},\"designSystem\":{\"name\":\"assets/7ebc8416af6f48ebba845b5838b441a6\",\"designSystem\":{\"displayName\":\"Academic Modernist\",\"styleGuidelines\":\"## Brand & Style\\nThe design system reflects an aspirational, collegiate ecosystem engineered for student talent discovery, project collaboration, and peer showcase. It merges the structure and credibility of an academic portfolio with the warmth, momentum, and expressive sociability of a modern mobile-first community. \\n\\nThe aesthetic is Modern Clean Tech with structured editorial cues: crisp surfaces, intentional micro-interactions, distinct categorical color accents, and prominent typographic hierarchy. The UI balances utilitarian focus—essential for reviewing technical portfolios and project deliverables—with punchy, energetic accents that celebrate student milestones, recruiting statuses, and AI-assisted collaboration matches. \\n\\nThe experience must evoke agency, competence, and intellectual curiosity, steering clear of both austere academic administrative portals and noisy, hyperactive consumer feeds.\\n\\n## Layout & Spacing\\nThe layout adheres to a flexible, touch-first fluid grid optimized for mobile ergonomics. Screen margins are locked at `1rem` (16px) on mobile viewports to preserve horizontal content real estate, expanding to `1.5rem` on tablet/desktop displays. \\n\\nA strictly applied 4px/8px incremental scale (`space-xs` through `space-xl`) governs vertical flow. Compact stacks (`space-xs` to `space-sm`) are reserved for avatar-to-handle alignments and skill badge cluster wrap groups. Larger intervals (`space-md` to `space-lg`) separate distinct portfolio work showcases, collaborative feeds, and section modules.\\n\\n## Elevation & Depth\\nDepth is constructed through subtle tonal layering and soft, daylight-inspired ambient shadows rather than stark heavy drops. \\n\\n1. **Base Layer (Level 0):** Background screen canvas in off-white (`#F8FAFC`).\\n2. **Surface Layer (Level 1):** Profile overview cards, feed items, and project rows sit on pure white (`#FFFFFF`) with a 1px border (`#E2E8F0`) and an ambient shadow: `0 1px 3px 0 rgba(15, 23, 42, 0.05), 0 1px 2px -1px rgba(15, 23, 42, 0.03)`.\\n3. **Floating Overlays (Level 2):** Floating bottom navigation bar, context menus, and active filter sheets utilize frosted glassmorphism: background of `rgba(255, 255, 255, 0.85)` with a 16px blur radius, reinforced by a delicate shadow: `0 10px 15px -3px rgba(15, 23, 42, 0.08)`.\\n4. **Modal & Dialog Tier (Level 3):** AI rationale popovers, skill endorsement drawers, and image viewports rest atop an ultra-soft dimming backdrop (`rgba(15, 23, 42, 0.4)`), projecting an ambient blur: `0 20px 25px -5px rgba(15, 23, 42, 0.12)`.\\n\\n## Components\\n\\n### Buttons & Interactive Controls\\n- **Primary Action:** Solid Indigo (`#4338CA`) background, white text, fully rounded pill or `rounded-lg` shape, 48px minimum height for mobile thumb zone accessibility. Active state triggers a subtle scale compression (0.98).\\n- **Secondary Action:** Ghost style with `border-subtle` (`#E2E8F0`) outline, text in `neutral_color_hex` (`#0F172A`), active surface tinting in slate-50.\\n- **Recruitment CTA:** Solid Coral (`#F43F5E`) or transparent with Coral accent ring, dedicated strictly to \\\"Join Team\\\" or \\\"Apply to Project\\\" triggers.\\n\\n### Chips & Badges\\n- **Skill Pill:** Compact pill container, light gray-blue fill (`#F1F5F9`), subtle border, 12px Inter semi-bold typography (`label-md`).\\n- **AI Match Explanation Badge:** Gradient-bordered pill featuring an emerald icon pip (`#10B981`), surface tint of emerald-50, displaying both match percentage and an inline expandable disclosure trigger for explainability.\\n- **Recruitment Status Tag:** Coral tint background (`rgba(244, 63, 94, 0.1)`) with high-contrast Coral text and an active pulsing status indicator dot.\\n\\n### Cards & Feed Tiles\\n- **Portfolio Showcase Card:** Clean white container, crisp 1px border, high-impact media preview pinned to the top edges with a 16px padding frame for student credentials, project title, and skill wrap groups.\\n- **Student Profile Header Card:** Integrated avatar frame with dynamic department badge, headline bio, quick stats row (Projects, Collaborators, Endorsements), and primary direct-message action.\\n\\n### Input Fields & Controls\\n- **Text Fields:** 44px minimum height, 1px border (`#CBD5E1`) shifting to 2px primary Indigo on focus with zero offset glow. Clear floating placeholder transitions using `label-md`.\\n- **Checkboxes & Radios:** Rounded square (checkbox, 4px radius) and circle (radio), filling with primary Indigo upon selection accompanied by a crisp white interior glyph.\\n\\n### App Chrome & Navigation\\n- **Floating Tab Bar:** Suspended 16px above the home indicator, frosted glass backing (`backdrop-blur-md`), 5 primary ergonomic touch targets with animated indigo indicators for the active screen.\",\"theme\":{\"colorMode\":\"LIGHT\",\"font\":\"PLUS_JAKARTA_SANS\",\"roundness\":\"ROUND_EIGHT\",\"customColor\":\"#4338ca\",\"headlineFont\":\"PLUS_JAKARTA_SANS\",\"bodyFont\":\"PLUS_JAKARTA_SANS\",\"labelFont\":\"INTER\",\"namedColors\":{\"secondary_fixed_dim\":\"#6bd8cb\",\"surface_container_lowest\":\"#ffffff\",\"surface\":\"#faf8ff\",\"surface_tint\":\"#5148d7\",\"on_primary_fixed\":\"#100069\",\"border-subtle\":\"#E2E8F0\",\"on_tertiary_fixed_variant\":\"#653e00\",\"primary_fixed\":\"#e3dfff\",\"primary\":\"#2a14b4\",\"surface-canvas\":\"#F8FAFC\",\"tertiary_fixed\":\"#ffddb8\",\"on_secondary_container\":\"#006f66\",\"match-emerald\":\"#10B981\",\"secondary_fixed\":\"#89f5e7\",\"on_tertiary_fixed\":\"#2a1700\",\"surface_bright\":\"#faf8ff\",\"secondary_container\":\"#86f2e4\",\"primary_container\":\"#4338ca\",\"on_tertiary\":\"#ffffff\",\"inverse_on_surface\":\"#eef0ff\",\"error_container\":\"#ffdad6\",\"recruiting-coral\":\"#F43F5E\",\"tertiary\":\"#553300\",\"surface_variant\":\"#dae2fd\",\"secondary\":\"#006a61\",\"surface_container_high\":\"#e2e7ff\",\"on_secondary_fixed\":\"#00201d\",\"error\":\"#ba1a1a\",\"surface_container\":\"#eaedff\",\"on_secondary\":\"#ffffff\",\"tertiary_fixed_dim\":\"#ffb95f\",\"on_secondary_fixed_variant\":\"#005049\",\"on_error\":\"#ffffff\",\"on_primary_container\":\"#c1beff\",\"inverse_surface\":\"#283044\",\"on_surface_variant\":\"#464554\",\"surface_container_low\":\"#f2f3ff\",\"surface_container_highest\":\"#dae2fd\",\"surface-card\":\"#FFFFFF\",\"outline\":\"#777586\",\"on_primary_fixed_variant\":\"#372abf\",\"primary_fixed_dim\":\"#c3c0ff\",\"outline_variant\":\"#c7c4d7\",\"on_surface\":\"#131b2e\",\"surface_dim\":\"#d2d9f4\",\"on_error_container\":\"#93000a\",\"tertiary_container\":\"#744800\",\"inverse_primary\":\"#c3c0ff\",\"background\":\"#faf8ff\",\"on_background\":\"#131b2e\",\"on_tertiary_container\":\"#ffb759\",\"on_primary\":\"#ffffff\"},\"designMd\":\"---\\nname: Academic Modernist\\ncolors:\\n  surface: '#faf8ff'\\n  surface-dim: '#d2d9f4'\\n  surface-bright: '#faf8ff'\\n  surface-container-lowest: '#ffffff'\\n  surface-container-low: '#f2f3ff'\\n  surface-container: '#eaedff'\\n  surface-container-high: '#e2e7ff'\\n  surface-container-highest: '#dae2fd'\\n  on-surface: '#131b2e'\\n  on-surface-variant: '#464554'\\n  inverse-surface: '#283044'\\n  inverse-on-surface: '#eef0ff'\\n  outline: '#777586'\\n  outline-variant: '#c7c4d7'\\n  surface-tint: '#5148d7'\\n  primary: '#2a14b4'\\n  on-primary: '#ffffff'\\n  primary-container: '#4338ca'\\n  on-primary-container: '#c1beff'\\n  inverse-primary: '#c3c0ff'\\n  secondary: '#006a61'\\n  on-secondary: '#ffffff'\\n  secondary-container: '#86f2e4'\\n  on-secondary-container: '#006f66'\\n  tertiary: '#553300'\\n  on-tertiary: '#ffffff'\\n  tertiary-container: '#744800'\\n  on-tertiary-container: '#ffb759'\\n  error: '#ba1a1a'\\n  on-error: '#ffffff'\\n  error-container: '#ffdad6'\\n  on-error-container: '#93000a'\\n  primary-fixed: '#e3dfff'\\n  primary-fixed-dim: '#c3c0ff'\\n  on-primary-fixed: '#100069'\\n  on-primary-fixed-variant: '#372abf'\\n  secondary-fixed: '#89f5e7'\\n  secondary-fixed-dim: '#6bd8cb'\\n  on-secondary-fixed: '#00201d'\\n  on-secondary-fixed-variant: '#005049'\\n  tertiary-fixed: '#ffddb8'\\n  tertiary-fixed-dim: '#ffb95f'\\n  on-tertiary-fixed: '#2a1700'\\n  on-tertiary-fixed-variant: '#653e00'\\n  background: '#faf8ff'\\n  on-background: '#131b2e'\\n  surface-variant: '#dae2fd'\\n  recruiting-coral: '#F43F5E'\\n  match-emerald: '#10B981'\\n  surface-canvas: '#F8FAFC'\\n  surface-card: '#FFFFFF'\\n  border-subtle: '#E2E8F0'\\ntypography:\\n  display:\\n    fontFamily: Plus Jakarta Sans\\n    fontSize: 36px\\n    fontWeight: '800'\\n    lineHeight: 44px\\n    letterSpacing: -0.02em\\n  headline-lg:\\n    fontFamily: Plus Jakarta Sans\\n    fontSize: 28px\\n    fontWeight: '700'\\n    lineHeight: 36px\\n    letterSpacing: -0.015em\\n  headline-lg-mobile:\\n    fontFamily: Plus Jakarta Sans\\n    fontSize: 24px\\n    fontWeight: '700'\\n    lineHeight: 32px\\n    letterSpacing: -0.01em\\n  headline-md:\\n    fontFamily: Plus Jakarta Sans\\n    fontSize: 20px\\n    fontWeight: '600'\\n    lineHeight: 28px\\n    letterSpacing: -0.01em\\n  headline-sm:\\n    fontFamily: Plus Jakarta Sans\\n    fontSize: 18px\\n    fontWeight: '600'\\n    lineHeight: 24px\\n  body-lg:\\n    fontFamily: Plus Jakarta Sans\\n    fontSize: 16px\\n    fontWeight: '400'\\n    lineHeight: 24px\\n  body-md:\\n    fontFamily: Plus Jakarta Sans\\n    fontSize: 14px\\n    fontWeight: '400'\\n    lineHeight: 20px\\n  body-sm:\\n    fontFamily: Plus Jakarta Sans\\n    fontSize: 12px\\n    fontWeight: '400'\\n    lineHeight: 16px\\n  label-lg:\\n    fontFamily: Inter\\n    fontSize: 14px\\n    fontWeight: '600'\\n    lineHeight: 20px\\n    letterSpacing: 0.01em\\n  label-md:\\n    fontFamily: Inter\\n    fontSize: 12px\\n    fontWeight: '500'\\n    lineHeight: 16px\\n    letterSpacing: 0.02em\\n  label-sm:\\n    fontFamily: Inter\\n    fontSize: 10px\\n    fontWeight: '600'\\n    lineHeight: 14px\\n    letterSpacing: 0.04em\\n  code:\\n    fontFamily: Inter\\n    fontSize: 12px\\n    fontWeight: '500'\\n    lineHeight: 16px\\nrounded:\\n  sm: 0.25rem\\n  DEFAULT: 0.5rem\\n  md: 0.75rem\\n  lg: 1rem\\n  xl: 1.5rem\\n  full: 9999px\\nspacing:\\n  gutter: 1rem\\n  gutter-mobile: 0.75rem\\n  margin: 1.5rem\\n  margin-mobile: 1rem\\n  space-xs: 0.25rem\\n  space-sm: 0.5rem\\n  space-md: 1rem\\n  space-lg: 1.5rem\\n  space-xl: 2rem\\n---\\n\\n## Brand & Style\\nThe design system reflects an aspirational, collegiate ecosystem engineered for student talent discovery, project collaboration, and peer showcase. It merges the structure and credibility of an academic portfolio with the warmth, momentum, and expressive sociability of a modern mobile-first community. \\n\\nThe aesthetic is Modern Clean Tech with structured editorial cues: crisp surfaces, intentional micro-interactions, distinct categorical color accents, and prominent typographic hierarchy. The UI balances utilitarian focus—essential for reviewing technical portfolios and project deliverables—with punchy, energetic accents that celebrate student milestones, recruiting statuses, and AI-assisted collaboration matches. \\n\\nThe experience must evoke agency, competence, and intellectual curiosity, steering clear of both austere academic administrative portals and noisy, hyperactive consumer feeds.\\n\\n## Colors\\nThe palette leverages a deep royal indigo (`#4338CA`) as the foundational anchor, conveying academic credibility and structural clarity. The secondary teal-emerald (`#0D9488` / `#10B981`) represents momentum, peer connectivity, and verified skill growth. \\n\\nSemantic colors highlight real-time campus activities:\\n- `tertiary_color_hex` (`#F59E0B`) serves as the warm highlight for urgent callouts, active collaboration requests, and pinned showcases.\\n- `recruiting-coral` (`#F43F5E`) is dedicated strictly to recruitment indicators, open team roles, and high-priority availability badges.\\n- `match-emerald` (`#10B981`) powers AI recommendation chips and match-percentage cues, paired with neutral explanatory microcopy.\\n\\nSurfaces employ a layered architecture: base screens render on `surface-canvas` (`#F8FAFC`), while cards, modals, and sheets rise on clean `surface-card` (`#FFFFFF`) with razor-sharp definition via `border-subtle` (`#E2E8F0`) rather than heavy dropshadows.\\n\\n## Typography\\nPlus Jakarta Sans provides high energy, contemporary geometric character, and friendly roundedness across headings and primary narrative copy, infusing campus portfolios with youthful authority. \\n\\nInter handles micro-scale touchpoints, tabular skills matrices, metadata labels, and AI match reasoning text. It guarantees optical legibility across dense project lists, mobile navigation tabs, and system notifications. Letter spacing on labels is intentionally expanded (`0.01em` to `0.04em`) to ensure instant recognition at small viewports.\\n\\n## Layout & Spacing\\nThe layout adheres to a flexible, touch-first fluid grid optimized for mobile ergonomics. Screen margins are locked at `1rem` (16px) on mobile viewports to preserve horizontal content real estate, expanding to `1.5rem` on tablet/desktop displays. \\n\\nA strictly applied 4px/8px incremental scale (`space-xs` through `space-xl`) governs vertical flow. Compact stacks (`space-xs` to `space-sm`) are reserved for avatar-to-handle alignments and skill badge cluster wrap groups. Larger intervals (`space-md` to `space-lg`) separate distinct portfolio work showcases, collaborative feeds, and section modules.\\n\\n## Elevation & Depth\\nDepth is constructed through subtle tonal layering and soft, daylight-inspired ambient shadows rather than stark heavy drops. \\n\\n1. **Base Layer (Level 0):** Background screen canvas in off-white (`#F8FAFC`).\\n2. **Surface Layer (Level 1):** Profile overview cards, feed items, and project rows sit on pure white (`#FFFFFF`) with a 1px border (`#E2E8F0`) and an ambient shadow: `0 1px 3px 0 rgba(15, 23, 42, 0.05), 0 1px 2px -1px rgba(15, 23, 42, 0.03)`.\\n3. **Floating Overlays (Level 2):** Floating bottom navigation bar, context menus, and active filter sheets utilize frosted glassmorphism: background of `rgba(255, 255, 255, 0.85)` with a 16px blur radius, reinforced by a delicate shadow: `0 10px 15px -3px rgba(15, 23, 42, 0.08)`.\\n4. **Modal & Dialog Tier (Level 3):** AI rationale popovers, skill endorsement drawers, and image viewports rest atop an ultra-soft dimming backdrop (`rgba(15, 23, 42, 0.4)`), projecting an ambient blur: `0 20px 25px -5px rgba(15, 23, 42, 0.12)`.\\n\\n## Shapes\\nA roundedness value of 2 establishes a balanced 8px (`0.5rem`) base corner radius. \\n\\nStandard form controls, input fields, media preview frames, and feed cards utilize `0.5rem` to maintain an organized, disciplined structure. Higher-level cards and interactive bottom sheets utilize `rounded-lg` (16px / `1rem`) and `rounded-xl` (24px / `1.5rem`) for a soft, friendly mobile touch contour. Skill tags, AI match reasoning chips, category pills, and primary CTAs leverage full pill geometry (`9999px`) to create an inviting, playful contrast against rectangular card frames.\\n\\n## Components\\n\\n### Buttons & Interactive Controls\\n- **Primary Action:** Solid Indigo (`#4338CA`) background, white text, fully rounded pill or `rounded-lg` shape, 48px minimum height for mobile thumb zone accessibility. Active state triggers a subtle scale compression (0.98).\\n- **Secondary Action:** Ghost style with `border-subtle` (`#E2E8F0`) outline, text in `neutral_color_hex` (`#0F172A`), active surface tinting in slate-50.\\n- **Recruitment CTA:** Solid Coral (`#F43F5E`) or transparent with Coral accent ring, dedicated strictly to \\\"Join Team\\\" or \\\"Apply to Project\\\" triggers.\\n\\n### Chips & Badges\\n- **Skill Pill:** Compact pill container, light gray-blue fill (`#F1F5F9`), subtle border, 12px Inter semi-bold typography (`label-md`).\\n- **AI Match Explanation Badge:** Gradient-bordered pill featuring an emerald icon pip (`#10B981`), surface tint of emerald-50, displaying both match percentage and an inline expandable disclosure trigger for explainability.\\n- **Recruitment Status Tag:** Coral tint background (`rgba(244, 63, 94, 0.1)`) with high-contrast Coral text and an active pulsing status indicator dot.\\n\\n### Cards & Feed Tiles\\n- **Portfolio Showcase Card:** Clean white container, crisp 1px border, high-impact media preview pinned to the top edges with a 16px padding frame for student credentials, project title, and skill wrap groups.\\n- **Student Profile Header Card:** Integrated avatar frame with dynamic department badge, headline bio, quick stats row (Projects, Collaborators, Endorsements), and primary direct-message action.\\n\\n### Input Fields & Controls\\n- **Text Fields:** 44px minimum height, 1px border (`#CBD5E1`) shifting to 2px primary Indigo on focus with zero offset glow. Clear floating placeholder transitions using `label-md`.\\n- **Checkboxes & Radios:** Rounded square (checkbox, 4px radius) and circle (radio), filling with primary Indigo upon selection accompanied by a crisp white interior glyph.\\n\\n### App Chrome & Navigation\\n- **Floating Tab Bar:** Suspended 16px above the home indicator, frosted glass backing (`backdrop-blur-md`), 5 primary ergonomic touch targets with animated indigo indicators for the active screen.\",\"colorVariant\":\"FIDELITY\",\"overridePrimaryColor\":\"#4338ca\",\"overrideSecondaryColor\":\"#0d9488\",\"overrideTertiaryColor\":\"#f59e0b\",\"overrideNeutralColor\":\"#0f172a\",\"spacingScale\":2,\"typography\":{\"headline-lg\":{\"fontFamily\":\"Plus Jakarta Sans\",\"fontSize\":\"28px\",\"fontWeight\":\"700\",\"lineHeight\":\"36px\",\"letterSpacing\":\"-0.015em\"},\"label-sm\":{\"fontFamily\":\"Inter\",\"fontSize\":\"10px\",\"fontWeight\":\"600\",\"lineHeight\":\"14px\",\"letterSpacing\":\"0.04em\"},\"body-lg\":{\"fontFamily\":\"Plus Jakarta Sans\",\"fontSize\":\"16px\",\"fontWeight\":\"400\",\"lineHeight\":\"24px\"},\"label-lg\":{\"fontFamily\":\"Inter\",\"fontSize\":\"14px\",\"fontWeight\":\"600\",\"lineHeight\":\"20px\",\"letterSpacing\":\"0.01em\"},\"headline-lg-mobile\":{\"fontFamily\":\"Plus Jakarta Sans\",\"fontSize\":\"24px\",\"fontWeight\":\"700\",\"lineHeight\":\"32px\",\"letterSpacing\":\"-0.01em\"},\"display\":{\"fontFamily\":\"Plus Jakarta Sans\",\"fontSize\":\"36px\",\"fontWeight\":\"800\",\"lineHeight\":\"44px\",\"letterSpacing\":\"-0.02em\"},\"headline-md\":{\"fontFamily\":\"Plus Jakarta Sans\",\"fontSize\":\"20px\",\"fontWeight\":\"600\",\"lineHeight\":\"28px\",\"letterSpacing\":\"-0.01em\"},\"code\":{\"fontFamily\":\"Inter\",\"fontSize\":\"12px\",\"fontWeight\":\"500\",\"lineHeight\":\"16px\"},\"body-md\":{\"fontFamily\":\"Plus Jakarta Sans\",\"fontSize\":\"14px\",\"fontWeight\":\"400\",\"lineHeight\":\"20px\"},\"label-md\":{\"fontFamily\":\"Inter\",\"fontSize\":\"12px\",\"fontWeight\":\"500\",\"lineHeight\":\"16px\",\"letterSpacing\":\"0.02em\"},\"headline-sm\":{\"fontFamily\":\"Plus Jakarta Sans\",\"fontSize\":\"18px\",\"fontWeight\":\"600\",\"lineHeight\":\"24px\"},\"body-sm\":{\"fontFamily\":\"Plus Jakarta Sans\",\"fontSize\":\"12px\",\"fontWeight\":\"400\",\"lineHeight\":\"16px\"}},\"spacing\":{\"space-sm\":\"0.5rem\",\"space-lg\":\"1.5rem\",\"space-xs\":\"0.25rem\",\"margin-mobile\":\"1rem\",\"space-xl\":\"2rem\",\"gutter\":\"1rem\",\"space-md\":\"1rem\",\"gutter-mobile\":\"0.75rem\",\"margin\":\"1.5rem\"},\"headlineFontFamily\":\"Plus Jakarta Sans\",\"bodyFontFamily\":\"Plus Jakarta Sans\",\"labelFontFamily\":\"Inter\"}},\"version\":\"1\"}}],\"theme\":{}}},{\"text\":\"Halaman **Detail Showcase Portofolio Mahasiswa** untuk aplikasi **CampusFolio** telah berhasil dirancang dengan gaya **Academic Modernist** yang formal, profesional, dan bebas dari emoji kasual.\\n\\n### 🔍 Ringkasan Desain & Elemen Antarmuka:\\n\\n1. **Top App Bar & Header Tindakan**:\\n   - Navigasi kembali (`arrow_back`) dengan judul halaman *\\\"Detail Portofolio\\\"*.\\n   - Aksi cepat bookmark/simpan referensi (`bookmark_border`) dan bagikan tautan portofolio (`share`).\\n\\n2. **Hero Visual Showcase Carousel**:\\n   - Menampilkan mockup dashboard web & tablet telemetri IoT resolusi tinggi (`Clean high-fidelity mockup showcase of EcoTrack IoT Smart Energy Monitoring System dashboard, displaying real-time kilowatt telemetry charts, energy consumption metrics, hardware sensor telemetry nodes, modern dark-themed web app interface displayed on sleek modern laptop and tablet mockup, university lab background, clean aesthetic photo presentation, 8k resolution, professional tech product portfolio presentation`) dengan aspect ratio 16:9.\\n   - Dilengkapi badge verifikasi resmi *\\\"Showcase Terverifikasi Dosen\\\"* (`verified_user`), pagination slider dots, serta tombol aksi *\\\"Perbesar\\\"* (`zoom_in`).\\n\\n3. **Judul Karya & Metrik Dampak Nyata**:\\n   - Kategori ganda: *Web Application & IoT Campus* dan *Proyek Riset & Capstone*.\\n   - Judul resmi: **EcoTrack – Smart Energy Monitoring System**, disertai durasi pengerjaan 5 bulan.\\n   - Metrik ringkas dampak proyek: **18.4% Reduksi Daya**, **14 Node Sensor IoT**, dan **99.2% Uptime Sistem**.\\n\\n4. **Profil Pemilik Portofolio Terverifikasi**:\\n   - Profil terkurasi milik **Rafi Alamsyah** (Teknik Elektro '22 • Universitas Indonesia) dengan status badge *Author* dan centang verifikasi akademik.\\n   - Posisi peran: *Lead IoT Systems & Fullstack Developer*, dilengkapi tombol sekunder *\\\"Lihat Profil\\\"* dan *\\\"Ajak Kolaborasi\\\"*.\\n\\n5. **Studi Kasus & Ringkasan Riset Akademik**:\\n   - Terbagi rapi ke dalam tiga segmen utama: **Latar Belakang Masalah**, **Metodologi & Solusi** (protokol MQTT, edge computing ESP32), serta **Hasil & Dampak**.\\n   - Kutipan review dan validasi langsung dari dosen pembimbing komputasi cerdas.\\n\\n6. **Tech Stack & Keahlian Terstruktur**:\\n   - Dikelompokkan berdasarkan arsitektur sistem:\\n     * *Frontend Architecture*: React 18, Next.js, Tailwind CSS\\n     * *Backend & Telemetry*: Go (Golang), MQTT Broker, InfluxDB, Docker Compose\\n     * *Embedded Hardware*: ESP32-WROOM, SCT-013 Non-invasive Sensor\\n\\n7. **Tautan Bukti Karya Interaktif**:\\n   - Repositori kode sumber GitHub (`code` & `call_made`)\\n   - Aplikasi live demo telemetri web aktif (`public` & `call_made`)\\n   - Berkas resmi dokumen Capstone & Whitepaper PDF 14 halaman (`description` / `file_download`)\\n\\n8. **Tim & Kolaborator Proyek**:\\n   - Daftar 3 rekan tim lintas disiplin ilmu lengkap dengan perannya (Nadia Eka Pramudita — *UI/UX & Visualizer*, Dimas Prasetyo — *Hardware Engineer*, Siti Maharani — *Time-Series Analyst*).\\n\\n9. **Ruang Apresiasi & Diskusi Teknis (Peer Review)**:\\n   - Counter 142 apresiasi mahasiswa dengan tombol aksi *+ Beri Apresiasi*.\\n   - Input field diskusi akademik teknis beserta utas tanggapan nyata dari mahasiswa lain seputar MQTT broker latency dan optimasi database time-series.\\n   - Sticky floating bottom bar untuk memudahkan interaksi cepat kapan pun pengguna selesai meninjau karya.\"},{\"suggestion\":\"Tambahkan modal dialog saat tombol 'Ajak Kolaborasi' ditekan\"},{\"suggestion\":\"Buat versi tampilan fullscreen lightbox untuk galeri tangkapan layar/mockup IoT\"},{\"suggestion\":\"Rancang tab 'Log Pembaruan Versi & Rilis' pada halaman portofolio ini\"}]}",
+          "type": "text"
+        }
+      ],
+      "structuredContent": {
+        "outputComponents": [
+          {
+            "design": {
+              "screens": [
+                {
+                  "generatedBy": "interactive_ui_controller",
+                  "height": "768",
+                  "id": "c125af00c7e74f0ea7e5a67be9d3ab41",
+                  "name": "projects/10744711964413240245/screens/c125af00c7e74f0ea7e5a67be9d3ab41",
+                  "prompt": "Clean high-fidelity mockup showcase of EcoTrack IoT Smart Energy Monitoring System dashboard, displaying real-time kilowatt telemetry charts, energy consumption metrics, hardware sensor telemetry nodes, modern dark-themed web app interface displayed on sleek modern laptop and tablet mockup, university lab background, clean aesthetic photo presentation, 8k resolution, professional tech product portfolio presentation",
+                  "screenMetadata": {
+                    "agentType": "PRO_AGENT",
+                    "status": "COMPLETE"
+                  },
+                  "screenType": "IMAGE",
+                  "screenshot": {
+                    "downloadUrl": "https://stitch.googleapis.com/v1/projects/10744711964413240245/files/01f4ed797b4043349efe67f6417b2048:download",
+                    "name": "projects/10744711964413240245/files/01f4ed797b4043349efe67f6417b2048"
+                  },
+                  "theme": {},
+                  "title": "Clean high-fidelity mockup showcase of EcoTrack IoT Smart Energy Monitoring System dashboard, displaying real-time kilowatt telemetry charts, energy consumption metrics, hardware sensor telemetry nodes, modern dark-themed web app interface displayed on sleek modern laptop and tablet mockup, university lab background, clean aesthetic photo presentation, 8k resolution, professional tech product portfolio presentation",
+                  "width": "1376"
+                },
+                {
+                  "designSystem": {
+                    "designSystem": {
+                      "displayName": "Academic Modernist",
+                      "styleGuidelines": "## Brand & Style\nThe design system reflects an aspirational, collegiate ecosystem engineered for student talent discovery, project collaboration, and peer showcase. It merges the structure and credibility of an academic portfolio with the warmth, momentum, and expressive sociability of a modern mobile-first community. \n\nThe aesthetic is Modern Clean Tech with structured editorial cues: crisp surfaces, intentional micro-interactions, distinct categorical color accents, and prominent typographic hierarchy. The UI balances utilitarian focus—essential for reviewing technical portfolios and project deliverables—with punchy, energetic accents that celebrate student milestones, recruiting statuses, and AI-assisted collaboration matches. \n\nThe experience must evoke agency, competence, and intellectual curiosity, steering clear of both austere academic administrative portals and noisy, hyperactive consumer feeds.\n\n## Layout & Spacing\nThe layout adheres to a flexible, touch-first fluid grid optimized for mobile ergonomics. Screen margins are locked at `1rem` (16px) on mobile viewports to preserve horizontal content real estate, expanding to `1.5rem` on tablet/desktop displays. \n\nA strictly applied 4px/8px incremental scale (`space-xs` through `space-xl`) governs vertical flow. Compact stacks (`space-xs` to `space-sm`) are reserved for avatar-to-handle alignments and skill badge cluster wrap groups. Larger intervals (`space-md` to `space-lg`) separate distinct portfolio work showcases, collaborative feeds, and section modules.\n\n## Elevation & Depth\nDepth is constructed through subtle tonal layering and soft, daylight-inspired ambient shadows rather than stark heavy drops. \n\n1. **Base Layer (Level 0):** Background screen canvas in off-white (`#F8FAFC`).\n2. **Surface Layer (Level 1):** Profile overview cards, feed items, and project rows sit on pure white (`#FFFFFF`) with a 1px border (`#E2E8F0`) and an ambient shadow: `0 1px 3px 0 rgba(15, 23, 42, 0.05), 0 1px 2px -1px rgba(15, 23, 42, 0.03)`.\n3. **Floating Overlays (Level 2):** Floating bottom navigation bar, context menus, and active filter sheets utilize frosted glassmorphism: background of `rgba(255, 255, 255, 0.85)` with a 16px blur radius, reinforced by a delicate shadow: `0 10px 15px -3px rgba(15, 23, 42, 0.08)`.\n4. **Modal & Dialog Tier (Level 3):** AI rationale popovers, skill endorsement drawers, and image viewports rest atop an ultra-soft dimming backdrop (`rgba(15, 23, 42, 0.4)`), projecting an ambient blur: `0 20px 25px -5px rgba(15, 23, 42, 0.12)`.\n\n## Components\n\n### Buttons & Interactive Controls\n- **Primary Action:** Solid Indigo (`#4338CA`) background, white text, fully rounded pill or `rounded-lg` shape, 48px minimum height for mobile thumb zone accessibility. Active state triggers a subtle scale compression (0.98).\n- **Secondary Action:** Ghost style with `border-subtle` (`#E2E8F0`) outline, text in `neutral_color_hex` (`#0F172A`), active surface tinting in slate-50.\n- **Recruitment CTA:** Solid Coral (`#F43F5E`) or transparent with Coral accent ring, dedicated strictly to \"Join Team\" or \"Apply to Project\" triggers.\n\n### Chips & Badges\n- **Skill Pill:** Compact pill container, light gray-blue fill (`#F1F5F9`), subtle border, 12px Inter semi-bold typography (`label-md`).\n- **AI Match Explanation Badge:** Gradient-bordered pill featuring an emerald icon pip (`#10B981`), surface tint of emerald-50, displaying both match percentage and an inline expandable disclosure trigger for explainability.\n- **Recruitment Status Tag:** Coral tint background (`rgba(244, 63, 94, 0.1)`) with high-contrast Coral text and an active pulsing status indicator dot.\n\n### Cards & Feed Tiles\n- **Portfolio Showcase Card:** Clean white container, crisp 1px border, high-impact media preview pinned to the top edges with a 16px padding frame for student credentials, project title, and skill wrap groups.\n- **Student Profile Header Card:** Integrated avatar frame with dynamic department badge, headline bio, quick stats row (Projects, Collaborators, Endorsements), and primary direct-message action.\n\n### Input Fields & Controls\n- **Text Fields:** 44px minimum height, 1px border (`#CBD5E1`) shifting to 2px primary Indigo on focus with zero offset glow. Clear floating placeholder transitions using `label-md`.\n- **Checkboxes & Radios:** Rounded square (checkbox, 4px radius) and circle (radio), filling with primary Indigo upon selection accompanied by a crisp white interior glyph.\n\n### App Chrome & Navigation\n- **Floating Tab Bar:** Suspended 16px above the home indicator, frosted glass backing (`backdrop-blur-md`), 5 primary ergonomic touch targets with animated indigo indicators for the active screen.",
+                      "theme": {
+                        "bodyFont": "PLUS_JAKARTA_SANS",
+                        "bodyFontFamily": "Plus Jakarta Sans",
+                        "colorMode": "LIGHT",
+                        "colorVariant": "FIDELITY",
+                        "customColor": "#4338ca",
+                        "designMd": "---\nname: Academic Modernist\ncolors:\n  surface: '#faf8ff'\n  surface-dim: '#d2d9f4'\n  surface-bright: '#faf8ff'\n  surface-container-lowest: '#ffffff'\n  surface-container-low: '#f2f3ff'\n  surface-container: '#eaedff'\n  surface-container-high: '#e2e7ff'\n  surface-container-highest: '#dae2fd'\n  on-surface: '#131b2e'\n  on-surface-variant: '#464554'\n  inverse-surface: '#283044'\n  inverse-on-surface: '#eef0ff'\n  outline: '#777586'\n  outline-variant: '#c7c4d7'\n  surface-tint: '#5148d7'\n  primary: '#2a14b4'\n  on-primary: '#ffffff'\n  primary-container: '#4338ca'\n  on-primary-container: '#c1beff'\n  inverse-primary: '#c3c0ff'\n  secondary: '#006a61'\n  on-secondary: '#ffffff'\n  secondary-container: '#86f2e4'\n  on-secondary-container: '#006f66'\n  tertiary: '#553300'\n  on-tertiary: '#ffffff'\n  tertiary-container: '#744800'\n  on-tertiary-container: '#ffb759'\n  error: '#ba1a1a'\n  on-error: '#ffffff'\n  error-container: '#ffdad6'\n  on-error-container: '#93000a'\n  primary-fixed: '#e3dfff'\n  primary-fixed-dim: '#c3c0ff'\n  on-primary-fixed: '#100069'\n  on-primary-fixed-variant: '#372abf'\n  secondary-fixed: '#89f5e7'\n  secondary-fixed-dim: '#6bd8cb'\n  on-secondary-fixed: '#00201d'\n  on-secondary-fixed-variant: '#005049'\n  tertiary-fixed: '#ffddb8'\n  tertiary-fixed-dim: '#ffb95f'\n  on-tertiary-fixed: '#2a1700'\n  on-tertiary-fixed-variant: '#653e00'\n  background: '#faf8ff'\n  on-background: '#131b2e'\n  surface-variant: '#dae2fd'\n  recruiting-coral: '#F43F5E'\n  match-emerald: '#10B981'\n  surface-canvas: '#F8FAFC'\n  surface-card: '#FFFFFF'\n  border-subtle: '#E2E8F0'\ntypography:\n  display:\n    fontFamily: Plus Jakarta Sans\n    fontSize: 36px\n    fontWeight: '800'\n    lineHeight: 44px\n    letterSpacing: -0.02em\n  headline-lg:\n    fontFamily: Plus Jakarta Sans\n    fontSize: 28px\n    fontWeight: '700'\n    lineHeight: 36px\n    letterSpacing: -0.015em\n  headline-lg-mobile:\n    fontFamily: Plus Jakarta Sans\n    fontSize: 24px\n    fontWeight: '700'\n    lineHeight: 32px\n    letterSpacing: -0.01em\n  headline-md:\n    fontFamily: Plus Jakarta Sans\n    fontSize: 20px\n    fontWeight: '600'\n    lineHeight: 28px\n    letterSpacing: -0.01em\n  headline-sm:\n    fontFamily: Plus Jakarta Sans\n    fontSize: 18px\n    fontWeight: '600'\n    lineHeight: 24px\n  body-lg:\n    fontFamily: Plus Jakarta Sans\n    fontSize: 16px\n    fontWeight: '400'\n    lineHeight: 24px\n  body-md:\n    fontFamily: Plus Jakarta Sans\n    fontSize: 14px\n    fontWeight: '400'\n    lineHeight: 20px\n  body-sm:\n    fontFamily: Plus Jakarta Sans\n    fontSize: 12px\n    fontWeight: '400'\n    lineHeight: 16px\n  label-lg:\n    fontFamily: Inter\n    fontSize: 14px\n    fontWeight: '600'\n    lineHeight: 20px\n    letterSpacing: 0.01em\n  label-md:\n    fontFamily: Inter\n    fontSize: 12px\n    fontWeight: '500'\n    lineHeight: 16px\n    letterSpacing: 0.02em\n  label-sm:\n    fontFamily: Inter\n    fontSize: 10px\n    fontWeight: '600'\n    lineHeight: 14px\n    letterSpacing: 0.04em\n  code:\n    fontFamily: Inter\n    fontSize: 12px\n    fontWeight: '500'\n    lineHeight: 16px\nrounded:\n  sm: 0.25rem\n  DEFAULT: 0.5rem\n  md: 0.75rem\n  lg: 1rem\n  xl: 1.5rem\n  full: 9999px\nspacing:\n  gutter: 1rem\n  gutter-mobile: 0.75rem\n  margin: 1.5rem\n  margin-mobile: 1rem\n  space-xs: 0.25rem\n  space-sm: 0.5rem\n  space-md: 1rem\n  space-lg: 1.5rem\n  space-xl: 2rem\n---\n\n## Brand & Style\nThe design system reflects an aspirational, collegiate ecosystem engineered for student talent discovery, project collaboration, and peer showcase. It merges the structure and credibility of an academic portfolio with the warmth, momentum, and expressive sociability of a modern mobile-first community. \n\nThe aesthetic is Modern Clean Tech with structured editorial cues: crisp surfaces, intentional micro-interactions, distinct categorical color accents, and prominent typographic hierarchy. The UI balances utilitarian focus—essential for reviewing technical portfolios and project deliverables—with punchy, energetic accents that celebrate student milestones, recruiting statuses, and AI-assisted collaboration matches. \n\nThe experience must evoke agency, competence, and intellectual curiosity, steering clear of both austere academic administrative portals and noisy, hyperactive consumer feeds.\n\n## Colors\nThe palette leverages a deep royal indigo (`#4338CA`) as the foundational anchor, conveying academic credibility and structural clarity. The secondary teal-emerald (`#0D9488` / `#10B981`) represents momentum, peer connectivity, and verified skill growth. \n\nSemantic colors highlight real-time campus activities:\n- `tertiary_color_hex` (`#F59E0B`) serves as the warm highlight for urgent callouts, active collaboration requests, and pinned showcases.\n- `recruiting-coral` (`#F43F5E`) is dedicated strictly to recruitment indicators, open team roles, and high-priority availability badges.\n- `match-emerald` (`#10B981`) powers AI recommendation chips and match-percentage cues, paired with neutral explanatory microcopy.\n\nSurfaces employ a layered architecture: base screens render on `surface-canvas` (`#F8FAFC`), while cards, modals, and sheets rise on clean `surface-card` (`#FFFFFF`) with razor-sharp definition via `border-subtle` (`#E2E8F0`) rather than heavy dropshadows.\n\n## Typography\nPlus Jakarta Sans provides high energy, contemporary geometric character, and friendly roundedness across headings and primary narrative copy, infusing campus portfolios with youthful authority. \n\nInter handles micro-scale touchpoints, tabular skills matrices, metadata labels, and AI match reasoning text. It guarantees optical legibility across dense project lists, mobile navigation tabs, and system notifications. Letter spacing on labels is intentionally expanded (`0.01em` to `0.04em`) to ensure instant recognition at small viewports.\n\n## Layout & Spacing\nThe layout adheres to a flexible, touch-first fluid grid optimized for mobile ergonomics. Screen margins are locked at `1rem` (16px) on mobile viewports to preserve horizontal content real estate, expanding to `1.5rem` on tablet/desktop displays. \n\nA strictly applied 4px/8px incremental scale (`space-xs` through `space-xl`) governs vertical flow. Compact stacks (`space-xs` to `space-sm`) are reserved for avatar-to-handle alignments and skill badge cluster wrap groups. Larger intervals (`space-md` to `space-lg`) separate distinct portfolio work showcases, collaborative feeds, and section modules.\n\n## Elevation & Depth\nDepth is constructed through subtle tonal layering and soft, daylight-inspired ambient shadows rather than stark heavy drops. \n\n1. **Base Layer (Level 0):** Background screen canvas in off-white (`#F8FAFC`).\n2. **Surface Layer (Level 1):** Profile overview cards, feed items, and project rows sit on pure white (`#FFFFFF`) with a 1px border (`#E2E8F0`) and an ambient shadow: `0 1px 3px 0 rgba(15, 23, 42, 0.05), 0 1px 2px -1px rgba(15, 23, 42, 0.03)`.\n3. **Floating Overlays (Level 2):** Floating bottom navigation bar, context menus, and active filter sheets utilize frosted glassmorphism: background of `rgba(255, 255, 255, 0.85)` with a 16px blur radius, reinforced by a delicate shadow: `0 10px 15px -3px rgba(15, 23, 42, 0.08)`.\n4. **Modal & Dialog Tier (Level 3):** AI rationale popovers, skill endorsement drawers, and image viewports rest atop an ultra-soft dimming backdrop (`rgba(15, 23, 42, 0.4)`), projecting an ambient blur: `0 20px 25px -5px rgba(15, 23, 42, 0.12)`.\n\n## Shapes\nA roundedness value of 2 establishes a balanced 8px (`0.5rem`) base corner radius. \n\nStandard form controls, input fields, media preview frames, and feed cards utilize `0.5rem` to maintain an organized, disciplined structure. Higher-level cards and interactive bottom sheets utilize `rounded-lg` (16px / `1rem`) and `rounded-xl` (24px / `1.5rem`) for a soft, friendly mobile touch contour. Skill tags, AI match reasoning chips, category pills, and primary CTAs leverage full pill geometry (`9999px`) to create an inviting, playful contrast against rectangular card frames.\n\n## Components\n\n### Buttons & Interactive Controls\n- **Primary Action:** Solid Indigo (`#4338CA`) background, white text, fully rounded pill or `rounded-lg` shape, 48px minimum height for mobile thumb zone accessibility. Active state triggers a subtle scale compression (0.98).\n- **Secondary Action:** Ghost style with `border-subtle` (`#E2E8F0`) outline, text in `neutral_color_hex` (`#0F172A`), active surface tinting in slate-50.\n- **Recruitment CTA:** Solid Coral (`#F43F5E`) or transparent with Coral accent ring, dedicated strictly to \"Join Team\" or \"Apply to Project\" triggers.\n\n### Chips & Badges\n- **Skill Pill:** Compact pill container, light gray-blue fill (`#F1F5F9`), subtle border, 12px Inter semi-bold typography (`label-md`).\n- **AI Match Explanation Badge:** Gradient-bordered pill featuring an emerald icon pip (`#10B981`), surface tint of emerald-50, displaying both match percentage and an inline expandable disclosure trigger for explainability.\n- **Recruitment Status Tag:** Coral tint background (`rgba(244, 63, 94, 0.1)`) with high-contrast Coral text and an active pulsing status indicator dot.\n\n### Cards & Feed Tiles\n- **Portfolio Showcase Card:** Clean white container, crisp 1px border, high-impact media preview pinned to the top edges with a 16px padding frame for student credentials, project title, and skill wrap groups.\n- **Student Profile Header Card:** Integrated avatar frame with dynamic department badge, headline bio, quick stats row (Projects, Collaborators, Endorsements), and primary direct-message action.\n\n### Input Fields & Controls\n- **Text Fields:** 44px minimum height, 1px border (`#CBD5E1`) shifting to 2px primary Indigo on focus with zero offset glow. Clear floating placeholder transitions using `label-md`.\n- **Checkboxes & Radios:** Rounded square (checkbox, 4px radius) and circle (radio), filling with primary Indigo upon selection accompanied by a crisp white interior glyph.\n\n### App Chrome & Navigation\n- **Floating Tab Bar:** Suspended 16px above the home indicator, frosted glass backing (`backdrop-blur-md`), 5 primary ergonomic touch targets with animated indigo indicators for the active screen.",
+                        "font": "PLUS_JAKARTA_SANS",
+                        "headlineFont": "PLUS_JAKARTA_SANS",
+                        "headlineFontFamily": "Plus Jakarta Sans",
+                        "labelFont": "INTER",
+                        "labelFontFamily": "Inter",
+                        "namedColors": {
+                          "background": "#faf8ff",
+                          "border-subtle": "#E2E8F0",
+                          "error": "#ba1a1a",
+                          "error_container": "#ffdad6",
+                          "inverse_on_surface": "#eef0ff",
+                          "inverse_primary": "#c3c0ff",
+                          "inverse_surface": "#283044",
+                          "match-emerald": "#10B981",
+                          "on_background": "#131b2e",
+                          "on_error": "#ffffff",
+                          "on_error_container": "#93000a",
+                          "on_primary": "#ffffff",
+                          "on_primary_container": "#c1beff",
+                          "on_primary_fixed": "#100069",
+                          "on_primary_fixed_variant": "#372abf",
+                          "on_secondary": "#ffffff",
+                          "on_secondary_container": "#006f66",
+                          "on_secondary_fixed": "#00201d",
+                          "on_secondary_fixed_variant": "#005049",
+                          "on_surface": "#131b2e",
+                          "on_surface_variant": "#464554",
+                          "on_tertiary": "#ffffff",
+                          "on_tertiary_container": "#ffb759",
+                          "on_tertiary_fixed": "#2a1700",
+                          "on_tertiary_fixed_variant": "#653e00",
+                          "outline": "#777586",
+                          "outline_variant": "#c7c4d7",
+                          "primary": "#2a14b4",
+                          "primary_container": "#4338ca",
+                          "primary_fixed": "#e3dfff",
+                          "primary_fixed_dim": "#c3c0ff",
+                          "recruiting-coral": "#F43F5E",
+                          "secondary": "#006a61",
+                          "secondary_container": "#86f2e4",
+                          "secondary_fixed": "#89f5e7",
+                          "secondary_fixed_dim": "#6bd8cb",
+                          "surface": "#faf8ff",
+                          "surface-canvas": "#F8FAFC",
+                          "surface-card": "#FFFFFF",
+                          "surface_bright": "#faf8ff",
+                          "surface_container": "#eaedff",
+                          "surface_container_high": "#e2e7ff",
+                          "surface_container_highest": "#dae2fd",
+                          "surface_container_low": "#f2f3ff",
+                          "surface_container_lowest": "#ffffff",
+                          "surface_dim": "#d2d9f4",
+                          "surface_tint": "#5148d7",
+                          "surface_variant": "#dae2fd",
+                          "tertiary": "#553300",
+                          "tertiary_container": "#744800",
+                          "tertiary_fixed": "#ffddb8",
+                          "tertiary_fixed_dim": "#ffb95f"
+                        },
+                        "overrideNeutralColor": "#0f172a",
+                        "overridePrimaryColor": "#4338ca",
+                        "overrideSecondaryColor": "#0d9488",
+                        "overrideTertiaryColor": "#f59e0b",
+                        "roundness": "ROUND_EIGHT",
+                        "spacing": {
+                          "gutter": "1rem",
+                          "gutter-mobile": "0.75rem",
+                          "margin": "1.5rem",
+                          "margin-mobile": "1rem",
+                          "space-lg": "1.5rem",
+                          "space-md": "1rem",
+                          "space-sm": "0.5rem",
+                          "space-xl": "2rem",
+                          "space-xs": "0.25rem"
+                        },
+                        "spacingScale": 2,
+                        "typography": {
+                          "body-lg": {
+                            "fontFamily": "Plus Jakarta Sans",
+                            "fontSize": "16px",
+                            "fontWeight": "400",
+                            "lineHeight": "24px"
+                          },
+                          "body-md": {
+                            "fontFamily": "Plus Jakarta Sans",
+                            "fontSize": "14px",
+                            "fontWeight": "400",
+                            "lineHeight": "20px"
+                          },
+                          "body-sm": {
+                            "fontFamily": "Plus Jakarta Sans",
+                            "fontSize": "12px",
+                            "fontWeight": "400",
+                            "lineHeight": "16px"
+                          },
+                          "code": {
+                            "fontFamily": "Inter",
+                            "fontSize": "12px",
+                            "fontWeight": "500",
+                            "lineHeight": "16px"
+                          },
+                          "display": {
+                            "fontFamily": "Plus Jakarta Sans",
+                            "fontSize": "36px",
+                            "fontWeight": "800",
+                            "letterSpacing": "-0.02em",
+                            "lineHeight": "44px"
+                          },
+                          "headline-lg": {
+                            "fontFamily": "Plus Jakarta Sans",
+                            "fontSize": "28px",
+                            "fontWeight": "700",
+                            "letterSpacing": "-0.015em",
+                            "lineHeight": "36px"
+                          },
+                          "headline-lg-mobile": {
+                            "fontFamily": "Plus Jakarta Sans",
+                            "fontSize": "24px",
+                            "fontWeight": "700",
+                            "letterSpacing": "-0.01em",
+                            "lineHeight": "32px"
+                          },
+                          "headline-md": {
+                            "fontFamily": "Plus Jakarta Sans",
+                            "fontSize": "20px",
+                            "fontWeight": "600",
+                            "letterSpacing": "-0.01em",
+                            "lineHeight": "28px"
+                          },
+                          "headline-sm": {
+                            "fontFamily": "Plus Jakarta Sans",
+                            "fontSize": "18px",
+                            "fontWeight": "600",
+                            "lineHeight": "24px"
+                          },
+                          "label-lg": {
+                            "fontFamily": "Inter",
+                            "fontSize": "14px",
+                            "fontWeight": "600",
+                            "letterSpacing": "0.01em",
+                            "lineHeight": "20px"
+                          },
+                          "label-md": {
+                            "fontFamily": "Inter",
+                            "fontSize": "12px",
+                            "fontWeight": "500",
+                            "letterSpacing": "0.02em",
+                            "lineHeight": "16px"
+                          },
+                          "label-sm": {
+                            "fontFamily": "Inter",
+                            "fontSize": "10px",
+                            "fontWeight": "600",
+                            "letterSpacing": "0.04em",
+                            "lineHeight": "14px"
+                          }
+                        }
+                      }
+                    },
+                    "name": "assets/7ebc8416af6f48ebba845b5838b441a6",
+                    "version": "1"
+                  },
+                  "deviceType": "MOBILE",
+                  "generatedBy": "figaro_agent",
+                  "height": "5608",
+                  "htmlCode": {
+                    "downloadUrl": "https://stitch.googleapis.com/v1/projects/10744711964413240245/files/d0e610e840ca4a7a85d3f8cc8ecf56a0:download",
+                    "mimeType": "text/html",
+                    "name": "projects/10744711964413240245/files/d0e610e840ca4a7a85d3f8cc8ecf56a0"
+                  },
+                  "id": "98a4bd0e1d3b42a8b7355860e0e2f0c4",
+                  "name": "projects/10744711964413240245/screens/98a4bd0e1d3b42a8b7355860e0e2f0c4",
+                  "prompt": "Rancang Halaman Detail Showcase Portofolio Mahasiswa (Mobile screen, max-w-md mx-auto) untuk aplikasi CampusFolio dengan tema elegan Academic Modernist. Tanpa emoji kasual, gunakan ikon Material Symbols Outlined secara konsisten.\n\nSertakan elemen-elemen berikut secara lengkap dan mendalam:\n\n1. Top App Bar / Header:\n   - Tombol kembali (arrow_back) bertuliskan atau dengan tooltip \"Kembali\"\n   - Headline/Title: \"Detail Portofolio\"\n   - Trailing actions: Ikon bookmark (bookmark_border) untuk simpan referensi, dan ikon bagikan (share) untuk tautan proyek.\n\n2. Hero Visual Showcase / Mockup Slider:\n   - Tampilkan foto mockup proyek resolusi tinggi menggunakan {{DATA:IMAGE:IMAGE_21}} sebagai cover utama showcase (aspek 16:9).\n   - Badge overlay: \"Showcase Terverifikasi Dosen\" dengan ikon verified_user.\n   - Indikator pagination dots (3 slide: slide 1 aktif dengan pill indigo).\n   - Tombol kecil floating di sudut bawah hero: ikon zoom_in atau fullscreen \"Lihat Resolusi Penuh\".\n\n3. Judul & Header Informasi Karya:\n   - Kategori badges: \"Web Application & IoT Campus\" dan \"Proyek Riset & Capstone\".\n   - Judul Karya: \"EcoTrack - Smart Energy Monitoring System\" (teks headline-lg font-bold text-on-surface).\n   - Periode pengerjaan: \"September 2025 - Januari 2026 (5 Bulan)\" dengan ikon schedule.\n   - Metrik dampak singkat di bawah judul: 3 pill info seperti \"18.4% Reduksi Daya\", \"14 Node Sensor IoT\", \"99.2% Uptime Sistem\".\n\n4. Profil Pemilik Portofolio:\n   - Kartu profil pemilik elegan (bg-surface-container-low border border-outline-variant/30 rounded-2xl p-4):\n   - Foto profil mahasiswa (avatar pria teknik/mahasiswa rapi), nama: \"Rafi Alamsyah\", badge centang biru terverifikasi (verified), keterangan: \"Teknik Elektro '22 • Universitas Indonesia\".\n   - Peran di proyek: \"Lead IoT Systems & Fullstack Developer\".\n   - Tombol aksi sekunder: \"Lihat Profil\" (open_in_new) dan tombol \"Ajak Kolaborasi\" (handshake / group_add).\n\n5. Studi Kasus & Ringkasan Riset:\n   - Bagian terstruktur dengan tab atau seksi akademis:\n     * Latar Belakang Masalah: \"Tingginya pemborosan energi listrik di gedung laboratorium fakultas teknik tanpa pemantauan terpusat real-time.\"\n     * Metodologi & Solusi: \"Penerapan edge IoT gateway berbasis micro-controller dengan protokol MQTT terenkripsi dan dashboard analisis time-series terdistribusi.\"\n     * Hasil & Dampak: \"Mencapai efisiensi konsumsi daya listrik rata-rata 18.4% per bulan dan deteksi anomali lonjakan beban dalam kurang dari 2 detik.\"\n   - Kutipan / Validasi Akademik: Catatan review dosen pembimbing dengan ikon format_quote.\n\n6. Tech Stack & Keahlian Digunakan:\n   - Tech stack chips terorganisir:\n     * Frontend: React, Next.js, Tailwind CSS\n     * Backend & Telemetry: Go, MQTT, InfluxDB, Docker\n     * Hardware: ESP32, SCT-013 Current Sensor\n   - Setiap chip memiliki ikon rapi atau badge teknis.\n\n7. Tautan Bukti Karya Autentik (Interactive Links):\n   - Kartu aksi tautan pembuktian kerja nyata:\n     * Tombol Buka Repositori GitHub: ikon code, teks \"github.com/campusfolio/ecotrack-iot-core\", label \"Kode Sumber & CI/CD\", tombol eksternal.\n     * Tombol Kunjungi Live Demo: ikon public / language, teks \"ecotrack.campusfolio.ac.id\", label \"Aplikasi Web Live Telemetri\".\n     * Tombol Baca Paper / Laporan PDF: ikon article / picture_as_pdf, teks \"Laporan Capstone & Whitepaper PDF (14 Hlm)\", label \"Dokumen Akademik\".\n\n8. Tim & Kolaborator Proyek:\n   - Daftar 3 rekan satu tim dengan avatar bulat, nama, program studi, dan peranan spesifik:\n     * \"Nadia Eka Pramudita\" (Ilmu Komputer '23) — UI/UX & Dashboard Visualizer\n     * \"Dimas Prasetyo\" (Teknik Elektro '22) — Hardware & Circuitry Engineer\n     * \"Siti Maharani\" (Sains Data '23) — Time-Series Data Analyst\n\n9. Apresiasi & Komentar Akademik (Peer Review):\n   - Counter apresiasi: Tombol Endorse / Apresiasi Proyek dengan ikon thumb_up (\"142 Mahasiswa Memberikan Apresiasi\").\n   - Kolom diskusi teknis:\n     * Form input komentar singkat dengan avatar aktif, placeholder \"Tulis tanggapan atau pertanyaan teknis...\", dan tombol Kirim (send).\n     * Contoh 2 komentar akademik dari mahasiswa lain (misal: pertanyaan mengenai latency broker MQTT dan pujian mengenai arsitektur InfluxDB).\n\n10. Sticky Bottom Bar Aksi Cepat:\n    - Tombol Bookmark Proyek, tombol Apresiasi cepat (+1 Endorse), dan tombol utama \"Ajak Diskusi Kolaborasi\" (ikon chat).\n\nSemua gaya visual mengikuti design system Academic Modernist: warna primary #4338ca (Electric Indigo), font Plus Jakarta Sans, kontras tinggi, border halus, rounded-2xl, bersih, tanpa emoji kasual.",
+                  "screenMetadata": {
+                    "agentType": "PRO_AGENT",
+                    "status": "COMPLETE"
+                  },
+                  "screenType": "DESIGN",
+                  "screenshot": {
+                    "downloadUrl": "https://stitch.googleapis.com/v1/projects/10744711964413240245/files/68bfabf880d24ebb9edfb8e59fd4570f:download",
+                    "name": "projects/10744711964413240245/files/68bfabf880d24ebb9edfb8e59fd4570f"
+                  },
+                  "theme": {
+                    "bodyFont": "PLUS_JAKARTA_SANS",
+                    "bodyFontFamily": "Plus Jakarta Sans",
+                    "colorMode": "LIGHT",
+                    "colorVariant": "FIDELITY",
+                    "customColor": "#4338ca",
+                    "font": "PLUS_JAKARTA_SANS",
+                    "headlineFont": "PLUS_JAKARTA_SANS",
+                    "headlineFontFamily": "Plus Jakarta Sans",
+                    "labelFont": "INTER",
+                    "labelFontFamily": "Inter",
+                    "namedColors": {
+                      "background": "#faf8ff",
+                      "border-subtle": "#E2E8F0",
+                      "error": "#ba1a1a",
+                      "error_container": "#ffdad6",
+                      "inverse_on_surface": "#eef0ff",
+                      "inverse_primary": "#c3c0ff",
+                      "inverse_surface": "#283044",
+                      "match-emerald": "#10B981",
+                      "on_background": "#131b2e",
+                      "on_error": "#ffffff",
+                      "on_error_container": "#93000a",
+                      "on_primary": "#ffffff",
+                      "on_primary_container": "#c1beff",
+                      "on_primary_fixed": "#100069",
+                      "on_primary_fixed_variant": "#372abf",
+                      "on_secondary": "#ffffff",
+                      "on_secondary_container": "#006f66",
+                      "on_secondary_fixed": "#00201d",
+                      "on_secondary_fixed_variant": "#005049",
+                      "on_surface": "#131b2e",
+                      "on_surface_variant": "#464554",
+                      "on_tertiary": "#ffffff",
+                      "on_tertiary_container": "#ffb759",
+                      "on_tertiary_fixed": "#2a1700",
+                      "on_tertiary_fixed_variant": "#653e00",
+                      "outline": "#777586",
+                      "outline_variant": "#c7c4d7",
+                      "primary": "#2a14b4",
+                      "primary_container": "#4338ca",
+                      "primary_fixed": "#e3dfff",
+                      "primary_fixed_dim": "#c3c0ff",
+                      "recruiting-coral": "#F43F5E",
+                      "secondary": "#006a61",
+                      "secondary_container": "#86f2e4",
+                      "secondary_fixed": "#89f5e7",
+                      "secondary_fixed_dim": "#6bd8cb",
+                      "surface": "#faf8ff",
+                      "surface-canvas": "#F8FAFC",
+                      "surface-card": "#FFFFFF",
+                      "surface_bright": "#faf8ff",
+                      "surface_container": "#eaedff",
+                      "surface_container_high": "#e2e7ff",
+                      "surface_container_highest": "#dae2fd",
+                      "surface_container_low": "#f2f3ff",
+                      "surface_container_lowest": "#ffffff",
+                      "surface_dim": "#d2d9f4",
+                      "surface_tint": "#5148d7",
+                      "surface_variant": "#dae2fd",
+                      "tertiary": "#553300",
+                      "tertiary_container": "#744800",
+                      "tertiary_fixed": "#ffddb8",
+                      "tertiary_fixed_dim": "#ffb95f"
+                    },
+                    "overrideNeutralColor": "#0f172a",
+                    "overridePrimaryColor": "#4338ca",
+                    "overrideSecondaryColor": "#0d9488",
+                    "overrideTertiaryColor": "#f59e0b",
+                    "roundness": "ROUND_EIGHT",
+                    "spacing": {
+                      "gutter": "1rem",
+                      "gutter-mobile": "0.75rem",
+                      "margin": "1.5rem",
+                      "margin-mobile": "1rem",
+                      "space-lg": "1.5rem",
+                      "space-md": "1rem",
+                      "space-sm": "0.5rem",
+                      "space-xl": "2rem",
+                      "space-xs": "0.25rem"
+                    },
+                    "spacingScale": 2,
+                    "typography": {
+                      "body-lg": {
+                        "fontFamily": "Plus Jakarta Sans",
+                        "fontSize": "16px",
+                        "fontWeight": "400",
+                        "lineHeight": "24px"
+                      },
+                      "body-md": {
+                        "fontFamily": "Plus Jakarta Sans",
+                        "fontSize": "14px",
+                        "fontWeight": "400",
+                        "lineHeight": "20px"
+                      },
+                      "body-sm": {
+                        "fontFamily": "Plus Jakarta Sans",
+                        "fontSize": "12px",
+                        "fontWeight": "400",
+                        "lineHeight": "16px"
+                      },
+                      "code": {
+                        "fontFamily": "Inter",
+                        "fontSize": "12px",
+                        "fontWeight": "500",
+                        "lineHeight": "16px"
+                      },
+                      "display": {
+                        "fontFamily": "Plus Jakarta Sans",
+                        "fontSize": "36px",
+                        "fontWeight": "800",
+                        "letterSpacing": "-0.02em",
+                        "lineHeight": "44px"
+                      },
+                      "headline-lg": {
+                        "fontFamily": "Plus Jakarta Sans",
+                        "fontSize": "28px",
+                        "fontWeight": "700",
+                        "letterSpacing": "-0.015em",
+                        "lineHeight": "36px"
+                      },
+                      "headline-lg-mobile": {
+                        "fontFamily": "Plus Jakarta Sans",
+                        "fontSize": "24px",
+                        "fontWeight": "700",
+                        "letterSpacing": "-0.01em",
+                        "lineHeight": "32px"
+                      },
+                      "headline-md": {
+                        "fontFamily": "Plus Jakarta Sans",
+                        "fontSize": "20px",
+                        "fontWeight": "600",
+                        "letterSpacing": "-0.01em",
+                        "lineHeight": "28px"
+                      },
+                      "headline-sm": {
+                        "fontFamily": "Plus Jakarta Sans",
+                        "fontSize": "18px",
+                        "fontWeight": "600",
+                        "lineHeight": "24px"
+                      },
+                      "label-lg": {
+                        "fontFamily": "Inter",
+                        "fontSize": "14px",
+                        "fontWeight": "600",
+                        "letterSpacing": "0.01em",
+                        "lineHeight": "20px"
+                      },
+                      "label-md": {
+                        "fontFamily": "Inter",
+                        "fontSize": "12px",
+                        "fontWeight": "500",
+                        "letterSpacing": "0.02em",
+                        "lineHeight": "16px"
+                      },
+                      "label-sm": {
+                        "fontFamily": "Inter",
+                        "fontSize": "10px",
+                        "fontWeight": "600",
+                        "letterSpacing": "0.04em",
+                        "lineHeight": "14px"
+                      }
+                    }
+                  },
+                  "title": "Detail Portofolio - EcoTrack IoT",
+                  "width": "780"
+                }
+              ],
+              "theme": {}
+            }
+          },
+          {
+            "text": "Halaman **Detail Showcase Portofolio Mahasiswa** untuk aplikasi **CampusFolio** telah berhasil dirancang dengan gaya **Academic Modernist** yang formal, profesional, dan bebas dari emoji kasual.\n\n### 🔍 Ringkasan Desain & Elemen Antarmuka:\n\n1. **Top App Bar & Header Tindakan**:\n   - Navigasi kembali (`arrow_back`) dengan judul halaman *\"Detail Portofolio\"*.\n   - Aksi cepat bookmark/simpan referensi (`bookmark_border`) dan bagikan tautan portofolio (`share`).\n\n2. **Hero Visual Showcase Carousel**:\n   - Menampilkan mockup dashboard web & tablet telemetri IoT resolusi tinggi (`Clean high-fidelity mockup showcase of EcoTrack IoT Smart Energy Monitoring System dashboard, displaying real-time kilowatt telemetry charts, energy consumption metrics, hardware sensor telemetry nodes, modern dark-themed web app interface displayed on sleek modern laptop and tablet mockup, university lab background, clean aesthetic photo presentation, 8k resolution, professional tech product portfolio presentation`) dengan aspect ratio 16:9.\n   - Dilengkapi badge verifikasi resmi *\"Showcase Terverifikasi Dosen\"* (`verified_user`), pagination slider dots, serta tombol aksi *\"Perbesar\"* (`zoom_in`).\n\n3. **Judul Karya & Metrik Dampak Nyata**:\n   - Kategori ganda: *Web Application & IoT Campus* dan *Proyek Riset & Capstone*.\n   - Judul resmi: **EcoTrack – Smart Energy Monitoring System**, disertai durasi pengerjaan 5 bulan.\n   - Metrik ringkas dampak proyek: **18.4% Reduksi Daya**, **14 Node Sensor IoT**, dan **99.2% Uptime Sistem**.\n\n4. **Profil Pemilik Portofolio Terverifikasi**:\n   - Profil terkurasi milik **Rafi Alamsyah** (Teknik Elektro '22 • Universitas Indonesia) dengan status badge *Author* dan centang verifikasi akademik.\n   - Posisi peran: *Lead IoT Systems & Fullstack Developer*, dilengkapi tombol sekunder *\"Lihat Profil\"* dan *\"Ajak Kolaborasi\"*.\n\n5. **Studi Kasus & Ringkasan Riset Akademik**:\n   - Terbagi rapi ke dalam tiga segmen utama: **Latar Belakang Masalah**, **Metodologi & Solusi** (protokol MQTT, edge computing ESP32), serta **Hasil & Dampak**.\n   - Kutipan review dan validasi langsung dari dosen pembimbing komputasi cerdas.\n\n6. **Tech Stack & Keahlian Terstruktur**:\n   - Dikelompokkan berdasarkan arsitektur sistem:\n     * *Frontend Architecture*: React 18, Next.js, Tailwind CSS\n     * *Backend & Telemetry*: Go (Golang), MQTT Broker, InfluxDB, Docker Compose\n     * *Embedded Hardware*: ESP32-WROOM, SCT-013 Non-invasive Sensor\n\n7. **Tautan Bukti Karya Interaktif**:\n   - Repositori kode sumber GitHub (`code` & `call_made`)\n   - Aplikasi live demo telemetri web aktif (`public` & `call_made`)\n   - Berkas resmi dokumen Capstone & Whitepaper PDF 14 halaman (`description` / `file_download`)\n\n8. **Tim & Kolaborator Proyek**:\n   - Daftar 3 rekan tim lintas disiplin ilmu lengkap dengan perannya (Nadia Eka Pramudita — *UI/UX & Visualizer*, Dimas Prasetyo — *Hardware Engineer*, Siti Maharani — *Time-Series Analyst*).\n\n9. **Ruang Apresiasi & Diskusi Teknis (Peer Review)**:\n   - Counter 142 apresiasi mahasiswa dengan tombol aksi *+ Beri Apresiasi*.\n   - Input field diskusi akademik teknis beserta utas tanggapan nyata dari mahasiswa lain seputar MQTT broker latency dan optimasi database time-series.\n   - Sticky floating bottom bar untuk memudahkan interaksi cepat kapan pun pengguna selesai meninjau karya."
+          },
+          {
+            "suggestion": "Tambahkan modal dialog saat tombol 'Ajak Kolaborasi' ditekan"
+          },
+          {
+            "suggestion": "Buat versi tampilan fullscreen lightbox untuk galeri tangkapan layar/mockup IoT"
+          },
+          {
+            "suggestion": "Rancang tab 'Log Pembaruan Versi & Rilis' pada halaman portofolio ini"
+          }
+        ],
+        "projectId": "10744711964413240245",
+        "sessionId": "3935939848166415493"
+      }
+    }
+  }
+}

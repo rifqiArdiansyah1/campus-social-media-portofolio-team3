@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CampusFolio — UI/UX Design System & Interactive Prototype</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "#2a14b4",
+            "primary-container": "#4338ca",
+            surface: "#faf8ff",
+            "surface-card": "#ffffff",
+            "surface-dim": "#f2f3ff",
+            "border-subtle": "#E2E8F0",
+            "match-emerald": "#10B981",
+            "recruiting-coral": "#F43F5E",
+            "on-surface": "#131b2e",
+            "on-surface-variant": "#464554"
+          },
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+            mono: ['Inter', 'monospace']
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    .device-shadow {
+      box-shadow: 0 25px 60px -15px rgba(42, 20, 180, 0.25), 0 0 0 12px #1e293b, 0 0 0 14px #475569;
+    }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface font-sans min-h-screen flex flex-col">
+
+  <!-- Top App Navigation -->
+  <header class="bg-white/90 backdrop-blur-md border-b border-border-subtle sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-primary-container flex items-center justify-center text-white shadow-sm">
+          <span class="material-symbols-outlined text-2xl">school</span>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-lg font-bold tracking-tight text-on-surface">CampusFolio</h1>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-semibold border border-primary/20">Design System v1.0</span>
+          </div>
+          <p class="text-xs text-on-surface-variant">Social Media & Collaborative Portfolio for University Students</p>
+        </div>
+      </div>
+      
+      <div class="flex items-center gap-3">
+        <a href="https://stitch.googleapis.com" target="_blank" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border-subtle bg-white text-xs font-medium text-on-surface-variant hover:text-on-surface hover:bg-slate-50 transition-colors">
+          <span class="material-symbols-outlined text-sm">hub</span>
+          <span>Google Stitch MCP</span>
+        </a>
+        <span class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-match-emerald/10 text-match-emerald text-xs font-semibold">
+          <span class="w-2 h-2 rounded-full bg-match-emerald animate-pulse"></span>
+          Academic Modernist
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Showcase Grid -->
+  <main class="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- Left Column: Interactive Screens Selector & Catalog -->
+      <div class="lg:col-span-5 space-y-6">
+        <div>
+          <h2 class="text-xl font-bold text-on-surface">Katalog Antarmuka Mahasiswa</h2>
+          <p class="text-sm text-on-surface-variant mt-1">Pilih layar di bawah untuk menguji prototipe interaktif pada simulator ponsel di sebelah kanan.</p>
+        </div>
+
+        <!-- Section 1: Autentikasi & Onboarding -->
+        <div class="space-y-2">
+          <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-on-surface-variant px-1">
+            <span class="material-symbols-outlined text-base">how_to_reg</span>
+            <span>1. Autentikasi & Onboarding</span>
+          </div>
+          <div class="space-y-1.5">
+            <button onclick="switchScreen('html/00_registrasi_mahasiswa.html', 'Registrasi Akun Mahasiswa', '00_registrasi_mahasiswa')" class="screen-btn active w-full text-left p-3 rounded-xl border border-primary/30 bg-primary/5 hover:bg-primary/10 transition-all flex items-center justify-between group" data-slug="00_registrasi_mahasiswa">
+              <div class="flex items-center gap-3">
+                <span class="w-8 h-8 rounded-lg bg-primary-container text-white flex items-center justify-center text-sm font-semibold">01</span>
+                <div>
+                  <h3 class="text-sm font-semibold text-on-surface group-hover:text-primary transition-colors">Registrasi Mahasiswa</h3>
+                  <p class="text-xs text-on-surface-variant">NIM, email kampus ac.id, prodi, angkatan & verifikasi</p>
+                </div>
+              </div>
+              <span class="material-symbols-outlined text-primary text-lg">chevron_right</span>
+            </button>
+
+            <button onclick="switchScreen('html/00_login_mahasiswa.html', 'Login Mahasiswa & SSO Kampus', '00_login_mahasiswa')" class="screen-btn w-full text-left p-3 rounded-xl border border-border-subtle bg-white hover:bg-surface-dim transition-all flex items-center justify-between group" data-slug="00_login_mahasiswa">
+              <div class="flex items-center gap-3">
+                <span class="w-8 h-8 rounded-lg bg-surface-dim text-on-surface font-semibold flex items-center justify-center text-sm">02</span>
+                <div>
+                  <h3 class="text-sm font-semibold text-on-surface group-hover:text-primary transition-colors">Login & SSO Kampus</h3>
+                  <p class="text-xs text-on-surface-variant">Single Sign-On SIAKAD & otentikasi kredensial</p>
+                </div>
+              </div>
+              <span class="material-symbols-outlined text-slate-400 group-hover:text-primary text-lg">chevron_right</span>
+            </button>
+
+            <button onclick="switchScreen('html/00_onboarding_minat_skills.html', 'Onboarding Profil & Minat', '00_onboarding_minat_skills')" class="screen-btn w-full text-left p-3 rounded-xl border border-border-subtle bg-white hover:bg-surface-dim transition-all flex items-center justify-between group" data-slug="00_onboarding_minat_skills">
+              <div class="flex items-center gap-3">
+                <span class="w-8 h-8 rounded-lg bg-surface-dim text-on-surface font-semibold flex items-center justify-center text-sm">03</span>
+                <div>
+                  <h3 class="text-sm font-semibold text-on-surface group-hover:text-primary transition-colors">Setup Minat & Keahlian</h3>
+                  <p class="text-xs text-on-surface-variant">Pilihan role, keahlian utama, dan preferensi kolaborasi</p>
+                </div>
+              </div>
+              <span class="material-symbols-outlined text-slate-400 group-hover:text-primary text-lg">chevron_right</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Section 2: Feed & Kolaborasi Proyek -->
+        <div class="space-y-2">
+          <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-on-surface-variant px-1">
+            <span class="material-symbols-outlined text-base">dynamic_feed</span>
+            <span>2. Feed & Kolaborasi Tim</span>
+          </div>
+          <div class="space-y-1.5">
+            <button onclick="switchScreen('html/01_feed_proyek.html', 'Beranda & Feed Proyek', '01_feed_proyek')" class="screen-btn w-full text-left p-3 rounded-xl border border-border-subtle bg-white hover:bg-surface-dim transition-all flex items-center justify-between group" data-slug="01_feed_proyek">
+              <div class="flex items-center gap-3">
+                <span class="w-8 h-8 rounded-lg bg-surface-dim text-on-surface font-semibold flex items-center justify-center text-sm">04</span>
+                <div>
+                  <h3 class="text-sm font-semibold text-on-surface group-hover:text-primary transition-colors">Beranda & Feed Proyek</h3>
+                  <p class="text-xs text-on-surface-variant">Lowongan tim, showcase, dan filter Open Recruitment</p>
+                </div>
+              </div>
+              <span class="material-symbols-outlined text-slate-400 group-hover:text-primary text-lg">chevron_right</span>
+            </button>
+
+            <button onclick="switchScreen('html/05_buat_proyek_rekrutmen.html', 'Buat Proyek & Rekrutmen Tim', '05_buat_proyek_rekrutmen')" class="screen-btn w-full text-left p-3 rounded-xl border border-border-subtle bg-white hover:bg-surface-dim transition-all flex items-center justify-between group" data-slug="05_buat_proyek_rekrutmen">
+              <div class="flex items-center gap-3">
+                <span class="w-8 h-8 rounded-lg bg-surface-dim text-on-surface font-semibold flex items-center justify-center text-sm">05</span>
+                <div>
+                  <h3 class="text-sm font-semibold text-on-surface group-hover:text-primary transition-colors">Buat Lowongan Tim Proyek</h3>
+                  <p class="text-xs text-on-surface-variant">Spesifikasi role, durasi, dan moderasi konten otomatis AI</p>
+                </div>
+              </div>
+              <span class="material-symbols-outlined text-slate-400 group-hover:text-primary text-lg">chevron_right</span>
+            </button>
+
+            <button onclick="switchScreen('html/06_detail_proyek_kolaborasi.html', 'Detail Proyek & Pengajuan Bergabung', '06_detail_proyek_kolaborasi')" class="screen-btn w-full text-left p-3 rounded-xl border border-border-subtle bg-white hover:bg-surface-dim transition-all flex items-center justify-between group" data-slug="06_detail_proyek_kolaborasi">
+              <div class="flex items-center gap-3">
+                <span class="w-8 h-8 rounded-lg bg-surface-dim text-on-surface font-semibold flex items-center justify-center text-sm">06</span>
+                <div>
+                  <h3 class="text-sm font-semibold text-on-surface group-hover:text-primary transition-colors">Detail Proyek & Join Request</h3>
+                  <p class="text-xs text-on-surface-variant">Skor AI Match, slot anggota, dan formulir lamaran</p>
+                </div>
+              </div>
+              <span class="material-symbols-outlined text-slate-400 group-hover:text-primary text-lg">chevron_right</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Section 3: Portofolio & Apresiasi -->
+        <div class="space-y-2">
+          <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-on-surface-variant px-1">
+            <span class="material-symbols-outlined text-base">folder_special</span>
+            <span>3. Portofolio Mahasiswa</span>
+          </div>
+          <div class="space-y-1.5">
+            <button onclick="switchScreen('html/02_koleksi_portofolio.html', 'Koleksi Portofolio Mahasiswa', '02_koleksi_portofolio')" class="screen-btn w-full text-left p-3 rounded-xl border border-border-subtle bg-white hover:bg-surface-dim transition-all flex items-center justify-between group" data-slug="02_koleksi_portofolio">
+              <div class="flex items-center gap-3">
+                <span class="w-8 h-8 rounded-lg bg-surface-dim text-on-surface font-semibold flex items-center justify-center text-sm">07</span>
+                <div>
+                  <h3 class="text-sm font-semibold text-on-surface group-hover:text-primary transition-colors">Galeri & Koleksi Karya</h3>
+                  <p class="text-xs text-on-surface-variant">Eksplorasi karya mahasiswa terfilter kategori & tech stack</p>
+                </div>
+              </div>
+              <span class="material-symbols-outlined text-slate-400 group-hover:text-primary text-lg">chevron_right</span>
+            </button>
+
+            <button onclick="switchScreen('html/07_tambah_portofolio.html', 'Tambah Portofolio Karya Baru', '07_tambah_portofolio')" class="screen-btn w-full text-left p-3 rounded-xl border border-border-subtle bg-white hover:bg-surface-dim transition-all flex items-center justify-between group" data-slug="07_tambah_portofolio">
+              <div class="flex items-center gap-3">
+                <span class="w-8 h-8 rounded-lg bg-surface-dim text-on-surface font-semibold flex items-center justify-center text-sm">08</span>
+                <div>
+                  <h3 class="text-sm font-semibold text-on-surface group-hover:text-primary transition-colors">Unggah Portofolio Baru</h3>
+                  <p class="text-xs text-on-surface-variant">Upload mockup, peran, link GitHub, Figma & riset PDF</p>
+                </div>
+              </div>
+              <span class="material-symbols-outlined text-slate-400 group-hover:text-primary text-lg">chevron_right</span>
+            </button>
+
+            <button onclick="switchScreen('html/08_detail_portofolio.html', 'Detail Showcase Portofolio', '08_detail_portofolio')" class="screen-btn w-full text-left p-3 rounded-xl border border-border-subtle bg-white hover:bg-surface-dim transition-all flex items-center justify-between group" data-slug="08_detail_portofolio">
+              <div class="flex items-center gap-3">
+                <span class="w-8 h-8 rounded-lg bg-surface-dim text-on-surface font-semibold flex items-center justify-center text-sm">09</span>
+                <div>
+                  <h3 class="text-sm font-semibold text-on-surface group-hover:text-primary transition-colors">Detail Showcase Portofolio</h3>
+                  <p class="text-xs text-on-surface-variant">Studi kasus mendalam, live demo & apresiasi rekan tim</p>
+                </div>
+              </div>
+              <span class="material-symbols-outlined text-slate-400 group-hover:text-primary text-lg">chevron_right</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Section 4: AI Matchmaker, Profil & Notifikasi -->
+        <div class="space-y-2">
+          <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-on-surface-variant px-1">
+            <span class="material-symbols-outlined text-base">auto_awesome</span>
+            <span>4. AI Talent Matchmaker & Komunikasi</span>
+          </div>
+          <div class="space-y-1.5">
+            <button onclick="switchScreen('html/04_jelajah_rekomendasi_ai.html', 'Jelajah & Rekomendasi AI', '04_jelajah_rekomendasi_ai')" class="screen-btn w-full text-left p-3 rounded-xl border border-border-subtle bg-white hover:bg-surface-dim transition-all flex items-center justify-between group" data-slug="04_jelajah_rekomendasi_ai">
+              <div class="flex items-center gap-3">
+                <span class="w-8 h-8 rounded-lg bg-surface-dim text-on-surface font-semibold flex items-center justify-center text-sm">10</span>
+                <div>
+                  <h3 class="text-sm font-semibold text-on-surface group-hover:text-primary transition-colors">Jelajah Rekomendasi AI</h3>
+                  <p class="text-xs text-on-surface-variant">Pencocokan kolaborator semantik dengan penjelasan AI</p>
+                </div>
+              </div>
+              <span class="material-symbols-outlined text-slate-400 group-hover:text-primary text-lg">chevron_right</span>
+            </button>
+
+            <button onclick="switchScreen('html/03_profil_mahasiswa_skills.html', 'Profil Mahasiswa & Skills', '03_profil_mahasiswa_skills')" class="screen-btn w-full text-left p-3 rounded-xl border border-border-subtle bg-white hover:bg-surface-dim transition-all flex items-center justify-between group" data-slug="03_profil_mahasiswa_skills">
+              <div class="flex items-center gap-3">
+                <span class="w-8 h-8 rounded-lg bg-surface-dim text-on-surface font-semibold flex items-center justify-center text-sm">11</span>
+                <div>
+                  <h3 class="text-sm font-semibold text-on-surface group-hover:text-primary transition-colors">Profil Mahasiswa & Skills</h3>
+                  <p class="text-xs text-on-surface-variant">Identitas akademik, badge keahlian terverifikasi & galeri</p>
+                </div>
+              </div>
+              <span class="material-symbols-outlined text-slate-400 group-hover:text-primary text-lg">chevron_right</span>
+            </button>
+
+            <button onclick="switchScreen('html/09_notifikasi_kolaborasi.html', 'Pusat Notifikasi & Permintaan Tim', '09_notifikasi_kolaborasi')" class="screen-btn w-full text-left p-3 rounded-xl border border-border-subtle bg-white hover:bg-surface-dim transition-all flex items-center justify-between group" data-slug="09_notifikasi_kolaborasi">
+              <div class="flex items-center gap-3">
+                <span class="w-8 h-8 rounded-lg bg-surface-dim text-on-surface font-semibold flex items-center justify-center text-sm">12</span>
+                <div>
+                  <h3 class="text-sm font-semibold text-on-surface group-hover:text-primary transition-colors">Notifikasi & Undangan Tim</h3>
+                  <p class="text-xs text-on-surface-variant">Manajemen pengajuan bergabung tim, terima / tolak</p>
+                </div>
+              </div>
+              <span class="material-symbols-outlined text-slate-400 group-hover:text-primary text-lg">chevron_right</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Live Mobile Prototype Simulator -->
+      <div class="lg:col-span-7 flex flex-col items-center sticky top-24">
+        
+        <!-- Simulator Action Bar -->
+        <div class="w-full max-w-[420px] mb-3 flex items-center justify-between bg-white px-4 py-2.5 rounded-2xl border border-border-subtle shadow-sm">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-match-emerald animate-ping"></span>
+            <span id="current-screen-title" class="text-xs font-bold text-on-surface truncate max-w-[200px]">Registrasi Akun Mahasiswa</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <a id="open-newtab-btn" href="html/00_registrasi_mahasiswa.html" target="_blank" class="p-1.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-slate-100 transition-colors" title="Buka Tab Penuh">
+              <span class="material-symbols-outlined text-base">open_in_new</span>
+            </a>
+            <button onclick="reloadIframe()" class="p-1.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-slate-100 transition-colors" title="Refresh">
+              <span class="material-symbols-outlined text-base">refresh</span>
+            </button>
+            <a id="screenshot-link" href="screenshots/00_registrasi_mahasiswa.png" target="_blank" class="px-2.5 py-1 text-xs rounded-lg bg-surface-dim text-primary font-medium hover:bg-primary/10 transition-colors flex items-center gap-1">
+              <span class="material-symbols-outlined text-xs">image</span>
+              <span>HD PNG</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Phone Device Frame -->
+        <div class="relative w-full max-w-[390px] h-[810px] rounded-[48px] bg-slate-900 p-3 device-shadow transition-all">
+          <!-- Dynamic Island / Speaker Notch -->
+          <div class="absolute top-6 left-1/2 -translate-x-1/2 w-28 h-5 bg-black rounded-full z-30 flex items-center justify-end px-3">
+            <span class="w-2.5 h-2.5 rounded-full bg-slate-900 border border-slate-700"></span>
+          </div>
+
+          <!-- Screen Canvas Container -->
+          <div class="w-full h-full rounded-[38px] overflow-hidden bg-white relative">
+            <iframe id="preview-frame" src="html/00_registrasi_mahasiswa.html" class="w-full h-full border-0 select-none"></iframe>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="bg-white border-t border-border-subtle py-6 mt-12 text-center text-xs text-on-surface-variant">
+    <p>CampusFolio Universitas &bull; Academic Modernist UI/UX Specification &bull; Powered by Google Stitch MCP & Antigravity</p>
+  </footer>
+
+  <script>
+    function switchScreen(url, title, slug) {
+      const frame = document.getElementById('preview-frame');
+      frame.src = url;
+      document.getElementById('current-screen-title').textContent = title;
+      document.getElementById('open-newtab-btn').href = url;
+      document.getElementById('screenshot-link').href = `screenshots/${slug}.png`;
+
+      // Update button active state
+      document.querySelectorAll('.screen-btn').forEach(btn => {
+        if (btn.getAttribute('data-slug') === slug) {
+          btn.classList.add('border-primary/30', 'bg-primary/5');
+          btn.classList.remove('border-border-subtle', 'bg-white');
+          const chevron = btn.querySelector('.material-symbols-outlined:last-child');
+          if (chevron) {
+            chevron.classList.remove('text-slate-400');
+            chevron.classList.add('text-primary');
+          }
+          const num = btn.querySelector('span:first-child');
+          if (num) {
+            num.classList.remove('bg-surface-dim', 'text-on-surface');
+            num.classList.add('bg-primary-container', 'text-white');
+          }
+        } else {
+          btn.classList.remove('border-primary/30', 'bg-primary/5');
+          btn.classList.add('border-border-subtle', 'bg-white');
+          const chevron = btn.querySelector('.material-symbols-outlined:last-child');
+          if (chevron) {
+            chevron.classList.add('text-slate-400');
+            chevron.classList.remove('text-primary');
+          }
+          const num = btn.querySelector('span:first-child');
+          if (num) {
+            num.classList.add('bg-surface-dim', 'text-on-surface');
+            num.classList.remove('bg-primary-container', 'text-white');
+          }
+        }
+      });
+    }
+
+    function reloadIframe() {
+      const frame = document.getElementById('preview-frame');
+      frame.src = frame.src;
+    }
+  </script>
+</body>
+</html>

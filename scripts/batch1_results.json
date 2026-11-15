@@ -1,0 +1,325 @@
+[
+  {
+    "item": {
+      "key": "login_mahasiswa",
+      "title": "Login Mahasiswa & SSO Kampus",
+      "prompt": "Halaman Login Akun Mahasiswa untuk aplikasi CampusFolio.\nDesain antarmuka mobile modern bertema Academic Modernist yang profesional, bersih, dan elegan.\nHindari emoji/emote kasual atau tidak relevan, gunakan ikon Material Symbols Outlined.\nElemen halaman:\n- Header dengan logo CampusFolio dan info versi kampus terverifikasi\n- Judul: \"Masuk ke CampusFolio\", Subjudul: \"Akses portofolio karyamu dan terhubung dengan rekan proyek se-kampus\"\n- Tombol Utama SSO Kampus: \"Masuk dengan SSO / SIAKAD Kampus\" dengan ikon key dan badge aman\n- Divider elegan: \"atau masuk dengan kredensial akun\"\n- Form input:\n  * NIM / Email Mahasiswa Kampus (e.g. mahasiswa@students.ac.id) dengan ikon mail\n  * Kata Sandi dengan ikon lock dan tombol toggle visibilitas kata sandi\n- Baris opsi: Checkbox \"Ingat Saya di Perangkat Ini\" dan link \"Lupa Kata Sandi?\"\n- Tombol CTA Primer: \"Masuk ke Akun\" (warna Indigo #4338ca)\n- Bagian bawah: \"Belum memiliki akun mahasiswa? Daftar Sekarang\" yang mengarah ke registrasi\n- Banner jaminan keamanan data akademik berstandar kampus di bagian footer (ikon shield)."
+    },
+    "res": {
+      "id": 1793428799076,
+      "jsonrpc": "2.0",
+      "result": {
+        "content": [
+          {
+            "text": "{\"projectId\":\"10744711964413240245\",\"sessionId\":\"17629498911675667017\",\"outputComponents\":[{\"design\":{\"screens\":[{\"screenshot\":{\"name\":\"projects/10744711964413240245/files/948ad658c17e40c4a1964d1e7911f243\",\"downloadUrl\":\"https://stitch.googleapis.com/v1/projects/10744711964413240245/files/948ad658c17e40c4a1964d1e7911f243:download\"},\"htmlCode\":{\"name\":\"projects/10744711964413240245/files/a2757cc4e13d45ec9ebb8f45a6271c0a\",\"downloadUrl\":\"https://stitch.googleapis.com/v1/projects/10744711964413240245/files/a2757cc4e13d45ec9ebb8f45a6271c0a:download\",\"mimeType\":\"text/html\"},\"id\":\"8c499f70a75c48bda460f619b8ae1fe5\",\"generatedBy\":\"create_datastore_entry\",\"width\":\"2560\",\"height\":\"2048\",\"title\":\"Login Akun Mahasiswa - CampusFolio\",\"name\":\"projects/10744711964413240245/screens/8c499f70a75c48bda460f619b8ae1fe5\",\"theme\":{},\"deviceType\":\"DESKTOP\",\"screenType\":\"DESIGN\",\"screenMetadata\":{\"agentType\":\"PRO_AGENT\",\"status\":\"COMPLETE\"}}],\"theme\":{}}},{\"text\":\"Halaman **Login Akun Mahasiswa** untuk aplikasi mobile **CampusFolio** telah berhasil dirancang dengan estetika *Academic Modernist* yang presisi, profesional, dan bersih.\\n\\n### 🌟 Sorotan Desain Antarmuka:\\n1. **Header & Identitas Terverifikasi**:\\n   - Logo resmi CampusFolio berikon akademik (`school`) dengan subjudul *\\\"Ekosistem Portofolio Kampus\\\"*.\\n   - Badge status resmi *\\\"Portal Resmi\\\"* (`verified_user`) berlatar hijau lembut yang menumbuhkan rasa percaya.\\n2. **SSO / SIAKAD Terintegrasi**:\\n   - Tombol utama *\\\"Masuk dengan SSO Kampus\\\"* dengan ikon kunci (`key`) dan panah navigasi, dilengkapi penegasan enkripsi koneksi ke server akademik universitas.\\n3. **Form Kredensial Akun**:\\n   - Divider bergaris tipis *\\\"atau masuk dengan kredensial akun\\\"*.\\n   - Input **NIM atau Email Mahasiswa Kampus** dengan ikon surat (`mail`) serta chip penanda domain institusi `@ac.id`.\\n   - Input **Kata Sandi** dengan ikon gembok (`lock`) dan tombol interaktif visibilitas kata sandi (`visibility` / `visibility_off`).\\n4. **Opsi & Tombol CTA**:\\n   - Checkbox *\\\"Ingat Saya di Perangkat Ini\\\"* dan link *\\\"Lupa Kata Sandi?\\\"*.\\n   - Tombol primer CTA **\\\"Masuk ke Akun\\\"** berwarna Indigo `#4338ca` dengan aksen bayangan lembut dan ikon login.\\n5. **Navigasi Pendaftaran & Footer Keamanan**:\\n   - Tautan terarah ke halaman registrasi *\\\"Belum memiliki akun mahasiswa? Daftar Sekarang\\\"*.\\n   - Banner jaminan keamanan akademik terstandarisasi di bagian bawah dengan ikon shield/verified.\\n   - Menggunakan ikon **Material Symbols Outlined** konsisten tanpa emoji kasual.\"},{\"suggestion\":\"Tambahkan modal/dialog verifikasi OTP untuk email mahasiswa\"},{\"suggestion\":\"Buat halaman Lupa Kata Sandi (Reset Password via Email Kampus)\"},{\"suggestion\":\"Hubungkan tautan 'Daftar Sekarang' ke alur Registrasi Mahasiswa Baru\"}]}",
+            "type": "text"
+          }
+        ],
+        "structuredContent": {
+          "outputComponents": [
+            {
+              "design": {
+                "screens": [
+                  {
+                    "deviceType": "DESKTOP",
+                    "generatedBy": "create_datastore_entry",
+                    "height": "2048",
+                    "htmlCode": {
+                      "downloadUrl": "https://stitch.googleapis.com/v1/projects/10744711964413240245/files/a2757cc4e13d45ec9ebb8f45a6271c0a:download",
+                      "mimeType": "text/html",
+                      "name": "projects/10744711964413240245/files/a2757cc4e13d45ec9ebb8f45a6271c0a"
+                    },
+                    "id": "8c499f70a75c48bda460f619b8ae1fe5",
+                    "name": "projects/10744711964413240245/screens/8c499f70a75c48bda460f619b8ae1fe5",
+                    "screenMetadata": {
+                      "agentType": "PRO_AGENT",
+                      "status": "COMPLETE"
+                    },
+                    "screenType": "DESIGN",
+                    "screenshot": {
+                      "downloadUrl": "https://stitch.googleapis.com/v1/projects/10744711964413240245/files/948ad658c17e40c4a1964d1e7911f243:download",
+                      "name": "projects/10744711964413240245/files/948ad658c17e40c4a1964d1e7911f243"
+                    },
+                    "theme": {},
+                    "title": "Login Akun Mahasiswa - CampusFolio",
+                    "width": "2560"
+                  }
+                ],
+                "theme": {}
+              }
+            },
+            {
+              "text": "Halaman **Login Akun Mahasiswa** untuk aplikasi mobile **CampusFolio** telah berhasil dirancang dengan estetika *Academic Modernist* yang presisi, profesional, dan bersih.\n\n### 🌟 Sorotan Desain Antarmuka:\n1. **Header & Identitas Terverifikasi**:\n   - Logo resmi CampusFolio berikon akademik (`school`) dengan subjudul *\"Ekosistem Portofolio Kampus\"*.\n   - Badge status resmi *\"Portal Resmi\"* (`verified_user`) berlatar hijau lembut yang menumbuhkan rasa percaya.\n2. **SSO / SIAKAD Terintegrasi**:\n   - Tombol utama *\"Masuk dengan SSO Kampus\"* dengan ikon kunci (`key`) dan panah navigasi, dilengkapi penegasan enkripsi koneksi ke server akademik universitas.\n3. **Form Kredensial Akun**:\n   - Divider bergaris tipis *\"atau masuk dengan kredensial akun\"*.\n   - Input **NIM atau Email Mahasiswa Kampus** dengan ikon surat (`mail`) serta chip penanda domain institusi `@ac.id`.\n   - Input **Kata Sandi** dengan ikon gembok (`lock`) dan tombol interaktif visibilitas kata sandi (`visibility` / `visibility_off`).\n4. **Opsi & Tombol CTA**:\n   - Checkbox *\"Ingat Saya di Perangkat Ini\"* dan link *\"Lupa Kata Sandi?\"*.\n   - Tombol primer CTA **\"Masuk ke Akun\"** berwarna Indigo `#4338ca` dengan aksen bayangan lembut dan ikon login.\n5. **Navigasi Pendaftaran & Footer Keamanan**:\n   - Tautan terarah ke halaman registrasi *\"Belum memiliki akun mahasiswa? Daftar Sekarang\"*.\n   - Banner jaminan keamanan akademik terstandarisasi di bagian bawah dengan ikon shield/verified.\n   - Menggunakan ikon **Material Symbols Outlined** konsisten tanpa emoji kasual."
+            },
+            {
+              "suggestion": "Tambahkan modal/dialog verifikasi OTP untuk email mahasiswa"
+            },
+            {
+              "suggestion": "Buat halaman Lupa Kata Sandi (Reset Password via Email Kampus)"
+            },
+            {
+              "suggestion": "Hubungkan tautan 'Daftar Sekarang' ke alur Registrasi Mahasiswa Baru"
+            }
+          ],
+          "projectId": "10744711964413240245",
+          "sessionId": "17629498911675667017"
+        }
+      }
+    }
+  },
+  {
+    "item": {
+      "key": "onboarding_minat_skills",
+      "title": "Onboarding Setup Profil & Keahlian",
+      "prompt": "Halaman Onboarding Setup Profil, Minat, dan Keahlian Mahasiswa untuk aplikasi CampusFolio (langkah setelah registrasi akun baru).\nDesain mobile modern bertema Academic Modernist tanpa emoji kasual, menggunakan ikon Material Symbols Outlined.\nElemen halaman:\n- Progress bar langkah (Langkah 2 dari 3: Personalisasi Profil & Minat)\n- Judul: \"Atur Keahlian & Minat Proyek\", Subjudul: \"Bantu algoritma AI merekomendasikan rekan tim dan proyek lomba yang sesuai dengan kompetensimu\"\n- Foto Profil / Avatar: area upload foto formal/semi-formal kampus dengan badge ikon photo_camera\n- Bio Singkat Akademik (textarea: maks 150 karakter)\n- Pilihan Role & Minat Utama (chip selector dengan ikon rapi):\n  * UI/UX Design, Frontend Development, Mobile Flutter, Backend API, Machine Learning / AI, Data Science, IoT & Embedded Systems, Product Management\n- Input Tag Keahlian Spesifik (chips yang bisa ditambahkan: Figma, React, Python, TensorFlow, Tailwind CSS, PostgreSQL)\n- Preferensi Kolaborasi (radio/card selection):\n  * \"Aktif Mencari Tim (Lomba / PKM)\"\n  * \"Terbuka untuk Kolaborasi Proyek\"\n  * \"Fokus Belajar & Showcase Portofolio\"\n- Tombol navigasi: \"Lewati Sementara\" dan tombol primer \"Simpan & Lanjutkan ke Beranda\" (ikon arrow_forward)."
+    },
+    "res": {
+      "id": 1793428825162,
+      "jsonrpc": "2.0",
+      "result": {
+        "content": [
+          {
+            "text": "{\"projectId\":\"10744711964413240245\",\"sessionId\":\"15313768698650229716\",\"outputComponents\":[{\"designSystem\":{\"name\":\"assets/f8859a66080247778aea8f9747acb503\",\"designSystem\":{\"displayName\":\"Academic Modernist\",\"styleGuidelines\":\"## Brand & Style\\nThe design system embodies an Academic Modernist sensibility: disciplined, intellectual, authoritative, yet thoroughly adapted to modern mobile contexts. It balances the structural rigor of classical university publishing with the tactile efficiency of contemporary product design.\\n\\n- **Brand Personality**: Scholarly, precise, high-trust, deliberate, and archival.\\n- **Target Audience**: Researchers, university faculty, postgraduates, and academic professionals who demand uncompromised legibility and density without clutter.\\n- **Emotional Response**: Cultivates deep focus, institutional credibility, and clarity of thought.\\n- **Design Style**: Neoclassical editorial modernism. Crisp rules, structural grid lines, subdued ink-inspired tones, strict typographic hierarchies, and zero non-functional ornamentation. Strict avoidance of casual emojis or juvenile elements; semantic clarity is achieved strictly via Material Symbols Outlined icons and typographic inflection.\\n\\n## Layout & Spacing\\nA fluid 4-column layout on mobile devices transitions to an 8-column layout on tablets and a 12-column fixed-max layout for reading dashboards.\\n\\n- **Rhythm**: Built on a strict 4px/8px incremental base unit.\\n- **Density**: Moderately dense to support scientific metadata (authorship, DOI indices, affiliations), while preserving generous 26px line height for reading blocks.\\n- **Mobile Margins**: Standardized to `1rem` (16px) outer safe margin on mobile, ensuring edge-to-edge readability without cognitive strain.\\n- **Reflow Behavior**: Metadata blocks collapse into vertical stacks with subtle divider rules on screens below 480px.\\n\\n## Elevation & Depth\\nElevation favors print-like architectural layering over decorative drop shadows.\\n\\n- **Primary Technique**: Crisp structural hairlines (`1px solid #e2e8f0`) and subtle tonal stratification (`#fcfcfb` base to `#ffffff` surface containers).\\n- **Shadow Profiles**: Ambient, almost unperceived diffuse ink shadows (`0 1px 3px rgba(30, 41, 59, 0.05), 0 4px 12px rgba(30, 41, 59, 0.03)`). No colored glows or blur-heavy effects.\\n- **Depth Hierarchy**:\\n  - *Layer 0 (Canvas)*: `#fcfcfb` paper ground.\\n  - *Layer 1 (Card / Tile)*: `#ffffff` with a `1px solid #e2e8f0` stroke.\\n  - *Layer 2 (Floating Action / Sticky App Bar)*: `#ffffff` surface with a bottom border rule and 8px diffuse ambient shadow.\\n  - *Layer 3 (Modals / Drawers)*: Crisp modal containers with a deep 24px backdrop scrim (`rgba(15, 23, 42, 0.4)`).\\n\\n## Components\\n\\n### Buttons\\n- **Primary**: Solid Indigo (`#4338ca`) background, crisp white label text in `Hanken Grotesk` (Weight 600), 4px border radius. Padding: 10px 16px. Touch target height: 44px minimum.\\n- **Secondary / Outlined**: Transparent background, `1px solid #cbd5e1` outline, `#312e81` label.\\n- **Icon Pairing**: Leading or trailing Material Symbols Outlined icons at 18px size, strictly monochrome to match the text token.\\n\\n### Form Inputs & Search\\n- Surface: `#ffffff` background with a `1px solid #cbd5e1` border, transitioning to `1.5px solid #4338ca` upon focus.\\n- Typography: Input text set in `Hanken Grotesk` 15px; placeholders set in `#64748b` italic.\\n- Prefix: Material Symbols Outlined (`search`, `filter_list`, `library_books`) anchored with 12px left padding.\\n\\n### Chips & Metadata Tags\\n- Height: 24px–28px, 4px border radius.\\n- Inactive / Taxonomy: `#f1f5f9` surface with `1px solid #e2e8f0` border and `#334155` text in `label-sm`.\\n- Active / Citation: Light Indigo tint (`#eef2ff`) with `#4338ca` text and a subtle indigo outline. Emojis are strictly banned; status is expressed through icons like `verified`, `bookmark`, or `school`.\\n\\n### Cards & Abstract Tiles\\n- Grounded in `#ffffff` with a standard `1px solid #e2e8f0` boundary.\\n- Internal padding: `1.25rem` (`space-lg`).\\n- Layout: Publication metadata (journal name, issue, DOI) rendered in `label-sm` along the top bar; article title rendered in `headline-md` (`Source Serif 4`); abstract snippet rendered in `body-sm` (`Newsreader`).\\n\\n### Lists & Citations\\n- Non-bordered or hairline divider (`1px solid #f1f5f9`) separators.\\n- Numerical indices styled with tabular numbers in `label-md` `#4338ca`.\\n- Interaction: Gentle hover/pressed state using `#f8fafc`.\\n\\n### Checkboxes & Radios\\n- Square checkbox (4px radius) and crisp circular radio.\\n- Unchecked: `1.5px solid #94a3b8`.\\n- Checked: `#4338ca` fill with a pure white checkmark or center pip.\\n\\n### Academic-Specific Additions\\n- **Citation Callout**: Left-bordered callout panel (`3px solid #4338ca`) on a tinted `#f8fafc` background for highlighted quotes and bibliography excerpts.\\n- **DOI Pill**: Compact monospace-style data indicator pairing the `link` Material Symbols Outlined icon with selectable publication handles.\",\"theme\":{\"colorMode\":\"LIGHT\",\"font\":\"SOURCE_SERIF_4\",\"roundness\":\"ROUND_FOUR\",\"customColor\":\"#4338ca\",\"headlineFont\":\"SOURCE_SERIF_4\",\"bodyFont\":\"NEWSREADER\",\"labelFont\":\"HANKEN_GROTESK\",\"namedColors\":{\"on_primary\":\"#ffffff\",\"tertiary_container\":\"#873b00\",\"on_surface_variant\":\"#464554\",\"tertiary\":\"#632900\",\"outline\":\"#777586\",\"surface_container_high\":\"#dce9ff\",\"error\":\"#ba1a1a\",\"on_error_container\":\"#93000a\",\"on_error\":\"#ffffff\",\"secondary\":\"#5654a8\",\"secondary_container\":\"#a7a5ff\",\"primary\":\"#2a14b4\",\"on_tertiary_fixed_variant\":\"#763300\",\"on_primary_fixed\":\"#100069\",\"surface_container_highest\":\"#d5e3fc\",\"error_container\":\"#ffdad6\",\"inverse_on_surface\":\"#eaf1ff\",\"on_secondary_container\":\"#393689\",\"inverse_primary\":\"#c3c0ff\",\"surface_tint\":\"#5148d7\",\"surface_container_low\":\"#eff4ff\",\"surface\":\"#f8f9ff\",\"inverse_surface\":\"#233144\",\"outline_variant\":\"#c7c4d7\",\"surface_variant\":\"#d5e3fc\",\"on_tertiary_container\":\"#ffb389\",\"primary_fixed\":\"#e3dfff\",\"on_primary_fixed_variant\":\"#372abf\",\"on_surface\":\"#0d1c2e\",\"tertiary_fixed\":\"#ffdbca\",\"surface_container\":\"#e6eeff\",\"on_secondary\":\"#ffffff\",\"on_primary_container\":\"#c1beff\",\"on_tertiary\":\"#ffffff\",\"background\":\"#f8f9ff\",\"on_background\":\"#0d1c2e\",\"secondary_fixed\":\"#e2dfff\",\"tertiary_fixed_dim\":\"#ffb68e\",\"on_tertiary_fixed\":\"#331200\",\"primary_container\":\"#4338ca\",\"secondary_fixed_dim\":\"#c3c0ff\",\"surface_container_lowest\":\"#ffffff\",\"primary_fixed_dim\":\"#c3c0ff\",\"surface_dim\":\"#ccdbf3\",\"on_secondary_fixed_variant\":\"#3e3c8f\",\"surface_bright\":\"#f8f9ff\",\"on_secondary_fixed\":\"#100563\"},\"designMd\":\"---\\nname: Academic Modernist\\ncolors:\\n  surface: '#f8f9ff'\\n  surface-dim: '#ccdbf3'\\n  surface-bright: '#f8f9ff'\\n  surface-container-lowest: '#ffffff'\\n  surface-container-low: '#eff4ff'\\n  surface-container: '#e6eeff'\\n  surface-container-high: '#dce9ff'\\n  surface-container-highest: '#d5e3fc'\\n  on-surface: '#0d1c2e'\\n  on-surface-variant: '#464554'\\n  inverse-surface: '#233144'\\n  inverse-on-surface: '#eaf1ff'\\n  outline: '#777586'\\n  outline-variant: '#c7c4d7'\\n  surface-tint: '#5148d7'\\n  primary: '#2a14b4'\\n  on-primary: '#ffffff'\\n  primary-container: '#4338ca'\\n  on-primary-container: '#c1beff'\\n  inverse-primary: '#c3c0ff'\\n  secondary: '#5654a8'\\n  on-secondary: '#ffffff'\\n  secondary-container: '#a7a5ff'\\n  on-secondary-container: '#393689'\\n  tertiary: '#632900'\\n  on-tertiary: '#ffffff'\\n  tertiary-container: '#873b00'\\n  on-tertiary-container: '#ffb389'\\n  error: '#ba1a1a'\\n  on-error: '#ffffff'\\n  error-container: '#ffdad6'\\n  on-error-container: '#93000a'\\n  primary-fixed: '#e3dfff'\\n  primary-fixed-dim: '#c3c0ff'\\n  on-primary-fixed: '#100069'\\n  on-primary-fixed-variant: '#372abf'\\n  secondary-fixed: '#e2dfff'\\n  secondary-fixed-dim: '#c3c0ff'\\n  on-secondary-fixed: '#100563'\\n  on-secondary-fixed-variant: '#3e3c8f'\\n  tertiary-fixed: '#ffdbca'\\n  tertiary-fixed-dim: '#ffb68e'\\n  on-tertiary-fixed: '#331200'\\n  on-tertiary-fixed-variant: '#763300'\\n  background: '#f8f9ff'\\n  on-background: '#0d1c2e'\\n  surface-variant: '#d5e3fc'\\ntypography:\\n  display-lg:\\n    fontFamily: Source Serif 4\\n    fontSize: 36px\\n    fontWeight: '600'\\n    lineHeight: 44px\\n    letterSpacing: -0.02em\\n  display-lg-mobile:\\n    fontFamily: Source Serif 4\\n    fontSize: 28px\\n    fontWeight: '600'\\n    lineHeight: 36px\\n    letterSpacing: -0.01em\\n  headline-lg:\\n    fontFamily: Source Serif 4\\n    fontSize: 24px\\n    fontWeight: '600'\\n    lineHeight: 32px\\n    letterSpacing: -0.01em\\n  headline-md:\\n    fontFamily: Source Serif 4\\n    fontSize: 20px\\n    fontWeight: '600'\\n    lineHeight: 28px\\n  headline-sm:\\n    fontFamily: Source Serif 4\\n    fontSize: 18px\\n    fontWeight: '600'\\n    lineHeight: 24px\\n  body-lg:\\n    fontFamily: Newsreader\\n    fontSize: 17px\\n    fontWeight: '400'\\n    lineHeight: 26px\\n  body-md:\\n    fontFamily: Newsreader\\n    fontSize: 15px\\n    fontWeight: '400'\\n    lineHeight: 23px\\n  body-sm:\\n    fontFamily: Newsreader\\n    fontSize: 13px\\n    fontWeight: '400'\\n    lineHeight: 19px\\n  label-lg:\\n    fontFamily: Hanken Grotesk\\n    fontSize: 14px\\n    fontWeight: '600'\\n    lineHeight: 20px\\n    letterSpacing: 0.01em\\n  label-md:\\n    fontFamily: Hanken Grotesk\\n    fontSize: 12px\\n    fontWeight: '500'\\n    lineHeight: 16px\\n    letterSpacing: 0.02em\\n  label-sm:\\n    fontFamily: Hanken Grotesk\\n    fontSize: 10px\\n    fontWeight: '600'\\n    lineHeight: 14px\\n    letterSpacing: 0.04em\\nrounded:\\n  sm: 0.125rem\\n  DEFAULT: 0.25rem\\n  md: 0.375rem\\n  lg: 0.5rem\\n  xl: 0.75rem\\n  full: 9999px\\nspacing:\\n  gutter: 1rem\\n  gutter-mobile: 0.75rem\\n  margin: 1rem\\n  margin-mobile: 1rem\\n  space-xs: 0.25rem\\n  space-sm: 0.5rem\\n  space-md: 0.75rem\\n  space-lg: 1.25rem\\n  space-xl: 2rem\\n---\\n\\n## Brand & Style\\nThe design system embodies an Academic Modernist sensibility: disciplined, intellectual, authoritative, yet thoroughly adapted to modern mobile contexts. It balances the structural rigor of classical university publishing with the tactile efficiency of contemporary product design.\\n\\n- **Brand Personality**: Scholarly, precise, high-trust, deliberate, and archival.\\n- **Target Audience**: Researchers, university faculty, postgraduates, and academic professionals who demand uncompromised legibility and density without clutter.\\n- **Emotional Response**: Cultivates deep focus, institutional credibility, and clarity of thought.\\n- **Design Style**: Neoclassical editorial modernism. Crisp rules, structural grid lines, subdued ink-inspired tones, strict typographic hierarchies, and zero non-functional ornamentation. Strict avoidance of casual emojis or juvenile elements; semantic clarity is achieved strictly via Material Symbols Outlined icons and typographic inflection.\\n\\n## Colors\\nThe palette evokes archival ink, parchment undertones, and authoritative scholarly stamps.\\n\\n- **Primary (`#4338ca`)**: Oxford Indigo. Serves as the primary active state, primary buttons, key citations, and active navigation indicators.\\n- **Secondary (`#312e81`)**: Deep Ink. Used for structural hierarchy, heavy titles, and high-emphasis metadata badges.\\n- **Tertiary (`#b45309`)**: Academic Amber. Reserved strictly for editorial annotations, peer-review alerts, citations of note, and status warnings.\\n- **Neutral (`#475569`)**: Slate Graphite. Provides a legible, neutral scale for secondary text, metadata, structural borders, and subtle panel dividers.\\n- **Canvas & Surfaces**: The base canvas is warm off-white (`#fcfcfb`), simulating archival acid-free paper, paired with layered cool-tinted slate containers (`#f1f5f9` and `#ffffff`) for reading panels.\\n\\n## Typography\\nTypographic pairings distinguish scholarly authority from interface utility:\\n- **Headlines (`Source Serif 4`)**: Sturdy, academic editorial serif with robust bracketed serifs that anchor section headers and publication titles.\\n- **Body (`Newsreader`)**: Tuned specifically for sustained, fatigue-free long-form reading of research abstracts, journal entries, and dense critiques.\\n- **Labels & UI Metadata (`Hanken Grotesk`)**: Clean, objective grotesque sans-serif used for data tables, citation counters, tags, timestamps, and actionable controls to keep functional UI distinctly separated from literary content.\\n\\n## Layout & Spacing\\nA fluid 4-column layout on mobile devices transitions to an 8-column layout on tablets and a 12-column fixed-max layout for reading dashboards.\\n\\n- **Rhythm**: Built on a strict 4px/8px incremental base unit.\\n- **Density**: Moderately dense to support scientific metadata (authorship, DOI indices, affiliations), while preserving generous 26px line height for reading blocks.\\n- **Mobile Margins**: Standardized to `1rem` (16px) outer safe margin on mobile, ensuring edge-to-edge readability without cognitive strain.\\n- **Reflow Behavior**: Metadata blocks collapse into vertical stacks with subtle divider rules on screens below 480px.\\n\\n## Elevation & Depth\\nElevation favors print-like architectural layering over decorative drop shadows.\\n\\n- **Primary Technique**: Crisp structural hairlines (`1px solid #e2e8f0`) and subtle tonal stratification (`#fcfcfb` base to `#ffffff` surface containers).\\n- **Shadow Profiles**: Ambient, almost unperceived diffuse ink shadows (`0 1px 3px rgba(30, 41, 59, 0.05), 0 4px 12px rgba(30, 41, 59, 0.03)`). No colored glows or blur-heavy effects.\\n- **Depth Hierarchy**:\\n  - *Layer 0 (Canvas)*: `#fcfcfb` paper ground.\\n  - *Layer 1 (Card / Tile)*: `#ffffff` with a `1px solid #e2e8f0` stroke.\\n  - *Layer 2 (Floating Action / Sticky App Bar)*: `#ffffff` surface with a bottom border rule and 8px diffuse ambient shadow.\\n  - *Layer 3 (Modals / Drawers)*: Crisp modal containers with a deep 24px backdrop scrim (`rgba(15, 23, 42, 0.4)`).\\n\\n## Shapes\\nTo preserve academic formality and print-era discipline, the system uses soft, minimal radii (`roundedness: 1`).\\n\\n- **Standard UI Elements**: `0.25rem` (4px) corner radii across primary buttons, form fields, and inline badges.\\n- **Cards and Dialogs**: `0.5rem` (8px) corner radii (`rounded-lg`) for structural boundaries, preventing the toy-like softness of hyper-rounded interfaces.\\n- **No Full Pill Contours**: Pill shapes are prohibited to avoid casual, consumer-app aesthetics. Badges and chips maintain crisp 4px geometries.\\n\\n## Components\\n\\n### Buttons\\n- **Primary**: Solid Indigo (`#4338ca`) background, crisp white label text in `Hanken Grotesk` (Weight 600), 4px border radius. Padding: 10px 16px. Touch target height: 44px minimum.\\n- **Secondary / Outlined**: Transparent background, `1px solid #cbd5e1` outline, `#312e81` label.\\n- **Icon Pairing**: Leading or trailing Material Symbols Outlined icons at 18px size, strictly monochrome to match the text token.\\n\\n### Form Inputs & Search\\n- Surface: `#ffffff` background with a `1px solid #cbd5e1` border, transitioning to `1.5px solid #4338ca` upon focus.\\n- Typography: Input text set in `Hanken Grotesk` 15px; placeholders set in `#64748b` italic.\\n- Prefix: Material Symbols Outlined (`search`, `filter_list`, `library_books`) anchored with 12px left padding.\\n\\n### Chips & Metadata Tags\\n- Height: 24px–28px, 4px border radius.\\n- Inactive / Taxonomy: `#f1f5f9` surface with `1px solid #e2e8f0` border and `#334155` text in `label-sm`.\\n- Active / Citation: Light Indigo tint (`#eef2ff`) with `#4338ca` text and a subtle indigo outline. Emojis are strictly banned; status is expressed through icons like `verified`, `bookmark`, or `school`.\\n\\n### Cards & Abstract Tiles\\n- Grounded in `#ffffff` with a standard `1px solid #e2e8f0` boundary.\\n- Internal padding: `1.25rem` (`space-lg`).\\n- Layout: Publication metadata (journal name, issue, DOI) rendered in `label-sm` along the top bar; article title rendered in `headline-md` (`Source Serif 4`); abstract snippet rendered in `body-sm` (`Newsreader`).\\n\\n### Lists & Citations\\n- Non-bordered or hairline divider (`1px solid #f1f5f9`) separators.\\n- Numerical indices styled with tabular numbers in `label-md` `#4338ca`.\\n- Interaction: Gentle hover/pressed state using `#f8fafc`.\\n\\n### Checkboxes & Radios\\n- Square checkbox (4px radius) and crisp circular radio.\\n- Unchecked: `1.5px solid #94a3b8`.\\n- Checked: `#4338ca` fill with a pure white checkmark or center pip.\\n\\n### Academic-Specific Additions\\n- **Citation Callout**: Left-bordered callout panel (`3px solid #4338ca`) on a tinted `#f8fafc` background for highlighted quotes and bibliography excerpts.\\n- **DOI Pill**: Compact monospace-style data indicator pairing the `link` Material Symbols Outlined icon with selectable publication handles.\",\"colorVariant\":\"FIDELITY\",\"overridePrimaryColor\":\"#4338ca\",\"overrideSecondaryColor\":\"#312e81\",\"overrideTertiaryColor\":\"#b45309\",\"overrideNeutralColor\":\"#475569\",\"spacingScale\":2,\"typography\":{\"headline-md\":{\"fontFamily\":\"Source Serif 4\",\"fontSize\":\"20px\",\"fontWeight\":\"600\",\"lineHeight\":\"28px\"},\"display-lg\":{\"fontFamily\":\"Source Serif 4\",\"fontSize\":\"36px\",\"fontWeight\":\"600\",\"lineHeight\":\"44px\",\"letterSpacing\":\"-0.02em\"},\"headline-lg\":{\"fontFamily\":\"Source Serif 4\",\"fontSize\":\"24px\",\"fontWeight\":\"600\",\"lineHeight\":\"32px\",\"letterSpacing\":\"-0.01em\"},\"label-md\":{\"fontFamily\":\"Hanken Grotesk\",\"fontSize\":\"12px\",\"fontWeight\":\"500\",\"lineHeight\":\"16px\",\"letterSpacing\":\"0.02em\"},\"display-lg-mobile\":{\"fontFamily\":\"Source Serif 4\",\"fontSize\":\"28px\",\"fontWeight\":\"600\",\"lineHeight\":\"36px\",\"letterSpacing\":\"-0.01em\"},\"body-lg\":{\"fontFamily\":\"Newsreader\",\"fontSize\":\"17px\",\"fontWeight\":\"400\",\"lineHeight\":\"26px\"},\"body-md\":{\"fontFamily\":\"Newsreader\",\"fontSize\":\"15px\",\"fontWeight\":\"400\",\"lineHeight\":\"23px\"},\"label-lg\":{\"fontFamily\":\"Hanken Grotesk\",\"fontSize\":\"14px\",\"fontWeight\":\"600\",\"lineHeight\":\"20px\",\"letterSpacing\":\"0.01em\"},\"body-sm\":{\"fontFamily\":\"Newsreader\",\"fontSize\":\"13px\",\"fontWeight\":\"400\",\"lineHeight\":\"19px\"},\"headline-sm\":{\"fontFamily\":\"Source Serif 4\",\"fontSize\":\"18px\",\"fontWeight\":\"600\",\"lineHeight\":\"24px\"},\"label-sm\":{\"fontFamily\":\"Hanken Grotesk\",\"fontSize\":\"10px\",\"fontWeight\":\"600\",\"lineHeight\":\"14px\",\"letterSpacing\":\"0.04em\"}},\"spacing\":{\"gutter-mobile\":\"0.75rem\",\"space-sm\":\"0.5rem\",\"margin-mobile\":\"1rem\",\"space-xl\":\"2rem\",\"space-lg\":\"1.25rem\",\"margin\":\"1rem\",\"gutter\":\"1rem\",\"space-xs\":\"0.25rem\",\"space-md\":\"0.75rem\"},\"headlineFontFamily\":\"Source Serif 4\",\"bodyFontFamily\":\"Newsreader\",\"labelFontFamily\":\"Hanken Grotesk\"}},\"version\":\"1\"}},{\"design\":{\"screens\":[{\"screenshot\":{\"name\":\"projects/10744711964413240245/files/c4c8a3c8eaa746f48a6078acff1cfd21\",\"downloadUrl\":\"https://stitch.googleapis.com/v1/projects/10744711964413240245/files/c4c8a3c8eaa746f48a6078acff1cfd21:download\"},\"htmlCode\":{\"name\":\"projects/10744711964413240245/files/f97ae3a474f847149c0c25dbf58c56ad\",\"downloadUrl\":\"https://stitch.googleapis.com/v1/projects/10744711964413240245/files/f97ae3a474f847149c0c25dbf58c56ad:download\",\"mimeType\":\"text/html\"},\"id\":\"d0aabbe1032d4dd49407c00673ba2a6f\",\"generatedBy\":\"create_datastore_entry\",\"width\":\"2560\",\"height\":\"2048\",\"title\":\"Onboarding Setup Profil & Minat - CampusFolio\",\"name\":\"projects/10744711964413240245/screens/d0aabbe1032d4dd49407c00673ba2a6f\",\"theme\":{},\"deviceType\":\"DESKTOP\",\"screenType\":\"DESIGN\",\"screenMetadata\":{\"agentType\":\"PRO_AGENT\",\"status\":\"COMPLETE\"}},{\"screenshot\":{\"name\":\"projects/10744711964413240245/files/d35284ec323549a0870afa654835f757\",\"downloadUrl\":\"https://stitch.googleapis.com/v1/projects/10744711964413240245/files/d35284ec323549a0870afa654835f757:download\"},\"htmlCode\":{\"name\":\"projects/10744711964413240245/files/3b3aa25823a54c79bf2c3bba96f1e82b\",\"downloadUrl\":\"https://stitch.googleapis.com/v1/projects/10744711964413240245/files/3b3aa25823a54c79bf2c3bba96f1e82b:download\",\"mimeType\":\"text/html\"},\"id\":\"d8ddba7de4d541b9891ae326e716c8bc\",\"generatedBy\":\"create_datastore_entry\",\"width\":\"2560\",\"height\":\"2048\",\"title\":\"Onboarding Setup Profil & Minat - CampusFolio\",\"name\":\"projects/10744711964413240245/screens/d8ddba7de4d541b9891ae326e716c8bc\",\"theme\":{},\"deviceType\":\"DESKTOP\",\"screenType\":\"DESIGN\",\"screenMetadata\":{\"agentType\":\"PRO_AGENT\",\"status\":\"COMPLETE\"}}],\"theme\":{}}},{\"text\":\"Desain halaman mobile **Onboarding Setup Profil, Minat, dan Keahlian Mahasiswa** untuk aplikasi **CampusFolio** telah berhasil dirancang dengan estetika *Academic Modernist* profesional tanpa emoji kasual, serta menggunakan set ikon konsisten **Material Symbols Outlined**.\\n\\n### 🌟 Fitur dan Struktur Elemen yang Diwujudkan:\\n1. **Header & Progress Indikator**:\\n   - Header institusi terverifikasi dengan opsi tombol *Lewati*.\\n   - Progress bar terstruktur: **Langkah 2 dari 3: Personalisasi Profil & Minat**.\\n2. **Konteks AI Engine**:\\n   - Badge pengenal `AI Matchmaker Engine Setup`.\\n   - Judul *\\\"Atur Keahlian & Minat Proyek\\\"* dan penjelasan fungsional keterkaitan dengan algoritma rekomendasi tim dan kompetisi kampus.\\n3. **Upload Foto Profil Akademik**:\\n   - Area avatar berstandar formal/semi-formal kampus dengan status badge *Rekomendasi* dan tombol aksi berkamera (`photo_camera`).\\n4. **Bio Singkat Akademik**:\\n   - Textarea terintegrasi indikator karakter (108/150) dilengkapi catatan bahwa teks bio dibaca oleh semantik NLP AI untuk pencocokan kolaborator.\\n5. **Role & Minat Utama (Grid Chip Selector)**:\\n   - Chip selector rapi berikon Material Symbols: *UI/UX Design*, *Frontend Dev*, *Mobile Flutter*, *Backend API*, *Machine Learning / AI*, *Data Science*, *IoT & Embedded*, dan *Product Mgmt*.\\n6. **Input Tag Keahlian Spesifik**:\\n   - Kolom penambahan tag dengan tombol *Tambah*, chips aktif (*Figma*, *React*, *Tailwind CSS*), serta saran instan (*Python*, *TensorFlow*, *PostgreSQL*).\\n7. **Preferensi Kolaborasi (Card Selection)**:\\n   - Tiga opsi ketersediaan: *Aktif Mencari Tim (Lomba / PKM)* [Prioritas], *Terbuka untuk Kolaborasi Proyek*, dan *Fokus Belajar & Showcase Portofolio*.\\n8. **Navigasi Sticky Bottom**:\\n   - Tombol sekunder *\\\"Lewati Sementara\\\"* dan tombol primer *\\\"Simpan & Lanjutkan\\\"* dengan ikon panah (`arrow_forward`).\"},{\"suggestion\":\"Buat layar Langkah 3 dari 3 (Konfirmasi & Rekomendasi Awal Tim)\"},{\"suggestion\":\"Sesuaikan tema warna atau tambahkan opsi portofolio perdana di onboarding\"},{\"suggestion\":\"Hubungkan alur navigasi tombol simpan langsung ke Beranda & Feed Proyek\"}]}",
+            "type": "text"
+          }
+        ],
+        "structuredContent": {
+          "outputComponents": [
+            {
+              "designSystem": {
+                "designSystem": {
+                  "displayName": "Academic Modernist",
+                  "styleGuidelines": "## Brand & Style\nThe design system embodies an Academic Modernist sensibility: disciplined, intellectual, authoritative, yet thoroughly adapted to modern mobile contexts. It balances the structural rigor of classical university publishing with the tactile efficiency of contemporary product design.\n\n- **Brand Personality**: Scholarly, precise, high-trust, deliberate, and archival.\n- **Target Audience**: Researchers, university faculty, postgraduates, and academic professionals who demand uncompromised legibility and density without clutter.\n- **Emotional Response**: Cultivates deep focus, institutional credibility, and clarity of thought.\n- **Design Style**: Neoclassical editorial modernism. Crisp rules, structural grid lines, subdued ink-inspired tones, strict typographic hierarchies, and zero non-functional ornamentation. Strict avoidance of casual emojis or juvenile elements; semantic clarity is achieved strictly via Material Symbols Outlined icons and typographic inflection.\n\n## Layout & Spacing\nA fluid 4-column layout on mobile devices transitions to an 8-column layout on tablets and a 12-column fixed-max layout for reading dashboards.\n\n- **Rhythm**: Built on a strict 4px/8px incremental base unit.\n- **Density**: Moderately dense to support scientific metadata (authorship, DOI indices, affiliations), while preserving generous 26px line height for reading blocks.\n- **Mobile Margins**: Standardized to `1rem` (16px) outer safe margin on mobile, ensuring edge-to-edge readability without cognitive strain.\n- **Reflow Behavior**: Metadata blocks collapse into vertical stacks with subtle divider rules on screens below 480px.\n\n## Elevation & Depth\nElevation favors print-like architectural layering over decorative drop shadows.\n\n- **Primary Technique**: Crisp structural hairlines (`1px solid #e2e8f0`) and subtle tonal stratification (`#fcfcfb` base to `#ffffff` surface containers).\n- **Shadow Profiles**: Ambient, almost unperceived diffuse ink shadows (`0 1px 3px rgba(30, 41, 59, 0.05), 0 4px 12px rgba(30, 41, 59, 0.03)`). No colored glows or blur-heavy effects.\n- **Depth Hierarchy**:\n  - *Layer 0 (Canvas)*: `#fcfcfb` paper ground.\n  - *Layer 1 (Card / Tile)*: `#ffffff` with a `1px solid #e2e8f0` stroke.\n  - *Layer 2 (Floating Action / Sticky App Bar)*: `#ffffff` surface with a bottom border rule and 8px diffuse ambient shadow.\n  - *Layer 3 (Modals / Drawers)*: Crisp modal containers with a deep 24px backdrop scrim (`rgba(15, 23, 42, 0.4)`).\n\n## Components\n\n### Buttons\n- **Primary**: Solid Indigo (`#4338ca`) background, crisp white label text in `Hanken Grotesk` (Weight 600), 4px border radius. Padding: 10px 16px. Touch target height: 44px minimum.\n- **Secondary / Outlined**: Transparent background, `1px solid #cbd5e1` outline, `#312e81` label.\n- **Icon Pairing**: Leading or trailing Material Symbols Outlined icons at 18px size, strictly monochrome to match the text token.\n\n### Form Inputs & Search\n- Surface: `#ffffff` background with a `1px solid #cbd5e1` border, transitioning to `1.5px solid #4338ca` upon focus.\n- Typography: Input text set in `Hanken Grotesk` 15px; placeholders set in `#64748b` italic.\n- Prefix: Material Symbols Outlined (`search`, `filter_list`, `library_books`) anchored with 12px left padding.\n\n### Chips & Metadata Tags\n- Height: 24px–28px, 4px border radius.\n- Inactive / Taxonomy: `#f1f5f9` surface with `1px solid #e2e8f0` border and `#334155` text in `label-sm`.\n- Active / Citation: Light Indigo tint (`#eef2ff`) with `#4338ca` text and a subtle indigo outline. Emojis are strictly banned; status is expressed through icons like `verified`, `bookmark`, or `school`.\n\n### Cards & Abstract Tiles\n- Grounded in `#ffffff` with a standard `1px solid #e2e8f0` boundary.\n- Internal padding: `1.25rem` (`space-lg`).\n- Layout: Publication metadata (journal name, issue, DOI) rendered in `label-sm` along the top bar; article title rendered in `headline-md` (`Source Serif 4`); abstract snippet rendered in `body-sm` (`Newsreader`).\n\n### Lists & Citations\n- Non-bordered or hairline divider (`1px solid #f1f5f9`) separators.\n- Numerical indices styled with tabular numbers in `label-md` `#4338ca`.\n- Interaction: Gentle hover/pressed state using `#f8fafc`.\n\n### Checkboxes & Radios\n- Square checkbox (4px radius) and crisp circular radio.\n- Unchecked: `1.5px solid #94a3b8`.\n- Checked: `#4338ca` fill with a pure white checkmark or center pip.\n\n### Academic-Specific Additions\n- **Citation Callout**: Left-bordered callout panel (`3px solid #4338ca`) on a tinted `#f8fafc` background for highlighted quotes and bibliography excerpts.\n- **DOI Pill**: Compact monospace-style data indicator pairing the `link` Material Symbols Outlined icon with selectable publication handles.",
+                  "theme": {
+                    "bodyFont": "NEWSREADER",
+                    "bodyFontFamily": "Newsreader",
+                    "colorMode": "LIGHT",
+                    "colorVariant": "FIDELITY",
+                    "customColor": "#4338ca",
+                    "designMd": "---\nname: Academic Modernist\ncolors:\n  surface: '#f8f9ff'\n  surface-dim: '#ccdbf3'\n  surface-bright: '#f8f9ff'\n  surface-container-lowest: '#ffffff'\n  surface-container-low: '#eff4ff'\n  surface-container: '#e6eeff'\n  surface-container-high: '#dce9ff'\n  surface-container-highest: '#d5e3fc'\n  on-surface: '#0d1c2e'\n  on-surface-variant: '#464554'\n  inverse-surface: '#233144'\n  inverse-on-surface: '#eaf1ff'\n  outline: '#777586'\n  outline-variant: '#c7c4d7'\n  surface-tint: '#5148d7'\n  primary: '#2a14b4'\n  on-primary: '#ffffff'\n  primary-container: '#4338ca'\n  on-primary-container: '#c1beff'\n  inverse-primary: '#c3c0ff'\n  secondary: '#5654a8'\n  on-secondary: '#ffffff'\n  secondary-container: '#a7a5ff'\n  on-secondary-container: '#393689'\n  tertiary: '#632900'\n  on-tertiary: '#ffffff'\n  tertiary-container: '#873b00'\n  on-tertiary-container: '#ffb389'\n  error: '#ba1a1a'\n  on-error: '#ffffff'\n  error-container: '#ffdad6'\n  on-error-container: '#93000a'\n  primary-fixed: '#e3dfff'\n  primary-fixed-dim: '#c3c0ff'\n  on-primary-fixed: '#100069'\n  on-primary-fixed-variant: '#372abf'\n  secondary-fixed: '#e2dfff'\n  secondary-fixed-dim: '#c3c0ff'\n  on-secondary-fixed: '#100563'\n  on-secondary-fixed-variant: '#3e3c8f'\n  tertiary-fixed: '#ffdbca'\n  tertiary-fixed-dim: '#ffb68e'\n  on-tertiary-fixed: '#331200'\n  on-tertiary-fixed-variant: '#763300'\n  background: '#f8f9ff'\n  on-background: '#0d1c2e'\n  surface-variant: '#d5e3fc'\ntypography:\n  display-lg:\n    fontFamily: Source Serif 4\n    fontSize: 36px\n    fontWeight: '600'\n    lineHeight: 44px\n    letterSpacing: -0.02em\n  display-lg-mobile:\n    fontFamily: Source Serif 4\n    fontSize: 28px\n    fontWeight: '600'\n    lineHeight: 36px\n    letterSpacing: -0.01em\n  headline-lg:\n    fontFamily: Source Serif 4\n    fontSize: 24px\n    fontWeight: '600'\n    lineHeight: 32px\n    letterSpacing: -0.01em\n  headline-md:\n    fontFamily: Source Serif 4\n    fontSize: 20px\n    fontWeight: '600'\n    lineHeight: 28px\n  headline-sm:\n    fontFamily: Source Serif 4\n    fontSize: 18px\n    fontWeight: '600'\n    lineHeight: 24px\n  body-lg:\n    fontFamily: Newsreader\n    fontSize: 17px\n    fontWeight: '400'\n    lineHeight: 26px\n  body-md:\n    fontFamily: Newsreader\n    fontSize: 15px\n    fontWeight: '400'\n    lineHeight: 23px\n  body-sm:\n    fontFamily: Newsreader\n    fontSize: 13px\n    fontWeight: '400'\n    lineHeight: 19px\n  label-lg:\n    fontFamily: Hanken Grotesk\n    fontSize: 14px\n    fontWeight: '600'\n    lineHeight: 20px\n    letterSpacing: 0.01em\n  label-md:\n    fontFamily: Hanken Grotesk\n    fontSize: 12px\n    fontWeight: '500'\n    lineHeight: 16px\n    letterSpacing: 0.02em\n  label-sm:\n    fontFamily: Hanken Grotesk\n    fontSize: 10px\n    fontWeight: '600'\n    lineHeight: 14px\n    letterSpacing: 0.04em\nrounded:\n  sm: 0.125rem\n  DEFAULT: 0.25rem\n  md: 0.375rem\n  lg: 0.5rem\n  xl: 0.75rem\n  full: 9999px\nspacing:\n  gutter: 1rem\n  gutter-mobile: 0.75rem\n  margin: 1rem\n  margin-mobile: 1rem\n  space-xs: 0.25rem\n  space-sm: 0.5rem\n  space-md: 0.75rem\n  space-lg: 1.25rem\n  space-xl: 2rem\n---\n\n## Brand & Style\nThe design system embodies an Academic Modernist sensibility: disciplined, intellectual, authoritative, yet thoroughly adapted to modern mobile contexts. It balances the structural rigor of classical university publishing with the tactile efficiency of contemporary product design.\n\n- **Brand Personality**: Scholarly, precise, high-trust, deliberate, and archival.\n- **Target Audience**: Researchers, university faculty, postgraduates, and academic professionals who demand uncompromised legibility and density without clutter.\n- **Emotional Response**: Cultivates deep focus, institutional credibility, and clarity of thought.\n- **Design Style**: Neoclassical editorial modernism. Crisp rules, structural grid lines, subdued ink-inspired tones, strict typographic hierarchies, and zero non-functional ornamentation. Strict avoidance of casual emojis or juvenile elements; semantic clarity is achieved strictly via Material Symbols Outlined icons and typographic inflection.\n\n## Colors\nThe palette evokes archival ink, parchment undertones, and authoritative scholarly stamps.\n\n- **Primary (`#4338ca`)**: Oxford Indigo. Serves as the primary active state, primary buttons, key citations, and active navigation indicators.\n- **Secondary (`#312e81`)**: Deep Ink. Used for structural hierarchy, heavy titles, and high-emphasis metadata badges.\n- **Tertiary (`#b45309`)**: Academic Amber. Reserved strictly for editorial annotations, peer-review alerts, citations of note, and status warnings.\n- **Neutral (`#475569`)**: Slate Graphite. Provides a legible, neutral scale for secondary text, metadata, structural borders, and subtle panel dividers.\n- **Canvas & Surfaces**: The base canvas is warm off-white (`#fcfcfb`), simulating archival acid-free paper, paired with layered cool-tinted slate containers (`#f1f5f9` and `#ffffff`) for reading panels.\n\n## Typography\nTypographic pairings distinguish scholarly authority from interface utility:\n- **Headlines (`Source Serif 4`)**: Sturdy, academic editorial serif with robust bracketed serifs that anchor section headers and publication titles.\n- **Body (`Newsreader`)**: Tuned specifically for sustained, fatigue-free long-form reading of research abstracts, journal entries, and dense critiques.\n- **Labels & UI Metadata (`Hanken Grotesk`)**: Clean, objective grotesque sans-serif used for data tables, citation counters, tags, timestamps, and actionable controls to keep functional UI distinctly separated from literary content.\n\n## Layout & Spacing\nA fluid 4-column layout on mobile devices transitions to an 8-column layout on tablets and a 12-column fixed-max layout for reading dashboards.\n\n- **Rhythm**: Built on a strict 4px/8px incremental base unit.\n- **Density**: Moderately dense to support scientific metadata (authorship, DOI indices, affiliations), while preserving generous 26px line height for reading blocks.\n- **Mobile Margins**: Standardized to `1rem` (16px) outer safe margin on mobile, ensuring edge-to-edge readability without cognitive strain.\n- **Reflow Behavior**: Metadata blocks collapse into vertical stacks with subtle divider rules on screens below 480px.\n\n## Elevation & Depth\nElevation favors print-like architectural layering over decorative drop shadows.\n\n- **Primary Technique**: Crisp structural hairlines (`1px solid #e2e8f0`) and subtle tonal stratification (`#fcfcfb` base to `#ffffff` surface containers).\n- **Shadow Profiles**: Ambient, almost unperceived diffuse ink shadows (`0 1px 3px rgba(30, 41, 59, 0.05), 0 4px 12px rgba(30, 41, 59, 0.03)`). No colored glows or blur-heavy effects.\n- **Depth Hierarchy**:\n  - *Layer 0 (Canvas)*: `#fcfcfb` paper ground.\n  - *Layer 1 (Card / Tile)*: `#ffffff` with a `1px solid #e2e8f0` stroke.\n  - *Layer 2 (Floating Action / Sticky App Bar)*: `#ffffff` surface with a bottom border rule and 8px diffuse ambient shadow.\n  - *Layer 3 (Modals / Drawers)*: Crisp modal containers with a deep 24px backdrop scrim (`rgba(15, 23, 42, 0.4)`).\n\n## Shapes\nTo preserve academic formality and print-era discipline, the system uses soft, minimal radii (`roundedness: 1`).\n\n- **Standard UI Elements**: `0.25rem` (4px) corner radii across primary buttons, form fields, and inline badges.\n- **Cards and Dialogs**: `0.5rem` (8px) corner radii (`rounded-lg`) for structural boundaries, preventing the toy-like softness of hyper-rounded interfaces.\n- **No Full Pill Contours**: Pill shapes are prohibited to avoid casual, consumer-app aesthetics. Badges and chips maintain crisp 4px geometries.\n\n## Components\n\n### Buttons\n- **Primary**: Solid Indigo (`#4338ca`) background, crisp white label text in `Hanken Grotesk` (Weight 600), 4px border radius. Padding: 10px 16px. Touch target height: 44px minimum.\n- **Secondary / Outlined**: Transparent background, `1px solid #cbd5e1` outline, `#312e81` label.\n- **Icon Pairing**: Leading or trailing Material Symbols Outlined icons at 18px size, strictly monochrome to match the text token.\n\n### Form Inputs & Search\n- Surface: `#ffffff` background with a `1px solid #cbd5e1` border, transitioning to `1.5px solid #4338ca` upon focus.\n- Typography: Input text set in `Hanken Grotesk` 15px; placeholders set in `#64748b` italic.\n- Prefix: Material Symbols Outlined (`search`, `filter_list`, `library_books`) anchored with 12px left padding.\n\n### Chips & Metadata Tags\n- Height: 24px–28px, 4px border radius.\n- Inactive / Taxonomy: `#f1f5f9` surface with `1px solid #e2e8f0` border and `#334155` text in `label-sm`.\n- Active / Citation: Light Indigo tint (`#eef2ff`) with `#4338ca` text and a subtle indigo outline. Emojis are strictly banned; status is expressed through icons like `verified`, `bookmark`, or `school`.\n\n### Cards & Abstract Tiles\n- Grounded in `#ffffff` with a standard `1px solid #e2e8f0` boundary.\n- Internal padding: `1.25rem` (`space-lg`).\n- Layout: Publication metadata (journal name, issue, DOI) rendered in `label-sm` along the top bar; article title rendered in `headline-md` (`Source Serif 4`); abstract snippet rendered in `body-sm` (`Newsreader`).\n\n### Lists & Citations\n- Non-bordered or hairline divider (`1px solid #f1f5f9`) separators.\n- Numerical indices styled with tabular numbers in `label-md` `#4338ca`.\n- Interaction: Gentle hover/pressed state using `#f8fafc`.\n\n### Checkboxes & Radios\n- Square checkbox (4px radius) and crisp circular radio.\n- Unchecked: `1.5px solid #94a3b8`.\n- Checked: `#4338ca` fill with a pure white checkmark or center pip.\n\n### Academic-Specific Additions\n- **Citation Callout**: Left-bordered callout panel (`3px solid #4338ca`) on a tinted `#f8fafc` background for highlighted quotes and bibliography excerpts.\n- **DOI Pill**: Compact monospace-style data indicator pairing the `link` Material Symbols Outlined icon with selectable publication handles.",
+                    "font": "SOURCE_SERIF_4",
+                    "headlineFont": "SOURCE_SERIF_4",
+                    "headlineFontFamily": "Source Serif 4",
+                    "labelFont": "HANKEN_GROTESK",
+                    "labelFontFamily": "Hanken Grotesk",
+                    "namedColors": {
+                      "background": "#f8f9ff",
+                      "error": "#ba1a1a",
+                      "error_container": "#ffdad6",
+                      "inverse_on_surface": "#eaf1ff",
+                      "inverse_primary": "#c3c0ff",
+                      "inverse_surface": "#233144",
+                      "on_background": "#0d1c2e",
+                      "on_error": "#ffffff",
+                      "on_error_container": "#93000a",
+                      "on_primary": "#ffffff",
+                      "on_primary_container": "#c1beff",
+                      "on_primary_fixed": "#100069",
+                      "on_primary_fixed_variant": "#372abf",
+                      "on_secondary": "#ffffff",
+                      "on_secondary_container": "#393689",
+                      "on_secondary_fixed": "#100563",
+                      "on_secondary_fixed_variant": "#3e3c8f",
+                      "on_surface": "#0d1c2e",
+                      "on_surface_variant": "#464554",
+                      "on_tertiary": "#ffffff",
+                      "on_tertiary_container": "#ffb389",
+                      "on_tertiary_fixed": "#331200",
+                      "on_tertiary_fixed_variant": "#763300",
+                      "outline": "#777586",
+                      "outline_variant": "#c7c4d7",
+                      "primary": "#2a14b4",
+                      "primary_container": "#4338ca",
+                      "primary_fixed": "#e3dfff",
+                      "primary_fixed_dim": "#c3c0ff",
+                      "secondary": "#5654a8",
+                      "secondary_container": "#a7a5ff",
+                      "secondary_fixed": "#e2dfff",
+                      "secondary_fixed_dim": "#c3c0ff",
+                      "surface": "#f8f9ff",
+                      "surface_bright": "#f8f9ff",
+                      "surface_container": "#e6eeff",
+                      "surface_container_high": "#dce9ff",
+                      "surface_container_highest": "#d5e3fc",
+                      "surface_container_low": "#eff4ff",
+                      "surface_container_lowest": "#ffffff",
+                      "surface_dim": "#ccdbf3",
+                      "surface_tint": "#5148d7",
+                      "surface_variant": "#d5e3fc",
+                      "tertiary": "#632900",
+                      "tertiary_container": "#873b00",
+                      "tertiary_fixed": "#ffdbca",
+                      "tertiary_fixed_dim": "#ffb68e"
+                    },
+                    "overrideNeutralColor": "#475569",
+                    "overridePrimaryColor": "#4338ca",
+                    "overrideSecondaryColor": "#312e81",
+                    "overrideTertiaryColor": "#b45309",
+                    "roundness": "ROUND_FOUR",
+                    "spacing": {
+                      "gutter": "1rem",
+                      "gutter-mobile": "0.75rem",
+                      "margin": "1rem",
+                      "margin-mobile": "1rem",
+                      "space-lg": "1.25rem",
+                      "space-md": "0.75rem",
+                      "space-sm": "0.5rem",
+                      "space-xl": "2rem",
+                      "space-xs": "0.25rem"
+                    },
+                    "spacingScale": 2,
+                    "typography": {
+                      "body-lg": {
+                        "fontFamily": "Newsreader",
+                        "fontSize": "17px",
+                        "fontWeight": "400",
+                        "lineHeight": "26px"
+                      },
+                      "body-md": {
+                        "fontFamily": "Newsreader",
+                        "fontSize": "15px",
+                        "fontWeight": "400",
+                        "lineHeight": "23px"
+                      },
+                      "body-sm": {
+                        "fontFamily": "Newsreader",
+                        "fontSize": "13px",
+                        "fontWeight": "400",
+                        "lineHeight": "19px"
+                      },
+                      "display-lg": {
+                        "fontFamily": "Source Serif 4",
+                        "fontSize": "36px",
+                        "fontWeight": "600",
+                        "letterSpacing": "-0.02em",
+                        "lineHeight": "44px"
+                      },
+                      "display-lg-mobile": {
+                        "fontFamily": "Source Serif 4",
+                        "fontSize": "28px",
+                        "fontWeight": "600",
+                        "letterSpacing": "-0.01em",
+                        "lineHeight": "36px"
+                      },
+                      "headline-lg": {
+                        "fontFamily": "Source Serif 4",
+                        "fontSize": "24px",
+                        "fontWeight": "600",
+                        "letterSpacing": "-0.01em",
+                        "lineHeight": "32px"
+                      },
+                      "headline-md": {
+                        "fontFamily": "Source Serif 4",
+                        "fontSize": "20px",
+                        "fontWeight": "600",
+                        "lineHeight": "28px"
+                      },
+                      "headline-sm": {
+                        "fontFamily": "Source Serif 4",
+                        "fontSize": "18px",
+                        "fontWeight": "600",
+                        "lineHeight": "24px"
+                      },
+                      "label-lg": {
+                        "fontFamily": "Hanken Grotesk",
+                        "fontSize": "14px",
+                        "fontWeight": "600",
+                        "letterSpacing": "0.01em",
+                        "lineHeight": "20px"
+                      },
+                      "label-md": {
+                        "fontFamily": "Hanken Grotesk",
+                        "fontSize": "12px",
+                        "fontWeight": "500",
+                        "letterSpacing": "0.02em",
+                        "lineHeight": "16px"
+                      },
+                      "label-sm": {
+                        "fontFamily": "Hanken Grotesk",
+                        "fontSize": "10px",
+                        "fontWeight": "600",
+                        "letterSpacing": "0.04em",
+                        "lineHeight": "14px"
+                      }
+                    }
+                  }
+                },
+                "name": "assets/f8859a66080247778aea8f9747acb503",
+                "version": "1"
+              }
+            },
+            {
+              "design": {
+                "screens": [
+                  {
+                    "deviceType": "DESKTOP",
+                    "generatedBy": "create_datastore_entry",
+                    "height": "2048",
+                    "htmlCode": {
+                      "downloadUrl": "https://stitch.googleapis.com/v1/projects/10744711964413240245/files/f97ae3a474f847149c0c25dbf58c56ad:download",
+                      "mimeType": "text/html",
+                      "name": "projects/10744711964413240245/files/f97ae3a474f847149c0c25dbf58c56ad"
+                    },
+                    "id": "d0aabbe1032d4dd49407c00673ba2a6f",
+                    "name": "projects/10744711964413240245/screens/d0aabbe1032d4dd49407c00673ba2a6f",
+                    "screenMetadata": {
+                      "agentType": "PRO_AGENT",
+                      "status": "COMPLETE"
+                    },
+                    "screenType": "DESIGN",
+                    "screenshot": {
+                      "downloadUrl": "https://stitch.googleapis.com/v1/projects/10744711964413240245/files/c4c8a3c8eaa746f48a6078acff1cfd21:download",
+                      "name": "projects/10744711964413240245/files/c4c8a3c8eaa746f48a6078acff1cfd21"
+                    },
+                    "theme": {},
+                    "title": "Onboarding Setup Profil & Minat - CampusFolio",
+                    "width": "2560"
+                  },
+                  {
+                    "deviceType": "DESKTOP",
+                    "generatedBy": "create_datastore_entry",
+                    "height": "2048",
+                    "htmlCode": {
+                      "downloadUrl": "https://stitch.googleapis.com/v1/projects/10744711964413240245/files/3b3aa25823a54c79bf2c3bba96f1e82b:download",
+                      "mimeType": "text/html",
+                      "name": "projects/10744711964413240245/files/3b3aa25823a54c79bf2c3bba96f1e82b"
+                    },
+                    "id": "d8ddba7de4d541b9891ae326e716c8bc",
+                    "name": "projects/10744711964413240245/screens/d8ddba7de4d541b9891ae326e716c8bc",
+                    "screenMetadata": {
+                      "agentType": "PRO_AGENT",
+                      "status": "COMPLETE"
+                    },
+                    "screenType": "DESIGN",
+                    "screenshot": {
+                      "downloadUrl": "https://stitch.googleapis.com/v1/projects/10744711964413240245/files/d35284ec323549a0870afa654835f757:download",
+                      "name": "projects/10744711964413240245/files/d35284ec323549a0870afa654835f757"
+                    },
+                    "theme": {},
+                    "title": "Onboarding Setup Profil & Minat - CampusFolio",
+                    "width": "2560"
+                  }
+                ],
+                "theme": {}
+              }
+            },
+            {
+              "text": "Desain halaman mobile **Onboarding Setup Profil, Minat, dan Keahlian Mahasiswa** untuk aplikasi **CampusFolio** telah berhasil dirancang dengan estetika *Academic Modernist* profesional tanpa emoji kasual, serta menggunakan set ikon konsisten **Material Symbols Outlined**.\n\n### 🌟 Fitur dan Struktur Elemen yang Diwujudkan:\n1. **Header & Progress Indikator**:\n   - Header institusi terverifikasi dengan opsi tombol *Lewati*.\n   - Progress bar terstruktur: **Langkah 2 dari 3: Personalisasi Profil & Minat**.\n2. **Konteks AI Engine**:\n   - Badge pengenal `AI Matchmaker Engine Setup`.\n   - Judul *\"Atur Keahlian & Minat Proyek\"* dan penjelasan fungsional keterkaitan dengan algoritma rekomendasi tim dan kompetisi kampus.\n3. **Upload Foto Profil Akademik**:\n   - Area avatar berstandar formal/semi-formal kampus dengan status badge *Rekomendasi* dan tombol aksi berkamera (`photo_camera`).\n4. **Bio Singkat Akademik**:\n   - Textarea terintegrasi indikator karakter (108/150) dilengkapi catatan bahwa teks bio dibaca oleh semantik NLP AI untuk pencocokan kolaborator.\n5. **Role & Minat Utama (Grid Chip Selector)**:\n   - Chip selector rapi berikon Material Symbols: *UI/UX Design*, *Frontend Dev*, *Mobile Flutter*, *Backend API*, *Machine Learning / AI*, *Data Science*, *IoT & Embedded*, dan *Product Mgmt*.\n6. **Input Tag Keahlian Spesifik**:\n   - Kolom penambahan tag dengan tombol *Tambah*, chips aktif (*Figma*, *React*, *Tailwind CSS*), serta saran instan (*Python*, *TensorFlow*, *PostgreSQL*).\n7. **Preferensi Kolaborasi (Card Selection)**:\n   - Tiga opsi ketersediaan: *Aktif Mencari Tim (Lomba / PKM)* [Prioritas], *Terbuka untuk Kolaborasi Proyek*, dan *Fokus Belajar & Showcase Portofolio*.\n8. **Navigasi Sticky Bottom**:\n   - Tombol sekunder *\"Lewati Sementara\"* dan tombol primer *\"Simpan & Lanjutkan\"* dengan ikon panah (`arrow_forward`)."
+            },
+            {
+              "suggestion": "Buat layar Langkah 3 dari 3 (Konfirmasi & Rekomendasi Awal Tim)"
+            },
+            {
+              "suggestion": "Sesuaikan tema warna atau tambahkan opsi portofolio perdana di onboarding"
+            },
+            {
+              "suggestion": "Hubungkan alur navigasi tombol simpan langsung ke Beranda & Feed Proyek"
+            }
+          ],
+          "projectId": "10744711964413240245",
+          "sessionId": "15313768698650229716"
+        }
+      }
+    }
+  }
+]

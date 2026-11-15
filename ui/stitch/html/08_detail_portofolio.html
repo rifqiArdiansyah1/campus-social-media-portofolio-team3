@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Detail Portofolio - EcoTrack | CampusFolio</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Fonts: Plus Jakarta Sans & Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-bright": "#faf8ff",
+            "primary": "#2a14b4",
+            "surface-container-low": "#f2f3ff",
+            "match-emerald": "#10B981",
+            "on-surface": "#131b2e",
+            "on-secondary-fixed": "#00201d",
+            "on-tertiary": "#ffffff",
+            "outline": "#777586",
+            "surface-canvas": "#F8FAFC",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-high": "#e2e7ff",
+            "secondary-container": "#86f2e4",
+            "on-background": "#131b2e",
+            "tertiary-fixed": "#ffddb8",
+            "error": "#ba1a1a",
+            "on-primary-fixed": "#100069",
+            "inverse-surface": "#283044",
+            "border-subtle": "#E2E8F0",
+            "on-secondary": "#ffffff",
+            "on-tertiary-fixed-variant": "#653e00",
+            "primary-fixed": "#e3dfff",
+            "surface-tint": "#5148d7",
+            "on-surface-variant": "#464554",
+            "on-primary-container": "#c1beff",
+            "secondary": "#006a61",
+            "tertiary": "#553300",
+            "inverse-on-surface": "#eef0ff",
+            "secondary-fixed": "#89f5e7",
+            "surface": "#faf8ff",
+            "surface-dim": "#d2d9f4",
+            "on-primary": "#ffffff",
+            "surface-variant": "#dae2fd",
+            "primary-fixed-dim": "#c3c0ff",
+            "on-tertiary-container": "#ffb759",
+            "tertiary-fixed-dim": "#ffb95f",
+            "primary-container": "#4338ca",
+            "on-primary-fixed-variant": "#372abf",
+            "on-error": "#ffffff",
+            "error-container": "#ffdad6",
+            "background": "#faf8ff",
+            "surface-container": "#eaedff",
+            "outline-variant": "#c7c4d7",
+            "surface-container-highest": "#dae2fd",
+            "on-error-container": "#93000a",
+            "recruiting-coral": "#F43F5E",
+            "secondary-fixed-dim": "#6bd8cb",
+            "on-secondary-container": "#006f66",
+            "tertiary-container": "#744800",
+            "on-secondary-fixed-variant": "#005049",
+            "inverse-primary": "#c3c0ff",
+            "surface-card": "#FFFFFF",
+            "on-tertiary-fixed": "#2a1700"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "2xl": "1rem",
+            "3xl": "1.5rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-xl": "2rem",
+            "gutter": "1rem",
+            "space-sm": "0.5rem",
+            "space-xs": "0.25rem",
+            "margin": "1.5rem",
+            "gutter-mobile": "0.75rem",
+            "space-lg": "1.5rem",
+            "space-md": "1rem",
+            "margin-mobile": "1rem"
+          },
+          "fontFamily": {
+            "headline-lg": ["Plus Jakarta Sans"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "headline-sm": ["Plus Jakarta Sans"],
+            "headline-md": ["Plus Jakarta Sans"],
+            "display": ["Plus Jakarta Sans"],
+            "code": ["Inter"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "label-lg": ["Inter"],
+            "headline-lg-mobile": ["Plus Jakarta Sans"],
+            "label-md": ["Inter"],
+            "label-sm": ["Inter"],
+            "body-md": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.015em", "fontWeight": "700" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "display": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "code": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+            "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+            "label-sm": ["10px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      font-size: 20px;
+      line-height: 1;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .material-symbols-outlined.fill-active {
+      font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+    }
+  </style>
+</head>
+<body class="bg-surface-canvas text-on-surface antialiased font-body-md min-h-screen selection:bg-primary selection:text-on-primary">
+<!-- Mobile Container Shell -->
+<div class="max-w-md mx-auto min-h-screen flex flex-col bg-surface shadow-2xl relative pb-28 border-x border-border-subtle">
+<!-- 1. Top App Bar -->
+<header class="sticky top-0 z-40 bg-surface/90 backdrop-blur-md px-4 h-14 flex items-center justify-between shadow-sm">
+<div class="flex items-center gap-2">
+<button aria-label="Kembali" class="w-9 h-9 rounded-full flex items-center justify-center text-on-surface hover:bg-surface-container-low transition-colors active:scale-95 duration-150" type="button">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="text-headline-sm font-headline-sm text-on-surface">Detail Portofolio</h1>
+</div>
+<div class="flex items-center gap-1">
+<button aria-label="Simpan Referensi" class="w-9 h-9 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low transition-colors active:scale-95 duration-150" id="btn-bookmark" type="button">
+<span class="material-symbols-outlined" data-icon="bookmark_border" id="bookmark-icon">bookmark_border</span>
+</button>
+<button aria-label="Bagikan Proyek" class="w-9 h-9 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low transition-colors active:scale-95 duration-150" type="button">
+<span class="material-symbols-outlined" data-icon="share">share</span>
+</button>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col">
+<!-- 2. Hero Visual Showcase / Mockup Slider -->
+<section class="relative px-4 pt-3 pb-2">
+<div class="relative w-full aspect-[16/9] rounded-2xl overflow-hidden shadow-md border border-border-subtle bg-surface-container-low group">
+<img alt="EcoTrack Smart Energy Monitoring System Lab Dashboard Setup" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtDvPxUUZpXIQ63hF3erpAtc4yertG2cu9qa1heaZnFNYDdf7Vnb-QWCXq-838fCTqAkAxdINKgk3GVMfxVdfYEjnklhNXyhIu5zko9Z3PjlpRfoop3m6xrCVstaVjR_4FmyLO_LnD4qwhBiglj1Xlz8vjTg4VdtLf9BfJ6YfZoFmnJxshX3-HTAVLZQ_viPrWSP6y1ToMUdbQiylvrpVQaJUA-CgOdPMTD7nR7wWpS7e7C8bsn7DClnnpwe-4sCj7hBWLUu19_vRA"/>
+<!-- Verified Accreditation Badge Overlay -->
+<div class="absolute top-3 left-3 flex items-center gap-1.5 bg-on-surface/85 backdrop-blur-md px-2.5 py-1 rounded-full text-white border border-white/20 shadow-sm">
+<span class="material-symbols-outlined text-match-emerald" data-icon="verified_user" style="font-size: 16px; font-variation-settings: 'FILL' 1;">verified_user</span>
+<span class="text-label-sm font-label-sm tracking-wide">Showcase Terverifikasi Dosen</span>
+</div>
+<!-- Bottom Fullscreen Trigger -->
+<button class="absolute bottom-3 right-3 flex items-center gap-1 bg-surface-card/90 backdrop-blur-md px-2.5 py-1 rounded-full text-on-surface text-label-sm font-label-sm shadow-sm hover:bg-surface-card transition active:scale-95" type="button">
+<span class="material-symbols-outlined" data-icon="zoom_in" style="font-size: 16px;">zoom_in</span>
+<span>Perbesar</span>
+</button>
+</div>
+<!-- Slider Pagination Dots -->
+<div class="flex items-center justify-center gap-1.5 mt-2.5">
+<span class="w-6 h-1.5 rounded-full bg-primary-container transition-all"></span>
+<span class="w-2 h-1.5 rounded-full bg-outline-variant hover:bg-outline transition-all cursor-pointer"></span>
+<span class="w-2 h-1.5 rounded-full bg-outline-variant hover:bg-outline transition-all cursor-pointer"></span>
+</div>
+</section>
+<!-- 3. Project Identity & Impact Metrics -->
+<section class="px-4 pt-2 pb-4">
+<!-- Categories -->
+<div class="flex flex-wrap gap-2 mb-2">
+<span class="text-label-sm font-label-sm bg-primary-container/10 text-primary-container px-2.5 py-0.5 rounded-md border border-primary-container/20">
+            Web Application &amp; IoT Campus
+          </span>
+<span class="text-label-sm font-label-sm bg-surface-container-high text-on-surface-variant px-2.5 py-0.5 rounded-md">
+            Proyek Riset &amp; Capstone
+          </span>
+</div>
+<!-- Title -->
+<h2 class="text-headline-lg-mobile font-headline-lg-mobile text-on-surface mb-1">
+          EcoTrack - Smart Energy Monitoring System
+        </h2>
+<!-- Project Period -->
+<div class="flex items-center gap-1.5 text-on-surface-variant text-body-sm font-body-sm mb-4">
+<span class="material-symbols-outlined text-outline" data-icon="schedule" style="font-size: 16px;">schedule</span>
+<span>September 2025 - Januari 2026 (5 Bulan)</span>
+</div>
+<!-- Impact Metrics Pill Cluster (Bento Micro) -->
+<div class="grid grid-cols-3 gap-2">
+<div class="bg-surface-card border border-border-subtle p-2.5 rounded-xl flex flex-col items-center text-center shadow-sm">
+<span class="text-label-lg font-label-lg text-match-emerald flex items-center gap-0.5">
+<span class="material-symbols-outlined" data-icon="trending_down" style="font-size: 16px;">trending_down</span>
+              18.4%
+            </span>
+<span class="text-label-sm font-label-sm text-on-surface-variant mt-0.5">Reduksi Daya</span>
+</div>
+<div class="bg-surface-card border border-border-subtle p-2.5 rounded-xl flex flex-col items-center text-center shadow-sm">
+<span class="text-label-lg font-label-lg text-primary flex items-center gap-0.5">
+<span class="material-symbols-outlined" data-icon="sensors" style="font-size: 16px;">sensors</span>
+              14 Node
+            </span>
+<span class="text-label-sm font-label-sm text-on-surface-variant mt-0.5">Sensor IoT</span>
+</div>
+<div class="bg-surface-card border border-border-subtle p-2.5 rounded-xl flex flex-col items-center text-center shadow-sm">
+<span class="text-label-lg font-label-lg text-primary-container flex items-center gap-0.5">
+<span class="material-symbols-outlined" data-icon="bolt" style="font-size: 16px; font-variation-settings: 'FILL' 1;">bolt</span>
+              99.2%
+            </span>
+<span class="text-label-sm font-label-sm text-on-surface-variant mt-0.5">Uptime Sistem</span>
+</div>
+</div>
+</section>
+<!-- 4. Student Author Profile Card -->
+<section class="px-4 pb-4">
+<div class="bg-surface-container-low border border-border-subtle rounded-2xl p-3.5 shadow-sm">
+<div class="flex items-start gap-3">
+<div class="relative">
+<img class="w-12 h-12 rounded-full object-cover border border-white shadow-sm" data-alt="Close-up professional portrait of a confident male engineering university student wearing a crisp white collared shirt and glasses in an academic laboratory, softly blurred background, daylight studio lighting, clean tech academic aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9u2Gyf52JIUomyjWsESHrtg_u34JiU3meT9grG7d6z5ruPZi_oBJ9Flo0twqzzRaa5wSscxDTMs0xyXjL1V3OIhNCOnKcgLrMe6dCqpvSG-E0iFdcjRJRdyhZWPFILmVYrUwrngfxpf6-jQ_liEDOgfZt7QMjCX9QXbgRLacjm_tIZiVyaZ7SqYCapni5LB5MUqojXWlKpJ3-F9mGfrNMGQI3sJEKAruH9bv7K2x07-KEb3F8Id4MFeolK-0kmLXvKO_kg1cH5Cs_"/>
+<span class="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5 shadow-xs">
+<span class="material-symbols-outlined text-primary" data-icon="verified" style="font-size: 16px; font-variation-settings: 'FILL' 1;">verified</span>
+</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between">
+<h3 class="text-label-lg font-label-lg text-on-surface truncate">Rafi Alamsyah</h3>
+<span class="text-label-sm font-label-sm bg-match-emerald/15 text-match-emerald px-1.5 py-0.5 rounded-md font-semibold">Author</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant truncate">Teknik Elektro '22 • Universitas Indonesia</p>
+<p class="text-label-md font-label-md text-primary-container font-semibold mt-0.5">Lead IoT Systems &amp; Fullstack Developer</p>
+</div>
+</div>
+<!-- Profile CTAs -->
+<div class="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-border-subtle">
+<button class="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg border border-border-subtle bg-surface-card hover:bg-surface-container text-on-surface text-label-md font-label-md transition active:scale-95 shadow-sm" type="button">
+<span class="material-symbols-outlined text-outline" data-icon="open_in_new" style="font-size: 16px;">open_in_new</span>
+<span>Lihat Profil</span>
+</button>
+<button class="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg bg-primary-container text-white text-label-md font-label-md hover:bg-primary transition active:scale-95 shadow-sm" type="button">
+<span class="material-symbols-outlined" data-icon="group_add" style="font-size: 16px;">group_add</span>
+<span>Ajak Kolaborasi</span>
+</button>
+</div>
+</div>
+</section>
+<!-- 5. Case Study & Academic Research Summary -->
+<section class="px-4 pb-5">
+<div class="flex items-center justify-between mb-2.5">
+<h3 class="text-headline-sm font-headline-sm text-on-surface">Studi Kasus &amp; Ringkasan Riset</h3>
+<span class="text-label-sm font-label-sm text-primary font-semibold flex items-center gap-0.5">
+<span class="material-symbols-outlined" data-icon="article" style="font-size: 16px;">article</span>
+            Peer-Reviewed
+          </span>
+</div>
+<div class="space-y-3">
+<!-- Background -->
+<div class="bg-surface-card border border-border-subtle rounded-xl p-3.5 shadow-sm">
+<div class="flex items-center gap-2 mb-1.5 text-primary-container">
+<span class="material-symbols-outlined" data-icon="troubleshoot" style="font-size: 18px;">troubleshoot</span>
+<h4 class="text-label-lg font-label-lg">Latar Belakang Masalah</h4>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant leading-relaxed">
+              Tingginya pemborosan energi listrik di gedung laboratorium fakultas teknik tanpa pemantauan terpusat real-time menyebabkan pembengkakan anggaran operasional hingga 24% per semester.
+            </p>
+</div>
+<!-- Methodology -->
+<div class="bg-surface-card border border-border-subtle rounded-xl p-3.5 shadow-sm">
+<div class="flex items-center gap-2 mb-1.5 text-primary">
+<span class="material-symbols-outlined" data-icon="schema" style="font-size: 18px;">schema</span>
+<h4 class="text-label-lg font-label-lg">Metodologi &amp; Solusi</h4>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant leading-relaxed">
+              Penerapan edge IoT gateway berbasis micro-controller dengan protokol MQTT terenkripsi dan dashboard analisis time-series terdistribusi untuk observasi granular tiap sirkuit beban.
+            </p>
+</div>
+<!-- Results -->
+<div class="bg-surface-card border border-border-subtle rounded-xl p-3.5 shadow-sm">
+<div class="flex items-center gap-2 mb-1.5 text-match-emerald">
+<span class="material-symbols-outlined" data-icon="insights" style="font-size: 18px;">insights</span>
+<h4 class="text-label-lg font-label-lg">Hasil &amp; Dampak</h4>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant leading-relaxed">
+              Mencapai efisiensi konsumsi daya listrik rata-rata 18.4% per bulan dan deteksi anomali lonjakan beban dalam kurang dari 2 detik dengan false-positive rate di bawah 1.5%.
+            </p>
+</div>
+<!-- Supervisor Endorsement / Review Quote -->
+<div class="bg-surface-container-high/60 border-l-4 border-primary-container rounded-r-xl p-3.5 mt-2">
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-primary-container shrink-0" data-icon="format_quote" style="font-size: 22px;">format_quote</span>
+<div>
+<p class="text-body-sm font-body-sm text-on-surface italic leading-snug">
+                  "Arsitektur telemetry terdistribusi yang dibangun Rafi dan tim menunjukkan kesiapan industri. Integrasi MQTT broker dengan time-series database sangat tangguh saat uji beban lab."
+                </p>
+<div class="mt-2 text-label-sm font-label-sm text-on-surface-variant">
+<span class="font-semibold text-on-surface">Dr. Ir. Hendra Wicaksono, M.T.</span> — Dosen Pembimbing Komputasi Cerdas
+                </div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 6. Tech Stack & Keahlian -->
+<section class="px-4 pb-5">
+<h3 class="text-headline-sm font-headline-sm text-on-surface mb-3">Tech Stack &amp; Keahlian</h3>
+<div class="space-y-2.5">
+<!-- Frontend -->
+<div class="bg-surface-card border border-border-subtle p-3 rounded-xl shadow-sm">
+<div class="text-label-sm font-label-sm text-outline mb-1.5 uppercase tracking-wider">Frontend Architecture</div>
+<div class="flex flex-wrap gap-1.5">
+<span class="text-code font-code px-2.5 py-1 rounded-md bg-surface-container-low border border-border-subtle text-on-surface flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-sky-500"></span> React 18
+              </span>
+<span class="text-code font-code px-2.5 py-1 rounded-md bg-surface-container-low border border-border-subtle text-on-surface flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-slate-900"></span> Next.js
+              </span>
+<span class="text-code font-code px-2.5 py-1 rounded-md bg-surface-container-low border border-border-subtle text-on-surface flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-cyan-500"></span> Tailwind CSS
+              </span>
+</div>
+</div>
+<!-- Backend & Telemetry -->
+<div class="bg-surface-card border border-border-subtle p-3 rounded-xl shadow-sm">
+<div class="text-label-sm font-label-sm text-outline mb-1.5 uppercase tracking-wider">Backend &amp; Telemetry</div>
+<div class="flex flex-wrap gap-1.5">
+<span class="text-code font-code px-2.5 py-1 rounded-md bg-surface-container-low border border-border-subtle text-on-surface flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-teal-500"></span> Go (Golang)
+              </span>
+<span class="text-code font-code px-2.5 py-1 rounded-md bg-surface-container-low border border-border-subtle text-on-surface flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-purple-600"></span> MQTT Broker
+              </span>
+<span class="text-code font-code px-2.5 py-1 rounded-md bg-surface-container-low border border-border-subtle text-on-surface flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-indigo-500"></span> InfluxDB
+              </span>
+<span class="text-code font-code px-2.5 py-1 rounded-md bg-surface-container-low border border-border-subtle text-on-surface flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-blue-600"></span> Docker Compose
+              </span>
+</div>
+</div>
+<!-- Hardware -->
+<div class="bg-surface-card border border-border-subtle p-3 rounded-xl shadow-sm">
+<div class="text-label-sm font-label-sm text-outline mb-1.5 uppercase tracking-wider">Embedded Hardware</div>
+<div class="flex flex-wrap gap-1.5">
+<span class="text-code font-code px-2.5 py-1 rounded-md bg-surface-container-low border border-border-subtle text-on-surface flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-emerald-600"></span> ESP32-WROOM
+              </span>
+<span class="text-code font-code px-2.5 py-1 rounded-md bg-surface-container-low border border-border-subtle text-on-surface flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-amber-500"></span> SCT-013 Non-invasive Sensor
+              </span>
+</div>
+</div>
+</div>
+</section>
+<!-- 7. Tautan Bukti Karya Autentik -->
+<section class="px-4 pb-5">
+<h3 class="text-headline-sm font-headline-sm text-on-surface mb-3">Tautan Bukti Karya</h3>
+<div class="space-y-2">
+<!-- GitHub Source -->
+<a class="flex items-center justify-between p-3.5 bg-surface-card border border-border-subtle rounded-xl hover:border-primary-container transition group shadow-sm active:scale-[0.99]" href="#github-repo">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center text-on-surface group-hover:text-primary transition">
+<span class="material-symbols-outlined" data-icon="code">code</span>
+</div>
+<div>
+<div class="text-label-md font-label-md text-on-surface group-hover:text-primary transition">Kode Sumber &amp; CI/CD</div>
+<div class="text-body-sm font-body-sm text-outline truncate max-w-[210px]">github.com/campusfolio/ecotrack-iot-core</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition" data-icon="north_east" style="font-size: 18px;">north_east</span>
+</a>
+<!-- Live Web App -->
+<a class="flex items-center justify-between p-3.5 bg-surface-card border border-border-subtle rounded-xl hover:border-primary-container transition group shadow-sm active:scale-[0.99]" href="#live-demo">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center text-primary-container group-hover:text-primary transition">
+<span class="material-symbols-outlined" data-icon="language">language</span>
+</div>
+<div>
+<div class="text-label-md font-label-md text-on-surface group-hover:text-primary transition">Aplikasi Web Live Telemetri</div>
+<div class="text-body-sm font-body-sm text-outline truncate max-w-[210px]">ecotrack.campusfolio.ac.id</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition" data-icon="north_east" style="font-size: 18px;">north_east</span>
+</a>
+<!-- PDF Whitepaper -->
+<a class="flex items-center justify-between p-3.5 bg-surface-card border border-border-subtle rounded-xl hover:border-primary-container transition group shadow-sm active:scale-[0.99]" href="#whitepaper">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center text-error group-hover:text-error transition">
+<span class="material-symbols-outlined" data-icon="picture_as_pdf">picture_as_pdf</span>
+</div>
+<div>
+<div class="text-label-md font-label-md text-on-surface group-hover:text-primary transition">Laporan Capstone &amp; Whitepaper PDF</div>
+<div class="text-body-sm font-body-sm text-outline">Dokumen Akademik Resmi (14 Hlm)</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition" data-icon="download" style="font-size: 18px;">download</span>
+</a>
+</div>
+</section>
+<!-- 8. Tim & Kolaborator Proyek -->
+<section class="px-4 pb-5">
+<div class="flex items-center justify-between mb-3">
+<h3 class="text-headline-sm font-headline-sm text-on-surface">Tim &amp; Kolaborator</h3>
+<span class="text-label-sm font-label-sm text-on-surface-variant font-medium">3 Mahasiswa</span>
+</div>
+<div class="space-y-2.5">
+<!-- Member 1 -->
+<div class="flex items-center justify-between p-3 bg-surface-card border border-border-subtle rounded-xl shadow-sm">
+<div class="flex items-center gap-3">
+<img class="w-10 h-10 rounded-full object-cover border border-border-subtle" data-alt="Portrait of a female Indonesian computer science student smiling gently, wearing a navy cardigan and dark glasses in an academic computer laboratory setting, clean soft portrait lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZotzDMWk9cjuYN4Ab5mVqueB3x9BAsTc13irbq6xPQakfavlFAlbSUJyIBxeOKYPjQQ1yi5C586dGHGMkax5Vn7RCUqqRLWqkRN1OGf_Sc1BKlgA64tHlvKMjbyohGmzhkxQOLQlHUPOmNxEeQO48xBXlzeWMcb_R6wcxDc02lUwd6RpkpSvOtVqFbWv45rAQ_hCKu0fLbCUsMUzRbC4X8Hn_3FmYiAyDvUF2ZOsinisw7QDD5b4QlNfIPOksnfEof4jrLik3PByg"/>
+<div>
+<h4 class="text-label-md font-label-md text-on-surface leading-snug">Nadia Eka Pramudita</h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Ilmu Komputer '23</p>
+</div>
+</div>
+<span class="text-label-sm font-label-sm bg-surface-container-low text-primary-container px-2 py-1 rounded-md text-right font-medium">
+              UI/UX &amp; Visualizer
+            </span>
+</div>
+<!-- Member 2 -->
+<div class="flex items-center justify-between p-3 bg-surface-card border border-border-subtle rounded-xl shadow-sm">
+<div class="flex items-center gap-3">
+<img class="w-10 h-10 rounded-full object-cover border border-border-subtle" data-alt="Portrait of a young male electrical engineering student standing by an electronics soldering workbench, natural overhead lab illumination, thoughtful expression, academic modernist context." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDA2HdgNH-WdTMHMKXYy7cZ1FjZLLH1t9C4dB_cUf58mFOszjteJa41c6hOpkOd9VjCsdGfUmT_nZieBZPhCMWRzY6vWBVO2LfaIKVjlkA4zTedVQsBzw4OBpqU5oJSJvfMjuatvrGwt2klaoJocrL8RssnLl30QgJYVl3A3pwUxpmO-jpLeEZb6Sds6vUahP7k-mxFTjeJexr8LkIqzLwENflb-FcEh42AljfmgMKXCOJWuZdEQHt0gnmJfoNg7UJraEc3o4E-1kR0"/>
+<div>
+<h4 class="text-label-md font-label-md text-on-surface leading-snug">Dimas Prasetyo</h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Teknik Elektro '22</p>
+</div>
+</div>
+<span class="text-label-sm font-label-sm bg-surface-container-low text-primary-container px-2 py-1 rounded-md text-right font-medium">
+              Hardware Engineer
+            </span>
+</div>
+<!-- Member 3 -->
+<div class="flex items-center justify-between p-3 bg-surface-card border border-border-subtle rounded-xl shadow-sm">
+<div class="flex items-center gap-3">
+<img class="w-10 h-10 rounded-full object-cover border border-border-subtle" data-alt="Close up portrait of a female university student studying data science wearing light grey blouse in a modern campus library, focused and warm expression, soft daylight illumination." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDysIcUlrzPfAue6e6GeZwEbbfNPzb_1VYiMnQToH1xZiYbvKzpEmNFUcXzPgSHgd6ll0NFjWY1UmQ-ip5P8N8PiJFKqiaYntk9er4iqrLF7LN5XMu9Y4r1lphjQ9RJvLU43JjO1yjZlW_kUkXXdzZGOiu_4lprB8rmXnadQ8ylViQwFRd82zsexhrbqMWoNifPDug3RNRl2Kxcn4Ezluj2kBGgl45mMX-JG3rGSrRImMkNG26g8VhQTFtsjgV1a3nT-MDlbqs1imlJ"/>
+<div>
+<h4 class="text-label-md font-label-md text-on-surface leading-snug">Siti Maharani</h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Sains Data '23</p>
+</div>
+</div>
+<span class="text-label-sm font-label-sm bg-surface-container-low text-primary-container px-2 py-1 rounded-md text-right font-medium">
+              Time-Series Analyst
+            </span>
+</div>
+</div>
+</section>
+<!-- 9. Apresiasi & Diskusi Akademik (Peer Review) -->
+<section class="px-4 pb-6">
+<div class="flex items-center justify-between mb-3">
+<h3 class="text-headline-sm font-headline-sm text-on-surface">Apresiasi &amp; Diskusi</h3>
+<span class="text-body-sm font-body-sm text-outline">4 Diskusi Aktif</span>
+</div>
+<!-- Endorsement Milestone Banner -->
+<div class="bg-surface-card border border-border-subtle p-3.5 rounded-xl mb-4 flex items-center justify-between shadow-sm">
+<div class="flex items-center gap-2.5">
+<div class="w-10 h-10 rounded-full bg-primary-container/10 flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined fill-active" data-icon="thumb_up">thumb_up</span>
+</div>
+<div>
+<div class="text-label-md font-label-md text-on-surface">142 Rekan Mahasiswa</div>
+<div class="text-body-sm font-body-sm text-on-surface-variant">Telah memberikan apresiasi proyek</div>
+</div>
+</div>
+<button class="px-3 py-1.5 rounded-lg border border-primary-container/30 bg-primary-container/5 hover:bg-primary-container/15 text-primary-container text-label-sm font-label-sm font-semibold transition active:scale-95" id="btn-endorse-card" type="button">
+            + Beri Apresiasi
+          </button>
+</div>
+<!-- Comment Input Box -->
+<div class="bg-surface-card border border-border-subtle rounded-xl p-3 shadow-sm mb-4">
+<div class="flex items-center gap-2.5">
+<img class="w-8 h-8 rounded-full object-cover shrink-0" data-alt="Avatar photo of an Indonesian university student user with neat hair and friendly posture, high clarity portrait, light background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzY0YT-i7ZzZX7K_anh8P03XWqnR8aLukpPlkCA-CyVMW--y8aPfHG5Fbief_XgVF5AvK4waK9UQjbWZ-eAEJpdMeZB0nS7LtgVDCX-xuqZIi1uq-ZoQoM0_DzGVLo71us_iYSXwUf81Vn0WPxkQKd-WPtkjyfcThYhPk0bBF6Ho6_KXW2Q2vaI3XvhQfCjw3fmGhjbMshfdDcMOfxCkUyFRvl0lPEdEfeknrvgnyu_JF6y0acetWG8L7Zzv5T5xd2vZm22WznsMmA"/>
+<input class="flex-1 bg-surface-container-low border border-border-subtle rounded-lg px-3 py-2 text-body-sm font-body-sm text-on-surface focus:outline-none focus:ring-1 focus:ring-primary-container placeholder:text-outline" id="comment-input" placeholder="Tulis tanggapan atau pertanyaan teknis..." type="text"/>
+<button aria-label="Kirim Komentar" class="w-9 h-9 rounded-lg bg-primary-container text-white flex items-center justify-center hover:bg-primary transition active:scale-95 shrink-0" id="btn-submit-comment" type="button">
+<span class="material-symbols-outlined" data-icon="send" style="font-size: 16px;">send</span>
+</button>
+</div>
+</div>
+<!-- Academic Comment Thread -->
+<div class="space-y-3" id="comments-container">
+<!-- Comment 1 -->
+<div class="bg-surface-card border border-border-subtle rounded-xl p-3 shadow-sm">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-2 mb-1">
+<span class="text-label-md font-label-md text-on-surface">Arif Wicaksono</span>
+<span class="text-label-sm font-label-sm text-outline">• Teknik Komputer '21</span>
+</div>
+<span class="text-body-sm font-body-sm text-outline">2 hari lalu</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant leading-relaxed">
+              Arsitektur telemetry-nya menarik sekali, Rafi. Berapa rata-rata round-trip latency saat pub-sub payload sensor melalui MQTT broker saat jam sibuk lab?
+            </p>
+<div class="mt-2 flex items-center gap-3 text-label-sm font-label-sm text-outline">
+<button class="hover:text-primary transition flex items-center gap-1" type="button">
+<span class="material-symbols-outlined" data-icon="reply" style="font-size: 14px;">reply</span> Balas
+              </button>
+<span>•</span>
+<span class="flex items-center gap-0.5">
+<span class="material-symbols-outlined" data-icon="thumb_up" style="font-size: 13px;">thumb_up</span> 8
+              </span>
+</div>
+</div>
+<!-- Comment 2 -->
+<div class="bg-surface-card border border-border-subtle rounded-xl p-3 shadow-sm">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-2 mb-1">
+<span class="text-label-md font-label-md text-on-surface">Clarissa Aurelia</span>
+<span class="text-label-sm font-label-sm text-outline">• Sistem Informasi '22</span>
+</div>
+<span class="text-body-sm font-body-sm text-outline">3 hari lalu</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant leading-relaxed">
+              Pilihan InfluxDB sangat tepat untuk time-series aggregation di sisi visualisasi Next.js. Desain visual dashboard-nya juga rapi dan sangat mudah dibaca.
+            </p>
+<div class="mt-2 flex items-center gap-3 text-label-sm font-label-sm text-outline">
+<button class="hover:text-primary transition flex items-center gap-1" type="button">
+<span class="material-symbols-outlined" data-icon="reply" style="font-size: 14px;">reply</span> Balas
+              </button>
+<span>•</span>
+<span class="flex items-center gap-0.5">
+<span class="material-symbols-outlined" data-icon="thumb_up" style="font-size: 13px;">thumb_up</span> 14
+              </span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- 10. Sticky Bottom Bar Aksi Cepat (Level 2 Floating Overlay) -->
+<div class="fixed bottom-0 left-0 w-full z-50 pointer-events-none">
+<div class="max-w-md mx-auto px-4 py-3 pointer-events-auto">
+<div class="bg-surface-card/95 backdrop-blur-md border border-border-subtle rounded-2xl p-2 shadow-xl flex items-center gap-2">
+<!-- Tombol Apresiasi Cepat -->
+<button class="flex-1 py-2.5 px-3 rounded-xl border border-border-subtle bg-surface hover:bg-surface-container flex items-center justify-center gap-1.5 text-on-surface text-label-md font-label-md transition active:scale-95" id="btn-bottom-endorse" type="button">
+<span class="material-symbols-outlined text-primary-container" data-icon="thumb_up" id="endorse-icon">thumb_up</span>
+<span id="endorse-text">Apresiasi (142)</span>
+</button>
+<!-- Tombol Diskusi Kolaborasi Utama -->
+<button class="flex-[1.4] py-2.5 px-3 rounded-xl bg-primary-container hover:bg-primary text-white flex items-center justify-center gap-1.5 text-label-md font-label-md transition active:scale-95 shadow-md" type="button">
+<span class="material-symbols-outlined" data-icon="chat" style="font-size: 18px;">chat</span>
+<span>Ajak Kolaborasi</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Interactive JavaScript Micro-interactions -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Bookmark toggle
+      const btnBookmark = document.getElementById('btn-bookmark');
+      const bookmarkIcon = document.getElementById('bookmark-icon');
+      let isBookmarked = false;
+
+      btnBookmark.addEventListener('click', () => {
+        isBookmarked = !isBookmarked;
+        if (isBookmarked) {
+          bookmarkIcon.textContent = 'bookmark';
+          bookmarkIcon.classList.add('fill-active', 'text-primary-container');
+        } else {
+          bookmarkIcon.textContent = 'bookmark_border';
+          bookmarkIcon.classList.remove('fill-active', 'text-primary-container');
+        }
+      });
+
+      // Endorsement counters
+      let endorseCount = 142;
+      let isEndorsed = false;
+      const btnBottomEndorse = document.getElementById('btn-bottom-endorse');
+      const endorseIcon = document.getElementById('endorse-icon');
+      const endorseText = document.getElementById('endorse-text');
+      const btnEndorseCard = document.getElementById('btn-endorse-card');
+
+      function toggleEndorse() {
+        isEndorsed = !isEndorsed;
+        endorseCount += isEndorsed ? 1 : -1;
+        endorseText.textContent = `Apresiasi (${endorseCount})`;
+        
+        if (isEndorsed) {
+          endorseIcon.classList.add('fill-active');
+          btnEndorseCard.textContent = 'Terapresiasi';
+          btnEndorseCard.classList.add('bg-primary-container', 'text-white');
+          btnEndorseCard.classList.remove('text-primary-container', 'bg-primary-container/5');
+        } else {
+          endorseIcon.classList.remove('fill-active');
+          btnEndorseCard.textContent = '+ Beri Apresiasi';
+          btnEndorseCard.classList.remove('bg-primary-container', 'text-white');
+          btnEndorseCard.classList.add('text-primary-container', 'bg-primary-container/5');
+        }
+      }
+
+      btnBottomEndorse.addEventListener('click', toggleEndorse);
+      btnEndorseCard.addEventListener('click', toggleEndorse);
+
+      // Lightweight comment insertion
+      const commentInput = document.getElementById('comment-input');
+      const btnSubmitComment = document.getElementById('btn-submit-comment');
+      const commentsContainer = document.getElementById('comments-container');
+
+      function addComment() {
+        const text = commentInput.value.trim();
+        if (!text) return;
+
+        const newComment = document.createElement('div');
+        newComment.className = 'bg-surface-card border border-border-subtle rounded-xl p-3 shadow-sm animate-fade-in';
+        newComment.innerHTML = `
+          <div class="flex items-start justify-between">
+            <div class="flex items-center gap-2 mb-1">
+              <span class="text-label-md font-label-md text-on-surface">Anda</span>
+              <span class="text-label-sm font-label-sm text-outline">• Pengunjung Kampus</span>
+            </div>
+            <span class="text-body-sm font-body-sm text-outline">Baru saja</span>
+          </div>
+          <p class="text-body-sm font-body-sm text-on-surface-variant leading-relaxed">${text}</p>
+          <div class="mt-2 flex items-center gap-3 text-label-sm font-label-sm text-outline">
+            <span class="flex items-center gap-1"><span class="material-symbols-outlined" data-icon="reply" style="font-size: 14px;">reply</span> Balas</span>
+            <span>•</span>
+            <span class="flex items-center gap-0.5"><span class="material-symbols-outlined" data-icon="thumb_up" style="font-size: 13px;">thumb_up</span> 1</span>
+          </div>
+        `;
+
+        commentsContainer.prepend(newComment);
+        commentInput.value = '';
+      }
+
+      btnSubmitComment.addEventListener('click', addComment);
+      commentInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') addComment();
+      });
+    });
+  </script>
+</body></html>

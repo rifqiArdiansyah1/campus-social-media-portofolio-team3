@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CampusFolio - Buat Proyek</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-surface-variant": "#464554",
+            "match-emerald": "#10B981",
+            "error-container": "#ffdad6",
+            "surface-container-lowest": "#ffffff",
+            "on-surface": "#131b2e",
+            "primary-fixed-dim": "#c3c0ff",
+            "outline-variant": "#c7c4d7",
+            "surface-dim": "#d2d9f4",
+            "inverse-on-surface": "#eef0ff",
+            "primary-fixed": "#e3dfff",
+            "on-tertiary-container": "#ffb759",
+            "tertiary-fixed": "#ffddb8",
+            "on-error-container": "#93000a",
+            "on-tertiary": "#ffffff",
+            "on-secondary": "#ffffff",
+            "surface-card": "#FFFFFF",
+            "surface-container": "#eaedff",
+            "outline": "#777586",
+            "primary": "#2a14b4",
+            "background": "#faf8ff",
+            "surface-container-highest": "#dae2fd",
+            "surface-tint": "#5148d7",
+            "on-tertiary-fixed": "#2a1700",
+            "on-background": "#131b2e",
+            "on-primary-fixed": "#100069",
+            "secondary": "#006a61",
+            "on-primary": "#ffffff",
+            "surface-variant": "#dae2fd",
+            "surface": "#faf8ff",
+            "tertiary-fixed-dim": "#ffb95f",
+            "secondary-container": "#86f2e4",
+            "on-secondary-container": "#006f66",
+            "primary-container": "#4338ca",
+            "on-primary-fixed-variant": "#372abf",
+            "on-tertiary-fixed-variant": "#653e00",
+            "secondary-fixed": "#89f5e7",
+            "on-secondary-fixed-variant": "#005049",
+            "recruiting-coral": "#F43F5E",
+            "on-secondary-fixed": "#00201d",
+            "surface-bright": "#faf8ff",
+            "border-subtle": "#E2E8F0",
+            "secondary-fixed-dim": "#6bd8cb",
+            "on-error": "#ffffff",
+            "inverse-surface": "#283044",
+            "surface-container-low": "#f2f3ff",
+            "tertiary-container": "#744800",
+            "surface-canvas": "#F8FAFC",
+            "inverse-primary": "#c3c0ff",
+            "tertiary": "#553300",
+            "on-primary-container": "#c1beff",
+            "error": "#ba1a1a",
+            "surface-container-high": "#e2e7ff"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-lg": "1.5rem",
+            "margin-mobile": "1rem",
+            "margin": "1.5rem",
+            "gutter-mobile": "0.75rem",
+            "space-md": "1rem",
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem",
+            "gutter": "1rem",
+            "space-xl": "2rem"
+          },
+          "fontFamily": {
+            "body-lg": ["Plus Jakarta Sans"],
+            "label-lg": ["Inter"],
+            "headline-lg": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"],
+            "headline-md": ["Plus Jakarta Sans"],
+            "display": ["Plus Jakarta Sans"],
+            "label-md": ["Inter"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "headline-lg-mobile": ["Plus Jakarta Sans"],
+            "code": ["Inter"],
+            "label-sm": ["Inter"],
+            "headline-sm": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+            "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.015em", "fontWeight": "700" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "display": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "code": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+            "label-sm": ["10px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "600" }],
+            "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    body {
+      -webkit-font-smoothing: antialiased;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface-canvas text-on-surface antialiased font-body-md min-h-screen flex justify-center selection:bg-primary selection:text-white">
+<!-- Mobile Viewport Container -->
+<div class="w-full max-w-md bg-surface-canvas min-h-screen flex flex-col relative pb-36 shadow-xl">
+<!-- Top Navigation Anchor (Task-Focused: suppress global bottom nav) -->
+<header class="bg-surface border-b border-border-subtle shadow-sm flex justify-between items-center w-full px-4 h-14 max-w-md mx-auto sticky top-0 z-50">
+<div class="flex items-center space-x-2">
+<button aria-label="Batal" class="p-1.5 -ml-1.5 text-on-surface hover:text-primary rounded-lg hover:bg-surface-container-low transition-colors duration-150 active:scale-95" type="button">
+<span class="material-symbols-outlined text-[22px]">arrow_back</span>
+</button>
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface tracking-tight">Buat Proyek</span>
+</div>
+<div class="flex items-center">
+<button class="bg-primary hover:bg-primary-container text-white px-3.5 py-1.5 rounded-full font-label-md text-label-md transition duration-150 active:scale-95 shadow-sm" type="button">
+          Simpan
+        </button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 px-4 py-4 space-y-4">
+<!-- Segmented Pill Tab Controls -->
+<div class="bg-surface-container-low p-1 rounded-xl flex items-center border border-border-subtle shadow-xs">
+<button class="flex-1 py-1.5 px-2 rounded-lg bg-surface-card text-primary font-label-md text-label-md shadow-xs text-center transition-all duration-150 border border-border-subtle" type="button">
+          Cari Anggota (Open Recruitment)
+        </button>
+<button class="flex-1 py-1.5 px-2 rounded-lg text-on-surface-variant hover:text-on-surface font-label-md text-label-md text-center transition-all duration-150" type="button">
+          Showcase Karya
+        </button>
+<button class="flex-1 py-1.5 px-2 rounded-lg text-on-surface-variant hover:text-on-surface font-label-md text-label-md text-center transition-all duration-150" type="button">
+          Diskusi Kampus
+        </button>
+</div>
+<!-- Info Banner AI Matchmaker -->
+<div class="bg-gradient-to-r from-surface-card to-surface-container-low border border-primary/20 rounded-xl p-3.5 flex items-start space-x-3 shadow-xs">
+<div class="bg-primary/10 text-primary p-2 rounded-lg shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<div class="flex-1 space-y-1">
+<div class="flex items-center space-x-1.5">
+<span class="font-label-lg text-label-lg text-primary font-bold">CampusFolio AI Matchmaker</span>
+<span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-label-sm bg-match-emerald/10 text-match-emerald font-semibold border border-match-emerald/20">
+              Aktif
+            </span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+            Postingan rekrutmen akan dianalisis oleh AI Matchmaker untuk otomatis mencocokkan ke mahasiswa bertalenta yang relevan.
+          </p>
+</div>
+</div>
+<!-- Form: Judul Proyek -->
+<div class="bg-surface-card p-4 rounded-xl border border-border-subtle shadow-xs space-y-3">
+<div>
+<label class="block font-label-lg text-label-lg text-on-surface mb-1" for="project-title">
+            Judul Proyek / Kebutuhan Tim <span class="text-recruiting-coral">*</span>
+</label>
+<input class="w-full h-11 px-3.5 rounded-lg border border-border-subtle bg-surface-canvas font-body-md text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all" id="project-title" placeholder="e.g. Riset NLP Bahasa Daerah bersama Lab AI" type="text" value="Pengembangan IoT Waste Management Gemastik 2026"/>
+<p class="mt-1.5 font-body-sm text-body-sm text-outline flex items-center space-x-1">
+<span class="material-symbols-outlined text-[14px]">info</span>
+<span>Gunakan judul spesifik untuk mempermudah pencarian peer talenta.</span>
+</p>
+</div>
+<!-- Kategori Kegiatan -->
+<div>
+<label class="block font-label-lg text-label-lg text-on-surface mb-1" for="category">
+            Kategori Kegiatan <span class="text-recruiting-coral">*</span>
+</label>
+<div class="relative">
+<select class="w-full h-11 px-3.5 pr-10 rounded-lg border border-border-subtle bg-surface-canvas font-body-md text-body-md text-on-surface appearance-none focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all" id="category">
+<option selected="">Lomba / Hackathon Nasional</option>
+<option>Tugas Akhir / Skripsi Kolaboratif</option>
+<option>Riset &amp; Publikasi Dosen</option>
+<option>Proyek Mandiri / Komersial Startup</option>
+</select>
+<div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Deskripsi Proyek -->
+<div>
+<div class="flex justify-between items-center mb-1">
+<label class="font-label-lg text-label-lg text-on-surface" for="description">
+              Deskripsi Proyek &amp; Sasaran <span class="text-recruiting-coral">*</span>
+</label>
+<button class="text-primary hover:underline font-label-md text-label-md inline-flex items-center space-x-0.5" type="button">
+<span class="material-symbols-outlined text-[14px]">menu_book</span>
+<span>Pedoman Penulisan</span>
+</button>
+</div>
+<textarea class="w-full p-3 rounded-lg border border-border-subtle bg-surface-canvas font-body-md text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all" id="description" placeholder="Jelaskan latar belakang masalah, target kompetisi/luaran proyek, serta lingkungan kolaborasi tim..." rows="4">Membangun purwarupa sensor pintar pemilah sampah otomatis berbasis ESP32 dan Computer Vision Edge TPU. Proyek ini dipersiapkan mewakili kontingen universitas di ajang Gemastik 2026 divisi Smart City. Target deliverables meliputi integrasi IoT hardware, dashboard web monitoring, dan video demonstrasi interaktif.</textarea>
+<div class="flex justify-between items-center mt-1">
+<span class="font-body-sm text-body-sm text-match-emerald flex items-center space-x-1">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">check</span>
+<span>Struktur deskripsi dinilai informatif</span>
+</span>
+<span class="font-code text-code text-outline">385 / 1000 karakter</span>
+</div>
+</div>
+</div>
+<!-- Kebutuhan Posisi Anggota Tim (Open Roles) -->
+<div class="space-y-3">
+<div class="flex justify-between items-center px-0.5">
+<div>
+<h2 class="font-headline-sm text-headline-sm font-bold text-on-surface">Kebutuhan Posisi Tim</h2>
+<p class="font-body-sm text-body-sm text-outline">Tentukan peran spesifik &amp; keahlian yang dicari</p>
+</div>
+<button class="inline-flex items-center space-x-1 text-primary hover:bg-surface-container-low px-2.5 py-1.5 rounded-lg border border-primary/20 font-label-md text-label-md transition active:scale-95" type="button">
+<span class="material-symbols-outlined text-[18px]">add</span>
+<span>Tambah Posisi</span>
+</button>
+</div>
+<!-- Role Card 1 -->
+<div class="bg-surface-card p-4 rounded-xl border border-border-subtle shadow-xs space-y-3 relative hover:border-primary/40 transition duration-150">
+<div class="flex items-start justify-between">
+<div class="space-y-1">
+<div class="flex items-center space-x-2">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full font-label-sm text-label-sm bg-recruiting-coral/10 text-recruiting-coral font-bold border border-recruiting-coral/20">
+<span class="w-1.5 h-1.5 rounded-full bg-recruiting-coral mr-1 animate-pulse"></span>
+                  1 Kuota Tersedia
+                </span>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full font-label-sm text-label-sm bg-surface-container text-primary font-semibold">
+                  Menengah (Intermediate)
+                </span>
+</div>
+<h3 class="font-headline-sm text-headline-sm font-bold text-on-surface">
+                1x Frontend Developer (Flutter / React)
+              </h3>
+</div>
+<div class="flex items-center space-x-1">
+<button aria-label="Edit Role" class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-surface-container-low rounded-lg transition active:scale-95" type="button">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button aria-label="Hapus Role" class="p-1.5 text-on-surface-variant hover:text-error hover:bg-error-container/20 rounded-lg transition active:scale-95" type="button">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</div>
+<!-- Skill tags -->
+<div class="space-y-1">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Keahlian Diutamakan</span>
+<div class="flex flex-wrap gap-1.5 pt-0.5">
+<span class="px-2.5 py-1 rounded-md bg-surface-canvas border border-border-subtle text-on-surface font-label-md text-label-md">
+                Flutter
+              </span>
+<span class="px-2.5 py-1 rounded-md bg-surface-canvas border border-border-subtle text-on-surface font-label-md text-label-md">
+                REST API
+              </span>
+<span class="px-2.5 py-1 rounded-md bg-surface-canvas border border-border-subtle text-on-surface font-label-md text-label-md">
+                State Management
+              </span>
+<span class="px-2.5 py-1 rounded-md bg-surface-canvas border border-border-subtle text-on-surface font-label-md text-label-md">
+                Git Flow
+              </span>
+</div>
+</div>
+<div class="pt-2 border-t border-border-subtle flex items-center justify-between font-body-sm text-body-sm text-on-surface-variant">
+<div class="flex items-center space-x-1">
+<span class="material-symbols-outlined text-[16px] text-outline">event_busy</span>
+<span>Batas Pendaftaran: <span class="font-semibold text-on-surface">25 Oktober 2026</span></span>
+</div>
+<span class="font-label-md text-label-md text-primary font-semibold">Prioritas AI Match</span>
+</div>
+</div>
+<!-- Role Card 2 -->
+<div class="bg-surface-card p-4 rounded-xl border border-border-subtle shadow-xs space-y-3 relative hover:border-primary/40 transition duration-150">
+<div class="flex items-start justify-between">
+<div class="space-y-1">
+<div class="flex items-center space-x-2">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full font-label-sm text-label-sm bg-recruiting-coral/10 text-recruiting-coral font-bold border border-recruiting-coral/20">
+<span class="w-1.5 h-1.5 rounded-full bg-recruiting-coral mr-1 animate-pulse"></span>
+                  1 Kuota Tersedia
+                </span>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full font-label-sm text-label-sm bg-secondary-container/30 text-secondary font-semibold">
+                  Terbuka untuk Pemula
+                </span>
+</div>
+<h3 class="font-headline-sm text-headline-sm font-bold text-on-surface">
+                1x UI/UX Designer
+              </h3>
+</div>
+<div class="flex items-center space-x-1">
+<button aria-label="Edit Role" class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-surface-container-low rounded-lg transition active:scale-95" type="button">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button aria-label="Hapus Role" class="p-1.5 text-on-surface-variant hover:text-error hover:bg-error-container/20 rounded-lg transition active:scale-95" type="button">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</div>
+<!-- Skill tags -->
+<div class="space-y-1">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Keahlian Diutamakan</span>
+<div class="flex flex-wrap gap-1.5 pt-0.5">
+<span class="px-2.5 py-1 rounded-md bg-surface-canvas border border-border-subtle text-on-surface font-label-md text-label-md">
+                Figma
+              </span>
+<span class="px-2.5 py-1 rounded-md bg-surface-canvas border border-border-subtle text-on-surface font-label-md text-label-md">
+                Design System
+              </span>
+<span class="px-2.5 py-1 rounded-md bg-surface-canvas border border-border-subtle text-on-surface font-label-md text-label-md">
+                User Research
+              </span>
+<span class="px-2.5 py-1 rounded-md bg-surface-canvas border border-border-subtle text-on-surface font-label-md text-label-md">
+                Prototyping
+              </span>
+</div>
+</div>
+<div class="pt-2 border-t border-border-subtle flex items-center justify-between font-body-sm text-body-sm text-on-surface-variant">
+<div class="flex items-center space-x-1">
+<span class="material-symbols-outlined text-[16px] text-outline">event_busy</span>
+<span>Batas Pendaftaran: <span class="font-semibold text-on-surface">25 Oktober 2026</span></span>
+</div>
+<span class="font-label-md text-label-md text-secondary font-semibold">Mentorship Tersedia</span>
+</div>
+</div>
+</div>
+<!-- Durasi Pengerjaan & Komitmen Waktu -->
+<div class="bg-surface-card p-4 rounded-xl border border-border-subtle shadow-xs space-y-3">
+<h3 class="font-headline-sm text-headline-sm font-bold text-on-surface">Durasi &amp; Komitmen Waktu</h3>
+<div class="grid grid-cols-2 gap-3">
+<div class="space-y-1">
+<label class="block font-label-sm text-label-sm text-outline">Durasi Pengerjaan</label>
+<div class="flex items-center space-x-2 px-3 h-11 rounded-lg border border-border-subtle bg-surface-canvas text-on-surface">
+<span class="material-symbols-outlined text-[20px] text-primary">calendar_today</span>
+<span class="font-body-md text-body-md font-medium truncate">2 Bulan (Nov - Des)</span>
+</div>
+</div>
+<div class="space-y-1">
+<label class="block font-label-sm text-label-sm text-outline">Estimasi Komitmen</label>
+<div class="flex items-center space-x-2 px-3 h-11 rounded-lg border border-border-subtle bg-surface-canvas text-on-surface">
+<span class="material-symbols-outlined text-[20px] text-primary">schedule</span>
+<span class="font-body-md text-body-md font-medium truncate">5 - 8 Jam / Minggu</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Dokumen Penunjang / Pitch Deck -->
+<div class="bg-surface-card p-4 rounded-xl border border-border-subtle shadow-xs space-y-2">
+<label class="block font-label-lg text-label-lg text-on-surface" for="pitch-deck">
+          Dokumen Penunjang / Pitch Deck (Tautan)
+        </label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-outline">
+<span class="material-symbols-outlined text-[18px]">link</span>
+</div>
+<input class="w-full h-11 pl-9 pr-3.5 rounded-lg border border-border-subtle bg-surface-canvas font-body-md text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all" id="pitch-deck" placeholder="Tautan Notion, Google Drive, atau Pitch Deck PDF" type="url" value="https://notion.so/gemastik2026/proposal-waste-iot-v2"/>
+</div>
+<p class="font-body-sm text-body-sm text-outline">
+          Format yang didukung: Notion Doc, Google Drive Workspace, atau Figma Prototype.
+        </p>
+</div>
+<!-- Status AI Content Moderation Card (PRD AI-2) -->
+<div class="bg-[#ECFDF5] border border-match-emerald/30 rounded-xl p-4 space-y-2.5 shadow-xs">
+<div class="flex items-start justify-between">
+<div class="flex items-center space-x-2">
+<div class="p-1 rounded-full bg-match-emerald/10 text-match-emerald">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<h4 class="font-label-lg text-label-lg font-bold text-[#065F46]">
+              Pemeriksaan Konten AI: Lolos Standar Etik Kampus
+            </h4>
+</div>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-label-sm bg-match-emerald/15 text-[#047857] font-bold border border-match-emerald/30">
+            Tingkat Keamanan: 98% (Aman)
+          </span>
+</div>
+<p class="font-body-sm text-body-sm text-[#064E3B] leading-relaxed">
+          Sistem verifikasi otomatis mendeteksi draf bebas dari konten sensitif, plagiarisme proposal, dan sesuai kode etik interaksi akademik Universitas.
+        </p>
+<div class="flex items-center space-x-3 pt-1 text-[11px] font-label-sm text-[#047857]">
+<span class="inline-flex items-center space-x-1">
+<span class="material-symbols-outlined text-[13px]">verified_user</span>
+<span>Bebas Plagiarisme</span>
+</span>
+<span class="inline-flex items-center space-x-1">
+<span class="material-symbols-outlined text-[13px]">shield</span>
+<span>Etika Kolaborasi Valid</span>
+</span>
+</div>
+</div>
+<!-- Checkbox Persetujuan Etika Akademik -->
+<div class="bg-surface-card p-3.5 rounded-xl border border-border-subtle shadow-xs">
+<label class="flex items-start space-x-3 cursor-pointer">
+<input checked="" class="mt-0.5 w-4 h-4 rounded text-primary border-border-subtle focus:ring-primary focus:ring-offset-0 transition" type="checkbox"/>
+<span class="font-body-md text-body-md text-on-surface leading-snug select-none">
+            Saya berkomitmen menjunjung integritas akademik dan transparansi kolaborasi tim.
+          </span>
+</label>
+</div>
+</main>
+<!-- Fixed Bottom Action Bar -->
+<div class="fixed bottom-0 left-0 right-0 z-40 bg-surface/90 backdrop-blur-md border-t border-border-subtle p-3 max-w-md mx-auto shadow-lg">
+<div class="flex flex-col space-y-2">
+<button class="w-full h-12 bg-primary hover:bg-primary-container text-white font-label-lg text-label-lg rounded-xl flex items-center justify-center space-x-2 transition-all duration-150 active:scale-95 shadow-md hover:shadow-lg" type="button">
+<span class="material-symbols-outlined text-[20px]">rocket_launch</span>
+<span>Publikasikan Kebutuhan Tim</span>
+</button>
+<button class="w-full py-1 text-on-surface-variant hover:text-on-surface font-label-md text-label-md text-center transition" type="button">
+          Simpan sebagai Draf
+        </button>
+</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,405 @@
+{
+  "item": {
+    "key": "detail_postingan_kolaborasi",
+    "title": "Detail Proyek & Pengajuan Bergabung",
+    "prompt": "Halaman Detail Postingan Proyek & Pengajuan Kolaborasi Tim Mahasiswa untuk aplikasi CampusFolio.\nDesain mobile app modern bergaya Academic Modernist tanpa emoji kasual, menggunakan ikon Material Symbols Outlined.\nElemen halaman:\n- Header dengan tombol kembali, bookmark, dan laporkan post (ikon flag)\n- Info Inisiator Proyek: Nadia Pramudita (Informatika 23), status Open Recruitment (Sisa 2 Slot) warna recruiting-coral (#F43F5E)\n- Konten Proyek: Judul proyek Gemastik, deskripsi lengkap, diagram arsitektur\n- Daftar Kebutuhan Role:\n  * UI/UX Designer (Terisi - Arya)\n  * Mobile Flutter Developer (Terbuka - 1 Orang Dibutuhkan) beserta skill tags\n  * Backend / IoT Engineer (Terbuka - 1 Orang Dibutuhkan)\n- Kartu Rekomendasi Kecocokan AI (AI Match: 92% Sangat Cocok dengan skill Flutter pengguna)\n- Form/Card Pengajuan Bergabung:\n  * Dropdown pilih role yang dilamar\n  * Pesan singkat ke tim\n  * Checkbox lampirkan portofolio relevan\n  * Tombol CTA: Kirim Permintaan Bergabung."
+  },
+  "res": {
+    "id": 1793431716961,
+    "jsonrpc": "2.0",
+    "result": {
+      "content": [
+        {
+          "text": "{\"projectId\":\"10744711964413240245\",\"sessionId\":\"6049975978924522238\",\"outputComponents\":[{\"design\":{\"screens\":[{\"screenshot\":{\"name\":\"projects/10744711964413240245/files/45556cefc13d4123ad72825168a11bff\",\"downloadUrl\":\"https://stitch.googleapis.com/v1/projects/10744711964413240245/files/45556cefc13d4123ad72825168a11bff:download\"},\"htmlCode\":{\"name\":\"projects/10744711964413240245/files/2a42317670814d7d9dba5a4867d78d61\",\"downloadUrl\":\"https://stitch.googleapis.com/v1/projects/10744711964413240245/files/2a42317670814d7d9dba5a4867d78d61:download\",\"mimeType\":\"text/html\"},\"id\":\"45d80c1355ef4a0aa68e14a3500576a7\",\"generatedBy\":\"figaro_agent\",\"width\":\"780\",\"height\":\"5218\",\"title\":\"Detail Proyek & Pengajuan Kolaborasi\",\"prompt\":\"Halaman Detail Postingan Proyek & Pengajuan Kolaborasi Tim Mahasiswa untuk aplikasi mobile CampusFolio.\\nGaya visual: Academic Modernist, modern, rapi, profesional perguruan tinggi, tanpa emoji kasual, menggunakan Material Symbols Outlined ikon. Warna brand indigo (#4338ca) dan recruiting coral (#F43F5E / #E11D48).\\n\\nKomponen dan struktur tata letak:\\n1. Top Bar / Header:\\n   - Tombol kembali (arrow_back), judul 'Detail Proyek', aksi kanan: ikon bookmark (bookmark_border) dan laporkan postingan (flag) sesuai FR-10 / moderasi kampus.\\n\\n2. Inisiator Proyek & Header Info:\\n   - Profil Nadia Eka Pramudita (Teknik Informatika '23 • Universitas Indonesia) dengan avatar terverifikasi.\\n   - Badge status: 'Open Recruitment (Sisa 2 Slot)' berlatar rose/coral lembut dengan teks coral tegas (#F43F5E).\\n   - Waktu posting: '2 jam yang lalu' dan tag kategori: 'Lomba Gemastik 2026 • Kategori Smart City'.\\n\\n3. Konten & Deskripsi Proyek:\\n   - Judul besar: 'Pengembangan Aplikasi IoT & Logistik Pemilah Sampah Cerdas Kampus'.\\n   - Paragraf deskripsi proyek lengkap mengenai latar belakang kompetisi Gemastik, sasaran pemilahan sampah otomatis di area kantin dan fakultas, integrasi hardware ESP32, dan arsitektur mobile Flutter.\\n   - Diagram atau Visualisasi Arsitektur Sistem: Kartu clean diagram/schematic visual arsitektur IoT Edge TPU -\\u003e Cloud REST API -\\u003e Flutter Mobile App untuk visualisasi teknis proyek mahasiswa.\\n   - Metadata proyek: Estimasi durasi (2 Bulan, Nov-Des 2026), Komitmen waktu (6-8 jam/minggu), Tautan Notion Proposal / Dokumen Desain (link eksternal).\\n\\n4. Daftar Kebutuhan Posisi / Role Anggota Tim:\\n   - Role 1: 'UI/UX Designer' — Status: 'Terisi' (Badge hijau/abu-abu netral, anggota: Arya Pratama).\\n   - Role 2: 'Mobile Flutter Developer' — Status: 'Terbuka (1 Kuota Dibutuhkan)', badge coral aktif. Tag keahlian: Flutter, Dart, REST API, State Management.\\n   - Role 3: 'Backend & IoT Engineer' — Status: 'Terbuka (1 Kuota Dibutuhkan)', badge coral aktif. Tag keahlian: Python FastAPI, MQTT Broker, ESP32, Docker.\\n\\n5. Kartu AI Matchmaker Recommendation:\\n   - Highlight kartu pintar dengan aksen AI Indigo/Violet: 'CampusFolio AI Match: 92% Sangat Cocok'.\\n   - Penjelasan keterpaduan: 'Profil keahlianmu (Flutter & REST API) sangat sesuai dengan kebutuhan Mobile Developer pada proyek ini.'\\n   - Detail matched skills dan potensi kontribusi.\\n\\n6. Bagian Formulir / Card Pengajuan Bergabung (Apply Collaboration):\\n   - Card kontainer interaktif dengan judul 'Ajukan Diri untuk Kolaborasi':\\n   - Dropdown pilihan posisi: 'Pilih Role yang Dilamar' (opsi aktif: 'Mobile Flutter Developer').\\n   - Field Textarea: 'Pesan Singkat & Kontribusi yang Ditawarkan' dengan placeholder profesional.\\n   - Checkbox opsi: 'Lampirkan Portofolio Terkait (EcoCampus & Mobile UX Concept)' tercentang otomatis.\\n   - Tombol CTA utama (Primary Button): 'Kirim Permintaan Bergabung' dengan ikon send / handshake.\\n   - Catatan etika kampus: 'Permintaan akan ditinjau langsung oleh Nadia Pramudita dalam 1x24 jam.'\\n\\nDesain responsif mobile 390px, tipografi Plus Jakarta Sans, padding ergonomis, shadow halus, dan visual yang sangat kohesif dengan layar Beranda dan Jelajah sebelumnya.\",\"name\":\"projects/10744711964413240245/screens/45d80c1355ef4a0aa68e14a3500576a7\",\"theme\":{\"colorMode\":\"LIGHT\",\"font\":\"PLUS_JAKARTA_SANS\",\"roundness\":\"ROUND_EIGHT\",\"customColor\":\"#4338ca\",\"headlineFont\":\"PLUS_JAKARTA_SANS\",\"bodyFont\":\"PLUS_JAKARTA_SANS\",\"labelFont\":\"INTER\",\"namedColors\":{\"secondary\":\"#006a61\",\"outline_variant\":\"#c7c4d7\",\"surface_container_lowest\":\"#ffffff\",\"inverse_surface\":\"#283044\",\"on_tertiary_fixed_variant\":\"#653e00\",\"on_secondary_fixed_variant\":\"#005049\",\"on_error_container\":\"#93000a\",\"on_surface_variant\":\"#464554\",\"tertiary_fixed_dim\":\"#ffb95f\",\"recruiting-coral\":\"#F43F5E\",\"error_container\":\"#ffdad6\",\"on_primary\":\"#ffffff\",\"on_tertiary_fixed\":\"#2a1700\",\"inverse_primary\":\"#c3c0ff\",\"on_primary_fixed\":\"#100069\",\"surface_container_high\":\"#e2e7ff\",\"secondary_fixed\":\"#89f5e7\",\"surface_container\":\"#eaedff\",\"on_background\":\"#131b2e\",\"on_secondary\":\"#ffffff\",\"on_tertiary\":\"#ffffff\",\"surface-canvas\":\"#F8FAFC\",\"surface_container_low\":\"#f2f3ff\",\"primary\":\"#2a14b4\",\"border-subtle\":\"#E2E8F0\",\"on_primary_container\":\"#c1beff\",\"match-emerald\":\"#10B981\",\"primary_fixed_dim\":\"#c3c0ff\",\"secondary_container\":\"#86f2e4\",\"background\":\"#faf8ff\",\"surface_dim\":\"#d2d9f4\",\"surface_container_highest\":\"#dae2fd\",\"error\":\"#ba1a1a\",\"on_secondary_fixed\":\"#00201d\",\"primary_fixed\":\"#e3dfff\",\"on_secondary_container\":\"#006f66\",\"surface\":\"#faf8ff\",\"primary_container\":\"#4338ca\",\"outline\":\"#777586\",\"surface-card\":\"#FFFFFF\",\"inverse_on_surface\":\"#eef0ff\",\"on_surface\":\"#131b2e\",\"tertiary\":\"#553300\",\"tertiary_container\":\"#744800\",\"surface_variant\":\"#dae2fd\",\"on_error\":\"#ffffff\",\"on_primary_fixed_variant\":\"#372abf\",\"on_tertiary_container\":\"#ffb759\",\"surface_tint\":\"#5148d7\",\"tertiary_fixed\":\"#ffddb8\",\"surface_bright\":\"#faf8ff\",\"secondary_fixed_dim\":\"#6bd8cb\"},\"colorVariant\":\"FIDELITY\",\"overridePrimaryColor\":\"#4338ca\",\"overrideSecondaryColor\":\"#0d9488\",\"overrideTertiaryColor\":\"#f59e0b\",\"overrideNeutralColor\":\"#0f172a\",\"spacingScale\":2,\"typography\":{\"label-lg\":{\"fontFamily\":\"Inter\",\"fontSize\":\"14px\",\"fontWeight\":\"600\",\"lineHeight\":\"20px\",\"letterSpacing\":\"0.01em\"},\"display\":{\"fontFamily\":\"Plus Jakarta Sans\",\"fontSize\":\"36px\",\"fontWeight\":\"800\",\"lineHeight\":\"44px\",\"letterSpacing\":\"-0.02em\"},\"headline-sm\":{\"fontFamily\":\"Plus Jakarta Sans\",\"fontSize\":\"18px\",\"fontWeight\":\"600\",\"lineHeight\":\"24px\"},\"label-sm\":{\"fontFamily\":\"Inter\",\"fontSize\":\"10px\",\"fontWeight\":\"600\",\"lineHeight\":\"14px\",\"letterSpacing\":\"0.04em\"},\"headline-md\":{\"fontFamily\":\"Plus Jakarta Sans\",\"fontSize\":\"20px\",\"fontWeight\":\"600\",\"lineHeight\":\"28px\",\"letterSpacing\":\"-0.01em\"},\"body-md\":{\"fontFamily\":\"Plus Jakarta Sans\",\"fontSize\":\"14px\",\"fontWeight\":\"400\",\"lineHeight\":\"20px\"},\"label-md\":{\"fontFamily\":\"Inter\",\"fontSize\":\"12px\",\"fontWeight\":\"500\",\"lineHeight\":\"16px\",\"letterSpacing\":\"0.02em\"},\"code\":{\"fontFamily\":\"Inter\",\"fontSize\":\"12px\",\"fontWeight\":\"500\",\"lineHeight\":\"16px\"},\"body-lg\":{\"fontFamily\":\"Plus Jakarta Sans\",\"fontSize\":\"16px\",\"fontWeight\":\"400\",\"lineHeight\":\"24px\"},\"headline-lg\":{\"fontFamily\":\"Plus Jakarta Sans\",\"fontSize\":\"28px\",\"fontWeight\":\"700\",\"lineHeight\":\"36px\",\"letterSpacing\":\"-0.015em\"},\"headline-lg-mobile\":{\"fontFamily\":\"Plus Jakarta Sans\",\"fontSize\":\"24px\",\"fontWeight\":\"700\",\"lineHeight\":\"32px\",\"letterSpacing\":\"-0.01em\"},\"body-sm\":{\"fontFamily\":\"Plus Jakarta Sans\",\"fontSize\":\"12px\",\"fontWeight\":\"400\",\"lineHeight\":\"16px\"}},\"spacing\":{\"space-xs\":\"0.25rem\",\"space-sm\":\"0.5rem\",\"space-xl\":\"2rem\",\"gutter-mobile\":\"0.75rem\",\"space-md\":\"1rem\",\"gutter\":\"1rem\",\"margin\":\"1.5rem\",\"space-lg\":\"1.5rem\",\"margin-mobile\":\"1rem\"},\"headlineFontFamily\":\"Plus Jakarta Sans\",\"bodyFontFamily\":\"Plus Jakarta Sans\",\"labelFontFamily\":\"Inter\"},\"deviceType\":\"MOBILE\",\"screenType\":\"DESIGN\",\"screenMetadata\":{\"agentType\":\"PRO_AGENT\",\"status\":\"COMPLETE\"},\"designSystem\":{\"name\":\"assets/7ebc8416af6f48ebba845b5838b441a6\",\"designSystem\":{\"displayName\":\"Academic Modernist\",\"styleGuidelines\":\"## Brand & Style\\nThe design system reflects an aspirational, collegiate ecosystem engineered for student talent discovery, project collaboration, and peer showcase. It merges the structure and credibility of an academic portfolio with the warmth, momentum, and expressive sociability of a modern mobile-first community. \\n\\nThe aesthetic is Modern Clean Tech with structured editorial cues: crisp surfaces, intentional micro-interactions, distinct categorical color accents, and prominent typographic hierarchy. The UI balances utilitarian focus—essential for reviewing technical portfolios and project deliverables—with punchy, energetic accents that celebrate student milestones, recruiting statuses, and AI-assisted collaboration matches. \\n\\nThe experience must evoke agency, competence, and intellectual curiosity, steering clear of both austere academic administrative portals and noisy, hyperactive consumer feeds.\\n\\n## Layout & Spacing\\nThe layout adheres to a flexible, touch-first fluid grid optimized for mobile ergonomics. Screen margins are locked at `1rem` (16px) on mobile viewports to preserve horizontal content real estate, expanding to `1.5rem` on tablet/desktop displays. \\n\\nA strictly applied 4px/8px incremental scale (`space-xs` through `space-xl`) governs vertical flow. Compact stacks (`space-xs` to `space-sm`) are reserved for avatar-to-handle alignments and skill badge cluster wrap groups. Larger intervals (`space-md` to `space-lg`) separate distinct portfolio work showcases, collaborative feeds, and section modules.\\n\\n## Elevation & Depth\\nDepth is constructed through subtle tonal layering and soft, daylight-inspired ambient shadows rather than stark heavy drops. \\n\\n1. **Base Layer (Level 0):** Background screen canvas in off-white (`#F8FAFC`).\\n2. **Surface Layer (Level 1):** Profile overview cards, feed items, and project rows sit on pure white (`#FFFFFF`) with a 1px border (`#E2E8F0`) and an ambient shadow: `0 1px 3px 0 rgba(15, 23, 42, 0.05), 0 1px 2px -1px rgba(15, 23, 42, 0.03)`.\\n3. **Floating Overlays (Level 2):** Floating bottom navigation bar, context menus, and active filter sheets utilize frosted glassmorphism: background of `rgba(255, 255, 255, 0.85)` with a 16px blur radius, reinforced by a delicate shadow: `0 10px 15px -3px rgba(15, 23, 42, 0.08)`.\\n4. **Modal & Dialog Tier (Level 3):** AI rationale popovers, skill endorsement drawers, and image viewports rest atop an ultra-soft dimming backdrop (`rgba(15, 23, 42, 0.4)`), projecting an ambient blur: `0 20px 25px -5px rgba(15, 23, 42, 0.12)`.\\n\\n## Components\\n\\n### Buttons & Interactive Controls\\n- **Primary Action:** Solid Indigo (`#4338CA`) background, white text, fully rounded pill or `rounded-lg` shape, 48px minimum height for mobile thumb zone accessibility. Active state triggers a subtle scale compression (0.98).\\n- **Secondary Action:** Ghost style with `border-subtle` (`#E2E8F0`) outline, text in `neutral_color_hex` (`#0F172A`), active surface tinting in slate-50.\\n- **Recruitment CTA:** Solid Coral (`#F43F5E`) or transparent with Coral accent ring, dedicated strictly to \\\"Join Team\\\" or \\\"Apply to Project\\\" triggers.\\n\\n### Chips & Badges\\n- **Skill Pill:** Compact pill container, light gray-blue fill (`#F1F5F9`), subtle border, 12px Inter semi-bold typography (`label-md`).\\n- **AI Match Explanation Badge:** Gradient-bordered pill featuring an emerald icon pip (`#10B981`), surface tint of emerald-50, displaying both match percentage and an inline expandable disclosure trigger for explainability.\\n- **Recruitment Status Tag:** Coral tint background (`rgba(244, 63, 94, 0.1)`) with high-contrast Coral text and an active pulsing status indicator dot.\\n\\n### Cards & Feed Tiles\\n- **Portfolio Showcase Card:** Clean white container, crisp 1px border, high-impact media preview pinned to the top edges with a 16px padding frame for student credentials, project title, and skill wrap groups.\\n- **Student Profile Header Card:** Integrated avatar frame with dynamic department badge, headline bio, quick stats row (Projects, Collaborators, Endorsements), and primary direct-message action.\\n\\n### Input Fields & Controls\\n- **Text Fields:** 44px minimum height, 1px border (`#CBD5E1`) shifting to 2px primary Indigo on focus with zero offset glow. Clear floating placeholder transitions using `label-md`.\\n- **Checkboxes & Radios:** Rounded square (checkbox, 4px radius) and circle (radio), filling with primary Indigo upon selection accompanied by a crisp white interior glyph.\\n\\n### App Chrome & Navigation\\n- **Floating Tab Bar:** Suspended 16px above the home indicator, frosted glass backing (`backdrop-blur-md`), 5 primary ergonomic touch targets with animated indigo indicators for the active screen.\",\"theme\":{\"colorMode\":\"LIGHT\",\"font\":\"PLUS_JAKARTA_SANS\",\"roundness\":\"ROUND_EIGHT\",\"customColor\":\"#4338ca\",\"headlineFont\":\"PLUS_JAKARTA_SANS\",\"bodyFont\":\"PLUS_JAKARTA_SANS\",\"labelFont\":\"INTER\",\"namedColors\":{\"on_primary\":\"#ffffff\",\"on_primary_container\":\"#c1beff\",\"secondary_container\":\"#86f2e4\",\"tertiary_fixed\":\"#ffddb8\",\"error\":\"#ba1a1a\",\"surface_bright\":\"#faf8ff\",\"surface_dim\":\"#d2d9f4\",\"tertiary\":\"#553300\",\"on_tertiary\":\"#ffffff\",\"on_secondary_fixed_variant\":\"#005049\",\"on_background\":\"#131b2e\",\"match-emerald\":\"#10B981\",\"border-subtle\":\"#E2E8F0\",\"primary_container\":\"#4338ca\",\"secondary_fixed\":\"#89f5e7\",\"on_tertiary_fixed_variant\":\"#653e00\",\"background\":\"#faf8ff\",\"error_container\":\"#ffdad6\",\"tertiary_fixed_dim\":\"#ffb95f\",\"secondary\":\"#006a61\",\"on_error\":\"#ffffff\",\"inverse_primary\":\"#c3c0ff\",\"on_error_container\":\"#93000a\",\"on_surface_variant\":\"#464554\",\"surface_container_low\":\"#f2f3ff\",\"primary\":\"#2a14b4\",\"on_primary_fixed_variant\":\"#372abf\",\"outline_variant\":\"#c7c4d7\",\"on_secondary\":\"#ffffff\",\"on_secondary_container\":\"#006f66\",\"inverse_surface\":\"#283044\",\"surface-card\":\"#FFFFFF\",\"outline\":\"#777586\",\"on_surface\":\"#131b2e\",\"surface\":\"#faf8ff\",\"secondary_fixed_dim\":\"#6bd8cb\",\"surface-canvas\":\"#F8FAFC\",\"surface_container_lowest\":\"#ffffff\",\"surface_variant\":\"#dae2fd\",\"primary_fixed_dim\":\"#c3c0ff\",\"surface_container_highest\":\"#dae2fd\",\"inverse_on_surface\":\"#eef0ff\",\"on_tertiary_fixed\":\"#2a1700\",\"tertiary_container\":\"#744800\",\"surface_container_high\":\"#e2e7ff\",\"surface_container\":\"#eaedff\",\"recruiting-coral\":\"#F43F5E\",\"surface_tint\":\"#5148d7\",\"on_primary_fixed\":\"#100069\",\"on_tertiary_container\":\"#ffb759\",\"primary_fixed\":\"#e3dfff\",\"on_secondary_fixed\":\"#00201d\"},\"designMd\":\"---\\nname: Academic Modernist\\ncolors:\\n  surface: '#faf8ff'\\n  surface-dim: '#d2d9f4'\\n  surface-bright: '#faf8ff'\\n  surface-container-lowest: '#ffffff'\\n  surface-container-low: '#f2f3ff'\\n  surface-container: '#eaedff'\\n  surface-container-high: '#e2e7ff'\\n  surface-container-highest: '#dae2fd'\\n  on-surface: '#131b2e'\\n  on-surface-variant: '#464554'\\n  inverse-surface: '#283044'\\n  inverse-on-surface: '#eef0ff'\\n  outline: '#777586'\\n  outline-variant: '#c7c4d7'\\n  surface-tint: '#5148d7'\\n  primary: '#2a14b4'\\n  on-primary: '#ffffff'\\n  primary-container: '#4338ca'\\n  on-primary-container: '#c1beff'\\n  inverse-primary: '#c3c0ff'\\n  secondary: '#006a61'\\n  on-secondary: '#ffffff'\\n  secondary-container: '#86f2e4'\\n  on-secondary-container: '#006f66'\\n  tertiary: '#553300'\\n  on-tertiary: '#ffffff'\\n  tertiary-container: '#744800'\\n  on-tertiary-container: '#ffb759'\\n  error: '#ba1a1a'\\n  on-error: '#ffffff'\\n  error-container: '#ffdad6'\\n  on-error-container: '#93000a'\\n  primary-fixed: '#e3dfff'\\n  primary-fixed-dim: '#c3c0ff'\\n  on-primary-fixed: '#100069'\\n  on-primary-fixed-variant: '#372abf'\\n  secondary-fixed: '#89f5e7'\\n  secondary-fixed-dim: '#6bd8cb'\\n  on-secondary-fixed: '#00201d'\\n  on-secondary-fixed-variant: '#005049'\\n  tertiary-fixed: '#ffddb8'\\n  tertiary-fixed-dim: '#ffb95f'\\n  on-tertiary-fixed: '#2a1700'\\n  on-tertiary-fixed-variant: '#653e00'\\n  background: '#faf8ff'\\n  on-background: '#131b2e'\\n  surface-variant: '#dae2fd'\\n  recruiting-coral: '#F43F5E'\\n  match-emerald: '#10B981'\\n  surface-canvas: '#F8FAFC'\\n  surface-card: '#FFFFFF'\\n  border-subtle: '#E2E8F0'\\ntypography:\\n  display:\\n    fontFamily: Plus Jakarta Sans\\n    fontSize: 36px\\n    fontWeight: '800'\\n    lineHeight: 44px\\n    letterSpacing: -0.02em\\n  headline-lg:\\n    fontFamily: Plus Jakarta Sans\\n    fontSize: 28px\\n    fontWeight: '700'\\n    lineHeight: 36px\\n    letterSpacing: -0.015em\\n  headline-lg-mobile:\\n    fontFamily: Plus Jakarta Sans\\n    fontSize: 24px\\n    fontWeight: '700'\\n    lineHeight: 32px\\n    letterSpacing: -0.01em\\n  headline-md:\\n    fontFamily: Plus Jakarta Sans\\n    fontSize: 20px\\n    fontWeight: '600'\\n    lineHeight: 28px\\n    letterSpacing: -0.01em\\n  headline-sm:\\n    fontFamily: Plus Jakarta Sans\\n    fontSize: 18px\\n    fontWeight: '600'\\n    lineHeight: 24px\\n  body-lg:\\n    fontFamily: Plus Jakarta Sans\\n    fontSize: 16px\\n    fontWeight: '400'\\n    lineHeight: 24px\\n  body-md:\\n    fontFamily: Plus Jakarta Sans\\n    fontSize: 14px\\n    fontWeight: '400'\\n    lineHeight: 20px\\n  body-sm:\\n    fontFamily: Plus Jakarta Sans\\n    fontSize: 12px\\n    fontWeight: '400'\\n    lineHeight: 16px\\n  label-lg:\\n    fontFamily: Inter\\n    fontSize: 14px\\n    fontWeight: '600'\\n    lineHeight: 20px\\n    letterSpacing: 0.01em\\n  label-md:\\n    fontFamily: Inter\\n    fontSize: 12px\\n    fontWeight: '500'\\n    lineHeight: 16px\\n    letterSpacing: 0.02em\\n  label-sm:\\n    fontFamily: Inter\\n    fontSize: 10px\\n    fontWeight: '600'\\n    lineHeight: 14px\\n    letterSpacing: 0.04em\\n  code:\\n    fontFamily: Inter\\n    fontSize: 12px\\n    fontWeight: '500'\\n    lineHeight: 16px\\nrounded:\\n  sm: 0.25rem\\n  DEFAULT: 0.5rem\\n  md: 0.75rem\\n  lg: 1rem\\n  xl: 1.5rem\\n  full: 9999px\\nspacing:\\n  gutter: 1rem\\n  gutter-mobile: 0.75rem\\n  margin: 1.5rem\\n  margin-mobile: 1rem\\n  space-xs: 0.25rem\\n  space-sm: 0.5rem\\n  space-md: 1rem\\n  space-lg: 1.5rem\\n  space-xl: 2rem\\n---\\n\\n## Brand & Style\\nThe design system reflects an aspirational, collegiate ecosystem engineered for student talent discovery, project collaboration, and peer showcase. It merges the structure and credibility of an academic portfolio with the warmth, momentum, and expressive sociability of a modern mobile-first community. \\n\\nThe aesthetic is Modern Clean Tech with structured editorial cues: crisp surfaces, intentional micro-interactions, distinct categorical color accents, and prominent typographic hierarchy. The UI balances utilitarian focus—essential for reviewing technical portfolios and project deliverables—with punchy, energetic accents that celebrate student milestones, recruiting statuses, and AI-assisted collaboration matches. \\n\\nThe experience must evoke agency, competence, and intellectual curiosity, steering clear of both austere academic administrative portals and noisy, hyperactive consumer feeds.\\n\\n## Colors\\nThe palette leverages a deep royal indigo (`#4338CA`) as the foundational anchor, conveying academic credibility and structural clarity. The secondary teal-emerald (`#0D9488` / `#10B981`) represents momentum, peer connectivity, and verified skill growth. \\n\\nSemantic colors highlight real-time campus activities:\\n- `tertiary_color_hex` (`#F59E0B`) serves as the warm highlight for urgent callouts, active collaboration requests, and pinned showcases.\\n- `recruiting-coral` (`#F43F5E`) is dedicated strictly to recruitment indicators, open team roles, and high-priority availability badges.\\n- `match-emerald` (`#10B981`) powers AI recommendation chips and match-percentage cues, paired with neutral explanatory microcopy.\\n\\nSurfaces employ a layered architecture: base screens render on `surface-canvas` (`#F8FAFC`), while cards, modals, and sheets rise on clean `surface-card` (`#FFFFFF`) with razor-sharp definition via `border-subtle` (`#E2E8F0`) rather than heavy dropshadows.\\n\\n## Typography\\nPlus Jakarta Sans provides high energy, contemporary geometric character, and friendly roundedness across headings and primary narrative copy, infusing campus portfolios with youthful authority. \\n\\nInter handles micro-scale touchpoints, tabular skills matrices, metadata labels, and AI match reasoning text. It guarantees optical legibility across dense project lists, mobile navigation tabs, and system notifications. Letter spacing on labels is intentionally expanded (`0.01em` to `0.04em`) to ensure instant recognition at small viewports.\\n\\n## Layout & Spacing\\nThe layout adheres to a flexible, touch-first fluid grid optimized for mobile ergonomics. Screen margins are locked at `1rem` (16px) on mobile viewports to preserve horizontal content real estate, expanding to `1.5rem` on tablet/desktop displays. \\n\\nA strictly applied 4px/8px incremental scale (`space-xs` through `space-xl`) governs vertical flow. Compact stacks (`space-xs` to `space-sm`) are reserved for avatar-to-handle alignments and skill badge cluster wrap groups. Larger intervals (`space-md` to `space-lg`) separate distinct portfolio work showcases, collaborative feeds, and section modules.\\n\\n## Elevation & Depth\\nDepth is constructed through subtle tonal layering and soft, daylight-inspired ambient shadows rather than stark heavy drops. \\n\\n1. **Base Layer (Level 0):** Background screen canvas in off-white (`#F8FAFC`).\\n2. **Surface Layer (Level 1):** Profile overview cards, feed items, and project rows sit on pure white (`#FFFFFF`) with a 1px border (`#E2E8F0`) and an ambient shadow: `0 1px 3px 0 rgba(15, 23, 42, 0.05), 0 1px 2px -1px rgba(15, 23, 42, 0.03)`.\\n3. **Floating Overlays (Level 2):** Floating bottom navigation bar, context menus, and active filter sheets utilize frosted glassmorphism: background of `rgba(255, 255, 255, 0.85)` with a 16px blur radius, reinforced by a delicate shadow: `0 10px 15px -3px rgba(15, 23, 42, 0.08)`.\\n4. **Modal & Dialog Tier (Level 3):** AI rationale popovers, skill endorsement drawers, and image viewports rest atop an ultra-soft dimming backdrop (`rgba(15, 23, 42, 0.4)`), projecting an ambient blur: `0 20px 25px -5px rgba(15, 23, 42, 0.12)`.\\n\\n## Shapes\\nA roundedness value of 2 establishes a balanced 8px (`0.5rem`) base corner radius. \\n\\nStandard form controls, input fields, media preview frames, and feed cards utilize `0.5rem` to maintain an organized, disciplined structure. Higher-level cards and interactive bottom sheets utilize `rounded-lg` (16px / `1rem`) and `rounded-xl` (24px / `1.5rem`) for a soft, friendly mobile touch contour. Skill tags, AI match reasoning chips, category pills, and primary CTAs leverage full pill geometry (`9999px`) to create an inviting, playful contrast against rectangular card frames.\\n\\n## Components\\n\\n### Buttons & Interactive Controls\\n- **Primary Action:** Solid Indigo (`#4338CA`) background, white text, fully rounded pill or `rounded-lg` shape, 48px minimum height for mobile thumb zone accessibility. Active state triggers a subtle scale compression (0.98).\\n- **Secondary Action:** Ghost style with `border-subtle` (`#E2E8F0`) outline, text in `neutral_color_hex` (`#0F172A`), active surface tinting in slate-50.\\n- **Recruitment CTA:** Solid Coral (`#F43F5E`) or transparent with Coral accent ring, dedicated strictly to \\\"Join Team\\\" or \\\"Apply to Project\\\" triggers.\\n\\n### Chips & Badges\\n- **Skill Pill:** Compact pill container, light gray-blue fill (`#F1F5F9`), subtle border, 12px Inter semi-bold typography (`label-md`).\\n- **AI Match Explanation Badge:** Gradient-bordered pill featuring an emerald icon pip (`#10B981`), surface tint of emerald-50, displaying both match percentage and an inline expandable disclosure trigger for explainability.\\n- **Recruitment Status Tag:** Coral tint background (`rgba(244, 63, 94, 0.1)`) with high-contrast Coral text and an active pulsing status indicator dot.\\n\\n### Cards & Feed Tiles\\n- **Portfolio Showcase Card:** Clean white container, crisp 1px border, high-impact media preview pinned to the top edges with a 16px padding frame for student credentials, project title, and skill wrap groups.\\n- **Student Profile Header Card:** Integrated avatar frame with dynamic department badge, headline bio, quick stats row (Projects, Collaborators, Endorsements), and primary direct-message action.\\n\\n### Input Fields & Controls\\n- **Text Fields:** 44px minimum height, 1px border (`#CBD5E1`) shifting to 2px primary Indigo on focus with zero offset glow. Clear floating placeholder transitions using `label-md`.\\n- **Checkboxes & Radios:** Rounded square (checkbox, 4px radius) and circle (radio), filling with primary Indigo upon selection accompanied by a crisp white interior glyph.\\n\\n### App Chrome & Navigation\\n- **Floating Tab Bar:** Suspended 16px above the home indicator, frosted glass backing (`backdrop-blur-md`), 5 primary ergonomic touch targets with animated indigo indicators for the active screen.\",\"colorVariant\":\"FIDELITY\",\"overridePrimaryColor\":\"#4338ca\",\"overrideSecondaryColor\":\"#0d9488\",\"overrideTertiaryColor\":\"#f59e0b\",\"overrideNeutralColor\":\"#0f172a\",\"spacingScale\":2,\"typography\":{\"body-sm\":{\"fontFamily\":\"Plus Jakarta Sans\",\"fontSize\":\"12px\",\"fontWeight\":\"400\",\"lineHeight\":\"16px\"},\"label-sm\":{\"fontFamily\":\"Inter\",\"fontSize\":\"10px\",\"fontWeight\":\"600\",\"lineHeight\":\"14px\",\"letterSpacing\":\"0.04em\"},\"headline-lg-mobile\":{\"fontFamily\":\"Plus Jakarta Sans\",\"fontSize\":\"24px\",\"fontWeight\":\"700\",\"lineHeight\":\"32px\",\"letterSpacing\":\"-0.01em\"},\"body-lg\":{\"fontFamily\":\"Plus Jakarta Sans\",\"fontSize\":\"16px\",\"fontWeight\":\"400\",\"lineHeight\":\"24px\"},\"label-md\":{\"fontFamily\":\"Inter\",\"fontSize\":\"12px\",\"fontWeight\":\"500\",\"lineHeight\":\"16px\",\"letterSpacing\":\"0.02em\"},\"label-lg\":{\"fontFamily\":\"Inter\",\"fontSize\":\"14px\",\"fontWeight\":\"600\",\"lineHeight\":\"20px\",\"letterSpacing\":\"0.01em\"},\"headline-lg\":{\"fontFamily\":\"Plus Jakarta Sans\",\"fontSize\":\"28px\",\"fontWeight\":\"700\",\"lineHeight\":\"36px\",\"letterSpacing\":\"-0.015em\"},\"display\":{\"fontFamily\":\"Plus Jakarta Sans\",\"fontSize\":\"36px\",\"fontWeight\":\"800\",\"lineHeight\":\"44px\",\"letterSpacing\":\"-0.02em\"},\"headline-md\":{\"fontFamily\":\"Plus Jakarta Sans\",\"fontSize\":\"20px\",\"fontWeight\":\"600\",\"lineHeight\":\"28px\",\"letterSpacing\":\"-0.01em\"},\"code\":{\"fontFamily\":\"Inter\",\"fontSize\":\"12px\",\"fontWeight\":\"500\",\"lineHeight\":\"16px\"},\"body-md\":{\"fontFamily\":\"Plus Jakarta Sans\",\"fontSize\":\"14px\",\"fontWeight\":\"400\",\"lineHeight\":\"20px\"},\"headline-sm\":{\"fontFamily\":\"Plus Jakarta Sans\",\"fontSize\":\"18px\",\"fontWeight\":\"600\",\"lineHeight\":\"24px\"}},\"spacing\":{\"space-lg\":\"1.5rem\",\"space-md\":\"1rem\",\"margin\":\"1.5rem\",\"space-xl\":\"2rem\",\"space-xs\":\"0.25rem\",\"space-sm\":\"0.5rem\",\"margin-mobile\":\"1rem\",\"gutter-mobile\":\"0.75rem\",\"gutter\":\"1rem\"},\"headlineFontFamily\":\"Plus Jakarta Sans\",\"bodyFontFamily\":\"Plus Jakarta Sans\",\"labelFontFamily\":\"Inter\"}},\"version\":\"1\"}}],\"theme\":{}}},{\"text\":\"Halaman **Detail Postingan Proyek & Pengajuan Kolaborasi Tim Mahasiswa** untuk aplikasi mobile **CampusFolio** telah berhasil dirancang dengan estetika *Academic Modernist* yang presisi dan profesional.\\n\\n---\\n\\n### 🔍 Fitur & Komponen Utama yang Diterapkan:\\n\\n1. **Header Navigasi & Tindakan Pengguna:**\\n   - Navigasi kembali (`arrow_back`), judul `Detail Proyek`.\\n   - Aksi cepat di sudut kanan: tombol simpan/bookmark (`bookmark_border`) dan tombol laporkan postingan (`flag`) yang terhubung dengan mekanisme etika dan moderasi kampus (FR-10).\\n\\n2. **Identitas Inisiator & Status Rekrutmen:**\\n   - Profil terverifikasi: **Nadia Eka Pramudita** (Teknik Informatika '23 • Universitas Indonesia) dengan label `LEAD` dan tombol pesan instan.\\n   - Badge status: `Open Recruitment (Sisa 2 Slot)` menggunakan aksen *recruiting coral* (`#F43F5E`) yang kontras dan jelas.\\n   - Tag kategori kompetisi: `Lomba Gemastik 2026 • Kategori Smart City`.\\n\\n3. **Konten & Spesifikasi Teknis Proyek:**\\n   - Judul resmi dan deskripsi mendalam mengenai inovasi sistem pemilahan sampah cerdas berbasis ESP32 dan aplikasi Flutter.\\n   - **Skema Visual Arsitektur Sistem (High-Level):** Diagram alur bersih yang memetakan *Edge ESP32 Sensor & MicroCam* ➔ *MQTT/REST Broker* ➔ *Flutter Mobile App*.\\n   - Informasi komitmen: Estimasi pengerjaan 2 bulan, komitmen waktu 6–8 jam/minggu, serta tautan eksternal dokumen proposal Notion.\\n\\n4. **Kebutuhan Peran Anggota Tim (Role Slot Matrix):**\\n   - **UI/UX Designer**: Status `Terisi` dengan profil kolaborator yang sudah bergabung (Arya Pratama).\\n   - **Mobile Flutter Developer**: Status `Terbuka (1 Kuota)` dengan tag keahlian spesifik (*Flutter, Dart, REST API, State Management*).\\n   - **Backend & IoT Engineer**: Status `Terbuka (1 Kuota)` dengan tag keahlian spesifik (*Python FastAPI, MQTT Broker, ESP32, Docker*).\\n\\n5. **Kartu Analisis AI Matchmaker (92% Sangat Cocok):**\\n   - Penjelasan komplementer berbasis teks sesuai hipotesis AI PRD: mencocokkan keahlian pengguna (*Flutter & REST API*) dengan kebutuhan slot tim, dilengkapi indikator tingkat keselarasan.\\n\\n6. **Formulir Pengajuan Kolaborasi (Application Card):**\\n   - Dropdown pemilihan posisi yang dilamar (*Mobile Flutter Developer*).\\n   - Textarea pengantar dengan panduan minimal 50 kata untuk pesan bernilai akademik.\\n   - Checkbox persetujuan lampiran portofolio relevan dari profil pengguna.\\n   - Tombol CTA utama: **Kirim Permintaan Bergabung**, didampingi penjaminan kode etik interaksi kampus.\"},{\"suggestion\":\"Buat tampilan pop-up modal konfirmasi sukses setelah pengajuan dikirim\"},{\"suggestion\":\"Rancang halaman kelola pendaftar tim (Applicant Review) dari sudut pandang Nadia sebagai Project Lead\"},{\"suggestion\":\"Tambahkan section riwayat komentar dan tanya-jawab publik di bawah postingan proyek\"}]}",
+          "type": "text"
+        }
+      ],
+      "structuredContent": {
+        "outputComponents": [
+          {
+            "design": {
+              "screens": [
+                {
+                  "designSystem": {
+                    "designSystem": {
+                      "displayName": "Academic Modernist",
+                      "styleGuidelines": "## Brand & Style\nThe design system reflects an aspirational, collegiate ecosystem engineered for student talent discovery, project collaboration, and peer showcase. It merges the structure and credibility of an academic portfolio with the warmth, momentum, and expressive sociability of a modern mobile-first community. \n\nThe aesthetic is Modern Clean Tech with structured editorial cues: crisp surfaces, intentional micro-interactions, distinct categorical color accents, and prominent typographic hierarchy. The UI balances utilitarian focus—essential for reviewing technical portfolios and project deliverables—with punchy, energetic accents that celebrate student milestones, recruiting statuses, and AI-assisted collaboration matches. \n\nThe experience must evoke agency, competence, and intellectual curiosity, steering clear of both austere academic administrative portals and noisy, hyperactive consumer feeds.\n\n## Layout & Spacing\nThe layout adheres to a flexible, touch-first fluid grid optimized for mobile ergonomics. Screen margins are locked at `1rem` (16px) on mobile viewports to preserve horizontal content real estate, expanding to `1.5rem` on tablet/desktop displays. \n\nA strictly applied 4px/8px incremental scale (`space-xs` through `space-xl`) governs vertical flow. Compact stacks (`space-xs` to `space-sm`) are reserved for avatar-to-handle alignments and skill badge cluster wrap groups. Larger intervals (`space-md` to `space-lg`) separate distinct portfolio work showcases, collaborative feeds, and section modules.\n\n## Elevation & Depth\nDepth is constructed through subtle tonal layering and soft, daylight-inspired ambient shadows rather than stark heavy drops. \n\n1. **Base Layer (Level 0):** Background screen canvas in off-white (`#F8FAFC`).\n2. **Surface Layer (Level 1):** Profile overview cards, feed items, and project rows sit on pure white (`#FFFFFF`) with a 1px border (`#E2E8F0`) and an ambient shadow: `0 1px 3px 0 rgba(15, 23, 42, 0.05), 0 1px 2px -1px rgba(15, 23, 42, 0.03)`.\n3. **Floating Overlays (Level 2):** Floating bottom navigation bar, context menus, and active filter sheets utilize frosted glassmorphism: background of `rgba(255, 255, 255, 0.85)` with a 16px blur radius, reinforced by a delicate shadow: `0 10px 15px -3px rgba(15, 23, 42, 0.08)`.\n4. **Modal & Dialog Tier (Level 3):** AI rationale popovers, skill endorsement drawers, and image viewports rest atop an ultra-soft dimming backdrop (`rgba(15, 23, 42, 0.4)`), projecting an ambient blur: `0 20px 25px -5px rgba(15, 23, 42, 0.12)`.\n\n## Components\n\n### Buttons & Interactive Controls\n- **Primary Action:** Solid Indigo (`#4338CA`) background, white text, fully rounded pill or `rounded-lg` shape, 48px minimum height for mobile thumb zone accessibility. Active state triggers a subtle scale compression (0.98).\n- **Secondary Action:** Ghost style with `border-subtle` (`#E2E8F0`) outline, text in `neutral_color_hex` (`#0F172A`), active surface tinting in slate-50.\n- **Recruitment CTA:** Solid Coral (`#F43F5E`) or transparent with Coral accent ring, dedicated strictly to \"Join Team\" or \"Apply to Project\" triggers.\n\n### Chips & Badges\n- **Skill Pill:** Compact pill container, light gray-blue fill (`#F1F5F9`), subtle border, 12px Inter semi-bold typography (`label-md`).\n- **AI Match Explanation Badge:** Gradient-bordered pill featuring an emerald icon pip (`#10B981`), surface tint of emerald-50, displaying both match percentage and an inline expandable disclosure trigger for explainability.\n- **Recruitment Status Tag:** Coral tint background (`rgba(244, 63, 94, 0.1)`) with high-contrast Coral text and an active pulsing status indicator dot.\n\n### Cards & Feed Tiles\n- **Portfolio Showcase Card:** Clean white container, crisp 1px border, high-impact media preview pinned to the top edges with a 16px padding frame for student credentials, project title, and skill wrap groups.\n- **Student Profile Header Card:** Integrated avatar frame with dynamic department badge, headline bio, quick stats row (Projects, Collaborators, Endorsements), and primary direct-message action.\n\n### Input Fields & Controls\n- **Text Fields:** 44px minimum height, 1px border (`#CBD5E1`) shifting to 2px primary Indigo on focus with zero offset glow. Clear floating placeholder transitions using `label-md`.\n- **Checkboxes & Radios:** Rounded square (checkbox, 4px radius) and circle (radio), filling with primary Indigo upon selection accompanied by a crisp white interior glyph.\n\n### App Chrome & Navigation\n- **Floating Tab Bar:** Suspended 16px above the home indicator, frosted glass backing (`backdrop-blur-md`), 5 primary ergonomic touch targets with animated indigo indicators for the active screen.",
+                      "theme": {
+                        "bodyFont": "PLUS_JAKARTA_SANS",
+                        "bodyFontFamily": "Plus Jakarta Sans",
+                        "colorMode": "LIGHT",
+                        "colorVariant": "FIDELITY",
+                        "customColor": "#4338ca",
+                        "designMd": "---\nname: Academic Modernist\ncolors:\n  surface: '#faf8ff'\n  surface-dim: '#d2d9f4'\n  surface-bright: '#faf8ff'\n  surface-container-lowest: '#ffffff'\n  surface-container-low: '#f2f3ff'\n  surface-container: '#eaedff'\n  surface-container-high: '#e2e7ff'\n  surface-container-highest: '#dae2fd'\n  on-surface: '#131b2e'\n  on-surface-variant: '#464554'\n  inverse-surface: '#283044'\n  inverse-on-surface: '#eef0ff'\n  outline: '#777586'\n  outline-variant: '#c7c4d7'\n  surface-tint: '#5148d7'\n  primary: '#2a14b4'\n  on-primary: '#ffffff'\n  primary-container: '#4338ca'\n  on-primary-container: '#c1beff'\n  inverse-primary: '#c3c0ff'\n  secondary: '#006a61'\n  on-secondary: '#ffffff'\n  secondary-container: '#86f2e4'\n  on-secondary-container: '#006f66'\n  tertiary: '#553300'\n  on-tertiary: '#ffffff'\n  tertiary-container: '#744800'\n  on-tertiary-container: '#ffb759'\n  error: '#ba1a1a'\n  on-error: '#ffffff'\n  error-container: '#ffdad6'\n  on-error-container: '#93000a'\n  primary-fixed: '#e3dfff'\n  primary-fixed-dim: '#c3c0ff'\n  on-primary-fixed: '#100069'\n  on-primary-fixed-variant: '#372abf'\n  secondary-fixed: '#89f5e7'\n  secondary-fixed-dim: '#6bd8cb'\n  on-secondary-fixed: '#00201d'\n  on-secondary-fixed-variant: '#005049'\n  tertiary-fixed: '#ffddb8'\n  tertiary-fixed-dim: '#ffb95f'\n  on-tertiary-fixed: '#2a1700'\n  on-tertiary-fixed-variant: '#653e00'\n  background: '#faf8ff'\n  on-background: '#131b2e'\n  surface-variant: '#dae2fd'\n  recruiting-coral: '#F43F5E'\n  match-emerald: '#10B981'\n  surface-canvas: '#F8FAFC'\n  surface-card: '#FFFFFF'\n  border-subtle: '#E2E8F0'\ntypography:\n  display:\n    fontFamily: Plus Jakarta Sans\n    fontSize: 36px\n    fontWeight: '800'\n    lineHeight: 44px\n    letterSpacing: -0.02em\n  headline-lg:\n    fontFamily: Plus Jakarta Sans\n    fontSize: 28px\n    fontWeight: '700'\n    lineHeight: 36px\n    letterSpacing: -0.015em\n  headline-lg-mobile:\n    fontFamily: Plus Jakarta Sans\n    fontSize: 24px\n    fontWeight: '700'\n    lineHeight: 32px\n    letterSpacing: -0.01em\n  headline-md:\n    fontFamily: Plus Jakarta Sans\n    fontSize: 20px\n    fontWeight: '600'\n    lineHeight: 28px\n    letterSpacing: -0.01em\n  headline-sm:\n    fontFamily: Plus Jakarta Sans\n    fontSize: 18px\n    fontWeight: '600'\n    lineHeight: 24px\n  body-lg:\n    fontFamily: Plus Jakarta Sans\n    fontSize: 16px\n    fontWeight: '400'\n    lineHeight: 24px\n  body-md:\n    fontFamily: Plus Jakarta Sans\n    fontSize: 14px\n    fontWeight: '400'\n    lineHeight: 20px\n  body-sm:\n    fontFamily: Plus Jakarta Sans\n    fontSize: 12px\n    fontWeight: '400'\n    lineHeight: 16px\n  label-lg:\n    fontFamily: Inter\n    fontSize: 14px\n    fontWeight: '600'\n    lineHeight: 20px\n    letterSpacing: 0.01em\n  label-md:\n    fontFamily: Inter\n    fontSize: 12px\n    fontWeight: '500'\n    lineHeight: 16px\n    letterSpacing: 0.02em\n  label-sm:\n    fontFamily: Inter\n    fontSize: 10px\n    fontWeight: '600'\n    lineHeight: 14px\n    letterSpacing: 0.04em\n  code:\n    fontFamily: Inter\n    fontSize: 12px\n    fontWeight: '500'\n    lineHeight: 16px\nrounded:\n  sm: 0.25rem\n  DEFAULT: 0.5rem\n  md: 0.75rem\n  lg: 1rem\n  xl: 1.5rem\n  full: 9999px\nspacing:\n  gutter: 1rem\n  gutter-mobile: 0.75rem\n  margin: 1.5rem\n  margin-mobile: 1rem\n  space-xs: 0.25rem\n  space-sm: 0.5rem\n  space-md: 1rem\n  space-lg: 1.5rem\n  space-xl: 2rem\n---\n\n## Brand & Style\nThe design system reflects an aspirational, collegiate ecosystem engineered for student talent discovery, project collaboration, and peer showcase. It merges the structure and credibility of an academic portfolio with the warmth, momentum, and expressive sociability of a modern mobile-first community. \n\nThe aesthetic is Modern Clean Tech with structured editorial cues: crisp surfaces, intentional micro-interactions, distinct categorical color accents, and prominent typographic hierarchy. The UI balances utilitarian focus—essential for reviewing technical portfolios and project deliverables—with punchy, energetic accents that celebrate student milestones, recruiting statuses, and AI-assisted collaboration matches. \n\nThe experience must evoke agency, competence, and intellectual curiosity, steering clear of both austere academic administrative portals and noisy, hyperactive consumer feeds.\n\n## Colors\nThe palette leverages a deep royal indigo (`#4338CA`) as the foundational anchor, conveying academic credibility and structural clarity. The secondary teal-emerald (`#0D9488` / `#10B981`) represents momentum, peer connectivity, and verified skill growth. \n\nSemantic colors highlight real-time campus activities:\n- `tertiary_color_hex` (`#F59E0B`) serves as the warm highlight for urgent callouts, active collaboration requests, and pinned showcases.\n- `recruiting-coral` (`#F43F5E`) is dedicated strictly to recruitment indicators, open team roles, and high-priority availability badges.\n- `match-emerald` (`#10B981`) powers AI recommendation chips and match-percentage cues, paired with neutral explanatory microcopy.\n\nSurfaces employ a layered architecture: base screens render on `surface-canvas` (`#F8FAFC`), while cards, modals, and sheets rise on clean `surface-card` (`#FFFFFF`) with razor-sharp definition via `border-subtle` (`#E2E8F0`) rather than heavy dropshadows.\n\n## Typography\nPlus Jakarta Sans provides high energy, contemporary geometric character, and friendly roundedness across headings and primary narrative copy, infusing campus portfolios with youthful authority. \n\nInter handles micro-scale touchpoints, tabular skills matrices, metadata labels, and AI match reasoning text. It guarantees optical legibility across dense project lists, mobile navigation tabs, and system notifications. Letter spacing on labels is intentionally expanded (`0.01em` to `0.04em`) to ensure instant recognition at small viewports.\n\n## Layout & Spacing\nThe layout adheres to a flexible, touch-first fluid grid optimized for mobile ergonomics. Screen margins are locked at `1rem` (16px) on mobile viewports to preserve horizontal content real estate, expanding to `1.5rem` on tablet/desktop displays. \n\nA strictly applied 4px/8px incremental scale (`space-xs` through `space-xl`) governs vertical flow. Compact stacks (`space-xs` to `space-sm`) are reserved for avatar-to-handle alignments and skill badge cluster wrap groups. Larger intervals (`space-md` to `space-lg`) separate distinct portfolio work showcases, collaborative feeds, and section modules.\n\n## Elevation & Depth\nDepth is constructed through subtle tonal layering and soft, daylight-inspired ambient shadows rather than stark heavy drops. \n\n1. **Base Layer (Level 0):** Background screen canvas in off-white (`#F8FAFC`).\n2. **Surface Layer (Level 1):** Profile overview cards, feed items, and project rows sit on pure white (`#FFFFFF`) with a 1px border (`#E2E8F0`) and an ambient shadow: `0 1px 3px 0 rgba(15, 23, 42, 0.05), 0 1px 2px -1px rgba(15, 23, 42, 0.03)`.\n3. **Floating Overlays (Level 2):** Floating bottom navigation bar, context menus, and active filter sheets utilize frosted glassmorphism: background of `rgba(255, 255, 255, 0.85)` with a 16px blur radius, reinforced by a delicate shadow: `0 10px 15px -3px rgba(15, 23, 42, 0.08)`.\n4. **Modal & Dialog Tier (Level 3):** AI rationale popovers, skill endorsement drawers, and image viewports rest atop an ultra-soft dimming backdrop (`rgba(15, 23, 42, 0.4)`), projecting an ambient blur: `0 20px 25px -5px rgba(15, 23, 42, 0.12)`.\n\n## Shapes\nA roundedness value of 2 establishes a balanced 8px (`0.5rem`) base corner radius. \n\nStandard form controls, input fields, media preview frames, and feed cards utilize `0.5rem` to maintain an organized, disciplined structure. Higher-level cards and interactive bottom sheets utilize `rounded-lg` (16px / `1rem`) and `rounded-xl` (24px / `1.5rem`) for a soft, friendly mobile touch contour. Skill tags, AI match reasoning chips, category pills, and primary CTAs leverage full pill geometry (`9999px`) to create an inviting, playful contrast against rectangular card frames.\n\n## Components\n\n### Buttons & Interactive Controls\n- **Primary Action:** Solid Indigo (`#4338CA`) background, white text, fully rounded pill or `rounded-lg` shape, 48px minimum height for mobile thumb zone accessibility. Active state triggers a subtle scale compression (0.98).\n- **Secondary Action:** Ghost style with `border-subtle` (`#E2E8F0`) outline, text in `neutral_color_hex` (`#0F172A`), active surface tinting in slate-50.\n- **Recruitment CTA:** Solid Coral (`#F43F5E`) or transparent with Coral accent ring, dedicated strictly to \"Join Team\" or \"Apply to Project\" triggers.\n\n### Chips & Badges\n- **Skill Pill:** Compact pill container, light gray-blue fill (`#F1F5F9`), subtle border, 12px Inter semi-bold typography (`label-md`).\n- **AI Match Explanation Badge:** Gradient-bordered pill featuring an emerald icon pip (`#10B981`), surface tint of emerald-50, displaying both match percentage and an inline expandable disclosure trigger for explainability.\n- **Recruitment Status Tag:** Coral tint background (`rgba(244, 63, 94, 0.1)`) with high-contrast Coral text and an active pulsing status indicator dot.\n\n### Cards & Feed Tiles\n- **Portfolio Showcase Card:** Clean white container, crisp 1px border, high-impact media preview pinned to the top edges with a 16px padding frame for student credentials, project title, and skill wrap groups.\n- **Student Profile Header Card:** Integrated avatar frame with dynamic department badge, headline bio, quick stats row (Projects, Collaborators, Endorsements), and primary direct-message action.\n\n### Input Fields & Controls\n- **Text Fields:** 44px minimum height, 1px border (`#CBD5E1`) shifting to 2px primary Indigo on focus with zero offset glow. Clear floating placeholder transitions using `label-md`.\n- **Checkboxes & Radios:** Rounded square (checkbox, 4px radius) and circle (radio), filling with primary Indigo upon selection accompanied by a crisp white interior glyph.\n\n### App Chrome & Navigation\n- **Floating Tab Bar:** Suspended 16px above the home indicator, frosted glass backing (`backdrop-blur-md`), 5 primary ergonomic touch targets with animated indigo indicators for the active screen.",
+                        "font": "PLUS_JAKARTA_SANS",
+                        "headlineFont": "PLUS_JAKARTA_SANS",
+                        "headlineFontFamily": "Plus Jakarta Sans",
+                        "labelFont": "INTER",
+                        "labelFontFamily": "Inter",
+                        "namedColors": {
+                          "background": "#faf8ff",
+                          "border-subtle": "#E2E8F0",
+                          "error": "#ba1a1a",
+                          "error_container": "#ffdad6",
+                          "inverse_on_surface": "#eef0ff",
+                          "inverse_primary": "#c3c0ff",
+                          "inverse_surface": "#283044",
+                          "match-emerald": "#10B981",
+                          "on_background": "#131b2e",
+                          "on_error": "#ffffff",
+                          "on_error_container": "#93000a",
+                          "on_primary": "#ffffff",
+                          "on_primary_container": "#c1beff",
+                          "on_primary_fixed": "#100069",
+                          "on_primary_fixed_variant": "#372abf",
+                          "on_secondary": "#ffffff",
+                          "on_secondary_container": "#006f66",
+                          "on_secondary_fixed": "#00201d",
+                          "on_secondary_fixed_variant": "#005049",
+                          "on_surface": "#131b2e",
+                          "on_surface_variant": "#464554",
+                          "on_tertiary": "#ffffff",
+                          "on_tertiary_container": "#ffb759",
+                          "on_tertiary_fixed": "#2a1700",
+                          "on_tertiary_fixed_variant": "#653e00",
+                          "outline": "#777586",
+                          "outline_variant": "#c7c4d7",
+                          "primary": "#2a14b4",
+                          "primary_container": "#4338ca",
+                          "primary_fixed": "#e3dfff",
+                          "primary_fixed_dim": "#c3c0ff",
+                          "recruiting-coral": "#F43F5E",
+                          "secondary": "#006a61",
+                          "secondary_container": "#86f2e4",
+                          "secondary_fixed": "#89f5e7",
+                          "secondary_fixed_dim": "#6bd8cb",
+                          "surface": "#faf8ff",
+                          "surface-canvas": "#F8FAFC",
+                          "surface-card": "#FFFFFF",
+                          "surface_bright": "#faf8ff",
+                          "surface_container": "#eaedff",
+                          "surface_container_high": "#e2e7ff",
+                          "surface_container_highest": "#dae2fd",
+                          "surface_container_low": "#f2f3ff",
+                          "surface_container_lowest": "#ffffff",
+                          "surface_dim": "#d2d9f4",
+                          "surface_tint": "#5148d7",
+                          "surface_variant": "#dae2fd",
+                          "tertiary": "#553300",
+                          "tertiary_container": "#744800",
+                          "tertiary_fixed": "#ffddb8",
+                          "tertiary_fixed_dim": "#ffb95f"
+                        },
+                        "overrideNeutralColor": "#0f172a",
+                        "overridePrimaryColor": "#4338ca",
+                        "overrideSecondaryColor": "#0d9488",
+                        "overrideTertiaryColor": "#f59e0b",
+                        "roundness": "ROUND_EIGHT",
+                        "spacing": {
+                          "gutter": "1rem",
+                          "gutter-mobile": "0.75rem",
+                          "margin": "1.5rem",
+                          "margin-mobile": "1rem",
+                          "space-lg": "1.5rem",
+                          "space-md": "1rem",
+                          "space-sm": "0.5rem",
+                          "space-xl": "2rem",
+                          "space-xs": "0.25rem"
+                        },
+                        "spacingScale": 2,
+                        "typography": {
+                          "body-lg": {
+                            "fontFamily": "Plus Jakarta Sans",
+                            "fontSize": "16px",
+                            "fontWeight": "400",
+                            "lineHeight": "24px"
+                          },
+                          "body-md": {
+                            "fontFamily": "Plus Jakarta Sans",
+                            "fontSize": "14px",
+                            "fontWeight": "400",
+                            "lineHeight": "20px"
+                          },
+                          "body-sm": {
+                            "fontFamily": "Plus Jakarta Sans",
+                            "fontSize": "12px",
+                            "fontWeight": "400",
+                            "lineHeight": "16px"
+                          },
+                          "code": {
+                            "fontFamily": "Inter",
+                            "fontSize": "12px",
+                            "fontWeight": "500",
+                            "lineHeight": "16px"
+                          },
+                          "display": {
+                            "fontFamily": "Plus Jakarta Sans",
+                            "fontSize": "36px",
+                            "fontWeight": "800",
+                            "letterSpacing": "-0.02em",
+                            "lineHeight": "44px"
+                          },
+                          "headline-lg": {
+                            "fontFamily": "Plus Jakarta Sans",
+                            "fontSize": "28px",
+                            "fontWeight": "700",
+                            "letterSpacing": "-0.015em",
+                            "lineHeight": "36px"
+                          },
+                          "headline-lg-mobile": {
+                            "fontFamily": "Plus Jakarta Sans",
+                            "fontSize": "24px",
+                            "fontWeight": "700",
+                            "letterSpacing": "-0.01em",
+                            "lineHeight": "32px"
+                          },
+                          "headline-md": {
+                            "fontFamily": "Plus Jakarta Sans",
+                            "fontSize": "20px",
+                            "fontWeight": "600",
+                            "letterSpacing": "-0.01em",
+                            "lineHeight": "28px"
+                          },
+                          "headline-sm": {
+                            "fontFamily": "Plus Jakarta Sans",
+                            "fontSize": "18px",
+                            "fontWeight": "600",
+                            "lineHeight": "24px"
+                          },
+                          "label-lg": {
+                            "fontFamily": "Inter",
+                            "fontSize": "14px",
+                            "fontWeight": "600",
+                            "letterSpacing": "0.01em",
+                            "lineHeight": "20px"
+                          },
+                          "label-md": {
+                            "fontFamily": "Inter",
+                            "fontSize": "12px",
+                            "fontWeight": "500",
+                            "letterSpacing": "0.02em",
+                            "lineHeight": "16px"
+                          },
+                          "label-sm": {
+                            "fontFamily": "Inter",
+                            "fontSize": "10px",
+                            "fontWeight": "600",
+                            "letterSpacing": "0.04em",
+                            "lineHeight": "14px"
+                          }
+                        }
+                      }
+                    },
+                    "name": "assets/7ebc8416af6f48ebba845b5838b441a6",
+                    "version": "1"
+                  },
+                  "deviceType": "MOBILE",
+                  "generatedBy": "figaro_agent",
+                  "height": "5218",
+                  "htmlCode": {
+                    "downloadUrl": "https://stitch.googleapis.com/v1/projects/10744711964413240245/files/2a42317670814d7d9dba5a4867d78d61:download",
+                    "mimeType": "text/html",
+                    "name": "projects/10744711964413240245/files/2a42317670814d7d9dba5a4867d78d61"
+                  },
+                  "id": "45d80c1355ef4a0aa68e14a3500576a7",
+                  "name": "projects/10744711964413240245/screens/45d80c1355ef4a0aa68e14a3500576a7",
+                  "prompt": "Halaman Detail Postingan Proyek & Pengajuan Kolaborasi Tim Mahasiswa untuk aplikasi mobile CampusFolio.\nGaya visual: Academic Modernist, modern, rapi, profesional perguruan tinggi, tanpa emoji kasual, menggunakan Material Symbols Outlined ikon. Warna brand indigo (#4338ca) dan recruiting coral (#F43F5E / #E11D48).\n\nKomponen dan struktur tata letak:\n1. Top Bar / Header:\n   - Tombol kembali (arrow_back), judul 'Detail Proyek', aksi kanan: ikon bookmark (bookmark_border) dan laporkan postingan (flag) sesuai FR-10 / moderasi kampus.\n\n2. Inisiator Proyek & Header Info:\n   - Profil Nadia Eka Pramudita (Teknik Informatika '23 • Universitas Indonesia) dengan avatar terverifikasi.\n   - Badge status: 'Open Recruitment (Sisa 2 Slot)' berlatar rose/coral lembut dengan teks coral tegas (#F43F5E).\n   - Waktu posting: '2 jam yang lalu' dan tag kategori: 'Lomba Gemastik 2026 • Kategori Smart City'.\n\n3. Konten & Deskripsi Proyek:\n   - Judul besar: 'Pengembangan Aplikasi IoT & Logistik Pemilah Sampah Cerdas Kampus'.\n   - Paragraf deskripsi proyek lengkap mengenai latar belakang kompetisi Gemastik, sasaran pemilahan sampah otomatis di area kantin dan fakultas, integrasi hardware ESP32, dan arsitektur mobile Flutter.\n   - Diagram atau Visualisasi Arsitektur Sistem: Kartu clean diagram/schematic visual arsitektur IoT Edge TPU -> Cloud REST API -> Flutter Mobile App untuk visualisasi teknis proyek mahasiswa.\n   - Metadata proyek: Estimasi durasi (2 Bulan, Nov-Des 2026), Komitmen waktu (6-8 jam/minggu), Tautan Notion Proposal / Dokumen Desain (link eksternal).\n\n4. Daftar Kebutuhan Posisi / Role Anggota Tim:\n   - Role 1: 'UI/UX Designer' — Status: 'Terisi' (Badge hijau/abu-abu netral, anggota: Arya Pratama).\n   - Role 2: 'Mobile Flutter Developer' — Status: 'Terbuka (1 Kuota Dibutuhkan)', badge coral aktif. Tag keahlian: Flutter, Dart, REST API, State Management.\n   - Role 3: 'Backend & IoT Engineer' — Status: 'Terbuka (1 Kuota Dibutuhkan)', badge coral aktif. Tag keahlian: Python FastAPI, MQTT Broker, ESP32, Docker.\n\n5. Kartu AI Matchmaker Recommendation:\n   - Highlight kartu pintar dengan aksen AI Indigo/Violet: 'CampusFolio AI Match: 92% Sangat Cocok'.\n   - Penjelasan keterpaduan: 'Profil keahlianmu (Flutter & REST API) sangat sesuai dengan kebutuhan Mobile Developer pada proyek ini.'\n   - Detail matched skills dan potensi kontribusi.\n\n6. Bagian Formulir / Card Pengajuan Bergabung (Apply Collaboration):\n   - Card kontainer interaktif dengan judul 'Ajukan Diri untuk Kolaborasi':\n   - Dropdown pilihan posisi: 'Pilih Role yang Dilamar' (opsi aktif: 'Mobile Flutter Developer').\n   - Field Textarea: 'Pesan Singkat & Kontribusi yang Ditawarkan' dengan placeholder profesional.\n   - Checkbox opsi: 'Lampirkan Portofolio Terkait (EcoCampus & Mobile UX Concept)' tercentang otomatis.\n   - Tombol CTA utama (Primary Button): 'Kirim Permintaan Bergabung' dengan ikon send / handshake.\n   - Catatan etika kampus: 'Permintaan akan ditinjau langsung oleh Nadia Pramudita dalam 1x24 jam.'\n\nDesain responsif mobile 390px, tipografi Plus Jakarta Sans, padding ergonomis, shadow halus, dan visual yang sangat kohesif dengan layar Beranda dan Jelajah sebelumnya.",
+                  "screenMetadata": {
+                    "agentType": "PRO_AGENT",
+                    "status": "COMPLETE"
+                  },
+                  "screenType": "DESIGN",
+                  "screenshot": {
+                    "downloadUrl": "https://stitch.googleapis.com/v1/projects/10744711964413240245/files/45556cefc13d4123ad72825168a11bff:download",
+                    "name": "projects/10744711964413240245/files/45556cefc13d4123ad72825168a11bff"
+                  },
+                  "theme": {
+                    "bodyFont": "PLUS_JAKARTA_SANS",
+                    "bodyFontFamily": "Plus Jakarta Sans",
+                    "colorMode": "LIGHT",
+                    "colorVariant": "FIDELITY",
+                    "customColor": "#4338ca",
+                    "font": "PLUS_JAKARTA_SANS",
+                    "headlineFont": "PLUS_JAKARTA_SANS",
+                    "headlineFontFamily": "Plus Jakarta Sans",
+                    "labelFont": "INTER",
+                    "labelFontFamily": "Inter",
+                    "namedColors": {
+                      "background": "#faf8ff",
+                      "border-subtle": "#E2E8F0",
+                      "error": "#ba1a1a",
+                      "error_container": "#ffdad6",
+                      "inverse_on_surface": "#eef0ff",
+                      "inverse_primary": "#c3c0ff",
+                      "inverse_surface": "#283044",
+                      "match-emerald": "#10B981",
+                      "on_background": "#131b2e",
+                      "on_error": "#ffffff",
+                      "on_error_container": "#93000a",
+                      "on_primary": "#ffffff",
+                      "on_primary_container": "#c1beff",
+                      "on_primary_fixed": "#100069",
+                      "on_primary_fixed_variant": "#372abf",
+                      "on_secondary": "#ffffff",
+                      "on_secondary_container": "#006f66",
+                      "on_secondary_fixed": "#00201d",
+                      "on_secondary_fixed_variant": "#005049",
+                      "on_surface": "#131b2e",
+                      "on_surface_variant": "#464554",
+                      "on_tertiary": "#ffffff",
+                      "on_tertiary_container": "#ffb759",
+                      "on_tertiary_fixed": "#2a1700",
+                      "on_tertiary_fixed_variant": "#653e00",
+                      "outline": "#777586",
+                      "outline_variant": "#c7c4d7",
+                      "primary": "#2a14b4",
+                      "primary_container": "#4338ca",
+                      "primary_fixed": "#e3dfff",
+                      "primary_fixed_dim": "#c3c0ff",
+                      "recruiting-coral": "#F43F5E",
+                      "secondary": "#006a61",
+                      "secondary_container": "#86f2e4",
+                      "secondary_fixed": "#89f5e7",
+                      "secondary_fixed_dim": "#6bd8cb",
+                      "surface": "#faf8ff",
+                      "surface-canvas": "#F8FAFC",
+                      "surface-card": "#FFFFFF",
+                      "surface_bright": "#faf8ff",
+                      "surface_container": "#eaedff",
+                      "surface_container_high": "#e2e7ff",
+                      "surface_container_highest": "#dae2fd",
+                      "surface_container_low": "#f2f3ff",
+                      "surface_container_lowest": "#ffffff",
+                      "surface_dim": "#d2d9f4",
+                      "surface_tint": "#5148d7",
+                      "surface_variant": "#dae2fd",
+                      "tertiary": "#553300",
+                      "tertiary_container": "#744800",
+                      "tertiary_fixed": "#ffddb8",
+                      "tertiary_fixed_dim": "#ffb95f"
+                    },
+                    "overrideNeutralColor": "#0f172a",
+                    "overridePrimaryColor": "#4338ca",
+                    "overrideSecondaryColor": "#0d9488",
+                    "overrideTertiaryColor": "#f59e0b",
+                    "roundness": "ROUND_EIGHT",
+                    "spacing": {
+                      "gutter": "1rem",
+                      "gutter-mobile": "0.75rem",
+                      "margin": "1.5rem",
+                      "margin-mobile": "1rem",
+                      "space-lg": "1.5rem",
+                      "space-md": "1rem",
+                      "space-sm": "0.5rem",
+                      "space-xl": "2rem",
+                      "space-xs": "0.25rem"
+                    },
+                    "spacingScale": 2,
+                    "typography": {
+                      "body-lg": {
+                        "fontFamily": "Plus Jakarta Sans",
+                        "fontSize": "16px",
+                        "fontWeight": "400",
+                        "lineHeight": "24px"
+                      },
+                      "body-md": {
+                        "fontFamily": "Plus Jakarta Sans",
+                        "fontSize": "14px",
+                        "fontWeight": "400",
+                        "lineHeight": "20px"
+                      },
+                      "body-sm": {
+                        "fontFamily": "Plus Jakarta Sans",
+                        "fontSize": "12px",
+                        "fontWeight": "400",
+                        "lineHeight": "16px"
+                      },
+                      "code": {
+                        "fontFamily": "Inter",
+                        "fontSize": "12px",
+                        "fontWeight": "500",
+                        "lineHeight": "16px"
+                      },
+                      "display": {
+                        "fontFamily": "Plus Jakarta Sans",
+                        "fontSize": "36px",
+                        "fontWeight": "800",
+                        "letterSpacing": "-0.02em",
+                        "lineHeight": "44px"
+                      },
+                      "headline-lg": {
+                        "fontFamily": "Plus Jakarta Sans",
+                        "fontSize": "28px",
+                        "fontWeight": "700",
+                        "letterSpacing": "-0.015em",
+                        "lineHeight": "36px"
+                      },
+                      "headline-lg-mobile": {
+                        "fontFamily": "Plus Jakarta Sans",
+                        "fontSize": "24px",
+                        "fontWeight": "700",
+                        "letterSpacing": "-0.01em",
+                        "lineHeight": "32px"
+                      },
+                      "headline-md": {
+                        "fontFamily": "Plus Jakarta Sans",
+                        "fontSize": "20px",
+                        "fontWeight": "600",
+                        "letterSpacing": "-0.01em",
+                        "lineHeight": "28px"
+                      },
+                      "headline-sm": {
+                        "fontFamily": "Plus Jakarta Sans",
+                        "fontSize": "18px",
+                        "fontWeight": "600",
+                        "lineHeight": "24px"
+                      },
+                      "label-lg": {
+                        "fontFamily": "Inter",
+                        "fontSize": "14px",
+                        "fontWeight": "600",
+                        "letterSpacing": "0.01em",
+                        "lineHeight": "20px"
+                      },
+                      "label-md": {
+                        "fontFamily": "Inter",
+                        "fontSize": "12px",
+                        "fontWeight": "500",
+                        "letterSpacing": "0.02em",
+                        "lineHeight": "16px"
+                      },
+                      "label-sm": {
+                        "fontFamily": "Inter",
+                        "fontSize": "10px",
+                        "fontWeight": "600",
+                        "letterSpacing": "0.04em",
+                        "lineHeight": "14px"
+                      }
+                    }
+                  },
+                  "title": "Detail Proyek & Pengajuan Kolaborasi",
+                  "width": "780"
+                }
+              ],
+              "theme": {}
+            }
+          },
+          {
+            "text": "Halaman **Detail Postingan Proyek & Pengajuan Kolaborasi Tim Mahasiswa** untuk aplikasi mobile **CampusFolio** telah berhasil dirancang dengan estetika *Academic Modernist* yang presisi dan profesional.\n\n---\n\n### 🔍 Fitur & Komponen Utama yang Diterapkan:\n\n1. **Header Navigasi & Tindakan Pengguna:**\n   - Navigasi kembali (`arrow_back`), judul `Detail Proyek`.\n   - Aksi cepat di sudut kanan: tombol simpan/bookmark (`bookmark_border`) dan tombol laporkan postingan (`flag`) yang terhubung dengan mekanisme etika dan moderasi kampus (FR-10).\n\n2. **Identitas Inisiator & Status Rekrutmen:**\n   - Profil terverifikasi: **Nadia Eka Pramudita** (Teknik Informatika '23 • Universitas Indonesia) dengan label `LEAD` dan tombol pesan instan.\n   - Badge status: `Open Recruitment (Sisa 2 Slot)` menggunakan aksen *recruiting coral* (`#F43F5E`) yang kontras dan jelas.\n   - Tag kategori kompetisi: `Lomba Gemastik 2026 • Kategori Smart City`.\n\n3. **Konten & Spesifikasi Teknis Proyek:**\n   - Judul resmi dan deskripsi mendalam mengenai inovasi sistem pemilahan sampah cerdas berbasis ESP32 dan aplikasi Flutter.\n   - **Skema Visual Arsitektur Sistem (High-Level):** Diagram alur bersih yang memetakan *Edge ESP32 Sensor & MicroCam* ➔ *MQTT/REST Broker* ➔ *Flutter Mobile App*.\n   - Informasi komitmen: Estimasi pengerjaan 2 bulan, komitmen waktu 6–8 jam/minggu, serta tautan eksternal dokumen proposal Notion.\n\n4. **Kebutuhan Peran Anggota Tim (Role Slot Matrix):**\n   - **UI/UX Designer**: Status `Terisi` dengan profil kolaborator yang sudah bergabung (Arya Pratama).\n   - **Mobile Flutter Developer**: Status `Terbuka (1 Kuota)` dengan tag keahlian spesifik (*Flutter, Dart, REST API, State Management*).\n   - **Backend & IoT Engineer**: Status `Terbuka (1 Kuota)` dengan tag keahlian spesifik (*Python FastAPI, MQTT Broker, ESP32, Docker*).\n\n5. **Kartu Analisis AI Matchmaker (92% Sangat Cocok):**\n   - Penjelasan komplementer berbasis teks sesuai hipotesis AI PRD: mencocokkan keahlian pengguna (*Flutter & REST API*) dengan kebutuhan slot tim, dilengkapi indikator tingkat keselarasan.\n\n6. **Formulir Pengajuan Kolaborasi (Application Card):**\n   - Dropdown pemilihan posisi yang dilamar (*Mobile Flutter Developer*).\n   - Textarea pengantar dengan panduan minimal 50 kata untuk pesan bernilai akademik.\n   - Checkbox persetujuan lampiran portofolio relevan dari profil pengguna.\n   - Tombol CTA utama: **Kirim Permintaan Bergabung**, didampingi penjaminan kode etik interaksi kampus."
+          },
+          {
+            "suggestion": "Buat tampilan pop-up modal konfirmasi sukses setelah pengajuan dikirim"
+          },
+          {
+            "suggestion": "Rancang halaman kelola pendaftar tim (Applicant Review) dari sudut pandang Nadia sebagai Project Lead"
+          },
+          {
+            "suggestion": "Tambahkan section riwayat komentar dan tanya-jawab publik di bawah postingan proyek"
+          }
+        ],
+        "projectId": "10744711964413240245",
+        "sessionId": "6049975978924522238"
+      }
+    }
+  }
+}

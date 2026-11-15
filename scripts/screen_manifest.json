@@ -1,0 +1,43 @@
+[
+  {
+    "slug": "00_registrasi_mahasiswa",
+    "title": "Registrasi Akun Mahasiswa",
+    "htmlFileName": "projects/10744711964413240245/files/b3c34ec11b8c4ce8b30f62c6a9166587",
+    "screenshotFileName": "projects/10744711964413240245/files/8c9d49d656cc41d69e7ebb5cfa30d86c"
+  },
+  {
+    "slug": "00_login_mahasiswa",
+    "title": "Login Mahasiswa & SSO Kampus",
+    "htmlFileName": "projects/10744711964413240245/files/a2757cc4e13d45ec9ebb8f45a6271c0a",
+    "screenshotFileName": "projects/10744711964413240245/files/948ad658c17e40c4a1964d1e7911f243"
+  },
+  {
+    "slug": "05_buat_proyek_rekrutmen",
+    "title": "Buat Proyek & Rekrutmen Tim",
+    "htmlFileName": "projects/10744711964413240245/files/faaa43ce7f5340e8ad5978e6829ed733",
+    "screenshotFileName": "projects/10744711964413240245/files/d42cda23d82349459b0b528aceb0142e"
+  },
+  {
+    "slug": "06_detail_proyek_kolaborasi",
+    "title": "Detail Proyek & Pengajuan Bergabung",
+    "htmlFileName": "projects/10744711964413240245/files/2a42317670814d7d9dba5a4867d78d61",
+    "screenshotFileName": "projects/10744711964413240245/files/45556cefc13d4123ad72825168a11bff"
+  },
+  {
+    "slug": "07_tambah_portofolio",
+    "title": "Tambah Portofolio Karya Mahasiswa",
+    "htmlFileName": "projects/10744711964413240245/files/54abb9b2c3e6401d9154f8ed32d8d560",
+    "screenshotFileName": "projects/10744711964413240245/files/99674ba229d4448bada3cb6d5930be84"
+  },
+  {
+    "slug": "08_detail_portofolio",
+    "title": "Detail Showcase Portofolio Mahasiswa",
+    "screenshotFileName": "projects/10744711964413240245/files/01f4ed797b4043349efe67f6417b2048"
+  },
+  {
+    "slug": "09_notifikasi_kolaborasi",
+    "title": "Pusat Notifikasi & Permintaan Tim",
+    "htmlFileName": "projects/10744711964413240245/files/4901310f409f40b6bc384bda168cabaa",
+    "screenshotFileName": "projects/10744711964413240245/files/7e84e90f011c44d8bea90f34fcbdec84"
+  }
+]
