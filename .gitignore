@@ -45,7 +45,8 @@ env/
 uploads/
 src/backend/uploads/
 
-# Mobile (Flutter / React Native / Android / iOS)
+# Mobile (Flutter / React Native / Android / iOS / Expo)
+.expo/
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies

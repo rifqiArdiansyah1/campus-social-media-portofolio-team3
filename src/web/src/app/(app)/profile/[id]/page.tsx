@@ -177,8 +177,9 @@ export default function ProfileDetailPage() {
     fetchProfile();
   }, [fetchProfile]);
 
+  const currentUserId = currentUser?.user_id ?? (currentUser as any)?.id;
   const isOwner = Boolean(
-    currentUser && profile && (currentUser.id === profile.user_id || isMeParam)
+    currentUser && profile && (currentUserId === profile.user_id || isMeParam)
   );
 
   const skillsList = profile?.skills?.filter((s) => s.tipe === "skill") || [];

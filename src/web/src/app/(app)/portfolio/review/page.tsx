@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { RoleGate } from "@/components/auth/RoleGate";
 import { PortfolioStatusBadge } from "@/components/common/PortfolioStatusBadge";
 import { useToast } from "@/context/ToastContext";
@@ -41,6 +42,7 @@ interface ReviewQueueItem {
 
 export default function PortfolioReviewPage() {
   const toast = useToast();
+  const queryClient = useQueryClient();
   const [queue, setQueue] = useState<ReviewQueueItem[]>([]);
   const [targetJurusan, setTargetJurusan] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -121,6 +123,7 @@ export default function PortfolioReviewPage() {
 
       setSelectedItem(null);
       await fetchQueue();
+      queryClient.invalidateQueries({ queryKey: ["dashboard", "summary"] });
     } catch (err: any) {
       setModalError(err.message || "Gagal menyimpan keputusan verifikasi.");
     } finally {

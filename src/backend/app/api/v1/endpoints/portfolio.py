@@ -23,9 +23,11 @@ from app.schemas.portfolio import (
     ReviewQueueListResponse,
     SignedUrlResponse,
     SkillBriefResponse,
+    SkpiSummaryResponse,
     mask_document_number,
 )
 from app.services.notification import create_notification
+from app.services.skpi_calculator import calculate_skpi_summary
 from app.services.storage import storage_service
 from app.services.visibility import exclude_hidden, is_target_blocking_viewer
 
@@ -375,6 +377,86 @@ def list_portfolios(
 
 
 # -------------------------------------------------------------------------
+# 3b. GET MY PORTFOLIOS (CONVENIENCE FOR MOBILE & OWNER)
+# -------------------------------------------------------------------------
+@router.get(
+    "/me",
+    response_model=List[PortfolioDetailResponse],
+    summary="Daftar Portofolio Milik Pengguna Aktif (Self)",
+)
+def get_my_portfolios(
+    kategori: Optional[str] = Query(None, description="Filter kategori (proyek, skpi, sertifikat, artikel_ilmiah)"),
+    status_verifikasi: Optional[str] = Query(None, description="Filter status verifikasi"),
+    limit: int = Query(50, ge=1, le=100),
+    offset: int = Query(0, ge=0),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    query = (
+        db.query(PortfolioItem)
+        .options(
+            joinedload(PortfolioItem.user),
+            selectinload(PortfolioItem.skills).joinedload(PortfolioSkill.skill),
+        )
+        .filter(PortfolioItem.user_id == current_user.user_id)
+    )
+
+    if kategori:
+        query = query.filter(PortfolioItem.kategori == kategori)
+    if status_verifikasi:
+        query = query.filter(PortfolioItem.status_verifikasi == status_verifikasi)
+
+    items = (
+        query.order_by(PortfolioItem.created_at.desc())
+        .offset(offset)
+        .limit(limit)
+        .all()
+    )
+
+    return [_serialize_detail(it) for it in items]
+
+
+# -------------------------------------------------------------------------
+# 3c. GET MY SKPI SUMMARY (CONVENIENCE FOR MOBILE & OWNER)
+# -------------------------------------------------------------------------
+@router.get(
+    "/skpi-summary",
+    response_model=SkpiSummaryResponse,
+    summary="Ringkasan Poin SKPI Resmi Milik Pengguna Aktif",
+)
+def get_my_portfolio_skpi_summary(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    items_query = (
+        db.query(PortfolioItem)
+        .options(
+            selectinload(PortfolioItem.skills).joinedload(PortfolioSkill.skill),
+        )
+        .filter(PortfolioItem.user_id == current_user.user_id)
+        .order_by(PortfolioItem.created_at.desc())
+    )
+
+    all_items = items_query.all()
+    skpi_calc = calculate_skpi_summary(all_items)
+
+    public_items = []
+    for item in all_items:
+        if item.status_verifikasi == "terverifikasi" or (item.kategori == "proyek" and item.status_verifikasi != "menunggu_review"):
+            public_items.append(_serialize_public(item))
+
+    return SkpiSummaryResponse(
+        user_id=current_user.user_id,
+        total_poin=skpi_calc["total_poin"],
+        total_terverifikasi=skpi_calc["total_terverifikasi"],
+        menunggu_review=skpi_calc["total_menunggu"],
+        jumlah_per_kategori=skpi_calc["jumlah_per_kategori"],
+        poin_per_kategori=skpi_calc["poin_per_kategori"],
+        items=public_items,
+    )
+
+
+# -------------------------------------------------------------------------
 # 4. GET SINGLE PORTFOLIO DETAIL
 # -------------------------------------------------------------------------
 @router.get(
@@ -652,6 +734,12 @@ def withdraw_portfolio_from_review(
     "/{id}/review",
     response_model=PortfolioDetailResponse,
     summary="Verifikasi atau Tolak Pengajuan Portofolio SKPI (Kaprodi & Admin)",
+)
+@router.post(
+    "/{id}/review",
+    response_model=PortfolioDetailResponse,
+    summary="Verifikasi atau Tolak Pengajuan Portofolio SKPI (Kaprodi & Admin) [Alias POST]",
+    include_in_schema=False,
 )
 def review_portfolio_item(
     id: int,

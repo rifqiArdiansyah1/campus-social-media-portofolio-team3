@@ -399,6 +399,45 @@ def test_kaprodi_review_approve_and_reject(client, db_session: Session):
     assert "ALREADY_REVIEWED" in subsequent.json()["code"]
 
 
+def test_review_portfolio_post_alias(client, db_session: Session):
+    mhs_ti = create_user(db_session, role="mahasiswa", jurusan="Teknik Informatika")
+    kaprodi_ti = create_user(db_session, role="moderator", jurusan="Teknik Informatika")
+
+    pdf_bytes = b"%PDF-1.4\n1 0 obj\n<<>>\nendobj\ntrailer\n<<>>\n%%EOF"
+    up = client.post(
+        "/api/v1/uploads/portfolio-doc",
+        files={"file": ("doc.pdf", pdf_bytes, "application/pdf")},
+        headers=auth_headers(mhs_ti),
+    )
+    doc_path = up.json()["path"]
+
+    p = client.post(
+        "/api/v1/portfolio",
+        json={
+            "judul": "Sertifikasi Cloud Architect",
+            "kategori": "sertifikat",
+            "nomor_dokumen": "CERT-POST-ALIAS-01",
+            "penerbit": "Google Cloud",
+            "tanggal_terbit": "2024-04-01",
+            "file_url": doc_path,
+        },
+        headers=auth_headers(mhs_ti),
+    )
+    pid = p.json()["portfolio_id"]
+    submit_res = client.post(f"/api/v1/portfolio/{pid}/submit", headers=auth_headers(mhs_ti))
+    assert submit_res.status_code == 200
+
+    # Verify using POST alias instead of PATCH
+    post_res = client.post(
+        f"/api/v1/portfolio/{pid}/review",
+        json={"status_verifikasi": "terverifikasi", "catatan_verifikasi": "Disetujui via POST alias."},
+        headers=auth_headers(kaprodi_ti),
+    )
+    assert post_res.status_code == 200
+    assert post_res.json()["status_verifikasi"] == "terverifikasi"
+    assert post_res.json()["diverifikasi_oleh"] == kaprodi_ti.user_id
+
+
 def test_signed_url_security_and_anti_leak(client, db_session: Session):
     student_a = create_user(db_session, nama="Student A", role="mahasiswa", jurusan="Teknik Informatika")
     student_b = create_user(db_session, nama="Student B", role="mahasiswa", jurusan="Teknik Informatika")
@@ -676,3 +715,32 @@ def test_portfolio_withdraw_atomic_and_safety(client, db_session: Session):
     # 2. Stranger cannot withdraw -> 403
     res_stranger = client.post(f"/api/v1/portfolio/{item_id}/withdraw", headers=auth_headers(stranger))
     assert res_stranger.status_code == 403
+
+
+def test_portfolio_me_and_skpi_summary_endpoints(client, db_session: Session):
+    """
+    Verifikasi route /api/v1/portfolio/me dan /api/v1/portfolio/skpi-summary
+    tidak bentrok (collision) dengan /{id} yang mengharapkan integer.
+    """
+    student = create_user(db_session, "me_test@kampus.ac.id", "mahasiswa", "Informatika")
+
+    # Buat portofolio
+    res_create = client.post(
+        "/api/v1/portfolio",
+        json={"judul": "Karya Me Test", "kategori": "proyek"},
+        headers=auth_headers(student),
+    )
+    assert res_create.status_code == 201
+
+    # Test GET /me
+    res_me = client.get("/api/v1/portfolio/me", headers=auth_headers(student))
+    assert res_me.status_code == 200
+    assert len(res_me.json()) >= 1
+    assert res_me.json()[0]["judul"] == "Karya Me Test"
+
+    # Test GET /skpi-summary
+    res_skpi = client.get("/api/v1/portfolio/skpi-summary", headers=auth_headers(student))
+    assert res_skpi.status_code == 200
+    assert "total_poin" in res_skpi.json()
+    assert res_skpi.json()["user_id"] == student.user_id
+

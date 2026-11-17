@@ -1,6 +1,7 @@
 import React from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import PortfolioPage from "@/app/(app)/portfolio/page";
 import PortfolioReviewPage from "@/app/(app)/portfolio/review/page";
 import { apiClient } from "@/lib/api";
@@ -227,7 +228,14 @@ describe("M07 Portfolio & SKPI Verification Frontend Tests", () => {
         data: { status_verifikasi: "terverifikasi" },
       } as any);
 
-      render(<PortfolioReviewPage />);
+      const queryClient = new QueryClient({
+        defaultOptions: { queries: { retry: false } },
+      });
+      render(
+        <QueryClientProvider client={queryClient}>
+          <PortfolioReviewPage />
+        </QueryClientProvider>
+      );
 
       await waitFor(() => {
         expect(screen.getByText("Antrean Verifikasi Portofolio SKPI")).toBeInTheDocument();

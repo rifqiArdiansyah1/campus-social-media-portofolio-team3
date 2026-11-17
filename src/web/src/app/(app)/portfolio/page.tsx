@@ -91,11 +91,13 @@ export default function PortfolioPage() {
 
   const fetchData = useCallback(async () => {
     if (!user) return;
+    const userId = user.user_id ?? (user as any).id;
+    if (!userId) return;
     setIsLoading(true);
     try {
       const [resItems, resSummary] = await Promise.all([
-        apiClient.get<PortfolioItem[]>(`/portfolio?user_id=${user.user_id}`),
-        apiClient.get<SkpiSummary>(`/users/${user.user_id}/skpi-summary`),
+        apiClient.get<PortfolioItem[]>(`/portfolio?user_id=${userId}`),
+        apiClient.get<SkpiSummary>(`/users/${userId}/skpi-summary`),
       ]);
       setItems(resItems.data);
       setSummary(resSummary.data);

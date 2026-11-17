@@ -104,7 +104,7 @@ export function ModerationQueueScreen({ onBack }: ModerationQueueScreenProps) {
   // 5. Portfolio Review Decision Mutation
   const portfolioReviewMutation = useMutation({
     mutationFn: async ({ id, status, note }: { id: number; status: 'terverifikasi' | 'ditolak'; note?: string }) => {
-      await apiClient.post(`/portfolio/${id}/review`, {
+      await apiClient.patch(`/portfolio/${id}/review`, {
         status_verifikasi: status,
         catatan_verifikasi: note || (status === 'terverifikasi' ? 'Dokumen bukti valid' : 'Dokumen tidak sesuai'),
       });
@@ -200,7 +200,7 @@ export function ModerationQueueScreen({ onBack }: ModerationQueueScreenProps) {
           <Text style={styles.authorName}>{item.author_nama}</Text>
           <Text style={styles.prodiText}>{item.author_jurusan || 'Mahasiswa'}</Text>
         </View>
-        <Badge label={item.kategori.toUpperCase()} variant="info" />
+        <Badge label={item.kategori.replace('_', ' ').toUpperCase()} variant="info" />
       </View>
 
       <Text style={styles.portfolioTitle}>{item.judul}</Text>
@@ -208,11 +208,24 @@ export function ModerationQueueScreen({ onBack }: ModerationQueueScreenProps) {
         <Text style={styles.contentText}>{item.deskripsi}</Text>
       )}
 
+      {Boolean(item.nomor_dokumen) && (
+        <Text style={[styles.prodiText, { marginBottom: 6 }]}>
+          No. Dokumen: {item.nomor_dokumen}
+        </Text>
+      )}
+
+      {item.is_duplicate_dokumen && (
+        <View style={{ marginBottom: 10 }}>
+          <Badge label="Peringatan: Duplikasi Nomor Dokumen Terdeteksi" variant="warning" />
+        </View>
+      )}
+
       <View style={styles.actionButtonsRow}>
         <Button
           title="Tolak"
           variant="outline"
           size="sm"
+          disabled={portfolioReviewMutation.isPending}
           onPress={() =>
             portfolioReviewMutation.mutate({
               id: item.portfolio_id,
@@ -226,6 +239,8 @@ export function ModerationQueueScreen({ onBack }: ModerationQueueScreenProps) {
         <Button
           title="Verifikasi SKPI"
           size="sm"
+          loading={portfolioReviewMutation.isPending && portfolioReviewMutation.variables?.id === item.portfolio_id}
+          disabled={portfolioReviewMutation.isPending}
           onPress={() =>
             portfolioReviewMutation.mutate({
               id: item.portfolio_id,

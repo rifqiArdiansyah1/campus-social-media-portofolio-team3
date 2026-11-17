@@ -22,12 +22,20 @@ import {
   Globe,
   ArrowLeft,
   Edit3,
+  Award,
+  CheckCircle2,
+  FolderKanban,
 } from 'lucide-react-native';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { colors } from '../../theme/colors';
 import { apiClient } from '../../api/client';
 import { useAuth } from '../../context/AuthContext';
-import { PublicProfileResponse, MyProfileResponse } from '../../api/types';
+import {
+  PublicProfileResponse,
+  MyProfileResponse,
+  SkpiSummaryResponse,
+  PortfolioPublicResponse,
+} from '../../api/types';
 import { getInitials } from '../../utils/formatting';
 import { Button } from '../../components/common/Button';
 import { Badge } from '../../components/common/Badge';
@@ -65,6 +73,32 @@ export function ProfileScreen({ targetUserId, onBack }: ProfileScreenProps) {
         return res.data;
       }
     },
+    staleTime: 30 * 1000,
+  });
+
+  const effectiveUserId = targetUserId || currentUser?.user_id;
+
+  // 1b. Fetch SKPI Summary (For Student Profiles)
+  const { data: skpiSummary } = useQuery<SkpiSummaryResponse>({
+    queryKey: ['user', effectiveUserId, 'skpi-summary'],
+    queryFn: async () => {
+      if (!effectiveUserId) return null as any;
+      const res = await apiClient.get<SkpiSummaryResponse>(`/users/${effectiveUserId}/skpi-summary`);
+      return res.data;
+    },
+    enabled: Boolean(effectiveUserId),
+    staleTime: 30 * 1000,
+  });
+
+  // 1c. Fetch Portfolios (For Student Profiles)
+  const { data: portfolios, isLoading: isLoadingPortfolios } = useQuery<PortfolioPublicResponse[]>({
+    queryKey: ['user', effectiveUserId, 'portfolios'],
+    queryFn: async () => {
+      if (!effectiveUserId) return [];
+      const res = await apiClient.get<PortfolioPublicResponse[]>(`/portfolio?user_id=${effectiveUserId}`);
+      return res.data;
+    },
+    enabled: Boolean(effectiveUserId),
     staleTime: 30 * 1000,
   });
 
@@ -359,6 +393,94 @@ export function ProfileScreen({ targetUserId, onBack }: ProfileScreenProps) {
           </View>
         )}
 
+        {/* SKPI Summary Section (For Students) */}
+        {isStudent && Boolean(skpiSummary) && (
+          <View style={styles.skpiCard}>
+            <View style={styles.skpiHeaderRow}>
+              <View style={styles.skpiIconCircle}>
+                <Award size={20} color={colors.primary} />
+              </View>
+              <View style={styles.skpiHeaderTextGroup}>
+                <Text style={styles.skpiCardTitle}>Capaian Poin SKPI Resmi</Text>
+                <Text style={styles.skpiCardSubtitle}>Tervalidasi oleh Koordinator Program Studi</Text>
+              </View>
+              <View style={styles.skpiTotalPoinBadge}>
+                <Text style={styles.skpiTotalPoinText}>{skpiSummary?.total_poin ?? 0}</Text>
+                <Text style={styles.skpiTotalPoinLabel}>Poin</Text>
+              </View>
+            </View>
+
+            <View style={styles.skpiStatsRow}>
+              <View style={styles.skpiStatBox}>
+                <CheckCircle2 size={14} color={colors.matchEmeraldText} />
+                <Text style={styles.skpiStatNum}>{skpiSummary?.total_terverifikasi ?? 0}</Text>
+                <Text style={styles.skpiStatLbl}>Terverifikasi</Text>
+              </View>
+              {isOwnProfile && typeof skpiSummary?.menunggu_review === 'number' && (
+                <View style={styles.skpiStatBox}>
+                  <Text style={[styles.skpiStatNum, { color: colors.warningText }]}>
+                    {skpiSummary.menunggu_review}
+                  </Text>
+                  <Text style={styles.skpiStatLbl}>Menunggu Review</Text>
+                </View>
+              )}
+            </View>
+          </View>
+        )}
+
+        {/* Portfolio Showcase Section (For Students) */}
+        {isStudent && (
+          <View style={styles.portfolioSection}>
+            <View style={styles.portfolioSectionHeader}>
+              <FolderKanban size={18} color={colors.primary} />
+              <Text style={styles.portfolioSectionTitle}>Portofolio & Karya Ilmiah</Text>
+            </View>
+
+            {isLoadingPortfolios ? (
+              <ActivityIndicator size="small" color={colors.primary} style={{ marginVertical: 16 }} />
+            ) : portfolios && portfolios.length > 0 ? (
+              portfolios.map((item) => (
+                <View key={item.portfolio_id} style={styles.portfolioCard}>
+                  <View style={styles.portfolioCardHeader}>
+                    <Badge
+                      label={item.kategori.replace('_', ' ').toUpperCase()}
+                      variant={item.kategori === 'artikel_ilmiah' ? 'info' : item.kategori === 'sertifikat' ? 'success' : 'default'}
+                    />
+                    <Badge
+                      label={item.status_verifikasi === 'terverifikasi' ? 'TERVERIFIKASI SKPI' : item.status_verifikasi.toUpperCase()}
+                      variant={item.status_verifikasi === 'terverifikasi' ? 'success' : 'neutral'}
+                    />
+                  </View>
+                  <Text style={styles.portfolioTitle}>{item.judul}</Text>
+                  {Boolean(item.deskripsi) && (
+                    <Text style={styles.portfolioDesc} numberOfLines={2}>
+                      {item.deskripsi}
+                    </Text>
+                  )}
+                  {Boolean(item.penerbit) && (
+                    <Text style={styles.portfolioMetaText}>
+                      Penerbit: {item.penerbit} {item.tanggal_terbit ? `(${item.tanggal_terbit})` : ''}
+                    </Text>
+                  )}
+                  {item.skills && item.skills.length > 0 && (
+                    <View style={styles.portfolioSkillRow}>
+                      {item.skills.map((s, idx) => (
+                        <Text key={idx} style={styles.portfolioSkillText}>
+                          #{s.nama}
+                        </Text>
+                      ))}
+                    </View>
+                  )}
+                </View>
+              ))
+            ) : (
+              <View style={styles.emptyPortfolioBox}>
+                <Text style={styles.emptyPortfolioText}>Belum ada karya portofolio yang dipublikasikan.</Text>
+              </View>
+            )}
+          </View>
+        )}
+
         {/* Own Profile Logout Button */}
         {isOwnProfile && (
           <View style={styles.logoutWrapper}>
@@ -587,6 +709,153 @@ const styles = StyleSheet.create({
   },
   logoutWrapper: {
     marginTop: 8,
+  },
+  skpiCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: colors.borderSubtle,
+    marginBottom: 16,
+  },
+  skpiHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  skpiIconCircle: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: colors.primary + '15',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  skpiHeaderTextGroup: {
+    flex: 1,
+  },
+  skpiCardTitle: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: colors.onSurface,
+  },
+  skpiCardSubtitle: {
+    fontSize: 11,
+    color: colors.onSurfaceVariant,
+    marginTop: 2,
+  },
+  skpiTotalPoinBadge: {
+    alignItems: 'center',
+    backgroundColor: colors.primary + '15',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+  },
+  skpiTotalPoinText: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: colors.primary,
+  },
+  skpiTotalPoinLabel: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: colors.primary,
+  },
+  skpiStatsRow: {
+    flexDirection: 'row',
+    gap: 12,
+    marginTop: 14,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: colors.borderSubtle,
+  },
+  skpiStatBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: colors.surfaceContainer,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 8,
+  },
+  skpiStatNum: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: colors.onSurface,
+  },
+  skpiStatLbl: {
+    fontSize: 11,
+    color: colors.onSurfaceVariant,
+  },
+  portfolioSection: {
+    marginBottom: 16,
+  },
+  portfolioSectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 12,
+  },
+  portfolioSectionTitle: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: colors.onSurface,
+  },
+  portfolioCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 14,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: colors.borderSubtle,
+    marginBottom: 10,
+  },
+  portfolioCardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  portfolioTitle: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: colors.onSurface,
+    marginBottom: 4,
+  },
+  portfolioDesc: {
+    fontSize: 12,
+    color: colors.onSurfaceVariant,
+    lineHeight: 18,
+    marginBottom: 8,
+  },
+  portfolioMetaText: {
+    fontSize: 11,
+    color: colors.onSurfaceVariant,
+    fontStyle: 'italic',
+    marginBottom: 6,
+  },
+  portfolioSkillRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+    marginTop: 4,
+  },
+  portfolioSkillText: {
+    fontSize: 11,
+    color: colors.primary,
+    fontWeight: '600',
+  },
+  emptyPortfolioBox: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 20,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: colors.borderSubtle,
+  },
+  emptyPortfolioText: {
+    fontSize: 13,
+    color: colors.onSurfaceVariant,
+    fontStyle: 'italic',
   },
   modalOverlay: {
     flex: 1,

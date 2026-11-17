@@ -9,11 +9,12 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import { LogIn, GraduationCap, Sparkles } from 'lucide-react-native';
+import { LogIn, GraduationCap, Sparkles, Server } from 'lucide-react-native';
 import { colors } from '../../theme/colors';
 import { useAuth } from '../../context/AuthContext';
 import { Input } from '../../components/common/Input';
 import { Button } from '../../components/common/Button';
+import { API_BASE_URL } from '../../api/client';
 
 export interface LoginScreenProps {
   onNavigateToRegister: () => void;
@@ -155,6 +156,12 @@ export function LoginScreen({ onNavigateToRegister }: LoginScreenProps) {
               <Text style={styles.demoChipText}>Admin</Text>
             </TouchableOpacity>
           </View>
+
+          {/* Server Info Indicator */}
+          <View style={styles.serverInfoBox}>
+            <Server size={14} color={colors.onSurfaceVariant} />
+            <Text style={styles.serverInfoText}>Backend: {API_BASE_URL}</Text>
+          </View>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -283,5 +290,23 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '600',
     color: colors.onSurface,
+  },
+  serverInfoBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    marginTop: 18,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    backgroundColor: colors.surfaceContainerLow,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: colors.borderSubtle,
+  },
+  serverInfoText: {
+    fontSize: 11,
+    color: colors.onSurfaceVariant,
+    fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
   },
 });
