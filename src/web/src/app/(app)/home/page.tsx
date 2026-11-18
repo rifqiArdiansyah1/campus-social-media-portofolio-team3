@@ -62,6 +62,7 @@ interface PostDetailApi {
   can_takedown: boolean;
   can_report: boolean;
   can_edit: boolean;
+  reported_by_me?: boolean;
 }
 
 interface PostFeedApiResponse {
@@ -102,6 +103,7 @@ function mapApiToViewModel(item: PostDetailApi): PostViewModel {
     can_report: item.can_report,
     can_delete: false,
     can_edit: item.can_edit,
+    reported_by_me: Boolean(item.reported_by_me),
     likes_count: 0,
     comments_count: 0,
     is_liked: false,
@@ -525,7 +527,7 @@ export default function HomePage() {
           if (reportModalPost) {
             setPosts((prev) =>
               prev.map((p) =>
-                p.id === reportModalPost.id ? { ...p, can_report: false } : p
+                p.id === reportModalPost.id ? { ...p, can_report: false, reported_by_me: true } : p
               )
             );
           }

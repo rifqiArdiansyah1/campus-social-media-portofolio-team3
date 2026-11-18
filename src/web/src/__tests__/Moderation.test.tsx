@@ -249,8 +249,104 @@ describe("ReportPostModal & TakedownPostModal Frontend Tests", () => {
         alasan: "Konten memuat tautan berbahaya phising.",
       });
       expect(onSuccess).toHaveBeenCalled();
-      expect(onClose).toHaveBeenCalled();
     });
+
+    // In-modal success state is shown
+    expect(await screen.findByText(/Laporan Berhasil Dikirim/i)).toBeInTheDocument();
+    expect(screen.getByText(/Laporan Anda telah masuk ke antrean moderasi program studi/i)).toBeInTheDocument();
+
+    // Closing from success state calls onClose
+    const doneBtn = screen.getByRole("button", { name: /Kembali ke Linimasa/i });
+    fireEvent.click(doneBtn);
+    expect(onClose).toHaveBeenCalled();
+  });
+
+  it("submits report with optional reason empty for standard category", async () => {
+    (apiClient.post as any).mockResolvedValue({
+      data: { report_id: 100, status: "baru" },
+    });
+
+    const onClose = vi.fn();
+    const onSuccess = vi.fn();
+
+    render(
+      <ReportPostModal
+        isOpen={true}
+        postId={46}
+        postAuthorName="Budi"
+        onClose={onClose}
+        onSuccess={onSuccess}
+      />
+    );
+
+    const submitBtn = screen.getByRole("button", { name: /Kirim Laporan/i });
+    expect(submitBtn).not.toBeDisabled(); // enabled because alasan is optional for standard category
+
+    fireEvent.click(submitBtn);
+
+    await waitFor(() => {
+      expect(apiClient.post).toHaveBeenCalledWith("/reports", {
+        post_id: 46,
+        kategori_laporan: "konten_tidak_pantas",
+        alasan: undefined,
+      });
+      expect(onSuccess).toHaveBeenCalled();
+    });
+  });
+
+  it("enforces required reason for 'Pelanggaran Etika Lainnya' category", async () => {
+    const onClose = vi.fn();
+    const onSuccess = vi.fn();
+
+    render(
+      <ReportPostModal
+        isOpen={true}
+        postId={47}
+        onClose={onClose}
+        onSuccess={onSuccess}
+      />
+    );
+
+    // Switch to Lainnya
+    const lainnyaRadio = screen.getByRole("radio", { name: /Pelanggaran Etika Lainnya/i });
+    fireEvent.click(lainnyaRadio);
+
+    const submitBtn = screen.getByRole("button", { name: /Kirim Laporan/i });
+    expect(submitBtn).toBeDisabled(); // disabled because empty
+
+    const textarea = screen.getByPlaceholderText(/wajib, min 5 karakter/i);
+    fireEvent.change(textarea, { target: { value: "Pelanggaran aturan lab komputer" } });
+    expect(submitBtn).not.toBeDisabled();
+  });
+
+  it("handles 409 conflict and 429 rate limit errors gracefully", async () => {
+    const onClose = vi.fn();
+    const onSuccess = vi.fn();
+
+    // 1. Duplicate report error (409)
+    (apiClient.post as any).mockRejectedValueOnce({
+      response: {
+        status: 409,
+        data: { code: "DUPLICATE_ACTIVE_REPORT", detail: "Laporan sudah aktif." },
+      },
+    });
+
+    const { rerender } = render(
+      <ReportPostModal
+        isOpen={true}
+        postId={48}
+        onClose={onClose}
+        onSuccess={onSuccess}
+      />
+    );
+
+    const submitBtn = screen.getByRole("button", { name: /Kirim Laporan/i });
+    fireEvent.click(submitBtn);
+
+    expect(
+      await screen.findByText(/Anda sudah memiliki laporan aktif untuk postingan ini yang sedang ditinjau/i)
+    ).toBeInTheDocument();
+    expect(onSuccess).toHaveBeenCalled(); // post should still be hidden/marked
   });
 
   it("submits staff takedown with reason", async () => {

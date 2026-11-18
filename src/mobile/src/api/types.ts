@@ -14,7 +14,9 @@ export type UserRole = 'mahasiswa' | 'moderator' | 'admin';
 
 // Posts & Feeds
 export type PostFeedResponse = Schemas['PostFeedResponse'];
-export type PostDetailResponse = Schemas['PostDetailResponse'];
+export type PostDetailResponse = Schemas['PostDetailResponse'] & {
+  reported_by_me?: boolean;
+};
 export type PostCreate = Schemas['PostCreate'];
 export type PostSkillTagResponse = Schemas['PostSkillTagResponse'];
 

@@ -137,6 +137,7 @@ class PostDetailResponse(BaseModel):
     can_takedown: bool = False
     can_report: bool = False
     can_edit: bool = False
+    reported_by_me: bool = False
 
 
 class PostFeedResponse(BaseModel):

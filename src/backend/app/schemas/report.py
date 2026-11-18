@@ -4,22 +4,40 @@ from typing import Literal, Optional
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 
+CATEGORY_DEFAULT_REASONS = {
+    "konten_tidak_pantas": "Laporan Konten Tidak Pantas / Vulgar",
+    "spam": "Laporan Spam / Promosi Ilegal",
+    "ujaran_kebencian": "Laporan Pelecehan / Ujaran Kebencian",
+    "misinformasi": "Laporan Misinformasi / Berita Menyesatkan",
+    "plagiarisme": "Laporan Plagiarisme / Pelanggaran Hak Cipta",
+    "lainnya": "Laporan Pelanggaran Etika Lainnya",
+}
+
+
 class ReportCreate(BaseModel):
     post_id: int
-    alasan: str = Field(..., description="Penjelasan detail pelanggaran (minimal 5 karakter)")
+    alasan: Optional[str] = Field(None, description="Penjelasan detail pelanggaran (opsional kecuali kategori lainnya)")
     kategori_laporan: Literal[
         "spam", "konten_tidak_pantas", "ujaran_kebencian", "misinformasi", "plagiarisme", "lainnya"
     ] = Field("konten_tidak_pantas", description="Kategori pelanggaran")
 
-    @field_validator("alasan")
-    @classmethod
-    def validate_alasan(cls, v: str) -> str:
-        cleaned = v.strip() if v else ""
-        if len(cleaned) < 5:
-            raise ValueError("Alasan pelaporan minimal 5 karakter.")
-        if len(cleaned) > 1000:
-            raise ValueError("Alasan pelaporan maksimal 1000 karakter.")
-        return cleaned
+    @model_validator(mode="after")
+    def validate_alasan_and_category(self) -> "ReportCreate":
+        cleaned = (self.alasan or "").strip()
+        if self.kategori_laporan == "lainnya":
+            if len(cleaned) < 5:
+                raise ValueError("Untuk kategori 'lainnya', alasan wajib diisi minimal 5 karakter.")
+            if len(cleaned) > 1000:
+                raise ValueError("Alasan pelaporan maksimal 1000 karakter.")
+            self.alasan = cleaned
+        else:
+            if not cleaned:
+                self.alasan = CATEGORY_DEFAULT_REASONS.get(self.kategori_laporan, "Laporan Pelanggaran Konten")
+            else:
+                if len(cleaned) > 1000:
+                    raise ValueError("Alasan pelaporan maksimal 1000 karakter.")
+                self.alasan = cleaned
+        return self
 
 
 class ReportActionRequest(BaseModel):

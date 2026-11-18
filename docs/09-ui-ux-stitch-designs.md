@@ -108,6 +108,16 @@ Semua aset screenshot resolusi tinggi dan source code HTML/CSS tersimpan di `ui/
 
 ---
 
+### Screen 6: Laporkan Postingan & Feedback Pelaporan (US-11)
+- **Project Stitch**: `Campus Portfolio Social App` (`10744711964413240245`)
+- **Pembaruan Fitur & Desain Terintegrasi**:
+  1. **Callout Privasi Faktual:** Menjelaskan secara akurat bahwa identitas pelapor tidak ditampilkan kepada pemilik postingan, namun dapat dilihat oleh Moderator (Kaprodi) dan Admin kampus untuk verifikasi dan audit akademik.
+  2. **6 Kartu Kategori Radio Interaktif:** *Konten Tidak Pantas*, *Spam*, *Pelecehan / Ujaran Kebencian*, *Misinformasi*, *Plagiarisme*, dan *Pelanggaran Etika Lainnya* dengan panduan konteks pedoman kampus.
+  3. **Kolom Alasan Bebas Friksi (*Low-Friction*):** Opsional untuk 5 kategori utama (default label kategori), dan wajib hanya jika memilih *Pelanggaran Etika Lainnya*.
+  4. **Post-Report Shielding (Opsi A Reversibel):** Kartu postingan yang telah dilaporkan pengguna disembunyikan secara persisten berbasis server (`reported_by_me: true`) dengan placeholder kartu tertutup dan tombol tindakan *"Buka tampilan"*.
+
+---
+
 ## 4. Panduan Eksekusi Implementasi (Frontend Web & Mobile)
 
 1. **Web App (Next.js 14 App Router)**:

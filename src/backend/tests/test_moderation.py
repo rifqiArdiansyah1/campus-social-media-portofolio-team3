@@ -494,3 +494,47 @@ def test_can_report_flag_false_when_active_report_exists(client, db_session: Ses
     resp_after = client.get(f"/api/v1/posts/{post.post_id}", headers=auth_headers(student2))
     assert resp_after.status_code == 200
     assert resp_after.json()["can_report"] is False
+    assert resp_after.json()["reported_by_me"] is True
+
+
+def test_reported_by_me_and_optional_alasan(client, db_session: Session):
+    student1 = create_user(db_session, role="mahasiswa", jurusan="Teknik Informatika")
+    student2 = create_user(db_session, role="mahasiswa", jurusan="Teknik Informatika")
+    student3 = create_user(db_session, role="mahasiswa", jurusan="Teknik Informatika")
+    post = create_test_post(db_session, author=student1, status="tayang")
+
+    # Before reporting: reported_by_me is False for student2
+    resp_before = client.get(f"/api/v1/posts/{post.post_id}", headers=auth_headers(student2))
+    assert resp_before.status_code == 200
+    assert resp_before.json()["reported_by_me"] is False
+    assert resp_before.json()["can_report"] is True
+
+    # 1. Reporting without alasan (optional) for standard category succeeds
+    res_rep = client.post(
+        "/api/v1/reports",
+        json={"post_id": post.post_id, "kategori_laporan": "konten_tidak_pantas"},
+        headers=auth_headers(student2),
+    )
+    assert res_rep.status_code == 201
+    assert "Konten Tidak Pantas" in res_rep.json()["alasan"]
+
+    # 2. After reporting: reported_by_me is True for student2, can_report is False
+    resp_after = client.get(f"/api/v1/posts/{post.post_id}", headers=auth_headers(student2))
+    assert resp_after.status_code == 200
+    assert resp_after.json()["reported_by_me"] is True
+    assert resp_after.json()["can_report"] is False
+
+    # But for student3 (who hasn't reported), reported_by_me is False and can_report is True
+    resp_s3 = client.get(f"/api/v1/posts/{post.post_id}", headers=auth_headers(student3))
+    assert resp_s3.status_code == 200
+    assert resp_s3.json()["reported_by_me"] is False
+    assert resp_s3.json()["can_report"] is True
+
+    # 3. Reporting with category 'lainnya' without reason fails with 422
+    post2 = create_test_post(db_session, author=student1, status="tayang")
+    res_fail = client.post(
+        "/api/v1/reports",
+        json={"post_id": post2.post_id, "kategori_laporan": "lainnya"},
+        headers=auth_headers(student2),
+    )
+    assert res_fail.status_code == 422

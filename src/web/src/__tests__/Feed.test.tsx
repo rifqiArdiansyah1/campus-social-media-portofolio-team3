@@ -177,6 +177,37 @@ describe("M05 Feed & Post Creation Frontend Tests", () => {
 
       expect(handleEdit).toHaveBeenCalledWith(editablePost);
     });
+
+    it("renders collapsed placeholder when reported_by_me is true and allows revealing", () => {
+      const reportedPost = { ...mockPost, reported_by_me: true };
+
+      render(
+        <PostCard
+          post={reportedPost}
+          onLike={vi.fn()}
+          onComment={vi.fn()}
+          onTakedown={vi.fn()}
+          onReport={vi.fn()}
+          onEdit={vi.fn()}
+        />
+      );
+
+      // Initially renders collapsed placeholder
+      expect(screen.getByTestId("post-card-reported-1")).toBeInTheDocument();
+      expect(screen.getByText(/telah Anda laporkan dan disembunyikan dari linimasa Anda/i)).toBeInTheDocument();
+      expect(screen.queryByText(/Membangun sistem portofolio terpadu/i)).not.toBeInTheDocument();
+
+      // Click "Buka tampilan" reveals the post
+      const revealBtn = screen.getByRole("button", { name: /Buka tampilan/i });
+      fireEvent.click(revealBtn);
+
+      expect(screen.getByText(/Membangun sistem portofolio terpadu/i)).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /Sembunyikan kembali/i })).toBeInTheDocument();
+
+      // Click "Sembunyikan kembali" re-collapses
+      fireEvent.click(screen.getByRole("button", { name: /Sembunyikan kembali/i }));
+      expect(screen.getByTestId("post-card-reported-1")).toBeInTheDocument();
+    });
   });
 
   describe("HomePage Feed Integration", () => {

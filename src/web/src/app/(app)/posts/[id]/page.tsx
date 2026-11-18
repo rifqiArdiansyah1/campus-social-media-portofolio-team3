@@ -57,6 +57,7 @@ interface PostDetailApi {
   can_takedown: boolean;
   can_report: boolean;
   can_edit: boolean;
+  reported_by_me?: boolean;
 }
 
 export default function PostDetailPage() {
@@ -109,6 +110,7 @@ export default function PostDetailPage() {
         can_report: data.can_report,
         can_delete: data.is_owner && !data.is_deleted,
         can_edit: data.can_edit,
+        reported_by_me: Boolean(data.reported_by_me),
       });
     } catch (err: any) {
       if (err.response?.status === 404) {

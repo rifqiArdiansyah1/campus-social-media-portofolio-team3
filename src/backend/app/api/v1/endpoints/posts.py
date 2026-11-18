@@ -191,6 +191,7 @@ def format_post_detail(post: Post, current_user: User) -> PostDetailResponse:
         can_takedown=can_takedown,
         can_report=can_report,
         can_edit=can_edit,
+        reported_by_me=has_active_report,
     )
 
 

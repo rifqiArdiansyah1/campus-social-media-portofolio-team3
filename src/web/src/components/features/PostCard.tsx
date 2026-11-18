@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import {
@@ -45,6 +45,7 @@ export interface PostViewModel {
   can_report?: boolean;
   can_delete?: boolean;
   can_edit?: boolean;
+  reported_by_me?: boolean;
 }
 
 export interface PostCardProps {
@@ -66,6 +67,8 @@ export function PostCard({
   onDelete,
   onEdit,
 }: PostCardProps) {
+  const [isRevealed, setIsRevealed] = useState(false);
+
   const formattedDate = new Date(post.created_at).toLocaleDateString("id-ID", {
     day: "numeric",
     month: "short",
@@ -75,11 +78,50 @@ export function PostCard({
   const isRecruiting = post.tipe === "cari_anggota";
   const isOwner = Boolean(post.is_owner);
 
+  if (post.reported_by_me && !isRevealed) {
+    return (
+      <article
+        data-testid={`post-card-reported-${post.id}`}
+        className="p-4 rounded-2xl bg-slate-50 border border-slate-200 shadow-xs flex items-center justify-between gap-3 text-xs"
+      >
+        <div className="flex items-center gap-2.5 text-slate-600 min-w-0">
+          <ShieldAlert className="w-4 h-4 text-slate-400 flex-shrink-0" />
+          <span className="truncate font-body">
+            Postingan dari <span className="font-semibold text-slate-800">{post.author_name}</span> telah Anda laporkan dan disembunyikan dari linimasa Anda.
+          </span>
+        </div>
+        <button
+          type="button"
+          onClick={() => setIsRevealed(true)}
+          className="flex-shrink-0 px-3 py-1.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 font-medium transition text-xs shadow-xs"
+        >
+          Buka tampilan
+        </button>
+      </article>
+    );
+  }
+
   return (
     <article
       data-testid={`post-card-${post.id}`}
       className="p-5 rounded-2xl border border-border-subtle bg-surface-card shadow-sm hover:shadow-md transition-shadow relative space-y-3.5"
     >
+      {post.reported_by_me && (
+        <div className="p-2.5 rounded-xl bg-slate-100 border border-slate-200 text-slate-600 text-xs flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <ShieldAlert className="w-3.5 h-3.5 text-slate-500 flex-shrink-0" />
+            <span>Postingan ini telah Anda laporkan dan disembunyikan dari linimasa Anda.</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setIsRevealed(false)}
+            className="text-xs text-primary font-semibold hover:underline ml-2 flex-shrink-0"
+          >
+            Sembunyikan kembali
+          </button>
+        </div>
+      )}
+
       {/* Header: Author & Options */}
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3 min-w-0">

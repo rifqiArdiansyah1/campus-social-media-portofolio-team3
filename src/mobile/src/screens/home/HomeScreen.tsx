@@ -28,6 +28,7 @@ import { PostItemCard } from '../../components/feed/PostItemCard';
 import { DashboardReviewAlert } from '../../components/home/DashboardReviewAlert';
 import { StudentSkpiWidget } from '../../components/home/StudentSkpiWidget';
 import { EmptyState } from '../../components/common/EmptyState';
+import { ReportPostModal } from '../../components/features/ReportPostModal';
 
 export interface HomeScreenProps {
   onNavigateToCreatePost: () => void;
@@ -104,59 +105,31 @@ export function HomeScreen({
   const posts: PostDetailResponse[] =
     feedData?.pages.flatMap((page) => page.items) || [];
 
-  // Report post mutation
-  const reportMutation = useMutation({
-    mutationFn: async ({ postId, category, reason }: { postId: number; category: any; reason: string }) => {
-      await apiClient.post('/reports', {
-        post_id: postId,
-        kategori_laporan: category,
-        alasan: reason,
-      });
-    },
-    onSuccess: () => {
-      Alert.alert('Laporan Terkirim', 'Terima kasih, laporan Anda telah diterima tim moderasi.');
-    },
-    onError: (err: any) => {
-      Alert.alert('Gagal Melaporkan', err?.message || 'Terjadi kesalahan saat mengirim laporan.');
-    },
-  });
+  // State for ReportPostModal
+  const [reportingPost, setReportingPost] = useState<PostDetailResponse | null>(null);
 
   const handleReportPost = (postId: number) => {
-    Alert.alert(
-      'Laporkan Postingan',
-      'Pilih kategori pelanggaran konten:',
-      [
-        {
-          text: 'Spam / Iklan',
-          onPress: () =>
-            reportMutation.mutate({
-              postId,
-              category: 'spam',
-              reason: 'Konten spam / promosi tidak berizin.',
-            }),
-        },
-        {
-          text: 'Ujaran Kebencian',
-          onPress: () =>
-            reportMutation.mutate({
-              postId,
-              category: 'ujaran_kebencian',
-              reason: 'Konten memuat ujaran kebencian atau pelecehan.',
-            }),
-        },
-        {
-          text: 'Konten Tidak Pantas',
-          onPress: () =>
-            reportMutation.mutate({
-              postId,
-              category: 'konten_tidak_pantas',
-              reason: 'Konten melanggar norma komunitas kampus.',
-            }),
-        },
-        { text: 'Batal', style: 'cancel' },
-      ],
-      { cancelable: true }
-    );
+    const targetPost = posts.find((p) => p.post_id === postId);
+    if (targetPost) {
+      setReportingPost(targetPost);
+    }
+  };
+
+  const handleReportSuccess = (reportedPostId: number) => {
+    queryClient.setQueryData(['posts', activeScope], (oldData: any) => {
+      if (!oldData) return oldData;
+      return {
+        ...oldData,
+        pages: oldData.pages.map((page: any) => ({
+          ...page,
+          items: page.items.map((item: PostDetailResponse) =>
+            item.post_id === reportedPostId
+              ? { ...item, reported_by_me: true, can_report: false }
+              : item
+          ),
+        })),
+      };
+    });
   };
 
   // Extract staff metrics
@@ -294,6 +267,15 @@ export function HomeScreen({
           <MessageSquarePlus size={24} color="#FFFFFF" />
         </TouchableOpacity>
       )}
+
+      {/* Modal Laporkan Postingan */}
+      <ReportPostModal
+        visible={!!reportingPost}
+        postId={reportingPost?.post_id ?? null}
+        postAuthorName={reportingPost?.author?.nama}
+        onClose={() => setReportingPost(null)}
+        onSuccess={handleReportSuccess}
+      />
     </View>
   );
 }

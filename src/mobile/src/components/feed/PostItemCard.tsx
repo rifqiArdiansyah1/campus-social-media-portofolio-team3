@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Image } from 'expo-image';
-import { Flag, Users, Clock } from 'lucide-react-native';
+import { Flag, Users, Clock, ShieldAlert, Eye, EyeOff } from 'lucide-react-native';
 import { colors } from '../../theme/colors';
 import { PostDetailResponse } from '../../api/types';
 import { formatRelativeTime, getInitials, resolveMediaUrl } from '../../utils/formatting';
@@ -15,14 +15,60 @@ export interface PostItemCardProps {
 }
 
 export function PostItemCard({ post, onPressAuthor, onReport }: PostItemCardProps) {
+  const [isRevealed, setIsRevealed] = useState(false);
   const authorName = post.author?.nama || 'Pengguna Kampus';
   const authorProdi = post.author?.jurusan || 'Mahasiswa';
   const isRecruiting = post.tipe === 'cari_anggota';
-
   const resolvedImageUrl = resolveMediaUrl(post.gambar_url);
+
+  // Option A: Collapsed placeholder card if post was reported by current user and not revealed
+  if (post.reported_by_me && !isRevealed) {
+    return (
+      <View style={styles.shieldedCard}>
+        <View style={styles.shieldedHeader}>
+          <ShieldAlert size={18} color="#D97706" />
+          <Text style={styles.shieldedTitle}>Postingan telah Anda laporkan</Text>
+        </View>
+        <Text style={styles.shieldedDesc}>
+          Postingan ini disembunyikan sementara dari linimasa Anda dan sedang menunggu antrean peninjauan oleh moderator prodi.
+        </Text>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() => setIsRevealed(true)}
+          style={styles.revealBtn}
+          accessibilityRole="button"
+          accessibilityLabel="Buka tampilan postingan yang dilaporkan"
+        >
+          <Eye size={14} color="#D97706" />
+          <Text style={styles.revealBtnText}>Buka tampilan</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.card}>
+      {/* Banner if reported but revealed */}
+      {post.reported_by_me && isRevealed && (
+        <View style={styles.shieldedBanner}>
+          <View style={styles.shieldedBannerLeft}>
+            <ShieldAlert size={14} color="#D97706" />
+            <Text style={styles.shieldedBannerText} numberOfLines={1}>
+              Postingan yang Anda laporkan
+            </Text>
+          </View>
+          <TouchableOpacity
+            onPress={() => setIsRevealed(false)}
+            style={styles.hideAgainBtn}
+            accessibilityRole="button"
+            accessibilityLabel="Sembunyikan kembali postingan"
+          >
+            <EyeOff size={13} color="#D97706" />
+            <Text style={styles.hideAgainText}>Sembunyikan</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
       {/* Header: Author info & Recruiting badge */}
       <View style={styles.header}>
         <TouchableOpacity
@@ -84,17 +130,28 @@ export function PostItemCard({ post, onPressAuthor, onReport }: PostItemCardProp
         </View>
       )}
 
-      {/* Card Footer: Moderation Report button */}
-      <View style={styles.footer}>
-        <TouchableOpacity
-          activeOpacity={0.6}
-          onPress={() => onReport?.(post.post_id)}
-          style={styles.reportBtn}
-        >
-          <Flag size={14} color="#94A3B8" />
-          <Text style={styles.reportText}>Laporkan</Text>
-        </TouchableOpacity>
-      </View>
+      {/* Card Footer: Moderation Report button (only if can_report !== false) */}
+      {(post.reported_by_me || post.can_report !== false) && (
+        <View style={styles.footer}>
+          {post.reported_by_me ? (
+            <View style={styles.reportedBadge}>
+              <ShieldAlert size={13} color="#D97706" />
+              <Text style={styles.reportedBadgeText}>Dilaporkan</Text>
+            </View>
+          ) : (
+            <TouchableOpacity
+              activeOpacity={0.6}
+              onPress={() => onReport?.(post.post_id)}
+              style={styles.reportBtn}
+              accessibilityRole="button"
+              accessibilityLabel="Laporkan postingan ini"
+            >
+              <Flag size={14} color="#94A3B8" />
+              <Text style={styles.reportText}>Laporkan</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+      )}
     </View>
   );
 }
@@ -105,6 +162,85 @@ const styles = StyleSheet.create({
     borderBottomWidth: 8,
     borderBottomColor: colors.surfaceCanvas,
     padding: 16,
+  },
+  shieldedCard: {
+    backgroundColor: '#FFFBEB',
+    borderBottomWidth: 8,
+    borderBottomColor: colors.surfaceCanvas,
+    borderWidth: 1,
+    borderColor: '#FDE68A',
+    padding: 16,
+    borderRadius: 8,
+    marginVertical: 4,
+  },
+  shieldedHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 6,
+  },
+  shieldedTitle: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#92400E',
+  },
+  shieldedDesc: {
+    fontSize: 12,
+    lineHeight: 17,
+    color: '#B45309',
+    marginBottom: 12,
+  },
+  revealBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    backgroundColor: '#FEF3C7',
+    borderWidth: 1,
+    borderColor: '#FCD34D',
+    borderRadius: 8,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    gap: 6,
+  },
+  revealBtnText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#92400E',
+  },
+  shieldedBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#FEF3C7',
+    borderWidth: 1,
+    borderColor: '#FDE68A',
+    borderRadius: 8,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    marginBottom: 12,
+  },
+  shieldedBannerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    flex: 1,
+  },
+  shieldedBannerText: {
+    fontSize: 11.5,
+    fontWeight: '600',
+    color: '#92400E',
+    flex: 1,
+  },
+  hideAgainBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingLeft: 8,
+  },
+  hideAgainText: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#B45309',
   },
   header: {
     flexDirection: 'row',
@@ -204,5 +340,19 @@ const styles = StyleSheet.create({
   reportText: {
     fontSize: 12,
     color: '#94A3B8',
+  },
+  reportedBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: '#FEF3C7',
+    paddingVertical: 3,
+    paddingHorizontal: 8,
+    borderRadius: 6,
+  },
+  reportedBadgeText: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#92400E',
   },
 });
