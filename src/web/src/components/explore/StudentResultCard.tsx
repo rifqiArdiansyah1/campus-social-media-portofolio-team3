@@ -43,7 +43,18 @@ export const StudentResultCard: React.FC<StudentResultCardProps> = ({
       setFriendStatus("menunggu");
       toast.success(`Permintaan pertemanan terkirim ke ${student.nama}.`);
     } catch (err: any) {
-      toast.error(err.response?.data?.detail || "Gagal mengirim permintaan pertemanan.");
+      const errCode = err?.response?.data?.code;
+      const errDetail = err?.response?.data?.detail || "";
+
+      if (errCode === "PENDING_REQUEST_EXISTS" || errDetail.toLowerCase().includes("sudah dikirimkan")) {
+        setFriendStatus("menunggu");
+        toast.info("Permintaan pertemanan sudah pernah dikirimkan sebelumnya dan sedang menunggu respon.");
+      } else if (errCode === "ALREADY_FRIENDS" || errDetail.toLowerCase().includes("sudah berteman")) {
+        setFriendStatus("diterima");
+        toast.info("Anda sudah berteman dengan mahasiswa ini.");
+      } else {
+        toast.error(errDetail || "Gagal mengirim permintaan pertemanan.");
+      }
     } finally {
       setIsSubmitting(false);
     }

@@ -37,6 +37,8 @@ export function ExploreScreen({ onNavigateToUserProfile }: ExploreScreenProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchCategory, setSearchCategory] = useState<SearchCategory>('mahasiswa');
   const [pendingAddFriendIds, setPendingAddFriendIds] = useState<number[]>([]);
+  const [sentFriendIds, setSentFriendIds] = useState<number[]>([]);
+  const [friendUserIds, setFriendUserIds] = useState<number[]>([]);
 
   const isStudent = role === 'mahasiswa';
 
@@ -84,12 +86,26 @@ export function ExploreScreen({ onNavigateToUserProfile }: ExploreScreenProps) {
     onMutate: (targetUserId) => {
       setPendingAddFriendIds((prev) => [...prev, targetUserId]);
     },
-    onSuccess: () => {
+    onSuccess: (targetUserId) => {
+      setSentFriendIds((prev) => (prev.includes(targetUserId) ? prev : [...prev, targetUserId]));
       Alert.alert('Permintaan Terkirim', 'Permintaan pertemanan berhasil dikirimkan.');
       queryClient.invalidateQueries({ queryKey: ['recommendations', 'match'] });
     },
-    onError: (err: any) => {
-      Alert.alert('Gagal Mengirim Permintaan', err?.message || 'Terjadi kesalahan.');
+    onError: (err: any, targetUserId) => {
+      const errCode = err?.code || err?.response?.data?.code;
+      const errDetail = err?.detail || err?.response?.data?.detail || err?.message || '';
+
+      if (errCode === 'PENDING_REQUEST_EXISTS' || errDetail.toLowerCase().includes('sudah dikirimkan')) {
+        setSentFriendIds((prev) => (prev.includes(targetUserId) ? prev : [...prev, targetUserId]));
+        Alert.alert('Info Pertemanan', 'Permohonan pertemanan sudah dikirimkan sebelumnya dan masih menunggu respon.');
+        queryClient.invalidateQueries({ queryKey: ['recommendations', 'match'] });
+      } else if (errCode === 'ALREADY_FRIENDS' || errDetail.toLowerCase().includes('sudah berteman')) {
+        setFriendUserIds((prev) => (prev.includes(targetUserId) ? prev : [...prev, targetUserId]));
+        Alert.alert('Info Pertemanan', 'Anda sudah berteman dengan mahasiswa ini.');
+        queryClient.invalidateQueries({ queryKey: ['recommendations', 'match'] });
+      } else {
+        Alert.alert('Gagal Mengirim Permintaan', errDetail || 'Terjadi kesalahan.');
+      }
     },
     onSettled: (_, __, targetUserId) => {
       setPendingAddFriendIds((prev) => prev.filter((id) => id !== targetUserId));
@@ -263,17 +279,25 @@ export function ExploreScreen({ onNavigateToUserProfile }: ExploreScreenProps) {
                 ) : (
                   <View>
                     {recommendations?.recommendations && recommendations.recommendations.length > 0 ? (
-                      recommendations.recommendations.map((item) => (
-                        <RecommendationCard
-                          key={item.user_id}
-                          item={item}
-                          canAddFriend={isStudent}
-                          onAddFriend={(targetId) => addFriendMutation.mutate(targetId)}
-                          onDismissFeedback={(recId) => feedbackMutation.mutate(recId)}
-                          onPressProfile={onNavigateToUserProfile}
-                          isAddingFriend={pendingAddFriendIds.includes(parseInt(item.user_id, 10))}
-                        />
-                      ))
+                      recommendations.recommendations.map((item) => {
+                        const targetIdNum = parseInt(item.user_id, 10);
+                        const isRequested = sentFriendIds.includes(targetIdNum) || item.friendship_status === 'menunggu';
+                        const isFriend = friendUserIds.includes(targetIdNum) || item.friendship_status === 'diterima';
+
+                        return (
+                          <RecommendationCard
+                            key={item.user_id}
+                            item={item}
+                            canAddFriend={isStudent}
+                            isRequested={isRequested}
+                            isFriend={isFriend}
+                            onAddFriend={(targetId) => addFriendMutation.mutate(targetId)}
+                            onDismissFeedback={(recId) => feedbackMutation.mutate(recId)}
+                            onPressProfile={onNavigateToUserProfile}
+                            isAddingFriend={pendingAddFriendIds.includes(targetIdNum)}
+                          />
+                        );
+                      })
                     ) : (
                       <EmptyState
                         title="Belum Ada Rekomendasi"

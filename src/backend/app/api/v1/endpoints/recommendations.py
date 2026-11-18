@@ -4,13 +4,14 @@ from datetime import datetime, timedelta
 from typing import List, Optional
 
 from fastapi import APIRouter, Depends, Query, status
+from sqlalchemy import and_, or_
 from sqlalchemy.orm import Session, selectinload
 
 from app.core.config import settings
 from app.core.database import get_db
 from app.core.exceptions import NotFoundError
 from app.core.security import get_current_user
-from app.models.entities import Post, PostSkill, RecommendationLog, User, UserSkill
+from app.models.entities import Friendship, Post, PostSkill, RecommendationLog, User, UserSkill
 from app.schemas.recommendation import (
     CandidateProfile,
     RecommendationFeedbackRequest,
@@ -131,6 +132,51 @@ def _safe_log_recommendations(
         db.rollback()
 
 
+def _enrich_friendship_status(
+    db: Session,
+    seeker_id: int,
+    recommendations: List[RecommendationItem],
+) -> None:
+    """Melengkapi item rekomendasi dengan status pertemanan saat ini terhadap pengguna pemohon."""
+    if not recommendations:
+        return
+
+    candidate_ids: List[int] = []
+    for item in recommendations:
+        try:
+            candidate_ids.append(int(item.user_id))
+        except (ValueError, TypeError):
+            continue
+
+    if not candidate_ids:
+        return
+
+    friendships = (
+        db.query(Friendship)
+        .filter(
+            or_(
+                and_(
+                    Friendship.requester_id == seeker_id,
+                    Friendship.addressee_id.in_(candidate_ids),
+                ),
+                and_(
+                    Friendship.addressee_id == seeker_id,
+                    Friendship.requester_id.in_(candidate_ids),
+                ),
+            )
+        )
+        .all()
+    )
+
+    friendship_map = {}
+    for f in friendships:
+        other_id = str(f.addressee_id if f.requester_id == seeker_id else f.requester_id)
+        friendship_map[other_id] = f.status
+
+    for item in recommendations:
+        item.friendship_status = friendship_map.get(str(item.user_id), None)
+
+
 @router.post(
     "/match",
     response_model=RecommendationResponse,
@@ -223,6 +269,13 @@ async def get_collaborator_recommendations(
         kebutuhan_teks=kebutuhan_teks,
         sumber="match",
         is_fallback=is_fallback,
+    )
+
+    # 5. Lengkapi status pertemanan untuk kandidat rekomendasi
+    _enrich_friendship_status(
+        db=db,
+        seeker_id=current_user.user_id,
+        recommendations=response.recommendations,
     )
 
     return response
@@ -341,6 +394,13 @@ async def get_recommendations_for_post(
         sumber="for_post",
         is_fallback=is_fallback,
         post_id=post.post_id,
+    )
+
+    # Lengkapi status pertemanan untuk kandidat rekomendasi
+    _enrich_friendship_status(
+        db=db,
+        seeker_id=current_user.user_id,
+        recommendations=response.recommendations,
     )
 
     return response

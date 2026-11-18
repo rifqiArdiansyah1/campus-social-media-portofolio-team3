@@ -10,6 +10,7 @@ export interface RecommendationItem {
   matched_terms: string[];
   complementary_skills: string[];
   reason: string;
+  friendship_status?: string | null;
 }
 
 export interface RecommendationResponse {

@@ -23,6 +23,10 @@ class RecommendationItem(BaseModel):
     matched_terms: List[str] = Field(default_factory=list, description="Tag keahlian yang memiliki irisan")
     complementary_skills: List[str] = Field(default_factory=list, description="Keahlian kandidat yang melengkapi kebutuhan")
     reason: str = Field(..., description="Penjelasan bahasa alami mengenai alasan kecocokan")
+    friendship_status: Optional[str] = Field(
+        default=None,
+        description="Status pertemanan dengan pemohon (menunggu, diterima, ditolak, atau null)",
+    )
 
 
 class RecommendationMatchRequest(BaseModel):

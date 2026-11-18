@@ -520,3 +520,55 @@ def test_schema_validation_runtime_enforcement(client: TestClient, db_session: S
     assert res.status_code == 200
     data = res.json()
     assert data["fallback"] is True
+
+
+def test_recommendation_friendship_status_enrichment(client: TestClient, db_session: Session):
+    from app.models.entities import Friendship, Skill, UserSkill
+
+    db = db_session
+    u_seeker = User(nim="999991", nama="Seeker Mhs", email="seeker99@univ.ac.id", password_hash="hash", role="mahasiswa", bio="Python enthusiast")
+    u_pending = User(nim="999992", nama="Pending Friend", email="pending99@univ.ac.id", password_hash="hash", role="mahasiswa", bio="Quantum dev")
+    u_accepted = User(nim="999993", nama="Accepted Friend", email="accepted99@univ.ac.id", password_hash="hash", role="mahasiswa", bio="Quantum engineer")
+    u_stranger = User(nim="999994", nama="Stranger Mhs", email="stranger99@univ.ac.id", password_hash="hash", role="mahasiswa", bio="Quantum data")
+    db.add_all([u_seeker, u_pending, u_accepted, u_stranger])
+    db.commit()
+
+    s_unique = Skill(nama="QuantumUnique99", tipe="skill")
+    db.add(s_unique)
+    db.commit()
+
+    db.add_all([
+        UserSkill(user_id=u_pending.user_id, skill_id=s_unique.skill_id),
+        UserSkill(user_id=u_accepted.user_id, skill_id=s_unique.skill_id),
+        UserSkill(user_id=u_stranger.user_id, skill_id=s_unique.skill_id),
+    ])
+    db.commit()
+
+    # Buat relasi pertemanan
+    # 1. Seeker -> Pending ('menunggu')
+    f_pending = Friendship(requester_id=u_seeker.user_id, addressee_id=u_pending.user_id, status="menunggu")
+    # 2. Accepted -> Seeker ('diterima')
+    f_accepted = Friendship(requester_id=u_accepted.user_id, addressee_id=u_seeker.user_id, status="diterima")
+    db.add_all([f_pending, f_accepted])
+    db.commit()
+
+    token_seeker = create_access_token(subject=u_seeker.user_id)
+
+    res = client.post(
+        "/api/v1/recommendations/match",
+        headers={"Authorization": f"Bearer {token_seeker}"},
+        json={
+            "target_skills": ["QuantumUnique99"],
+            "project_description": "Proyek QuantumUnique99 computing",
+            "top_k": 10
+        }
+    )
+    assert res.status_code == 200
+    data = res.json()
+    recs = data.get("recommendations", [])
+    assert len(recs) > 0
+
+    status_map = {item["user_id"]: item.get("friendship_status") for item in recs}
+    assert status_map[str(u_pending.user_id)] == "menunggu"
+    assert status_map[str(u_accepted.user_id)] == "diterima"
+    assert status_map[str(u_stranger.user_id)] is None

@@ -78,6 +78,10 @@
           "reason": {
             "type": "string",
             "description": "Penjelasan bahasa alami transparan mengenai alasan kecocokan profil"
+          },
+          "friendship_status": {
+            "type": ["string", "null"],
+            "description": "Status pertemanan dengan pengguna pemohon (menunggu, diterima, ditolak, atau null)"
           }
         }
       }

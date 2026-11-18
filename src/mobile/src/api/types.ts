@@ -30,8 +30,12 @@ export type SearchResponse = Schemas['SearchResponse'];
 export type StudentSearchResult = Schemas['StudentSearchResult'];
 export type PostSearchResult = Schemas['PostSearchResult'];
 export type PortfolioSearchResult = Schemas['PortfolioSearchResult'];
-export type RecommendationResponse = Schemas['RecommendationResponse'];
-export type RecommendationItem = Schemas['RecommendationItem'];
+export type RecommendationItem = Schemas['RecommendationItem'] & {
+  friendship_status?: string | null;
+};
+export type RecommendationResponse = Omit<Schemas['RecommendationResponse'], 'recommendations'> & {
+  recommendations: RecommendationItem[];
+};
 
 // Dashboard
 export type DashboardSummaryResponse = Schemas['DashboardSummaryResponse'];

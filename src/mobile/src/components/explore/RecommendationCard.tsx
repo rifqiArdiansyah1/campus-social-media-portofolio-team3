@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { UserPlus, Sparkles, ThumbsDown } from 'lucide-react-native';
+import { UserPlus, Sparkles, ThumbsDown, Check, Clock } from 'lucide-react-native';
 import { colors } from '../../theme/colors';
 import { RecommendationItem } from '../../api/types';
 import { formatMatchScore, getInitials } from '../../utils/formatting';
@@ -13,6 +13,8 @@ export interface RecommendationCardProps {
   onPressProfile?: (userId: number) => void;
   isAddingFriend?: boolean;
   canAddFriend?: boolean;
+  isRequested?: boolean;
+  isFriend?: boolean;
 }
 
 export function RecommendationCard({
@@ -22,11 +24,15 @@ export function RecommendationCard({
   onPressProfile,
   isAddingFriend = false,
   canAddFriend = true,
+  isRequested: isRequestedProp,
+  isFriend: isFriendProp,
 }: RecommendationCardProps) {
   const userIdNum = parseInt(item.user_id, 10);
   const name = item.name || 'Mahasiswa Kampus';
   const department = item.department || 'Mahasiswa';
   const matchPct = formatMatchScore(item.score);
+  const isFriend = Boolean(isFriendProp || item.friendship_status === 'diterima');
+  const isRequested = Boolean(isRequestedProp || item.friendship_status === 'menunggu');
 
   return (
     <View style={styles.card}>
@@ -71,21 +77,41 @@ export function RecommendationCard({
 
       {/* Actions */}
       <View style={styles.actions}>
-        {canAddFriend ? (
+        {!canAddFriend ? (
+          <Button
+            title="Lihat Profil"
+            variant="outline"
+            size="sm"
+            onPress={() => !isNaN(userIdNum) && onPressProfile?.(userIdNum)}
+            style={styles.addBtn}
+          />
+        ) : isFriend ? (
+          <Button
+            title="Berteman"
+            variant="outline"
+            size="sm"
+            disabled
+            onPress={() => {}}
+            icon={<Check size={14} color={colors.matchEmeraldText} />}
+            style={styles.addBtn}
+          />
+        ) : isRequested ? (
+          <Button
+            title="Menunggu"
+            variant="outline"
+            size="sm"
+            disabled
+            onPress={() => {}}
+            icon={<Clock size={14} color={colors.onSurfaceVariant} />}
+            style={styles.addBtn}
+          />
+        ) : (
           <Button
             title="Tambah Teman"
             size="sm"
             onPress={() => !isNaN(userIdNum) && onAddFriend(userIdNum)}
             loading={isAddingFriend}
             icon={<UserPlus size={14} color="#FFFFFF" />}
-            style={styles.addBtn}
-          />
-        ) : (
-          <Button
-            title="Lihat Profil"
-            variant="outline"
-            size="sm"
-            onPress={() => !isNaN(userIdNum) && onPressProfile?.(userIdNum)}
             style={styles.addBtn}
           />
         )}
