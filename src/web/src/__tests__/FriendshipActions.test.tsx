@@ -7,8 +7,9 @@ import FriendsPage from "@/app/(app)/friends/page";
 import { apiClient } from "@/lib/api";
 
 // Mock AuthContext
-const mockCurrentUser = {
+const defaultStudent = {
   id: 101,
+  user_id: 101,
   nim: "24060122140001",
   nama: "Rifqi Mahasiswa",
   email: "rifqi@campus.ac.id",
@@ -16,10 +17,12 @@ const mockCurrentUser = {
   jurusan: "Teknik Informatika",
 };
 
+let mockCurrentUser = { ...defaultStudent };
+
 vi.mock("@/context/AuthContext", () => ({
   useAuth: () => ({
     user: mockCurrentUser,
-    role: "mahasiswa",
+    role: mockCurrentUser.role,
   }),
 }));
 
@@ -61,6 +64,7 @@ vi.mock("@/lib/api", () => ({
 describe("M06 Friendship & Social Interactions Tests", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockCurrentUser = { ...defaultStudent };
   });
 
   describe("FriendRequestWidget", () => {
@@ -235,6 +239,47 @@ describe("M06 Friendship & Social Interactions Tests", () => {
         expect(apiClient.post).toHaveBeenCalledWith("/blocks", { blocked_id: 202 });
         expect(screen.getByText(/Anda telah memblokir pengguna ini/i)).toBeInTheDocument();
       });
+    });
+
+    it("hides 'Tambah Teman' and renders academic supervisor badge when Kaprodi (moderator) views a student profile", async () => {
+      mockCurrentUser = {
+        id: 999,
+        user_id: 999,
+        nim: "197501011999031001",
+        nama: "Dr. Budi Utomo",
+        email: "kaprodi.ti@campus.ac.id",
+        role: "moderator",
+        jurusan: "Teknik Informatika",
+      };
+
+      (apiClient.get as any).mockResolvedValueOnce({
+        data: {
+          user_id: 202,
+          nama: "Budi Target",
+          jurusan: "Teknik Informatika",
+          angkatan: 2022,
+          bio: "Halo dunia",
+          kontak_url: null,
+          role: "mahasiswa",
+          created_at: new Date().toISOString(),
+          skills: [],
+          friendship_status: "none",
+          friendship_id: null,
+          blocked_by_me: false,
+          nim: null,
+          email: null,
+          is_visible: true,
+        },
+      });
+
+      render(<ProfileDetailPage />);
+
+      expect(await screen.findByText("Budi Target")).toBeInTheDocument();
+      // "Tambah Teman" button must NOT exist for Kaprodi
+      expect(screen.queryByRole("button", { name: /Tambah Teman/i })).not.toBeInTheDocument();
+      // Academic guidance badge and SKPI review quick link must be visible
+      expect(screen.getByText(/Mahasiswa Bimbingan/i)).toBeInTheDocument();
+      expect(screen.getByText(/Review SKPI/i)).toBeInTheDocument();
     });
   });
 

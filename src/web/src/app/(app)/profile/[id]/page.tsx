@@ -26,6 +26,7 @@ import {
   Eye,
   Lock,
   FileCheck,
+  ShieldCheck,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/context/ToastContext";
@@ -181,6 +182,11 @@ export default function ProfileDetailPage() {
   const isOwner = Boolean(
     currentUser && profile && (currentUserId === profile.user_id || isMeParam)
   );
+
+  const isCurrentStudent = currentUser?.role === "mahasiswa";
+  const isTargetStudent = profile?.role === "mahasiswa";
+  const isStaffViewer = currentUser?.role === "moderator" || currentUser?.role === "admin";
+  const canFriendship = !isOwner && isCurrentStudent && isTargetStudent;
 
   const skillsList = profile?.skills?.filter((s) => s.tipe === "skill") || [];
   const minatsList = profile?.skills?.filter((s) => s.tipe === "minat") || [];
@@ -475,7 +481,7 @@ export default function ProfileDetailPage() {
                 <Edit3 className="w-3.5 h-3.5" />
                 <span>Edit Profil</span>
               </Link>
-            ) : (
+            ) : canFriendship ? (
               <>
                 {/* 1. Friends State */}
                 {profile.friendship_status === "friends" ? (
@@ -564,6 +570,38 @@ export default function ProfileDetailPage() {
                   </button>
                 )}
               </>
+            ) : (
+              /* Non-peer view: Staff viewing student, or student viewing staff */
+              <div className="flex items-center gap-2">
+                {isStaffViewer && isTargetStudent ? (
+                  <>
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-indigo-700 bg-indigo-50 border border-indigo-200 rounded-xl">
+                      <GraduationCap className="w-3.5 h-3.5 text-indigo-600" />
+                      <span>Mahasiswa Bimbingan {profile.jurusan ? `• ${profile.jurusan}` : ""}</span>
+                    </span>
+                    {((currentUser?.role === "moderator" && currentUser?.jurusan === profile.jurusan) || currentUser?.role === "admin") && (
+                      <Link
+                        href="/portfolio/review"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-xl transition shadow-xs"
+                        title="Buka Antrean Review SKPI Kaprodi"
+                      >
+                        <FileCheck className="w-3.5 h-3.5 text-amber-600" />
+                        <span>Review SKPI</span>
+                      </Link>
+                    )}
+                  </>
+                ) : isCurrentStudent && !isTargetStudent ? (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-emerald-800 bg-emerald-50 border border-emerald-200 rounded-xl">
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>{profile.role === "admin" ? "Administrator Kampus" : `Kaprodi • ${profile.jurusan || "Program Studi"}`}</span>
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 bg-slate-100 border border-slate-200 rounded-xl">
+                    <ShieldCheck className="w-3.5 h-3.5 text-slate-500" />
+                    <span>{profile.role === "admin" ? "Administrator" : "Koordinator Prodi"}</span>
+                  </span>
+                )}
+              </div>
             )}
           </div>
         </div>

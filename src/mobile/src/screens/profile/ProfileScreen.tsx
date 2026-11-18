@@ -16,6 +16,7 @@ import {
   UserCheck,
   UserX,
   ShieldAlert,
+  ShieldCheck,
   Mail,
   GraduationCap,
   Calendar,
@@ -221,6 +222,10 @@ export function ProfileScreen({ targetUserId, onBack }: ProfileScreenProps) {
 
   const userObj = profileData || currentUser;
   const isStudent = userObj?.role === 'mahasiswa';
+  const isTargetStudent = isStudent;
+  const isCurrentStudent = currentUser?.role === 'mahasiswa';
+  const isStaffViewer = currentUser?.role === 'moderator' || currentUser?.role === 'admin';
+  const canFriendship = !isOwnProfile && isCurrentStudent && isTargetStudent;
   const otherProfile = !isOwnProfile ? (profileData as PublicProfileResponse) : null;
   const friendshipStatus = otherProfile?.friendship_status || 'none';
   const friendshipId = otherProfile?.friendship_id;
@@ -313,62 +318,89 @@ export function ProfileScreen({ targetUserId, onBack }: ProfileScreenProps) {
             </TouchableOpacity>
           ) : null}
 
-          {/* Other Profile Friendship & Block Actions */}
-          {!isOwnProfile && isStudent && (
-            <View style={styles.otherActionsRow}>
-              {friendshipStatus === 'none' && (
-                <Button
-                  title="Tambah Teman"
-                  size="sm"
-                  onPress={() => targetUserId && friendRequestMutation.mutate(targetUserId)}
-                  loading={friendRequestMutation.isPending}
-                  icon={<UserPlus size={16} color="#FFFFFF" />}
-                  style={{ flex: 1, marginRight: 8 }}
-                />
-              )}
+          {/* Other Profile Actions (Friendship for Students, Academic Notice for Staff) */}
+          {!isOwnProfile && (
+            canFriendship ? (
+              <View style={styles.otherActionsRow}>
+                {friendshipStatus === 'none' && (
+                  <Button
+                    title="Tambah Teman"
+                    size="sm"
+                    onPress={() => targetUserId && friendRequestMutation.mutate(targetUserId)}
+                    loading={friendRequestMutation.isPending}
+                    icon={<UserPlus size={16} color="#FFFFFF" />}
+                    style={{ flex: 1, marginRight: 8 }}
+                  />
+                )}
 
-              {friendshipStatus === 'pending_sent' && (
-                <Button
-                  title="Batalkan Permintaan"
-                  variant="outline"
-                  size="sm"
-                  onPress={() => friendshipId && cancelOrRemoveFriendMutation.mutate(friendshipId)}
-                  loading={cancelOrRemoveFriendMutation.isPending}
-                  style={{ flex: 1, marginRight: 8 }}
-                />
-              )}
+                {friendshipStatus === 'pending_sent' && (
+                  <Button
+                    title="Batalkan Permintaan"
+                    variant="outline"
+                    size="sm"
+                    onPress={() => friendshipId && cancelOrRemoveFriendMutation.mutate(friendshipId)}
+                    loading={cancelOrRemoveFriendMutation.isPending}
+                    style={{ flex: 1, marginRight: 8 }}
+                  />
+                )}
 
-              {friendshipStatus === 'pending_received' && (
-                <Button
-                  title="Terima Pertemanan"
-                  size="sm"
-                  onPress={() => friendshipId && acceptFriendMutation.mutate(friendshipId)}
-                  loading={acceptFriendMutation.isPending}
-                  icon={<UserCheck size={16} color="#FFFFFF" />}
-                  style={{ flex: 1, marginRight: 8 }}
-                />
-              )}
+                {friendshipStatus === 'pending_received' && (
+                  <Button
+                    title="Terima Pertemanan"
+                    size="sm"
+                    onPress={() => friendshipId && acceptFriendMutation.mutate(friendshipId)}
+                    loading={acceptFriendMutation.isPending}
+                    icon={<UserCheck size={16} color="#FFFFFF" />}
+                    style={{ flex: 1, marginRight: 8 }}
+                  />
+                )}
 
-              {friendshipStatus === 'friends' && (
-                <Button
-                  title="Hapus Teman"
-                  variant="outline"
-                  size="sm"
-                  onPress={() => friendshipId && cancelOrRemoveFriendMutation.mutate(friendshipId)}
-                  loading={cancelOrRemoveFriendMutation.isPending}
-                  style={{ flex: 1, marginRight: 8 }}
-                />
-              )}
+                {friendshipStatus === 'friends' && (
+                  <Button
+                    title="Hapus Teman"
+                    variant="outline"
+                    size="sm"
+                    onPress={() => friendshipId && cancelOrRemoveFriendMutation.mutate(friendshipId)}
+                    loading={cancelOrRemoveFriendMutation.isPending}
+                    style={{ flex: 1, marginRight: 8 }}
+                  />
+                )}
 
-              {/* Block Button (US-14) */}
-              <TouchableOpacity
-                onPress={handleBlockConfirmation}
-                style={styles.blockBtn}
-                activeOpacity={0.7}
-              >
-                <ShieldAlert size={16} color={colors.danger} />
-              </TouchableOpacity>
-            </View>
+                {/* Block Button (US-14) */}
+                <TouchableOpacity
+                  onPress={handleBlockConfirmation}
+                  style={styles.blockBtn}
+                  activeOpacity={0.7}
+                >
+                  <ShieldAlert size={16} color={colors.danger} />
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <View style={styles.roleNoticeBanner}>
+                {isStaffViewer && isTargetStudent ? (
+                  <View style={styles.roleNoticeContent}>
+                    <GraduationCap size={16} color={colors.primary} />
+                    <Text style={styles.roleNoticeText}>
+                      Mahasiswa Bimbingan {userObj?.jurusan ? `• ${userObj?.jurusan}` : ''}
+                    </Text>
+                  </View>
+                ) : isCurrentStudent && !isTargetStudent ? (
+                  <View style={styles.roleNoticeContent}>
+                    <ShieldCheck size={16} color={colors.matchEmeraldText} />
+                    <Text style={[styles.roleNoticeText, { color: colors.matchEmeraldText }]}>
+                      {userObj?.role === 'admin' ? 'Administrator Universitas' : `Kaprodi • ${userObj?.jurusan || 'Program Studi'}`}
+                    </Text>
+                  </View>
+                ) : (
+                  <View style={styles.roleNoticeContent}>
+                    <ShieldCheck size={16} color={colors.onSurfaceVariant} />
+                    <Text style={styles.roleNoticeText}>
+                      {userObj?.role === 'admin' ? 'Administrator' : `Koordinator Prodi • ${userObj?.jurusan || ''}`}
+                    </Text>
+                  </View>
+                )}
+              </View>
+            )
           )}
         </View>
 
@@ -662,6 +694,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     marginTop: 6,
+  },
+  roleNoticeBanner: {
+    marginTop: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    backgroundColor: colors.surfaceContainer,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: colors.borderSubtle,
+    width: '100%',
+  },
+  roleNoticeContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    justifyContent: 'center',
+  },
+  roleNoticeText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: colors.primary,
   },
   blockBtn: {
     backgroundColor: colors.dangerBg,

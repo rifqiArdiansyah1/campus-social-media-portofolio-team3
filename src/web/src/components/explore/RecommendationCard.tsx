@@ -14,6 +14,7 @@ import {
   Check,
 } from "lucide-react";
 import { RecommendationItem, submitRecommendationFeedback } from "@/services/recommendationService";
+import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/context/ToastContext";
 import { apiClient } from "@/lib/api";
 
@@ -28,7 +29,9 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({
   isFallback = false,
   onCollaborationInvite,
 }) => {
+  const { user } = useAuth();
   const toast = useToast();
+  const isStudent = user?.role === "mahasiswa";
   const [feedbackSent, setFeedbackSent] = useState<"relevan" | "tidak_relevan" | null>(null);
   const [isSendingFeedback, setIsSendingFeedback] = useState(false);
   const [friendRequested, setFriendRequested] = useState(false);
@@ -182,42 +185,54 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({
       {/* Action CTA Group (Stitch Screen 4) */}
       <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-2 flex-wrap">
         <div className="flex items-center gap-2">
-          {/* Ajak Kolaborasi Button */}
-          <button
-            type="button"
-            onClick={() => onCollaborationInvite?.(item)}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold text-xs transition shadow-xs active:scale-95"
-          >
-            <MessageSquare className="w-3.5 h-3.5" />
-            <span>Ajak Kolaborasi</span>
-          </button>
+          {isStudent ? (
+            <>
+              {/* Ajak Kolaborasi Button */}
+              <button
+                type="button"
+                onClick={() => onCollaborationInvite?.(item)}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold text-xs transition shadow-xs active:scale-95"
+              >
+                <MessageSquare className="w-3.5 h-3.5" />
+                <span>Ajak Kolaborasi</span>
+              </button>
 
-          {/* Tambah Teman Button */}
-          {friendRequested ? (
-            <span className="inline-flex items-center gap-1 px-3 py-2 rounded-xl bg-slate-100 text-slate-600 text-xs font-medium border border-slate-200">
-              <Check className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Terkirim</span>
-            </span>
+              {/* Tambah Teman Button */}
+              {friendRequested ? (
+                <span className="inline-flex items-center gap-1 px-3 py-2 rounded-xl bg-slate-100 text-slate-600 text-xs font-medium border border-slate-200">
+                  <Check className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>Terkirim</span>
+                </span>
+              ) : (
+                <button
+                  type="button"
+                  disabled={isRequestingFriend}
+                  onClick={handleSendFriendRequest}
+                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition active:scale-95 disabled:opacity-50"
+                >
+                  <UserPlus className="w-3.5 h-3.5 text-slate-600" />
+                  <span>Tambah Teman</span>
+                </button>
+              )}
+
+              {/* Lihat Profil Icon Button */}
+              <Link
+                href={`/profile/${item.user_id}`}
+                className="p-2 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition"
+                title="Lihat Profil Lengkap"
+              >
+                <ExternalLink className="w-4 h-4" />
+              </Link>
+            </>
           ) : (
-            <button
-              type="button"
-              disabled={isRequestingFriend}
-              onClick={handleSendFriendRequest}
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition active:scale-95 disabled:opacity-50"
+            <Link
+              href={`/profile/${item.user_id}`}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold text-xs transition shadow-xs"
             >
-              <UserPlus className="w-3.5 h-3.5 text-slate-600" />
-              <span>Tambah Teman</span>
-            </button>
+              <ExternalLink className="w-3.5 h-3.5" />
+              <span>Lihat Profil Mahasiswa</span>
+            </Link>
           )}
-
-          {/* Lihat Profil */}
-          <Link
-            href={`/profile/${item.user_id}`}
-            className="p-2 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition"
-            title="Lihat Profil Lengkap"
-          >
-            <ExternalLink className="w-4 h-4" />
-          </Link>
         </div>
 
         {/* Feedback Button: Kurang Relevan */}

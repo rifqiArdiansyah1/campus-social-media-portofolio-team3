@@ -267,6 +267,7 @@ export function ExploreScreen({ onNavigateToUserProfile }: ExploreScreenProps) {
                         <RecommendationCard
                           key={item.user_id}
                           item={item}
+                          canAddFriend={isStudent}
                           onAddFriend={(targetId) => addFriendMutation.mutate(targetId)}
                           onDismissFeedback={(recId) => feedbackMutation.mutate(recId)}
                           onPressProfile={onNavigateToUserProfile}

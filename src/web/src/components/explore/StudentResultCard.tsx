@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { UserPlus, Check, CheckCircle2, ExternalLink } from "lucide-react";
 import { StudentSearchResult } from "@/services/searchService";
+import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/context/ToastContext";
 import { apiClient } from "@/lib/api";
 
@@ -18,7 +19,9 @@ export const StudentResultCard: React.FC<StudentResultCardProps> = ({
   onCollaborationInvite,
   onSkillClick,
 }) => {
+  const { user } = useAuth();
   const toast = useToast();
+  const isStudent = user?.role === "mahasiswa";
   const [friendStatus, setFriendStatus] = useState<string | null>(student.friendship_status);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -120,25 +123,31 @@ export const StudentResultCard: React.FC<StudentResultCardProps> = ({
           <ExternalLink className="w-3.5 h-3.5" />
         </Link>
 
-        {friendStatus === "diterima" ? (
-          <span className="inline-flex items-center gap-1 text-xs text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200 font-medium">
-            <Check className="w-3.5 h-3.5" />
-            <span>Berteman</span>
-          </span>
-        ) : friendStatus === "menunggu" ? (
-          <span className="inline-flex items-center gap-1 text-xs text-slate-500 bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200 font-medium">
-            <span>Menunggu</span>
-          </span>
+        {isStudent ? (
+          friendStatus === "diterima" ? (
+            <span className="inline-flex items-center gap-1 text-xs text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200 font-medium">
+              <Check className="w-3.5 h-3.5" />
+              <span>Berteman</span>
+            </span>
+          ) : friendStatus === "menunggu" ? (
+            <span className="inline-flex items-center gap-1 text-xs text-slate-500 bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200 font-medium">
+              <span>Menunggu</span>
+            </span>
+          ) : (
+            <button
+              type="button"
+              disabled={isSubmitting}
+              onClick={handleSendFriendRequest}
+              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-primary hover:text-white text-slate-700 text-xs font-semibold transition active:scale-95 disabled:opacity-50"
+            >
+              <UserPlus className="w-3.5 h-3.5" />
+              <span>Tambah Teman</span>
+            </button>
+          )
         ) : (
-          <button
-            type="button"
-            disabled={isSubmitting}
-            onClick={handleSendFriendRequest}
-            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-primary hover:text-white text-slate-700 text-xs font-semibold transition active:scale-95 disabled:opacity-50"
-          >
-            <UserPlus className="w-3.5 h-3.5" />
-            <span>Tambah Teman</span>
-          </button>
+          <span className="inline-flex items-center gap-1 text-xs text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-200 font-medium">
+            <span>Mahasiswa</span>
+          </span>
         )}
       </div>
     </article>

@@ -12,6 +12,7 @@ export interface RecommendationCardProps {
   onDismissFeedback?: (recId: number) => void;
   onPressProfile?: (userId: number) => void;
   isAddingFriend?: boolean;
+  canAddFriend?: boolean;
 }
 
 export function RecommendationCard({
@@ -20,6 +21,7 @@ export function RecommendationCard({
   onDismissFeedback,
   onPressProfile,
   isAddingFriend = false,
+  canAddFriend = true,
 }: RecommendationCardProps) {
   const userIdNum = parseInt(item.user_id, 10);
   const name = item.name || 'Mahasiswa Kampus';
@@ -69,14 +71,24 @@ export function RecommendationCard({
 
       {/* Actions */}
       <View style={styles.actions}>
-        <Button
-          title="Tambah Teman"
-          size="sm"
-          onPress={() => !isNaN(userIdNum) && onAddFriend(userIdNum)}
-          loading={isAddingFriend}
-          icon={<UserPlus size={14} color="#FFFFFF" />}
-          style={styles.addBtn}
-        />
+        {canAddFriend ? (
+          <Button
+            title="Tambah Teman"
+            size="sm"
+            onPress={() => !isNaN(userIdNum) && onAddFriend(userIdNum)}
+            loading={isAddingFriend}
+            icon={<UserPlus size={14} color="#FFFFFF" />}
+            style={styles.addBtn}
+          />
+        ) : (
+          <Button
+            title="Lihat Profil"
+            variant="outline"
+            size="sm"
+            onPress={() => !isNaN(userIdNum) && onPressProfile?.(userIdNum)}
+            style={styles.addBtn}
+          />
+        )}
         {Boolean(item.rec_id && onDismissFeedback) && (
           <TouchableOpacity
             activeOpacity={0.7}
