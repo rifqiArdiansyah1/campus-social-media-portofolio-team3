@@ -173,6 +173,27 @@ class PortfolioItem(Base):
     user = relationship("User", foreign_keys=[user_id], back_populates="portfolio_items")
     verifier = relationship("User", foreign_keys=[diverifikasi_oleh])
     skills = relationship("PortfolioSkill", back_populates="portfolio", cascade="all, delete-orphan")
+    review_logs = relationship("PortfolioReviewLog", back_populates="portfolio", cascade="all, delete-orphan", order_by="desc(PortfolioReviewLog.created_at)")
+
+
+class PortfolioReviewLog(Base):
+    __tablename__ = "portfolio_review_logs"
+
+    log_id = Column(BigInteger, Identity(always=True), primary_key=True)
+    portfolio_id = Column(BigInteger, ForeignKey("portfolio_items.portfolio_id", ondelete="CASCADE"), nullable=False)
+    reviewer_id = Column(BigInteger, ForeignKey("users.user_id", ondelete="RESTRICT"), nullable=False)
+    status_sebelumnya = Column(String(25), nullable=False)
+    status_baru = Column(String(25), nullable=False)
+    catatan_verifikasi = Column(Text, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow, server_default=text("CURRENT_TIMESTAMP"), nullable=False)
+
+    __table_args__ = (
+        Index("idx_portfolio_review_logs_item", "portfolio_id", "created_at"),
+        Index("idx_portfolio_review_logs_reviewer", "reviewer_id", "created_at"),
+    )
+
+    portfolio = relationship("PortfolioItem", back_populates="review_logs")
+    reviewer = relationship("User", foreign_keys=[reviewer_id])
 
 
 class PortfolioSkill(Base):

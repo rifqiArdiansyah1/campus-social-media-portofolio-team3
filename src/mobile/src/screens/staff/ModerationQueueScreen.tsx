@@ -175,6 +175,17 @@ export function ModerationQueueScreen({ onBack }: ModerationQueueScreenProps) {
       <Text style={styles.reportReason}>Alasan: {item.alasan}</Text>
       <Text style={styles.reportPostSnippet}>Post ID: #{item.post_id}</Text>
 
+      {Boolean(item.post) && (
+        <View style={styles.postPreviewBox}>
+          <Text style={styles.postAuthorText}>
+            Penulis: {item.post?.author?.nama} ({item.post?.author?.jurusan || 'Prodi'})
+          </Text>
+          <Text style={styles.postBodyText} numberOfLines={3}>
+            {item.post?.isi}
+          </Text>
+        </View>
+      )}
+
       <View style={styles.actionButtonsRow}>
         <Button
           title="Takedown Post"
@@ -491,6 +502,25 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: colors.onSurfaceVariant,
     marginBottom: 12,
+  },
+  postPreviewBox: {
+    backgroundColor: '#F8FAFC',
+    borderRadius: 8,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    marginBottom: 12,
+  },
+  postAuthorText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: colors.onSurface,
+    marginBottom: 4,
+  },
+  postBodyText: {
+    fontSize: 12,
+    color: colors.onSurfaceVariant,
+    lineHeight: 18,
   },
   timeText: {
     fontSize: 11,

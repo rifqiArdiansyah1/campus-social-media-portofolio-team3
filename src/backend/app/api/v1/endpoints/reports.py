@@ -6,6 +6,7 @@ from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session, joinedload
 
+from app.core.config import settings
 from app.core.database import get_db
 from app.core.exceptions import (
     ConflictError,
@@ -16,11 +17,45 @@ from app.core.exceptions import (
 )
 from app.core.security import apply_moderation_scope, can_moderate, get_current_user, require_roles
 from app.models.entities import Post, Report, User
-from app.schemas.report import ReportActionRequest, ReportCreate, ReportResponse
+from app.schemas.report import (
+    ReportActionRequest,
+    ReportCreate,
+    ReportedPostAuthor,
+    ReportedPostBrief,
+    ReportResponse,
+)
 from app.services.notification import create_notification
+from app.services.storage import storage_service
 from app.services.visibility import is_target_blocking_viewer, is_viewer_blocking_target
 
 router = APIRouter()
+
+
+def format_reported_post_brief(post: Optional[Post]) -> Optional[ReportedPostBrief]:
+    if not post:
+        return None
+    post_author = None
+    if post.user:
+        post_author = ReportedPostAuthor(
+            user_id=post.user.user_id,
+            nama=post.user.nama,
+            nim=post.user.nim,
+            jurusan=post.user.jurusan,
+            role=post.user.role,
+        )
+    gambar_url = post.gambar_url
+    if gambar_url and not (gambar_url.startswith("http://") or gambar_url.startswith("https://")):
+        gambar_url = storage_service.get_public_url(settings.POST_IMAGES_BUCKET, gambar_url)
+
+    return ReportedPostBrief(
+        post_id=post.post_id,
+        isi=post.isi,
+        gambar_url=gambar_url,
+        tipe=post.tipe,
+        status=post.status,
+        created_at=post.created_at,
+        author=post_author,
+    )
 
 
 @router.post(
@@ -131,6 +166,7 @@ def create_report(
         catatan_tinjauan=new_report.catatan_tinjauan,
         created_at=new_report.created_at,
         resolved_at=new_report.resolved_at,
+        post=format_reported_post_brief(post),
     )
 
 
@@ -142,6 +178,9 @@ def create_report(
 def get_reports(
     status_filter: Optional[Literal["baru", "diproses", "selesai", "diabaikan"]] = Query(
         None, alias="status", description="Filter berdasarkan status laporan"
+    ),
+    kategori_filter: Optional[str] = Query(
+        None, alias="kategori", description="Filter berdasarkan kategori pelanggaran"
     ),
     limit: int = Query(20, ge=1, le=50, description="Jumlah data per halaman (maksimal 50)"),
     offset: int = Query(0, ge=0, description="Offset pagination"),
@@ -163,6 +202,9 @@ def get_reports(
 
     if status_filter:
         query = query.filter(Report.status == status_filter)
+
+    if kategori_filter:
+        query = query.filter(Report.kategori_laporan == kategori_filter)
 
     reports = (
         query.order_by(Report.created_at.desc())
@@ -190,6 +232,7 @@ def get_reports(
                 catatan_tinjauan=r.catatan_tinjauan,
                 created_at=r.created_at,
                 resolved_at=r.resolved_at,
+                post=format_reported_post_brief(r.post),
             )
         )
 
@@ -290,4 +333,5 @@ def update_report_action(
         catatan_tinjauan=report.catatan_tinjauan,
         created_at=report.created_at,
         resolved_at=report.resolved_at,
+        post=format_reported_post_brief(report.post),
     )

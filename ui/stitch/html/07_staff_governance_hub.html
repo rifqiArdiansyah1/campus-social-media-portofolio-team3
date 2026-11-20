@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "outline": "#777586",
+          "inverse-surface": "#283044",
+          "border-subtle": "#E2E8F0",
+          "on-primary-container": "#c1beff",
+          "primary-fixed": "#e3dfff",
+          "match-emerald": "#10B981",
+          "secondary-fixed": "#89f5e7",
+          "surface-container-highest": "#dae2fd",
+          "secondary": "#006a61",
+          "on-secondary-fixed": "#00201d",
+          "surface-container-low": "#f2f3ff",
+          "on-background": "#131b2e",
+          "error": "#ba1a1a",
+          "inverse-primary": "#c3c0ff",
+          "on-error-container": "#93000a",
+          "tertiary": "#553300",
+          "surface-tint": "#5148d7",
+          "error-container": "#ffdad6",
+          "surface-container-high": "#e2e7ff",
+          "surface-dim": "#d2d9f4",
+          "tertiary-fixed": "#ffddb8",
+          "on-tertiary-fixed-variant": "#653e00",
+          "surface-canvas": "#F8FAFC",
+          "tertiary-container": "#744800",
+          "surface-container": "#eaedff",
+          "surface-container-lowest": "#ffffff",
+          "primary-container": "#4338ca",
+          "primary-fixed-dim": "#c3c0ff",
+          "secondary-fixed-dim": "#6bd8cb",
+          "on-secondary-container": "#006f66",
+          "primary": "#2a14b4",
+          "inverse-on-surface": "#eef0ff",
+          "surface-card": "#FFFFFF",
+          "on-secondary": "#ffffff",
+          "background": "#faf8ff",
+          "surface-variant": "#dae2fd",
+          "on-tertiary-container": "#ffb759",
+          "tertiary-fixed-dim": "#ffb95f",
+          "surface-bright": "#faf8ff",
+          "recruiting-coral": "#F43F5E",
+          "secondary-container": "#86f2e4",
+          "on-secondary-fixed-variant": "#005049",
+          "on-primary-fixed-variant": "#372abf",
+          "on-error": "#ffffff",
+          "on-surface-variant": "#464554",
+          "on-tertiary": "#ffffff",
+          "on-tertiary-fixed": "#2a1700",
+          "on-primary-fixed": "#100069",
+          "outline-variant": "#c7c4d7",
+          "on-primary": "#ffffff",
+          "surface": "#faf8ff",
+          "on-surface": "#131b2e"
+        },
+        "borderRadius": {
+          "DEFAULT": "0.25rem",
+          "lg": "0.5rem",
+          "xl": "0.75rem",
+          "full": "9999px"
+        },
+        "spacing": {
+          "space-lg": "1.5rem",
+          "space-xs": "0.25rem",
+          "space-md": "1rem",
+          "space-xl": "2rem",
+          "margin": "1.5rem",
+          "gutter": "1rem",
+          "space-sm": "0.5rem",
+          "margin-mobile": "1rem",
+          "gutter-mobile": "0.75rem"
+        },
+        "fontFamily": {
+          "display": [
+            "Plus Jakarta Sans"
+          ],
+          "label-md": [
+            "Inter"
+          ],
+          "label-sm": [
+            "Inter"
+          ],
+          "headline-sm": [
+            "Plus Jakarta Sans"
+          ],
+          "body-lg": [
+            "Plus Jakarta Sans"
+          ],
+          "label-lg": [
+            "Inter"
+          ],
+          "headline-md": [
+            "Plus Jakarta Sans"
+          ],
+          "body-md": [
+            "Plus Jakarta Sans"
+          ],
+          "code": [
+            "Inter"
+          ],
+          "headline-lg-mobile": [
+            "Plus Jakarta Sans"
+          ],
+          "body-sm": [
+            "Plus Jakarta Sans"
+          ],
+          "headline-lg": [
+            "Plus Jakarta Sans"
+          ]
+        },
+        "fontSize": {
+          "display": [
+            "36px",
+            {
+              "lineHeight": "44px",
+              "letterSpacing": "-0.02em",
+              "fontWeight": "800"
+            }
+          ],
+          "label-md": [
+            "12px",
+            {
+              "lineHeight": "16px",
+              "letterSpacing": "0.02em",
+              "fontWeight": "500"
+            }
+          ],
+          "label-sm": [
+            "10px",
+            {
+              "lineHeight": "14px",
+              "letterSpacing": "0.04em",
+              "fontWeight": "600"
+            }
+          ],
+          "headline-sm": [
+            "18px",
+            {
+              "lineHeight": "24px",
+              "fontWeight": "600"
+            }
+          ],
+          "body-lg": [
+            "16px",
+            {
+              "lineHeight": "24px",
+              "fontWeight": "400"
+            }
+          ],
+          "label-lg": [
+            "14px",
+            {
+              "lineHeight": "20px",
+              "letterSpacing": "0.01em",
+              "fontWeight": "600"
+            }
+          ],
+          "headline-md": [
+            "20px",
+            {
+              "lineHeight": "28px",
+              "letterSpacing": "-0.01em",
+              "fontWeight": "600"
+            }
+          ],
+          "body-md": [
+            "14px",
+            {
+              "lineHeight": "20px",
+              "fontWeight": "400"
+            }
+          ],
+          "code": [
+            "12px",
+            {
+              "lineHeight": "16px",
+              "fontWeight": "500"
+            }
+          ],
+          "headline-lg-mobile": [
+            "24px",
+            {
+              "lineHeight": "32px",
+              "letterSpacing": "-0.01em",
+              "fontWeight": "700"
+            }
+          ],
+          "body-sm": [
+            "12px",
+            {
+              "lineHeight": "16px",
+              "fontWeight": "400"
+            }
+          ],
+          "headline-lg": [
+            "28px",
+            {
+              "lineHeight": "36px",
+              "letterSpacing": "-0.015em",
+              "fontWeight": "700"
+            }
+          ]
+        }
+      }
+    }
+  }</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-72 bg-surface-container-low z-50 flex flex-col justify-between py-space-md shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex flex-col gap-space-md"><div class="px-space-md flex items-center gap-space-sm"><div class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-on-primary shadow-sm"><span class="material-symbols-outlined text-[20px]">account_balance</span></div><div class="flex flex-col"><div class="flex items-center gap-1"><span class="font-headline-sm text-headline-sm text-primary">CampusFolio</span><span class="px-1.5 py-0.5 rounded-full bg-secondary-container text-on-secondary-fixed text-[10px] font-label-sm font-semibold tracking-wide">STAFF</span></div><span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Governance Portal</span></div></div><div class="px-space-md"><div class="p-space-sm rounded-xl bg-surface-container flex items-center justify-between"><div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-match-emerald ring-2 ring-surface-container-lowest"></span><span class="font-label-sm text-label-sm text-on-surface font-semibold">Academic Authority Active</span></div><span class="material-symbols-outlined text-[16px] text-on-surface-variant">verified_user</span></div></div><nav class="flex flex-col gap-1 px-space-sm" data-active-classes="bg-primary-container text-on-primary font-semibold shadow-sm"><a aria-current="page" class="flex items-center gap-space-sm px-space-md py-space-sm rounded-xl transition-all bg-primary-container text-on-primary font-semibold shadow-sm" data-path="case-adjudication-queue" href="#"><span class="material-symbols-outlined text-[20px]">gavel</span><span class="font-label-lg text-label-lg">Case Queue</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="student-credentials-audit" href="#"><span class="material-symbols-outlined text-[20px]">badge</span><span class="font-label-lg text-label-lg">Student Registry</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="project-compliance-center" href="#"><span class="material-symbols-outlined text-[20px]">policy</span><span class="font-label-lg text-label-lg">Project Compliance</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="departmental-analytics" href="#"><span class="material-symbols-outlined text-[20px]">monitoring</span><span class="font-label-lg text-label-lg">Analytics &amp; Audits</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="staff-governance-settings" href="#"><span class="material-symbols-outlined text-[20px]">tune</span><span class="font-label-lg text-label-lg">Council Settings</span></a></nav></div><div class="px-space-md flex flex-col gap-space-sm"><div class="p-space-sm rounded-xl bg-surface-container flex items-center justify-between"><div class="flex flex-col"><span class="font-label-sm text-label-sm text-on-surface-variant">Academic Cycle</span><span class="font-label-md text-label-md text-on-surface font-semibold">AY 2024/2025 - Term 2</span></div><span class="material-symbols-outlined text-secondary text-[20px]">school</span></div><div class="flex items-center justify-between pt-space-xs text-on-surface-variant"><span class="font-label-sm text-label-sm">v3.8 Staff Governance</span><a class="font-label-sm text-label-sm hover:text-primary transition-colors" data-path="system-audit-log" href="#">Audit Log</a></div></div></aside><div class="pl-72"><header class="fixed top-0 left-72 right-0 h-16 bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-space-lg"><div class="flex items-center gap-space-md flex-1 max-w-2xl"><div class="relative w-full max-w-md"><span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span><input class="w-full h-10 pl-10 pr-space-md bg-surface-container-low rounded-xl font-label-md text-label-md text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary focus:bg-surface-card transition-all" placeholder="Search NIM, student name, or case token (#C-892)..." type="text"/></div><div class="flex items-center gap-space-xs px-2.5 py-1 rounded-full bg-secondary-container/40 text-on-secondary-fixed"><span class="material-symbols-outlined text-match-emerald text-[16px]">verified</span><span class="font-label-sm text-label-sm font-semibold">Faculty Senate Verified</span></div></div><div class="flex items-center gap-space-md"><div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-container text-on-surface"><span class="w-2 h-2 rounded-full bg-match-emerald animate-pulse"></span><span class="font-label-sm text-label-sm font-medium">Council: Active Duty</span><span class="material-symbols-outlined text-[16px] text-on-surface-variant">expand_more</span></div><div class="h-6 w-px bg-border-subtle"></div><button class="relative p-2 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-recruiting-coral ring-2 ring-surface"></span></button><button class="p-2 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors"><span class="material-symbols-outlined text-[20px]">help_outline</span></button><div class="flex items-center gap-space-sm pl-2"><div class="flex flex-col text-right"><span class="font-label-md text-label-md font-semibold text-on-surface">Dr. Eleanor Vance</span><span class="font-label-sm text-label-sm text-on-surface-variant">Head Academic Arbiter</span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-16 bg-surface"><div class="flex flex-col w-full">
+<!-- Staff Governance Dashboard Wrapper -->
+<div class="p-space-lg max-w-7xl mx-auto w-full flex flex-col gap-space-lg">
+<!-- Top Breadcrumb & Status Ribbon -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-sm bg-surface-container-lowest p-space-md rounded-xl shadow-sm">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-8 h-8 rounded-lg bg-primary-container/10 flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-[18px]">balance</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-label-md text-label-md text-on-surface-variant font-medium">Panel Senat Akademik</span>
+<span class="text-outline-variant font-body-sm">/</span>
+<span class="font-label-lg text-label-lg text-on-surface font-semibold truncate">Moderasi &amp; Verifikasi Rekognisi SKPI</span>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-fixed font-label-sm text-label-sm font-semibold tracking-wide">
+          SIDANG LIVE
+        </span>
+</div>
+<!-- Quick Controls: Program Study Filter & Period -->
+<div class="flex items-center flex-wrap gap-space-sm">
+<div class="flex items-center gap-1.5 bg-surface-container px-3 py-1.5 rounded-lg text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">account_tree</span>
+<select class="bg-transparent font-label-md text-label-md text-on-surface focus:outline-none cursor-pointer" id="facultyFilter">
+<option value="all">Semua Fakultas &amp; Prodi</option>
+<option selected="" value="cs">Fakultas Ilmu Komputer</option>
+<option value="ee">Teknik Elektro</option>
+<option value="me">Teknik Mesin</option>
+</select>
+</div>
+<div class="flex items-center gap-1.5 bg-surface-container px-3 py-1.5 rounded-lg text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">calendar_today</span>
+<span class="font-label-md text-label-md font-medium">7 Hari Terakhir</span>
+</div>
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md transition-all active:scale-95" onclick="refreshQueue()">
+<span class="material-symbols-outlined text-[16px] text-primary" id="refreshIcon">sync</span>
+<span>Refresh Antrean</span>
+</button>
+</div>
+</div>
+<!-- 1. Top Interactive Metric Cards Header -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md">
+<!-- Metric Card 1: AI Triage -->
+<div class="group cursor-pointer p-space-md bg-surface-container-lowest rounded-xl shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5 relative overflow-hidden" id="metric-ai" onclick="switchMainTab('tab-ai-triage')">
+<div class="flex items-start justify-between">
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">Triage Otomasi AI</span>
+<span class="px-2 py-0.5 rounded-full bg-recruiting-coral/10 text-recruiting-coral font-label-sm text-label-sm font-semibold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-recruiting-coral animate-ping"></span>
+                Urgent High
+              </span>
+</div>
+<div class="flex items-baseline gap-2 mt-2">
+<span class="font-display text-display text-on-surface font-extrabold">14</span>
+<span class="font-label-md text-label-md text-on-surface-variant font-medium">Kasus Aktif</span>
+</div>
+<div class="flex items-center gap-1.5 mt-2">
+<span class="px-1.5 py-0.5 rounded bg-primary-fixed text-on-primary-fixed-variant font-code text-code font-bold">+3 Kasus Baru</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">20 mnt lalu</span>
+</div>
+</div>
+<div class="w-11 h-11 rounded-xl bg-primary-container/10 flex items-center justify-center text-primary-container group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[24px]">smart_toy</span>
+</div>
+</div>
+<!-- Sparkline Decor -->
+<div class="mt-4 pt-3 flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Deteksi Keaslian AI v4.2</span>
+<span class="font-label-sm text-label-sm font-semibold text-match-emerald flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[14px]">trending_up</span> 99.2% akurat
+          </span>
+</div>
+</div>
+<!-- Metric Card 2: Laporan Sivitas -->
+<div class="group cursor-pointer p-space-md bg-surface-container-lowest rounded-xl shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5 relative overflow-hidden" id="metric-reports" onclick="switchMainTab('tab-reports')">
+<div class="flex items-start justify-between">
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">Laporan Sivitas</span>
+<span class="px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed-variant font-label-sm text-label-sm font-semibold">
+                2 Review Segera
+              </span>
+</div>
+<div class="flex items-baseline gap-2 mt-2">
+<span class="font-display text-display text-on-surface font-extrabold">8</span>
+<span class="font-label-md text-label-md text-on-surface-variant font-medium">Laporan Masuk</span>
+</div>
+<div class="flex items-center gap-1.5 mt-2">
+<span class="px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm font-semibold">3 Flag Plagiarisme</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">5 Klaim Fiktif</span>
+</div>
+</div>
+<div class="w-11 h-11 rounded-xl bg-recruiting-coral/10 flex items-center justify-center text-recruiting-coral group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[24px]">flag</span>
+</div>
+</div>
+<div class="mt-4 pt-3 flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Status Komite Etik</span>
+<span class="font-label-sm text-label-sm font-semibold text-recruiting-coral flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[14px]">schedule</span> 1 Kasus &gt; 48 jam
+          </span>
+</div>
+</div>
+<!-- Metric Card 3: Verifikasi SKPI Staf (Default Highlighted) -->
+<div class="group cursor-pointer p-space-md bg-surface-container-lowest rounded-xl shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5 relative overflow-hidden ring-2 ring-primary-container" id="metric-skpi" onclick="switchMainTab('tab-skpi-verification')">
+<div class="flex items-start justify-between">
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-primary font-bold">Verifikasi SKPI Staf</span>
+<span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-fixed font-label-sm text-label-sm font-semibold">
+                Prioritas Sidang
+              </span>
+</div>
+<div class="flex items-baseline gap-2 mt-2">
+<span class="font-display text-display text-primary-container font-extrabold">23</span>
+<span class="font-label-md text-label-md text-on-surface-variant font-medium">Berkas Pending</span>
+</div>
+<div class="flex items-center gap-1.5 mt-2">
+<span class="px-1.5 py-0.5 rounded bg-match-emerald/10 text-match-emerald font-code text-code font-bold">5 Lomba Nasional</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">12 Capstone HKI</span>
+</div>
+</div>
+<div class="w-11 h-11 rounded-xl bg-primary-container text-on-primary flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[24px]">school</span>
+</div>
+</div>
+<div class="mt-4 pt-3 flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Batas Akhir Validasi</span>
+<span class="font-label-sm text-label-sm font-semibold text-primary flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[14px]">event_available</span> 30 Okt 2026 (Yudisium)
+          </span>
+</div>
+</div>
+</div>
+<!-- 2. Interactive Navigation Tabs Header -->
+<div class="flex items-center justify-between bg-surface-container-lowest p-2 rounded-xl shadow-sm overflow-x-auto">
+<div class="flex items-center gap-2 min-w-max">
+<button class="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-primary-container text-on-primary font-label-lg text-label-lg font-semibold shadow-sm transition-all" id="nav-btn-tab-skpi-verification" onclick="switchMainTab('tab-skpi-verification')">
+<span class="material-symbols-outlined text-[20px]">verified</span>
+<span>Verifikasi SKPI Staf (23)</span>
+</button>
+<button class="flex items-center gap-2 px-4 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface font-label-lg text-label-lg font-medium transition-all" id="nav-btn-tab-reports" onclick="switchMainTab('tab-reports')">
+<span class="material-symbols-outlined text-[20px]">report</span>
+<span>Laporan Sivitas</span>
+<span class="px-1.5 py-0.2 rounded-full bg-recruiting-coral text-white font-label-sm text-label-sm font-bold">8</span>
+</button>
+<button class="flex items-center gap-2 px-4 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface font-label-lg text-label-lg font-medium transition-all" id="nav-btn-tab-ai-triage" onclick="switchMainTab('tab-ai-triage')">
+<span class="material-symbols-outlined text-[20px]">auto_awesome</span>
+<span>Antrean AI &amp; Triage</span>
+<span class="px-1.5 py-0.2 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">14</span>
+</button>
+</div>
+<!-- Quick batch status -->
+<div class="hidden lg:flex items-center gap-3 pr-2 text-on-surface-variant">
+<span class="font-label-sm text-label-sm font-medium">Mode Sidang: <strong>Pemberian Poin Langsung</strong></span>
+<div class="w-2 h-2 rounded-full bg-match-emerald"></div>
+</div>
+</div>
+<!-- TAB 1: Antrean AI & Triage (Content Section) -->
+<div class="hidden flex-col gap-space-md" id="tab-ai-triage">
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface font-bold">Heuristik &amp; Rekomendasi Mesin Triage AI</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Sistem otomatis mendeteksi anomali sertifikat, validitas QR code lembaga, serta cross-reference pangkalan data PDDikti.</p>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-3.5 py-2 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md font-semibold transition-all">
+            Eksport Log Audit AI
+          </button>
+<button class="px-3.5 py-2 rounded-lg bg-primary-container text-on-primary font-label-md text-label-md font-semibold shadow-sm transition-all hover:bg-primary">
+            Jalankan Re-Scan Semua
+          </button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-space-md">
+<!-- AI Card 1 -->
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col justify-between">
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded-full bg-match-emerald/10 text-match-emerald font-code text-code font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">verified</span> 98.6% Confidence
+              </span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Kasus #AI-902</span>
+</div>
+<h4 class="font-headline-sm text-headline-sm text-on-surface font-bold mt-2">Sertifikat AWS Certified Cloud Practitioner</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Mahasiswa: <strong>Fikri Pratama (Ilmu Komputer '21)</strong></p>
+<div class="p-2.5 rounded-lg bg-surface-container text-on-surface font-label-sm text-label-sm mt-2 flex flex-col gap-1">
+<span class="text-match-emerald font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px]">check_circle</span> Tanda Tangan Digital Terverifikasi Credly
+              </span>
+<span class="text-on-surface-variant">Saran Tindakan: Otomatis Tambah 30 Poin SKPI.</span>
+</div>
+</div>
+<div class="flex items-center gap-2 mt-4 pt-3">
+<button class="flex-1 py-2 rounded-lg bg-match-emerald text-white font-label-md text-label-md font-semibold hover:opacity-90">Setujui Saran</button>
+<button class="px-3 py-2 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface-variant font-label-md text-label-md font-medium">Buka Berkas</button>
+</div>
+</div>
+<!-- AI Card 2 -->
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col justify-between ring-1 ring-recruiting-coral/40">
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded-full bg-recruiting-coral/10 text-recruiting-coral font-code text-code font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">warning</span> 41.2% Low Confidence
+              </span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Kasus #AI-883</span>
+</div>
+<h4 class="font-headline-sm text-headline-sm text-on-surface font-bold mt-2">Juara 1 Lomba Inovasi Nasional 2026</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Mahasiswa: <strong>Satria Wicaksono (Teknik Mesin '23)</strong></p>
+<div class="p-2.5 rounded-lg bg-error-container/30 text-on-error-container font-label-sm text-label-sm mt-2 flex flex-col gap-1">
+<span class="font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px]">gpp_bad</span> Metadata Font Tidak Sinkron &amp; Cap Ditarik Manual
+              </span>
+<span>Saran: Minta dokumen asli &amp; surat tugas fakultas.</span>
+</div>
+</div>
+<div class="flex items-center gap-2 mt-4 pt-3">
+<button class="flex-1 py-2 rounded-lg bg-recruiting-coral text-white font-label-md text-label-md font-semibold hover:opacity-90">Kirim Peringatan</button>
+<button class="px-3 py-2 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface-variant font-label-md text-label-md font-medium">Audit Detil</button>
+</div>
+</div>
+<!-- AI Card 3 -->
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col justify-between">
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded-full bg-match-emerald/10 text-match-emerald font-code text-code font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">verified</span> 92.4% Confidence
+              </span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Kasus #AI-771</span>
+</div>
+<h4 class="font-headline-sm text-headline-sm text-on-surface font-bold mt-2">Ketua Himpunan Mahasiswa Elektro 2025/2026</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Mahasiswa: <strong>Aulia Rahmani (Teknik Elektro '22)</strong></p>
+<div class="p-2.5 rounded-lg bg-surface-container text-on-surface font-label-sm text-label-sm mt-2 flex flex-col gap-1">
+<span class="text-secondary font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px]">assignment_ind</span> SK Dekan Ditemukan di Arsip Digital UI
+              </span>
+<span class="text-on-surface-variant">Saran: Verifikasi 25 Poin Kepemimpinan.</span>
+</div>
+</div>
+<div class="flex items-center gap-2 mt-4 pt-3">
+<button class="flex-1 py-2 rounded-lg bg-match-emerald text-white font-label-md text-label-md font-semibold hover:opacity-90">Setujui Saran</button>
+<button class="px-3 py-2 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface-variant font-label-md text-label-md font-medium">Buka Berkas</button>
+</div>
+</div>
+</div>
+</div>
+<!-- TAB 2: Laporan Sivitas (Reported Posts Section) -->
+<div class="hidden flex-col gap-space-md" id="tab-reports">
+<!-- Header Info Banner -->
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-space-sm">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface font-bold">Laporan Pelanggaran Integritas Publikasi</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Daftar postingan portfolio mahasiswa yang dilaporkan oleh rekan sejawat atau penguji akademik.</p>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Menampilkan 1 dari 8 Laporan Terbuka</span>
+</div>
+</div>
+<!-- Main Reported Post Card -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg flex flex-col gap-space-md">
+<!-- Author Profile & Report Flags Row -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md pb-space-md">
+<div class="flex items-center gap-space-sm">
+<img class="w-14 h-14 rounded-full object-cover shadow-sm ring-2 ring-primary-fixed" data-alt="Portrait photography of Nadia Eka Pramudita, a young Southeast Asian female computer science student wearing university blazer with smart confident expression, softly illuminated library background in clean modernist university colors." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDHYDBXR11c01cMZTrHp8cB8dH2DexF1KjtlYqJdi5XDPv6UlUGpv7cW42bJ6yDJwlxRuzMm7RdvYK8j5_yZOWHdOME7oNKQW3yZHibxM443JEQub4VAbuGK2uXD0VrtQjV_TJYsoTqJnLkHpC1Wv46-E4V9MKZIDGMzgh0xa_ApRsiXTIZjEOAENGYEa_wU6q0shfCpK6sXZNsjml1BNqJe64hXmIXkR2Di3GjwF7rUh5nyi_ai-4HBBn7JhGxh2kVTIWeOS9xQtne"/>
+<div class="flex flex-col">
+<div class="flex items-center gap-2 flex-wrap">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold">Nadia Eka Pramudita</span>
+<span class="font-code text-code px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-medium">NIM: 2106728910</span>
+<span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-fixed font-label-sm text-label-sm font-semibold">Teknik Informatika '23</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-0.5">Diposting: 24 Okt 2026, 14:15 WIB • Terdaftar pada feed kolaborasi kampus</span>
+</div>
+</div>
+<!-- Reason Badges -->
+<div class="flex items-center gap-2 flex-wrap">
+<span class="px-3 py-1.5 rounded-full bg-recruiting-coral/10 text-recruiting-coral font-label-sm text-label-sm font-bold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">copyright</span>
+              Plagiarisme / Hak Cipta - Prioritas
+            </span>
+<span class="px-3 py-1.5 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm font-medium">
+              Klaim Fiktif
+            </span>
+</div>
+</div>
+<!-- Reporter Context Warning Box -->
+<div class="p-space-md rounded-xl bg-error-container/40 text-on-error-container flex flex-col sm:flex-row items-start sm:items-center gap-space-sm">
+<span class="material-symbols-outlined text-recruiting-coral text-[24px] shrink-0">crisis_alert</span>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-bold text-recruiting-coral">Catatan Bukti Pelapor Sivitas (Anonim Terverifikasi):</span>
+<p class="font-body-md text-body-md text-on-surface mt-0.5">
+              "Pelapor anonim: Ditemukan kemiripan repositori GitHub 94% dengan skripsi angkatan 2022 (Sdr. Haris Pratama, NIM 1806231902 - Smart Hydroponic IoT Hub). Modul controller sensor pH dan diagram sirkuit ESP32 identik tanpa sitasi."
+            </p>
+</div>
+</div>
+<!-- Post Content Preview Container -->
+<div class="p-space-md rounded-xl bg-surface-container-low flex flex-col lg:flex-row gap-space-md">
+<!-- Text Body -->
+<div class="flex-1 flex-col flex justify-between">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-primary font-bold">Kutipan Publikasi Portofolio</span>
+<h4 class="font-headline-sm text-headline-sm text-on-surface font-bold mt-1">EcoTrack IoT: Automated Hydroponic Nutrients Distributor &amp; Telemetry Engine</h4>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2 leading-relaxed">
+                "Bangga mempersembahkan sistem sensor cerdas untuk efisiensi nutrisi hidroponik berbasis LoRaWAN dan dashboard real-time Next.js. Proyek ini saya kembangkan secara mandiri dari perancangan PCB hingga integrasi deep learning MQTT selama 6 bulan terakhir..."
+              </p>
+<div class="flex items-center gap-2 mt-4 flex-wrap">
+<span class="px-2 py-1 rounded bg-surface-card text-on-surface font-code text-code">#IoT</span>
+<span class="px-2 py-1 rounded bg-surface-card text-on-surface font-code text-code">#HardwareEngineering</span>
+<span class="px-2 py-1 rounded bg-surface-card text-on-surface font-code text-code">#SmartAgriculture</span>
+</div>
+</div>
+<!-- Audit Link -->
+<div class="flex items-center gap-2 pt-4 text-primary font-label-md text-label-md font-medium cursor-pointer hover:underline">
+<span class="material-symbols-outlined text-[16px]">open_in_new</span>
+<span>Buka Repositori Git Sivitas Terkait (#GH-EcoHydro-UI)</span>
+</div>
+</div>
+<!-- Project Thumbnail Preview -->
+<div class="w-full lg:w-72 shrink-0 flex flex-col gap-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Lampiran Gambar Proyek</span>
+<div class="relative rounded-xl overflow-hidden shadow-sm aspect-video lg:aspect-auto lg:h-48 group">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="Technical prototype close up of a smart hydroponic IoT sensor rig with green leafy lettuce plants, tubing, microcontrollers, breadboard circuit, and an LCD readout displaying pH 6.4, in a bright university engineering lab setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzKrGWAAlCAQKpT5TV7RKgR7z88TnS402R550Q0p-47p-988-sTKc4kpWhkg_gbWzCBnYlwDrmmUxx5eeLPZTCAEOfVR20jG7S9Bvw7PMUdPJEPf0C4uak2lcgSZAYa_cgzeETalDtckBgSryQTq7heXsC0Nlru4TH7TlS4I-Qd7DCIWxinZ_rOrgNHQpnL1hfAYdn6etMor9_HVIvaf8ArHvd93rH4pEYj6hpT95R9zsEiD-jzijPpIEh-4YBpHGPTXhNHecoKk8g"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex items-end p-2.5">
+<span class="font-label-sm text-label-sm text-white font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">photo_camera</span> Protipe-V1-Lab.jpg
+                </span>
+</div>
+</div>
+</div>
+</div>
+<!-- Moderation Action Buttons -->
+<div class="flex flex-col sm:flex-row items-center justify-between gap-space-sm pt-space-sm">
+<div class="flex items-center gap-2 text-on-surface-variant font-label-md text-label-md">
+<span class="material-symbols-outlined text-[18px]">policy</span>
+<span>Konsekuensi: Takedown akan membekukan badge SKPI terkait sementara waktu.</span>
+</div>
+<div class="flex items-center gap-2 w-full sm:w-auto">
+<button class="px-4 py-2.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md font-medium transition-all active:scale-98" onclick="dismissReportToast()">
+              Abaikan Laporan
+            </button>
+<button class="px-4 py-2.5 rounded-lg bg-primary-fixed text-on-primary-fixed-variant hover:bg-primary-fixed-dim font-label-md text-label-md font-semibold transition-all active:scale-98 flex items-center gap-1.5" onclick="requestClarificationModal()">
+<span class="material-symbols-outlined text-[18px]">forward_to_inbox</span>
+              Minta Klarifikasi Penulis
+            </button>
+<button class="px-4 py-2.5 rounded-lg bg-recruiting-coral text-white font-label-md text-label-md font-semibold shadow-sm hover:opacity-90 transition-all active:scale-98 flex items-center gap-1.5" onclick="takedownPostAction()">
+<span class="material-symbols-outlined text-[18px]">delete_sweep</span>
+              Tinjau &amp; Takedown
+            </button>
+</div>
+</div>
+</div>
+</div>
+<!-- TAB 3: Verifikasi SKPI Staf (Split-screen Review - Main Focus) -->
+<div class="flex flex-col gap-space-md" id="tab-skpi-verification">
+<!-- Sub-Tabs Header -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm pb-1">
+<div class="flex items-center gap-2">
+<button class="px-3.5 py-1.5 rounded-lg bg-primary-container text-on-primary font-label-md text-label-md font-semibold shadow-sm">
+            Antrean Verifikasi (23)
+          </button>
+<button class="px-3.5 py-1.5 rounded-lg bg-surface-container-lowest hover:bg-surface-container text-on-surface-variant font-label-md text-label-md font-medium transition-all">
+            Riwayat Putusan (148)
+          </button>
+<button class="px-3.5 py-1.5 rounded-lg bg-surface-container-lowest hover:bg-surface-container text-on-surface-variant font-label-md text-label-md font-medium transition-all">
+            Draft SK Dekan
+          </button>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant font-label-sm text-label-sm">
+<span>Sortir:</span>
+<span class="font-semibold text-on-surface">Paling Awal Diajukan</span>
+<span class="material-symbols-outlined text-[16px]">unfold_more</span>
+</div>
+</div>
+<!-- Split Layout: 12-Column Desktop Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-md items-start">
+<!-- LEFT PANEL: Student Submission Queue (Col 1-5) -->
+<div class="lg:col-span-5 flex flex-col gap-space-sm">
+<!-- Submission Item 1 (Selected Active) -->
+<div class="cursor-pointer p-space-md rounded-xl bg-surface-container-lowest shadow-sm ring-2 ring-primary-container transition-all flex flex-col gap-2 relative" id="submission-card-1" onclick="selectSubmission(1)">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-center gap-2.5">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="Portrait photography of Rafi Alamsyah, an Indonesian male electrical engineering student with short neat hair wearing modern collegiate lanyard, studio lighting with cool indigo rim lights." src="https://lh3.googleusercontent.com/aida-public/AB6AXuATDo5adr24r8PBLID1r__1G4tUwCZ1GCKufTccjJ2hZ2OXkMwspAYw6Dact93I6bGxwmioTTMI85KA21AFctXp1QopZYiTR0lgykoajrZRjLk-fg2m_b4l_5nSAwtvx6sTCeiI0-_LrEHPHqUjfPohv9558g1AWVIJWXMpUAABLU7ss3LEDycjkN4OgGJumxFo0teOef8Ju-ll3kMZqzArzfSoM5-zbnrO9JdwdCkqr82_9QlxpA36ecSKfx6eksVVz3AWdsVca6yo"/>
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg font-bold text-on-surface">Rafi Alamsyah</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Teknik Elektro '22 • NIM 2206819201</span>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-fixed font-label-sm text-label-sm font-semibold tracking-wide">
+                45 Poin
+              </span>
+</div>
+<div class="flex flex-col mt-1">
+<h4 class="font-label-lg text-label-lg text-primary font-bold line-clamp-1">EcoTrack IoT Smart Energy Monitoring System</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Kategori: Sertifikat Juara 2 Hackathon Mandiri &amp; Capstone IoT</p>
+</div>
+<div class="flex items-center justify-between pt-2 text-on-surface-variant font-label-sm text-label-sm">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">event</span> Diajukan: 24 Okt 2026
+              </span>
+<span class="px-2 py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed-variant font-semibold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> Menunggu Verifikasi Staf
+              </span>
+</div>
+</div>
+<!-- Submission Item 2 -->
+<div class="cursor-pointer p-space-md rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-md transition-all flex flex-col gap-2" id="submission-card-2" onclick="selectSubmission(2)">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-center gap-2.5">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="Portrait photo of Nadia Eka Pramudita, female university scholar wearing clean white shirt, soft ambient library lighting, natural smile." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHGBFTHH0TtuJ5xvbmPK8gX4SqVwVwdAgsIkn6or416Nkn0xizMa0ychxJh_L1r2B2f65rUNCn-e5XBsIs-44S-cPFVsIwTmxz_4FiT_vSEKUC_LV8HaXYQ-LyvVmOqsqGHPNNQenfrQdntmf2iId-TG6rSczT8SnAPTZ4DODoEaKzkRsz94Wzq_aozn0jieShpvmiduP4wcds_lH0XH06BW6cJV6ucui1Wv1claIOQ3GnibkuvVGK6kj_BsGFVj21SKJ_B0e-z6fw"/>
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg font-bold text-on-surface">Nadia Eka Pramudita</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Ilmu Komputer '23 • NIM 2106728910</span>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm font-semibold">
+                35 Poin
+              </span>
+</div>
+<div class="flex flex-col mt-1">
+<h4 class="font-label-lg text-label-lg text-on-surface font-bold line-clamp-1">CampusFolio Mobile UX Research</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Kategori: Publikasi Jurnal SINTA 3 &amp; HKI</p>
+</div>
+<div class="flex items-center justify-between pt-2 text-on-surface-variant font-label-sm text-label-sm">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">event</span> Diajukan: 25 Okt 2026
+              </span>
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-medium">
+                Pemeriksaan Dokumen
+              </span>
+</div>
+</div>
+<!-- Submission Item 3 -->
+<div class="cursor-pointer p-space-md rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-md transition-all flex flex-col gap-2" id="submission-card-3" onclick="selectSubmission(3)">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-center gap-2.5">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="Portrait photograph of Dimas Prasetyo, an engineering male student with safety glasses on head in robotics workshop background, natural collegiate lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDk-5jNFpZNLOerh3YvpkNknn43QaLH9r4RvuHcrn7wEqJxojzgS0I0o44J1Fu1Q6KVz_34Blp-cxdIvFUdDhd8clVOqZrp0AbfgKkEgsZ6yt-vHWDbdt4Mx8wpuS-jf5cdkVjia86_MKkttXT_JFlwhzHFeOb4LDJMy3XAmyWonfTV7QWa_6GOYBY5aVEuDDM5BLzohBXCgegYARTX28Yq4S2iOCMzxAMLWmcDhCnVVWT_mDpv33bLQBIUSsI_J9HP4_EhXuLA6UoL"/>
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg font-bold text-on-surface">Dimas Prasetyo</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Teknik Mesin '21 • NIM 2106654319</span>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm font-semibold">
+                50 Poin
+              </span>
+</div>
+<div class="flex flex-col mt-1">
+<h4 class="font-label-lg text-label-lg text-on-surface font-bold line-clamp-1">Purwarupa Turbin Angin Sumbu Vertikal</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Kategori: Finalis Lomba Gemastik 2026 Divisi Piranti Cerdas</p>
+</div>
+<div class="flex items-center justify-between pt-2 text-on-surface-variant font-label-sm text-label-sm">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">event</span> Diajukan: 23 Okt 2026
+              </span>
+<span class="px-2 py-0.5 rounded bg-match-emerald/10 text-match-emerald font-semibold">
+                Verifikasi Pembimbing Selesai
+              </span>
+</div>
+</div>
+<!-- Bottom Summary Indicator -->
+<div class="p-3 bg-surface-container-low rounded-xl flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm">
+<span>Menampilkan 3 dari 23 antrean aktif</span>
+<a class="text-primary font-semibold hover:underline" href="#">Lihat Semua Antrean →</a>
+</div>
+</div>
+<!-- RIGHT PANEL: In-App Split Document Viewer & Decision Center (Col 6-12) -->
+<div class="lg:col-span-7 flex flex-col gap-space-md">
+<!-- Privacy-Preserving Duplicate Document Check Alert Banner -->
+<div class="p-space-md rounded-xl bg-error-container/30 text-on-error-container flex items-start gap-3 shadow-sm">
+<span class="material-symbols-outlined text-error text-[24px] shrink-0 mt-0.5">warning</span>
+<div class="flex flex-col flex-1">
+<div class="flex items-center justify-between gap-2 flex-wrap">
+<span class="font-label-lg text-label-lg font-bold text-error">Pemeriksaan Orisinalitas: 1 Potensi Duplikasi pada Prodi Sendiri</span>
+<span class="font-code text-code px-2 py-0.5 rounded bg-white text-error font-bold">Skripsi Ref #FT-881</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface mt-1 leading-relaxed">
+                Algoritma deteksi mencatat kemiripan judul dan nomor sertifikat <strong>88.4%</strong> dengan berkas terverifikasi sebelumnya atas nama <em>Arya Wicaksana (Lulus 2025)</em>. Harap konfirmasi pembimbing sebelum menyetujui poin SKPI.
+              </p>
+<div class="flex items-center gap-3 mt-2.5">
+<button class="font-label-sm text-label-sm font-bold text-primary underline hover:opacity-80">
+                  Bandingkan Side-by-Side dengan #FT-881
+                </button>
+<span class="text-outline-variant">•</span>
+<button class="font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface">
+                  Abaikan Kesamaan Judul
+                </button>
+</div>
+</div>
+</div>
+<!-- High-Fidelity Document Certificate Preview Mockup -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden flex flex-col">
+<!-- Viewer Toolbar -->
+<div class="bg-surface-container px-space-md py-2.5 flex items-center justify-between text-on-surface">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[18px]">verified_user</span>
+<span class="font-label-md text-label-md font-semibold truncate max-w-xs md:max-w-md">Dokumen_Sertifikat_RafiAlamsyah_Hackathon2026.pdf</span>
+</div>
+<div class="flex items-center gap-1">
+<button class="p-1 rounded hover:bg-surface-container-high" title="Zoom In"><span class="material-symbols-outlined text-[18px]">zoom_in</span></button>
+<button class="p-1 rounded hover:bg-surface-container-high" title="Zoom Out"><span class="material-symbols-outlined text-[18px]">zoom_out</span></button>
+<button class="p-1 rounded hover:bg-surface-container-high" title="Fullscreen"><span class="material-symbols-outlined text-[18px]">fullscreen</span></button>
+<button class="p-1 rounded hover:bg-surface-container-high" title="Unduh File"><span class="material-symbols-outlined text-[18px]">download</span></button>
+</div>
+</div>
+<!-- Certificate Mock Canvas -->
+<div class="p-space-lg bg-surface-canvas relative flex flex-col items-center justify-center min-h-[380px] overflow-hidden">
+<!-- Watermark Background -->
+<div class="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none select-none">
+<span class="material-symbols-outlined text-[320px]">school</span>
+</div>
+<!-- Formal Certificate Paper Frame -->
+<div class="w-full max-w-xl bg-surface-card p-6 md:p-8 rounded-lg shadow-md relative z-10 flex flex-col justify-between">
+<!-- Cert Header -->
+<div class="flex items-center justify-between pb-3">
+<div class="flex items-center gap-2">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
+<span class="material-symbols-outlined text-[20px]">military_tech</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-outline font-bold">KEMENDIKBUDRISTEK &amp; LPPM UI</span>
+<span class="font-label-md text-label-md font-bold text-on-surface">LEMBAGA PENGEMBANGAN INOVASI MAHASISWA</span>
+</div>
+</div>
+<div class="text-right">
+<span class="px-2 py-0.5 rounded bg-match-emerald/10 text-match-emerald font-code text-code font-bold">TERVALIDASI PUSAT</span>
+</div>
+</div>
+<!-- Cert Title -->
+<div class="my-5 text-center flex flex-col items-center">
+<span class="font-label-sm text-label-sm tracking-wider uppercase text-on-surface-variant font-medium">PIAGAM PENGHARGAAN RESMI</span>
+<h3 class="font-headline-lg text-headline-lg text-primary font-bold mt-1">Juara 2 Hackathon Inovasi Nasional &amp; Hak Cipta IoT</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-2 max-w-md">Diberikan secara kehormatan kepada mahasiswa di bawah ini atas capaian rekayasa sistem energi cerdas terbarukan:</p>
+<span class="font-headline-md text-headline-md text-on-surface font-extrabold mt-3">RAFI ALAMSYAH</span>
+<span class="font-code text-code text-on-surface-variant">NIM: 2206819201 • DEPARTEMEN TEKNIK ELEKTRO</span>
+</div>
+<!-- Cert Stamp & Verification Footer -->
+<div class="pt-4 flex items-end justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">No. Dokumen: <strong>482/SKPI/FT/UI/2026</strong></span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Penerbit: LPPM &amp; Kemendikbudristek</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Tanggal Terbit: 18 September 2026</span>
+</div>
+<!-- Official Stamp Seal Visual -->
+<div class="relative w-20 h-20 rounded-full flex items-center justify-center text-primary/80 transform rotate-12">
+<div class="text-center flex flex-col items-center">
+<span class="material-symbols-outlined text-[24px]">verified</span>
+<span class="font-code text-[8px] font-bold tracking-tighter">LPPM RIET</span>
+<span class="font-code text-[7px]">VERIFIED</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Metadata Badge floating tag -->
+<div class="mt-4 flex items-center gap-3">
+<span class="px-3 py-1 rounded-full bg-surface-container-highest text-on-surface font-label-sm text-label-sm font-semibold">
+                  Validasi QR Kemendikbud: Aktif
+                </span>
+<span class="px-3 py-1 rounded-full bg-secondary-container text-on-secondary-fixed font-label-sm text-label-sm font-bold">
+                  Klaim Bobot: 45 Poin SKPI (Bidang Prestasi Mandiri)
+                </span>
+</div>
+</div>
+<!-- Staf Decision Center Action Bar -->
+<div class="p-space-md bg-surface-container-lowest flex flex-col sm:flex-row items-center justify-between gap-space-sm">
+<div class="flex items-center gap-2 w-full sm:w-auto">
+<button class="w-full sm:w-auto px-4 py-2.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface font-label-md text-label-md font-semibold transition-all" onclick="correctDecisionModal()">
+                  Koreksi Putusan / Revoke
+                </button>
+</div>
+<div class="flex items-center gap-2.5 w-full sm:w-auto">
+<!-- Tolak Dengan Catatan -->
+<button class="w-full sm:w-auto px-4 py-2.5 rounded-lg bg-error hover:bg-error/90 text-on-error font-label-md text-label-md font-semibold shadow-sm flex items-center justify-center gap-2 transition-all active:scale-95" onclick="rejectModal()">
+<span class="material-symbols-outlined text-[18px]">cancel</span>
+<span>Tolak dengan Catatan</span>
+</button>
+<!-- Verifikasi & Terbitkan SKPI -->
+<button class="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-match-emerald hover:bg-match-emerald/90 text-white font-label-md text-label-md font-bold shadow-sm flex items-center justify-center gap-2 transition-all active:scale-95" onclick="approveVerification()">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+<span>Verifikasi &amp; Terbitkan SKPI</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Staff Adjudication Note Input Drawer -->
+<div class="p-space-md bg-surface-container-lowest rounded-xl shadow-sm flex flex-col gap-2">
+<label class="font-label-md text-label-md font-bold text-on-surface flex items-center justify-between">
+<span>Catatan Sidang Staf &amp; Berita Acara Rekognisi:</span>
+<span class="text-on-surface-variant font-label-sm font-normal">Tersimpan ke Ledger Audit Sistem</span>
+</label>
+<textarea class="w-full p-2.5 rounded-lg bg-surface-container-low font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary" id="staffNote" placeholder="Tuliskan catatan pertimbangan (misal: 'Sertifikat telah dikonfirmasi ke dekanat FT, bobot disesuaikan 45 poin sesuai pedoman yudisium 2026')..." rows="2"></textarea>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Notification Toast Container -->
+<div class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none" id="toastNotification">
+<div class="px-4 py-3 rounded-xl bg-inverse-surface text-inverse-on-surface shadow-xl flex items-center gap-3">
+<span class="material-symbols-outlined text-match-emerald text-[20px]" id="toastIcon">check_circle</span>
+<span class="font-label-md text-label-md font-semibold" id="toastMessage">Tindakan berhasil diproses.</span>
+</div>
+</div>
+<!-- Simple Vanilla Interactive Logic -->
+<script>
+    function switchMainTab(targetId) {
+      // Hide all tabs
+      ['tab-skpi-verification', 'tab-reports', 'tab-ai-triage'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('hidden');
+        if (el) el.classList.remove('flex');
+      });
+
+      // Show targeted tab
+      const target = document.getElementById(targetId);
+      if (target) {
+        target.classList.remove('hidden');
+        target.classList.add('flex');
+      }
+
+      // Reset tab button styles
+      ['nav-btn-tab-skpi-verification', 'nav-btn-tab-reports', 'nav-btn-tab-ai-triage'].forEach(btnId => {
+        const btn = document.getElementById(btnId);
+        if (btn) {
+          btn.classList.remove('bg-primary-container', 'text-on-primary', 'shadow-sm', 'font-semibold');
+          btn.classList.add('text-on-surface-variant', 'font-medium');
+        }
+      });
+
+      // Highlight active tab button
+      const activeBtn = document.getElementById('nav-btn-' + targetId);
+      if (activeBtn) {
+        activeBtn.classList.remove('text-on-surface-variant', 'font-medium');
+        activeBtn.classList.add('bg-primary-container', 'text-on-primary', 'shadow-sm', 'font-semibold');
+      }
+
+      // Update metric card borders
+      ['metric-ai', 'metric-reports', 'metric-skpi'].forEach(mId => {
+        const card = document.getElementById(mId);
+        if (card) card.classList.remove('ring-2', 'ring-primary-container');
+      });
+      if (targetId === 'tab-skpi-verification') document.getElementById('metric-skpi')?.classList.add('ring-2', 'ring-primary-container');
+      if (targetId === 'tab-reports') document.getElementById('metric-reports')?.classList.add('ring-2', 'ring-primary-container');
+      if (targetId === 'tab-ai-triage') document.getElementById('metric-ai')?.classList.add('ring-2', 'ring-primary-container');
+    }
+
+    function selectSubmission(id) {
+      // Toggle card active ring
+      [1, 2, 3].forEach(n => {
+        const c = document.getElementById('submission-card-' + n);
+        if (c) c.classList.remove('ring-2', 'ring-primary-container');
+      });
+      const activeCard = document.getElementById('submission-card-' + id);
+      if (activeCard) activeCard.classList.add('ring-2', 'ring-primary-container');
+
+      showToast("Memuat berkas mahasiswa #" + id + " ke dalam viewer dokumen...");
+    }
+
+    function approveVerification() {
+      showToast("SKPI Berhasil Diterbitkan: 45 Poin telah dikreditkan ke transkrip mahasiswa.");
+    }
+
+    function rejectModal() {
+      const reason = prompt("Masukkan alasan penolakan berkas untuk mahasiswa:", "Dokumen tidak mencantumkan tanda tangan dekanat yang sah.");
+      if (reason) {
+        showToast("Berkas ditolak. Mahasiswa telah diberi notifikasi perbaikan.");
+      }
+    }
+
+    function correctDecisionModal() {
+      showToast("Panel Revokasi Terbuka: Meminta tanda tangan digital kepala sidang.");
+    }
+
+    function dismissReportToast() {
+      showToast("Laporan sivitas telah diabaikan dan diarsipkan.");
+    }
+
+    function requestClarificationModal() {
+      showToast("Pesan klarifikasi resmi dikirimkan ke email mahasiswa.");
+    }
+
+    function takedownPostAction() {
+      showToast("Postingan berhasil di-takedown sementara untuk evaluasi komite etik.");
+    }
+
+    function refreshQueue() {
+      const icon = document.getElementById('refreshIcon');
+      if (icon) icon.classList.add('animate-spin');
+      setTimeout(() => {
+        if (icon) icon.classList.remove('animate-spin');
+        showToast("Antrean berhasil disinkronisasi dengan server PDDikti & LPPM.");
+      }, 700);
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toastNotification');
+      const text = document.getElementById('toastMessage');
+      if (toast && text) {
+        text.innerText = msg;
+        toast.classList.remove('translate-y-24', 'opacity-0', 'pointer-events-none');
+        setTimeout(() => {
+          toast.classList.add('translate-y-24', 'opacity-0', 'pointer-events-none');
+        }, 3200);
+      }
+    }
+  </script>
+</div></main></div></body></html>

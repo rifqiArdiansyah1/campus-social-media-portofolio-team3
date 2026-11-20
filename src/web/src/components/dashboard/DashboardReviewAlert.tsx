@@ -140,7 +140,7 @@ export function DashboardReviewAlert({ summary }: DashboardReviewAlertProps) {
 
             {/* 3. Pending Portfolio Reviews */}
             <Link
-              href="/portfolio/review"
+              href="/moderation?tab=portfolio"
               className="p-3 rounded-xl border border-border-subtle hover:border-primary/50 hover:bg-slate-50 transition-all flex items-center justify-between group"
             >
               <div className="flex items-center gap-2.5 min-w-0">

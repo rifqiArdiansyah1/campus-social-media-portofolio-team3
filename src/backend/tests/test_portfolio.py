@@ -4,7 +4,7 @@ from uuid import uuid4
 from sqlalchemy.orm import Session
 
 from app.core.security import create_access_token
-from app.models.entities import Skill, User
+from app.models.entities import PortfolioReviewLog, Skill, User
 
 
 def create_user(
@@ -389,14 +389,34 @@ def test_kaprodi_review_approve_and_reject(client, db_session: Session):
     assert approve_ok.json()["diverifikasi_oleh"] == kaprodi_ti.user_id
     assert approve_ok.json()["verified_at"] is not None
 
-    # 6. Anti-race conditional update: subsequent review attempt gets 409
-    subsequent = client.patch(
+    # 6. Re-evaluation / revoke: Kaprodi changes mind from terverifikasi -> ditolak (supported via audit log)
+    revoke_res = client.patch(
         f"/api/v1/portfolio/{pid}/review",
-        json={"status_verifikasi": "ditolak", "catatan_verifikasi": "Terlambat menolak."},
+        json={"status_verifikasi": "ditolak", "catatan_verifikasi": "Terjadi kesalahan verifikasi, sertifikat kedaluwarsa."},
         headers=auth_headers(kaprodi_ti),
     )
-    assert subsequent.status_code == 409
-    assert "ALREADY_REVIEWED" in subsequent.json()["code"]
+    assert revoke_res.status_code == 200
+    assert revoke_res.json()["status_verifikasi"] == "ditolak"
+    assert revoke_res.json()["catatan_verifikasi"] == "Terjadi kesalahan verifikasi, sertifikat kedaluwarsa."
+
+    # 7. No status change attempt returns 409 Conflict
+    same_status_res = client.patch(
+        f"/api/v1/portfolio/{pid}/review",
+        json={"status_verifikasi": "ditolak", "catatan_verifikasi": "Mencoba menolak lagi."},
+        headers=auth_headers(kaprodi_ti),
+    )
+    assert same_status_res.status_code == 409
+    assert "NO_STATUS_CHANGE" in same_status_res.json()["code"]
+
+    # 8. Verify audit logs were written
+    logs = db_session.query(PortfolioReviewLog).filter_by(portfolio_id=pid).order_by(PortfolioReviewLog.created_at.asc()).all()
+    assert len(logs) == 3
+    assert logs[0].status_sebelumnya == "menunggu_review"
+    assert logs[0].status_baru == "ditolak"
+    assert logs[1].status_sebelumnya == "menunggu_review"
+    assert logs[1].status_baru == "terverifikasi"
+    assert logs[2].status_sebelumnya == "terverifikasi"
+    assert logs[2].status_baru == "ditolak"
 
 
 def test_review_portfolio_post_alias(client, db_session: Session):
@@ -743,4 +763,123 @@ def test_portfolio_me_and_skpi_summary_endpoints(client, db_session: Session):
     assert res_skpi.status_code == 200
     assert "total_poin" in res_skpi.json()
     assert res_skpi.json()["user_id"] == student.user_id
+
+
+def test_portfolio_reviews_history_and_duplicate_check(client, db_session: Session):
+    """
+    Test staff review listing with status filter & FIFO/LIFO,
+    and duplicate checking with privacy-preserving cross-department masking.
+    """
+    mhs_ti_1 = create_user(db_session, nama="Rian TI", role="mahasiswa", jurusan="Teknik Informatika")
+    mhs_ti_2 = create_user(db_session, nama="Budi TI", role="mahasiswa", jurusan="Teknik Informatika")
+    mhs_si = create_user(db_session, nama="Siti SI", role="mahasiswa", jurusan="Sistem Informasi")
+
+    kaprodi_ti = create_user(db_session, nama="Kaprodi TI", role="moderator", jurusan="Teknik Informatika")
+    kaprodi_si = create_user(db_session, nama="Kaprodi SI", role="moderator", jurusan="Sistem Informasi")
+    admin = create_user(db_session, nama="Admin Univ", role="admin")
+
+    # 1. Rian TI submits a certificate
+    pdf_bytes = b"%PDF-1.4\n1 0 obj\n<<>>\nendobj\ntrailer\n<<>>\n%%EOF"
+    up1 = client.post(
+        "/api/v1/uploads/portfolio-doc",
+        files={"file": ("doc1.pdf", pdf_bytes, "application/pdf")},
+        headers=auth_headers(mhs_ti_1),
+    )
+    doc1_path = up1.json()["path"]
+
+    p1 = client.post(
+        "/api/v1/portfolio",
+        json={
+            "judul": "Sertifikat Cloud Engineer",
+            "kategori": "sertifikat",
+            "nomor_dokumen": "CERT-GCP-9901",
+            "penerbit": "Google Cloud",
+            "tanggal_terbit": "2024-05-01",
+            "file_url": doc1_path,
+        },
+        headers=auth_headers(mhs_ti_1),
+    )
+    p1_id = p1.json()["portfolio_id"]
+    submit_res = client.post(f"/api/v1/portfolio/{p1_id}/submit", headers=auth_headers(mhs_ti_1))
+    assert submit_res.status_code == 200
+
+    # 2. Check GET /api/v1/portfolio/reviews?status=menunggu_review
+    rev_ti = client.get("/api/v1/portfolio/reviews?status=menunggu_review", headers=auth_headers(kaprodi_ti))
+    assert rev_ti.status_code == 200
+    assert any(x["portfolio_id"] == p1_id for x in rev_ti.json()["items"])
+
+    # Kaprodi SI should not see TI's pending review
+    rev_si = client.get("/api/v1/portfolio/reviews?status=menunggu_review", headers=auth_headers(kaprodi_si))
+    assert rev_si.status_code == 200
+    assert not any(x["portfolio_id"] == p1_id for x in rev_si.json()["items"])
+
+    # 3. Kaprodi TI approves Rian's portfolio
+    appr = client.patch(
+        f"/api/v1/portfolio/{p1_id}/review",
+        json={"status_verifikasi": "terverifikasi", "catatan_verifikasi": "Sertifikat asli dan valid."},
+        headers=auth_headers(kaprodi_ti),
+    )
+    assert appr.status_code == 200
+
+    # History: reviews?status=terverifikasi
+    hist_ti = client.get("/api/v1/portfolio/reviews?status=terverifikasi", headers=auth_headers(kaprodi_ti))
+    assert hist_ti.status_code == 200
+    assert any(x["portfolio_id"] == p1_id for x in hist_ti.json()["items"])
+
+    # 4. Budi TI submits item with same doc number (different case and spacing)
+    p2 = client.post(
+        "/api/v1/portfolio",
+        json={
+            "judul": "Google Cloud Engineer Certificate",
+            "kategori": "sertifikat",
+            "nomor_dokumen": "cert - gcp - 9901",
+            "penerbit": "Google Cloud",
+            "tanggal_terbit": "2024-05-10",
+        },
+        headers=auth_headers(mhs_ti_2),
+    )
+    p2_id = p2.json()["portfolio_id"]
+
+    # Check duplicate check for Kaprodi TI (same prodi -> unmasked in matches_same_department)
+    dup_ti = client.get(f"/api/v1/portfolio/{p2_id}/duplicate-check", headers=auth_headers(kaprodi_ti))
+    assert dup_ti.status_code == 200
+    assert dup_ti.json()["is_duplicate"] is True
+    assert dup_ti.json()["duplicate_count"] >= 1
+    assert len(dup_ti.json()["matches_same_department"]) >= 1
+    match_ti = next(m for m in dup_ti.json()["matches_same_department"] if m["portfolio_id"] == p1_id)
+    assert match_ti["author_nama"] == mhs_ti_1.nama
+    assert match_ti["author_nim"] == mhs_ti_1.nim
+    assert match_ti["author_jurusan"] == "Teknik Informatika"
+
+    # 5. Siti SI submits item with same doc number
+    p3 = client.post(
+        "/api/v1/portfolio",
+        json={
+            "judul": "Sertifikat Serupa dari SI",
+            "kategori": "sertifikat",
+            "nomor_dokumen": "CERT-GCP-9901",
+            "penerbit": "google cloud",
+            "tanggal_terbit": "2024-05-15",
+        },
+        headers=auth_headers(mhs_si),
+    )
+    p3_id = p3.json()["portfolio_id"]
+
+    # Check duplicate check for Kaprodi SI (cross prodi -> masked from matches_same_department, reported via cross_department_count)
+    dup_si = client.get(f"/api/v1/portfolio/{p3_id}/duplicate-check", headers=auth_headers(kaprodi_si))
+    assert dup_si.status_code == 200
+    assert dup_si.json()["is_duplicate"] is True
+    assert dup_si.json()["has_cross_department_matches"] is True
+    assert dup_si.json()["cross_department_count"] >= 1
+    assert "program studi lain" in dup_si.json()["cross_department_message"]
+    assert len(dup_si.json()["matches_same_department"]) == 0
+
+    # Check duplicate check for Admin (all prodi unmasked into matches_same_department)
+    dup_admin = client.get(f"/api/v1/portfolio/{p3_id}/duplicate-check", headers=auth_headers(admin))
+    assert dup_admin.status_code == 200
+    assert dup_admin.json()["is_duplicate"] is True
+    assert any(m["portfolio_id"] == p1_id for m in dup_admin.json()["matches_same_department"])
+    match_admin = next(m for m in dup_admin.json()["matches_same_department"] if m["portfolio_id"] == p1_id)
+    assert match_admin["author_nama"] == mhs_ti_1.nama
+
 

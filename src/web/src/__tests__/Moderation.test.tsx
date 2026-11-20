@@ -18,6 +18,12 @@ const mockStaffUser = {
   jurusan: "Teknik Informatika",
 };
 
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ push: vi.fn(), replace: vi.fn(), prefetch: vi.fn() }),
+  useSearchParams: () => new URLSearchParams(),
+  usePathname: () => "/moderation",
+}));
+
 vi.mock("@/context/AuthContext", () => ({
   useAuth: () => ({
     user: mockStaffUser,
@@ -199,6 +205,56 @@ describe("M08 Moderation & Reports Frontend Tests", () => {
     expect(await screen.findByText(/Laporan #88/i)).toBeInTheDocument();
     expect(screen.getByText(/Spam komersial jualan pulsa ilegal/i)).toBeInTheDocument();
     expect(screen.getByText("Pelapor Aktif")).toBeInTheDocument();
+  });
+
+  it("switches to portfolio tab and loads pending SKPI portfolio items", async () => {
+    mockAuthRole = "moderator";
+
+    (apiClient.get as any).mockImplementation((url: string) => {
+      if (url === "/moderation/summary") {
+        return Promise.resolve({
+          data: { post_menunggu: 0, laporan_baru: 0, portofolio_menunggu: 1 },
+        });
+      }
+      if (url === "/portfolio/reviews") {
+        return Promise.resolve({
+          data: {
+            items: [
+              {
+                portfolio_id: 77,
+                user_id: 106,
+                judul: "Sertifikasi AWS Cloud Practitioner",
+                deskripsi: "Sertifikasi resmi Amazon Web Services",
+                kategori: "sertifikat",
+                nomor_dokumen: "AWS-CP-12345",
+                penerbit: "Amazon",
+                status_verifikasi: "menunggu_review",
+                has_file: true,
+                created_at: "2026-11-10T08:00:00Z",
+                author_nama: "Rian Mahasiswa",
+                author_nim: "12345678",
+                author_jurusan: "Teknik Informatika",
+                is_duplicate_dokumen: false,
+                skills: [],
+              },
+            ],
+            total: 1,
+            jurusan: "Teknik Informatika",
+          },
+        });
+      }
+      return Promise.resolve({ data: [] });
+    });
+
+    render(<ModerationAuditPage />);
+
+    const portfolioTab = await screen.findByRole("button", { name: /Verifikasi SKPI/i });
+    fireEvent.click(portfolioTab);
+
+    expect(await screen.findByText("Sertifikasi AWS Cloud Practitioner")).toBeInTheDocument();
+    expect(screen.getByText("Rian Mahasiswa")).toBeInTheDocument();
+    expect(screen.getByText("No: AWS-CP-12345")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Periksa Dokumen/i })).toBeInTheDocument();
   });
 });
 

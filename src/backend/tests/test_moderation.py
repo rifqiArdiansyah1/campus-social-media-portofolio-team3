@@ -538,3 +538,71 @@ def test_reported_by_me_and_optional_alasan(client, db_session: Session):
         headers=auth_headers(student2),
     )
     assert res_fail.status_code == 422
+
+
+def test_get_reports_with_post_preview_and_category_filter(client, db_session: Session):
+    admin = create_user(db_session, role="admin")
+    student1 = create_user(db_session, nama="Penulis Post", role="mahasiswa", jurusan="Teknik Informatika")
+    student2 = create_user(db_session, nama="Pelapor 1", role="mahasiswa", jurusan="Teknik Informatika")
+    student3 = create_user(db_session, nama="Pelapor 2", role="mahasiswa", jurusan="Teknik Informatika")
+
+    post_spam = create_test_post(
+        db_session,
+        author=student1,
+        isi="Promo judi online dan pinjol tanpa agunan!",
+        gambar_url="https://storage.kampus.ac.id/promo.jpg",
+        status="tayang",
+    )
+    post_sara = create_test_post(
+        db_session,
+        author=student1,
+        isi="Konten provokatif bernuansa kebencian.",
+        gambar_url=None,
+        status="tayang",
+    )
+
+    # Student 2 reports post_spam as spam
+    r1 = client.post(
+        "/api/v1/reports",
+        json={"post_id": post_spam.post_id, "kategori_laporan": "spam"},
+        headers=auth_headers(student2),
+    )
+    assert r1.status_code == 201
+
+    # Student 3 reports post_sara as konten_tidak_pantas
+    r2 = client.post(
+        "/api/v1/reports",
+        json={"post_id": post_sara.post_id, "kategori_laporan": "konten_tidak_pantas"},
+        headers=auth_headers(student3),
+    )
+    assert r2.status_code == 201
+
+    # Admin fetches reports without filter
+    all_reports = client.get("/api/v1/reports", headers=auth_headers(admin))
+    assert all_reports.status_code == 200
+    reports_data = all_reports.json()
+    assert len(reports_data) >= 2
+
+    # Check post preview brief on post_spam report
+    spam_rep = next(r for r in reports_data if r["post_id"] == post_spam.post_id)
+    assert spam_rep["post"] is not None
+    assert spam_rep["post"]["post_id"] == post_spam.post_id
+    assert "Promo judi online" in spam_rep["post"]["isi"]
+    assert spam_rep["post"]["gambar_url"] == "https://storage.kampus.ac.id/promo.jpg"
+    assert spam_rep["post"]["author"]["user_id"] == student1.user_id
+    assert spam_rep["post"]["author"]["nama"] == student1.nama
+
+    # Admin filters by category: spam
+    spam_filtered = client.get("/api/v1/reports?kategori=spam", headers=auth_headers(admin))
+    assert spam_filtered.status_code == 200
+    spam_list = spam_filtered.json()
+    assert any(r["post_id"] == post_spam.post_id for r in spam_list)
+    assert not any(r["post_id"] == post_sara.post_id for r in spam_list)
+
+    # Admin filters by category: konten_tidak_pantas
+    ktp_filtered = client.get("/api/v1/reports?kategori=konten_tidak_pantas", headers=auth_headers(admin))
+    assert ktp_filtered.status_code == 200
+    ktp_list = ktp_filtered.json()
+    assert any(r["post_id"] == post_sara.post_id for r in ktp_list)
+    assert not any(r["post_id"] == post_spam.post_id for r in ktp_list)
+

@@ -49,7 +49,24 @@ export type AdminDashboardSummary = Schemas['AdminDashboardSummary'];
 export type ModerationQueueItemResponse = Schemas['ModerationQueueItemResponse'];
 export type ReviewQueueItemResponse = Schemas['ReviewQueueItemResponse'];
 export type ReviewQueueListResponse = Schemas['ReviewQueueListResponse'];
-export type ReportResponse = Schemas['ReportResponse'];
+export type ReportedPostBrief = {
+  post_id: number;
+  isi: string;
+  gambar_url?: string | null;
+  status: string;
+  created_at: string;
+  author: {
+    user_id: number;
+    nama: string;
+    nim?: string | null;
+    jurusan?: string | null;
+    avatar_url?: string | null;
+  };
+};
+
+export type ReportResponse = Schemas['ReportResponse'] & {
+  post?: ReportedPostBrief | null;
+};
 
 // Friendships & Blocks
 export type FriendshipResponse = Schemas['FriendshipResponse'];

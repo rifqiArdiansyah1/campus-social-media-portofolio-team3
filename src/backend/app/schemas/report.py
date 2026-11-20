@@ -75,6 +75,28 @@ class ReportActionRequest(BaseModel):
         return self
 
 
+class ReportedPostAuthor(BaseModel):
+    user_id: int
+    nama: str
+    nim: Optional[str] = None
+    jurusan: Optional[str] = None
+    role: str
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class ReportedPostBrief(BaseModel):
+    post_id: int
+    isi: str
+    gambar_url: Optional[str] = None
+    tipe: str
+    status: str
+    created_at: datetime
+    author: Optional[ReportedPostAuthor] = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 class ReportResponse(BaseModel):
     report_id: int
     post_id: int
@@ -89,5 +111,6 @@ class ReportResponse(BaseModel):
     catatan_tinjauan: Optional[str] = None
     created_at: datetime
     resolved_at: Optional[datetime] = None
+    post: Optional[ReportedPostBrief] = None
 
     model_config = ConfigDict(from_attributes=True)

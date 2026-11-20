@@ -31,6 +31,15 @@ const nextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: '/portfolio/review',
+        destination: '/moderation?tab=portfolio',
+        permanent: false,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

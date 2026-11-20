@@ -50,7 +50,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     { label: "Portofolio", href: "/portfolio", icon: FolderKanban },
     ...(isStaff
       ? [
-          { label: "Tinjauan SKPI", href: "/portfolio/review", icon: CheckSquare },
+          { label: "Tinjauan SKPI", href: "/moderation?tab=portfolio", icon: CheckSquare },
           { label: "Moderasi", href: "/moderation", icon: ShieldAlert },
         ]
       : []),

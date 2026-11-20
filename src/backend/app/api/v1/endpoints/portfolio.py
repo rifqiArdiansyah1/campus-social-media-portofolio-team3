@@ -1,4 +1,5 @@
 import logging
+import re
 from datetime import datetime
 from typing import List, Optional, Union
 
@@ -10,11 +11,13 @@ from app.core.config import settings
 from app.core.database import get_db
 from app.core.exceptions import ConflictError, ForbiddenError, InvalidInputError, NotFoundError
 from app.core.security import can_moderate, get_current_user
-from app.models.entities import PortfolioItem, PortfolioSkill, Skill, User
+from app.models.entities import PortfolioItem, PortfolioReviewLog, PortfolioSkill, Skill, User
 from app.schemas.portfolio import (
     PortfolioAuthorResponse,
     PortfolioCreate,
     PortfolioDetailResponse,
+    PortfolioDuplicateCheckResponse,
+    PortfolioDuplicateMatchItem,
     PortfolioPublicResponse,
     PortfolioReviewRequest,
     PortfolioRevokeRequest,
@@ -118,16 +121,17 @@ def _serialize_public(item: PortfolioItem) -> PortfolioPublicResponse:
 
 
 # -------------------------------------------------------------------------
-# 1. REVIEW QUEUE (DECLARED BEFORE /{id} TO AVOID ROUTE COLLISION)
+# 1. REVIEW QUEUE & REVIEWS HISTORY (DECLARED BEFORE /{id} TO AVOID ROUTE COLLISION)
 # -------------------------------------------------------------------------
 @router.get(
-    "/review-queue",
+    "/reviews",
     response_model=ReviewQueueListResponse,
-    summary="Antrean Verifikasi Portofolio FIFO Kaprodi & Admin",
+    summary="Daftar Antrean dan Riwayat Peninjauan Portofolio Staf",
 )
-def get_review_queue(
+def get_portfolio_reviews(
+    status: Optional[str] = Query(None, description="Filter status verifikasi (menunggu_review, terverifikasi, ditolak, atau semua)"),
     jurusan: Optional[str] = Query(None, description="Filter jurusan (khusus Admin)"),
-    limit: int = Query(50, ge=1, le=100),
+    limit: int = Query(20, ge=1, le=100),
     offset: int = Query(0, ge=0),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
@@ -152,19 +156,32 @@ def get_review_queue(
     query = (
         db.query(PortfolioItem)
         .join(User, PortfolioItem.user_id == User.user_id)
-        .filter(PortfolioItem.status_verifikasi == "menunggu_review")
     )
+
+    if status and status in ("menunggu_review", "terverifikasi", "ditolak"):
+        query = query.filter(PortfolioItem.status_verifikasi == status)
+    elif status == "semua":
+        query = query.filter(PortfolioItem.status_verifikasi != "draft")
+    else:
+        # Default: antrean menunggu_review
+        query = query.filter(PortfolioItem.status_verifikasi == "menunggu_review")
 
     if target_jurusan:
         query = query.filter(User.jurusan == target_jurusan)
 
     total = query.count()
+
+    # Ordering: FIFO for pending review, LIFO for verified/rejected history
+    if status in ("terverifikasi", "ditolak", "semua"):
+        query = query.order_by(PortfolioItem.verified_at.desc().nullslast(), PortfolioItem.created_at.desc())
+    else:
+        query = query.order_by(PortfolioItem.submitted_at.asc(), PortfolioItem.created_at.asc())
+
     items = (
         query.options(
             joinedload(PortfolioItem.user),
             selectinload(PortfolioItem.skills).joinedload(PortfolioSkill.skill),
         )
-        .order_by(PortfolioItem.submitted_at.asc(), PortfolioItem.created_at.asc())
         .offset(offset)
         .limit(limit)
         .all()
@@ -229,6 +246,28 @@ def get_review_queue(
         items=queue_items,
         total=total,
         jurusan=target_jurusan,
+    )
+
+
+@router.get(
+    "/review-queue",
+    response_model=ReviewQueueListResponse,
+    summary="Antrean Verifikasi Portofolio FIFO Kaprodi & Admin (Alias untuk /reviews)",
+)
+def get_review_queue(
+    jurusan: Optional[str] = Query(None, description="Filter jurusan (khusus Admin)"),
+    limit: int = Query(50, ge=1, le=100),
+    offset: int = Query(0, ge=0),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return get_portfolio_reviews(
+        status="menunggu_review",
+        jurusan=jurusan,
+        limit=limit,
+        offset=offset,
+        db=db,
+        current_user=current_user,
     )
 
 
@@ -775,23 +814,44 @@ def review_portfolio_item(
             detail="Anda hanya dapat meninjau portofolio mahasiswa dari program studi Anda.",
         )
 
-    if target_item.status_verifikasi != "menunggu_review":
+    status_sebelumnya = target_item.status_verifikasi
+    status_baru = payload.status_verifikasi
+
+    if status_sebelumnya == status_baru:
         raise ConflictError(
-            code="ALREADY_REVIEWED",
-            detail="Portofolio telah ditinjau atau ditarik sebelumnya.",
+            code="NO_STATUS_CHANGE",
+            detail=f"Portofolio sudah berada dalam status '{status_baru}'.",
+        )
+
+    # Allowed transitions:
+    # 1. menunggu_review -> terverifikasi / ditolak
+    # 2. terverifikasi -> ditolak / menunggu_review (revoke / re-evaluate)
+    # 3. ditolak -> terverifikasi (re-acceptance)
+    valid_transitions = [
+        ("menunggu_review", "terverifikasi"),
+        ("menunggu_review", "ditolak"),
+        ("terverifikasi", "ditolak"),
+        ("terverifikasi", "menunggu_review"),
+        ("ditolak", "terverifikasi"),
+    ]
+    if (status_sebelumnya, status_baru) not in valid_transitions:
+        raise InvalidInputError(
+            code="INVALID_STATUS_TRANSITION",
+            detail=f"Transisi status dari '{status_sebelumnya}' ke '{status_baru}' tidak diizinkan.",
         )
 
     # Atomic conditional update against race conditions
     now = datetime.utcnow()
+    catatan_bersih = payload.catatan_verifikasi.strip() if payload.catatan_verifikasi else None
     stmt = (
         update(PortfolioItem)
         .where(
             PortfolioItem.portfolio_id == id,
-            PortfolioItem.status_verifikasi == "menunggu_review",
+            PortfolioItem.status_verifikasi == status_sebelumnya,
         )
         .values(
-            status_verifikasi=payload.status_verifikasi,
-            catatan_verifikasi=payload.catatan_verifikasi.strip() if payload.catatan_verifikasi else None,
+            status_verifikasi=status_baru,
+            catatan_verifikasi=catatan_bersih,
             diverifikasi_oleh=current_user.user_id,
             verified_at=now,
         )
@@ -801,12 +861,23 @@ def review_portfolio_item(
         db.rollback()
         raise ConflictError(
             code="ALREADY_REVIEWED",
-            detail="Portofolio telah ditinjau secara bersamaan oleh peninjau lain.",
+            detail="Status portofolio telah diubah secara bersamaan oleh peninjau lain.",
         )
 
+    # Insert audit log into portfolio_review_logs
+    review_log = PortfolioReviewLog(
+        portfolio_id=id,
+        reviewer_id=current_user.user_id,
+        status_sebelumnya=status_sebelumnya,
+        status_baru=status_baru,
+        catatan_verifikasi=catatan_bersih or ("Disetujui oleh verifikator prodi." if status_baru == "terverifikasi" else "-"),
+        created_at=now,
+    )
+    db.add(review_log)
     db.commit()
+
     try:
-        if payload.status_verifikasi == "terverifikasi":
+        if status_baru == "terverifikasi":
             create_notification(
                 db,
                 target_item.user_id,
@@ -817,13 +888,24 @@ def review_portfolio_item(
                 ref_type="portfolio",
                 ref_id=target_item.portfolio_id,
             )
-        elif payload.status_verifikasi == "ditolak":
+        elif status_baru == "ditolak":
             create_notification(
                 db,
                 target_item.user_id,
                 "skpi_ditolak",
                 "Pengajuan SKPI Ditolak",
                 f"Pengajuan '{target_item.judul}' ditolak. Catatan: {payload.catatan_verifikasi or '-'}",
+                tautan="/portfolio",
+                ref_type="portfolio",
+                ref_id=target_item.portfolio_id,
+            )
+        elif status_baru == "menunggu_review":
+            create_notification(
+                db,
+                target_item.user_id,
+                "skpi_ditolak",
+                "Capaian SKPI Ditinjau Ulang",
+                f"Capaian '{target_item.judul}' dikembalikan ke antrean tinjauan ulang oleh Kaprodi/Admin.",
                 tautan="/portfolio",
                 ref_type="portfolio",
                 ref_id=target_item.portfolio_id,
@@ -866,10 +948,22 @@ def revoke_portfolio_verification(
             detail="Hanya portofolio yang berstatus terverifikasi yang dapat dicabut.",
         )
 
+    status_sebelumnya = item.status_verifikasi
     item.status_verifikasi = "ditolak"
     item.catatan_verifikasi = f"[REVOKED by Admin {current_user.nama}]: {payload.alasan.strip()}"
     item.diverifikasi_oleh = current_user.user_id
     item.verified_at = datetime.utcnow()
+
+    # Record audit log
+    review_log = PortfolioReviewLog(
+        portfolio_id=item.portfolio_id,
+        reviewer_id=current_user.user_id,
+        status_sebelumnya=status_sebelumnya,
+        status_baru="ditolak",
+        catatan_verifikasi=f"[REVOKED by Admin {current_user.nama}]: {payload.alasan.strip()}",
+        created_at=datetime.utcnow(),
+    )
+    db.add(review_log)
 
     logger.info(
         f"[PORTFOLIO_REVOKE_AUDIT] Admin {current_user.user_id} revoked verification for portfolio {item.portfolio_id} of user {item.user_id}. Reason: {payload.alasan.strip()}"
@@ -878,6 +972,106 @@ def revoke_portfolio_verification(
     db.commit()
     db.refresh(item)
     return _serialize_detail(item)
+
+
+# -------------------------------------------------------------------------
+# 11. DUPLICATE CHECK (PRIVACY-PRESERVING FOR STAFF)
+# -------------------------------------------------------------------------
+@router.get(
+    "/{id}/duplicate-check",
+    response_model=PortfolioDuplicateCheckResponse,
+    summary="Pemeriksaan Duplikasi Dokumen Berpelindung Privasi (Kaprodi & Admin)",
+)
+def check_portfolio_duplicate(
+    id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    if current_user.role not in ("moderator", "admin"):
+        raise ForbiddenError(code="FORBIDDEN_OPERATION", detail="Hanya staf yang berhak memeriksa duplikasi dokumen.")
+
+    target = db.query(PortfolioItem).filter(PortfolioItem.portfolio_id == id).first()
+    if not target:
+        raise NotFoundError(code="PORTFOLIO_NOT_FOUND", detail="Portofolio tidak ditemukan.")
+
+    if not target.nomor_dokumen or not target.nomor_dokumen.strip():
+        return PortfolioDuplicateCheckResponse(
+            is_duplicate=False,
+            duplicate_count=0,
+            matches_same_department=[],
+            has_cross_department_matches=False,
+            cross_department_count=0,
+        )
+
+    target_clean = re.sub(r"[\s\-_/]+", "", target.nomor_dokumen.strip().lower())
+    is_doi = target.kategori == "artikel_ilmiah"
+
+    candidates = (
+        db.query(PortfolioItem)
+        .join(User, PortfolioItem.user_id == User.user_id)
+        .options(joinedload(PortfolioItem.user))
+        .filter(
+            PortfolioItem.portfolio_id != id,
+            PortfolioItem.nomor_dokumen.isnot(None),
+            PortfolioItem.status_verifikasi.in_(["terverifikasi", "menunggu_review"]),
+        )
+        .all()
+    )
+
+    same_dept_matches: List[PortfolioDuplicateMatchItem] = []
+    cross_dept_count = 0
+    viewer_jurusan = current_user.jurusan if current_user.role == "moderator" else None
+
+    for c in candidates:
+        if not c.nomor_dokumen:
+            continue
+        c_clean = re.sub(r"[\s\-_/]+", "", c.nomor_dokumen.strip().lower())
+        if c_clean == target_clean:
+            item_jurusan = c.user.jurusan if c.user else None
+            # If Admin or same department as Kaprodi
+            if current_user.role == "admin" or (viewer_jurusan and item_jurusan == viewer_jurusan):
+                same_dept_matches.append(
+                    PortfolioDuplicateMatchItem(
+                        portfolio_id=c.portfolio_id,
+                        judul=c.judul,
+                        nomor_dokumen=c.nomor_dokumen,
+                        penerbit=c.penerbit,
+                        kategori=c.kategori,
+                        status_verifikasi=c.status_verifikasi,
+                        tanggal_terbit=c.tanggal_terbit,
+                        created_at=c.created_at,
+                        author_nama=c.user.nama if c.user else "Mahasiswa",
+                        author_nim=c.user.nim if c.user else None,
+                        author_jurusan=c.user.jurusan if c.user else None,
+                    )
+                )
+            else:
+                cross_dept_count += 1
+
+    total_matches = len(same_dept_matches) + cross_dept_count
+    is_dup = total_matches > 0
+
+    cross_dept_message = None
+    if cross_dept_count > 0:
+        cross_dept_message = (
+            f"Terdeteksi {cross_dept_count} dokumen dengan nomor identik pada program studi lain. "
+            "Untuk menjaga privasi lintas jurusan, silakan hubungi Administrator Kampus untuk audit berkas."
+        )
+
+    notice = None
+    if is_doi and is_dup:
+        notice = "Nomor DOI terdaftar pada karya kolaborasi mahasiswa. Wajar bagi rekan penulis pada artikel ilmiah yang sama."
+
+    return PortfolioDuplicateCheckResponse(
+        is_duplicate=is_dup,
+        duplicate_count=total_matches,
+        matches_same_department=same_dept_matches,
+        has_cross_department_matches=cross_dept_count > 0,
+        cross_department_count=cross_dept_count,
+        cross_department_message=cross_dept_message,
+        is_coauthor_doi=is_doi,
+        notice=notice,
+    )
 
 
 # -------------------------------------------------------------------------

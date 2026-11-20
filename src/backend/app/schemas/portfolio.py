@@ -149,15 +149,42 @@ class PortfolioUpdate(BaseModel):
 
 
 class PortfolioReviewRequest(BaseModel):
-    status_verifikasi: Literal["terverifikasi", "ditolak"]
-    catatan_verifikasi: Optional[str] = Field(None, description="Catatan hasil verifikasi dari Kaprodi/Admin")
+    status_verifikasi: Literal["terverifikasi", "ditolak", "menunggu_review"]
+    catatan_verifikasi: Optional[str] = Field(None, description="Catatan hasil verifikasi atau alasan koreksi dari Kaprodi/Admin")
 
     @model_validator(mode="after")
     def validate_catatan(self):
-        if self.status_verifikasi == "ditolak":
+        if self.status_verifikasi in ("ditolak", "menunggu_review"):
             if not self.catatan_verifikasi or len(self.catatan_verifikasi.strip()) < 5:
-                raise ValueError("Catatan verifikasi wajib diisi minimal 5 karakter saat menolak pengajuan.")
+                raise ValueError("Catatan verifikasi wajib diisi minimal 5 karakter saat menolak atau mengoreksi pengajuan.")
         return self
+
+
+class PortfolioDuplicateMatchItem(BaseModel):
+    portfolio_id: int
+    judul: str
+    nomor_dokumen: Optional[str] = None
+    penerbit: Optional[str] = None
+    kategori: str
+    status_verifikasi: str
+    tanggal_terbit: Optional[date] = None
+    created_at: datetime
+    author_nama: str
+    author_nim: Optional[str] = None
+    author_jurusan: Optional[str] = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class PortfolioDuplicateCheckResponse(BaseModel):
+    is_duplicate: bool
+    duplicate_count: int
+    matches_same_department: List[PortfolioDuplicateMatchItem] = []
+    has_cross_department_matches: bool = False
+    cross_department_count: int = 0
+    cross_department_message: Optional[str] = None
+    is_coauthor_doi: bool = False
+    notice: Optional[str] = None
 
 
 class PortfolioRevokeRequest(BaseModel):

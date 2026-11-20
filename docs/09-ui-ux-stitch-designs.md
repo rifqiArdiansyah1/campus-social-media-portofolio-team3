@@ -118,6 +118,24 @@ Semua aset screenshot resolusi tinggi dan source code HTML/CSS tersimpan di `ui/
 
 ---
 
+### Screen 7: Unified Staff Governance Hub — Panel Moderasi & Verifikasi SKPI Staf (US-11, US-16, US-17, US-18)
+- **Stitch Screen ID**: `projects/10744711964413240245/screens/ed199fa2ee2f4ed49d537fc8c0f43568`
+- **File Screenshot**: `ui/stitch/screenshots/07_staff_governance_hub.png`
+- **File Code**: `ui/stitch/html/07_staff_governance_hub.html`
+- **Pembaruan Fitur & Desain Terintegrasi**:
+  1. **Header Metrik Interaktif (Clickable Metric Cards):** 3 kartu metrik ringkasan (*Antrean AI & Triage*, *Laporan Sivitas*, *Verifikasi SKPI Mahasiswa*) yang langsung mengarahkan dan memfilter antrean tab secara reaktif.
+  2. **Deep-Link Tab Routing (`?tab=`):** Dukungan penuh untuk parameter URL query `?tab=queue|reports|portfolio`, menjaga state tab saat halaman di-refresh atau dibagikan antar staf.
+  3. **Tab Laporan Sivitas Berkonteks Penuh:** Menampilkan preview utuh postingan yang dilaporkan (identitas penulis, teks isi, foto lampiran, alasan kategori laporan, catatan pelapor) dengan modal aksi *Tinjau & Takedown* langsung terhubung ke service takedown terpusat.
+  4. **Tab Verifikasi SKPI Staf (Split-Screen & In-App Viewer):**
+     - Sub-tab *Antrean Verifikasi* vs *Riwayat Putusan*.
+     - In-App Document Viewer aman (PDF iframe & gambar) tanpa pop-up blocker browser.
+     - Privacy-Preserving Duplicate Check: banner peringatan orisinalitas dokumen yang menyamarkan data sensitif mahasiswa prodi lain bagi Kaprodi dan terbuka penuh bagi Admin.
+     - Aksi keputusan terpadu: *Verifikasi* (Emerald-700), *Tolak dengan Catatan* (Red-700), dan *Koreksi Putusan / Revoke* dengan pencatatan audit log otomatis ke tabel `portfolio_review_logs`.
+
+---
+
+---
+
 ## 4. Panduan Eksekusi Implementasi (Frontend Web & Mobile)
 
 1. **Web App (Next.js 14 App Router)**:
