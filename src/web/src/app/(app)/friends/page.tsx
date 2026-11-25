@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/context/ToastContext";
 import { apiClient } from "@/lib/api";
-import { getInitials } from "@/lib/utils";
+import { getInitials, getApiErrorMessage } from "@/lib/utils";
 import { EmptyState } from "@/components/common/EmptyState";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 
@@ -88,6 +88,7 @@ export default function FriendsPage() {
   // Dialog states
   const [unfriendTarget, setUnfriendTarget] = useState<FriendUser | null>(null);
   const [unblockTarget, setUnblockTarget] = useState<BlockedUser | null>(null);
+  const [unblockedActions, setUnblockedActions] = useState<Record<number, { nama: string; canFriend: boolean }>>({});
 
   // Sync tab with URL
   const handleTabChange = (tab: "friends" | "requests" | "outgoing" | "blocks") => {
@@ -237,14 +238,48 @@ export default function FriendsPage() {
 
   const handleConfirmUnblock = async () => {
     if (!unblockTarget) return;
+    const target = unblockTarget;
+    setUnblockTarget(null);
     try {
-      await apiClient.delete(`/blocks/${unblockTarget.blocked_id}`);
-      setBlockedUsers((prev) => prev.filter((u) => u.blocked_id !== unblockTarget.blocked_id));
+      await apiClient.delete(`/blocks/${target.blocked_id}`);
       setTotalCount((c) => Math.max(0, c - 1));
-      toast.success(`Blokir terhadap ${unblockTarget.nama} telah dibuka.`);
-      setUnblockTarget(null);
+      toast.success(`Blokir terhadap ${target.nama} telah dibuka.`);
+
+      // Probe target profile to determine if peer is approachable (can_friend == true)
+      let canFriend = false;
+      try {
+        const userRes = await apiClient.get<any>(`/users/${target.blocked_id}`);
+        if (userRes.data?.can_friend) {
+          canFriend = true;
+        }
+      } catch {
+        // Mutual block (404) or unavailable: canFriend stays false
+      }
+
+      setUnblockedActions((prev) => ({
+        ...prev,
+        [target.blocked_id]: { nama: target.nama, canFriend },
+      }));
     } catch (err: any) {
-      toast.error(err.response?.data?.detail || "Gagal membuka blokir.");
+      toast.error(getApiErrorMessage(err, "Gagal membuka blokir."));
+    }
+  };
+
+  const handleSendFriendRequestFromInline = async (userId: number) => {
+    try {
+      setActionLoadingId(userId);
+      await apiClient.post("/friendships", { addressee_id: userId });
+      toast.success("Permohonan pertemanan berhasil dikirim!");
+      setUnblockedActions((prev) => {
+        const copy = { ...prev };
+        delete copy[userId];
+        return copy;
+      });
+      setBlockedUsers((prev) => prev.filter((u) => u.blocked_id !== userId));
+    } catch (err: any) {
+      toast.error(getApiErrorMessage(err, "Gagal mengirim permohonan pertemanan."));
+    } finally {
+      setActionLoadingId(null);
     }
   };
 
@@ -573,39 +608,92 @@ export default function FriendsPage() {
             </div>
           ) : (
             <div className="space-y-3">
-              {blockedUsers.map((item) => (
-                <div
-                  key={item.block_id}
-                  className="p-4 rounded-2xl bg-white border border-border-subtle shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 text-slate-500 font-bold text-sm flex items-center justify-center flex-shrink-0">
-                      {getInitials(item.nama)}
+              {blockedUsers.map((item) => {
+                const unblockedInfo = unblockedActions[item.blocked_id];
+                if (unblockedInfo) {
+                  return (
+                    <div
+                      key={item.block_id}
+                      role="status"
+                      aria-live="polite"
+                      className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                    >
+                      <div className="flex items-center gap-2 text-xs text-slate-700">
+                        <UserCheck className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                        <span>
+                          Blokir terhadap <strong className="font-semibold text-slate-900">{unblockedInfo.nama}</strong> telah dibuka.
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 self-end sm:self-auto">
+                        {unblockedInfo.canFriend && (
+                          <button
+                            type="button"
+                            onClick={() => handleSendFriendRequestFromInline(item.blocked_id)}
+                            disabled={actionLoadingId === item.blocked_id}
+                            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-semibold shadow-sm transition-colors disabled:opacity-50"
+                          >
+                            {actionLoadingId === item.blocked_id ? (
+                              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                            ) : (
+                              <UserCheck className="w-3.5 h-3.5" />
+                            )}
+                            <span>Kirim Permintaan Teman</span>
+                          </button>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setUnblockedActions((prev) => {
+                              const copy = { ...prev };
+                              delete copy[item.blocked_id];
+                              return copy;
+                            });
+                            setBlockedUsers((prev) => prev.filter((u) => u.blocked_id !== item.blocked_id));
+                          }}
+                          className="px-3 py-1.5 text-xs text-slate-500 hover:text-slate-800 hover:bg-slate-200 rounded-xl transition-colors"
+                        >
+                          Tutup
+                        </button>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-xs font-bold text-slate-900 font-heading">
-                        {item.nama}
-                      </h3>
-                      {item.jurusan && (
-                        <p className="text-[11px] text-slate-500">{item.jurusan}</p>
-                      )}
-                      {item.alasan && (
-                        <p className="text-[11px] text-slate-400 italic mt-0.5">
-                          Alasan: {item.alasan}
-                        </p>
-                      )}
-                    </div>
-                  </div>
+                  );
+                }
 
-                  <button
-                    type="button"
-                    onClick={() => setUnblockTarget(item)}
-                    className="self-end sm:self-auto px-3.5 py-1.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 transition-colors shadow-sm"
+                return (
+                  <div
+                    key={item.block_id}
+                    className="p-4 rounded-2xl bg-white border border-border-subtle shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4"
                   >
-                    Buka Blokir
-                  </button>
-                </div>
-              ))}
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 text-slate-500 font-bold text-sm flex items-center justify-center flex-shrink-0">
+                        {getInitials(item.nama)}
+                      </div>
+                      <div>
+                        <h3 className="text-xs font-bold text-slate-900 font-heading">
+                          {item.nama}
+                        </h3>
+                        {item.jurusan && (
+                          <p className="text-[11px] text-slate-500">{item.jurusan}</p>
+                        )}
+                        {item.alasan && (
+                          <p className="text-[11px] text-slate-400 italic mt-0.5">
+                            Alasan: {item.alasan}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setUnblockTarget(item)}
+                      aria-label={`Buka blokir untuk ${item.nama}`}
+                      className="self-end sm:self-auto px-3.5 py-1.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 transition-colors shadow-sm"
+                    >
+                      Buka Blokir
+                    </button>
+                  </div>
+                );
+              })}
             </div>
           )}
         </section>
@@ -657,8 +745,8 @@ export default function FriendsPage() {
         isOpen={Boolean(unblockTarget)}
         onClose={() => setUnblockTarget(null)}
         onConfirm={handleConfirmUnblock}
-        title="Buka Blokir Pengguna?"
-        description={`Buka blokir untuk ${unblockTarget?.nama}? Catatan: Membuka blokir tidak memulihkan pertemanan secara otomatis.`}
+        title={`Buka Blokir ${unblockTarget?.nama || "Pengguna"}?`}
+        description={`Setelah blokir dibuka, ${unblockTarget?.nama} akan dapat melihat linimasa karya dan profil publik Anda kembali (kecuali jika pengguna tersebut juga memblokir Anda). Pertemanan tidak dipulihkan secara otomatis (Bukan Teman). Pihak yang bersangkutan tidak akan menerima pemberitahuan bahwa blokir telah dibuka. Anda dapat memblokir kembali akun ini kapan saja jika diperlukan.`}
         confirmText="Buka Blokir"
         variant="primary"
       />

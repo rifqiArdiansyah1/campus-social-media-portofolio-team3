@@ -29,7 +29,9 @@ export type PortfolioReviewRequest = Schemas['PortfolioReviewRequest'];
 
 // Search & Recommendations
 export type SearchResponse = Schemas['SearchResponse'];
-export type StudentSearchResult = Schemas['StudentSearchResult'];
+export type StudentSearchResult = Schemas['StudentSearchResult'] & {
+  is_self?: boolean;
+};
 export type PostSearchResult = Schemas['PostSearchResult'];
 export type PortfolioSearchResult = Schemas['PortfolioSearchResult'];
 export type RecommendationItem = Schemas['RecommendationItem'] & {

@@ -185,9 +185,10 @@ def test_create_post_validations(client, db_session: Session):
     res_empty = client.post("/api/v1/posts", json={"isi": "   ", "tipe": "umum"}, headers=headers)
     assert res_empty.status_code == 422
 
-    # 2. Recruiting without skill
+    # 2. Recruiting without skill is now allowed gracefully (not hard blocked)
     res_no_skill = client.post("/api/v1/posts", json={"isi": "Cari tim", "tipe": "cari_anggota", "skill_ids": []}, headers=headers)
-    assert res_no_skill.status_code == 422
+    assert res_no_skill.status_code == 201
+    assert res_no_skill.json()["tipe"] == "cari_anggota"
 
     # 3. Recruiting with duplicate skills -> deduplicated successfully
     res_dup_skills = client.post(

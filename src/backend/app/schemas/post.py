@@ -42,12 +42,6 @@ class PostCreate(BaseModel):
             raise ValueError("Maksimal hanya dapat memilih 10 tag keahlian.")
         return deduped
 
-    @model_validator(mode="after")
-    def validate_recruiting_requires_skills(self) -> "PostCreate":
-        if self.tipe == "cari_anggota" and len(self.skill_ids) == 0:
-            raise ValueError("Postingan rekrutmen tim wajib menyertakan minimal 1 tag keahlian.")
-        return self
-
 
 class PostUpdate(BaseModel):
     isi: Optional[str] = Field(None, description="Caption teks yang diperbarui")

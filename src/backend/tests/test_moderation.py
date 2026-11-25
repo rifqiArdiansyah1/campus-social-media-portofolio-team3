@@ -606,3 +606,79 @@ def test_get_reports_with_post_preview_and_category_filter(client, db_session: S
     assert any(r["post_id"] == post_sara.post_id for r in ktp_list)
     assert not any(r["post_id"] == post_spam.post_id for r in ktp_list)
 
+
+def test_takedown_and_decision_resolves_reports_cascade(client, db_session: Session):
+    mod = create_user(db_session, role="moderator", jurusan="Teknik Informatika")
+    author = create_user(db_session, role="mahasiswa", jurusan="Teknik Informatika")
+    reporter1 = create_user(db_session, role="mahasiswa", jurusan="Teknik Informatika")
+    reporter2 = create_user(db_session, role="mahasiswa", jurusan="Teknik Informatika")
+
+    # Path 1: Takedown via POST /posts/{id}/takedown
+    post1 = create_test_post(db_session, author=author, isi="Postingan pelanggaran 1", status="tayang")
+    # File report
+    r1 = client.post(
+        "/api/v1/reports",
+        json={"post_id": post1.post_id, "kategori_laporan": "konten_tidak_pantas"},
+        headers=auth_headers(reporter1),
+    )
+    assert r1.status_code == 201
+    rep1_id = r1.json()["report_id"]
+
+    # Verify report is 'baru' in active queue
+    queue1 = client.get("/api/v1/reports?status=baru", headers=auth_headers(mod))
+    assert queue1.status_code == 200
+    assert any(r["report_id"] == rep1_id for r in queue1.json())
+
+    # Moderator takedowns post1
+    res_td = client.post(
+        f"/api/v1/posts/{post1.post_id}/takedown",
+        json={"alasan_hapus": "Pelanggaran etika kampus berat."},
+        headers=auth_headers(mod),
+    )
+    assert res_td.status_code == 200
+
+    # Verify post1 is deleted
+    db_session.refresh(post1)
+    assert post1.is_deleted is True
+    assert post1.status == "dihapus"
+
+    # Verify report is auto-resolved and removed from 'baru' queue
+    queue1_after = client.get("/api/v1/reports?status=baru", headers=auth_headers(mod))
+    assert queue1_after.status_code == 200
+    assert not any(r["report_id"] == rep1_id for r in queue1_after.json())
+
+    # Report shows in 'selesai'
+    queue_selesai = client.get("/api/v1/reports?status=selesai", headers=auth_headers(mod))
+    assert queue_selesai.status_code == 200
+    rep_obj = next(r for r in queue_selesai.json() if r["report_id"] == rep1_id)
+    assert rep_obj["tindakan_diambil"] == "postingan_dihapus"
+    assert "Pelanggaran etika" in (rep_obj["catatan_tinjauan"] or "")
+    assert rep_obj["resolved_at"] is not None
+
+    # Path 2: Decision hapus_konten via POST /moderation/{post_id}/decision
+    post2 = create_test_post(db_session, author=author, isi="Postingan pelanggaran 2", status="direview")
+    r2 = client.post(
+        "/api/v1/reports",
+        json={"post_id": post2.post_id, "kategori_laporan": "spam"},
+        headers=auth_headers(reporter2),
+    )
+    assert r2.status_code == 201
+    rep2_id = r2.json()["report_id"]
+
+    res_dec = client.post(
+        f"/api/v1/moderation/{post2.post_id}/decision",
+        json={"keputusan": "hapus_konten", "catatan": "Konten spam berulang."},
+        headers=auth_headers(mod),
+    )
+    assert res_dec.status_code == 200
+
+    db_session.refresh(post2)
+    assert post2.is_deleted is True
+    assert post2.status == "dihapus"
+
+    # Verify report2 is not in 'baru'
+    queue2_after = client.get("/api/v1/reports?status=baru", headers=auth_headers(mod))
+    assert queue2_after.status_code == 200
+    assert not any(r["report_id"] == rep2_id for r in queue2_after.json())
+
+

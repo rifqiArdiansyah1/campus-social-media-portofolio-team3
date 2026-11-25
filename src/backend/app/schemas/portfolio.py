@@ -59,6 +59,8 @@ class PortfolioCreate(BaseModel):
     def validate_gambar_url(cls, v: Optional[str]) -> Optional[str]:
         if v is not None:
             v = v.strip()
+            if not v:
+                return None
             if not (v.startswith("http://") or v.startswith("https://")):
                 raise ValueError("gambar_url harus menggunakan skema http:// atau https://")
         return v
@@ -68,8 +70,43 @@ class PortfolioCreate(BaseModel):
     def validate_tautan_url(cls, v: Optional[str]) -> Optional[str]:
         if v is not None:
             v = v.strip()
+            if not v:
+                return None
             if not (v.startswith("http://") or v.startswith("https://")):
                 raise ValueError("tautan_url harus menggunakan skema http:// atau https://")
+        return v
+
+    @field_validator("file_url")
+    @classmethod
+    def validate_file_url(cls, v: Optional[str]) -> Optional[str]:
+        if v is not None:
+            v = v.strip()
+            if not v:
+                return None
+        return v
+
+    @field_validator("nomor_dokumen", "penerbit")
+    @classmethod
+    def sanitize_strings(cls, v: Optional[str]) -> Optional[str]:
+        if v is not None:
+            v = v.strip()
+            if not v:
+                return None
+        return v
+
+    @field_validator("tanggal_terbit", mode="before")
+    @classmethod
+    def parse_tanggal_terbit(cls, v):
+        if not v:
+            return None
+        if isinstance(v, str):
+            v = v.strip()
+            if not v:
+                return None
+            m = re.match(r"^(\d{1,2})[/-](\d{1,2})[/-](\d{4})$", v)
+            if m:
+                day, month, year = m.groups()
+                return f"{year}-{int(month):02d}-{int(day):02d}"
         return v
 
     @field_validator("tanggal_terbit")
@@ -89,8 +126,18 @@ class PortfolioCreate(BaseModel):
 
     @model_validator(mode="after")
     def validate_kategori_fields(self):
-        if self.kategori == "artikel_ilmiah" and self.nomor_dokumen:
-            self.nomor_dokumen = normalize_doi(self.nomor_dokumen)
+        if self.nomor_dokumen:
+            self.nomor_dokumen = self.nomor_dokumen.strip()
+            if not self.nomor_dokumen:
+                self.nomor_dokumen = None
+        if self.nomor_dokumen:
+            match = re.search(r"10\.\d{4,9}/[-._;()/:A-Za-z0-9<>+]+", self.nomor_dokumen)
+            if self.kategori == "artikel_ilmiah" and not match:
+                raise ValueError(
+                    "Format DOI tidak valid. Masukkan format resmi seperti '10.1145/1234567.1234568' atau 'https://doi.org/10.1145/...'. Kosongkan jika draf belum memiliki nomor DOI resmi."
+                )
+            if match:
+                self.nomor_dokumen = match.group(0).rstrip(".,;")
         return self
 
 
@@ -111,6 +158,8 @@ class PortfolioUpdate(BaseModel):
     def validate_gambar_url(cls, v: Optional[str]) -> Optional[str]:
         if v is not None:
             v = v.strip()
+            if not v:
+                return None
             if not (v.startswith("http://") or v.startswith("https://")):
                 raise ValueError("gambar_url harus menggunakan skema http:// atau https://")
         return v
@@ -120,8 +169,43 @@ class PortfolioUpdate(BaseModel):
     def validate_tautan_url(cls, v: Optional[str]) -> Optional[str]:
         if v is not None:
             v = v.strip()
+            if not v:
+                return None
             if not (v.startswith("http://") or v.startswith("https://")):
                 raise ValueError("tautan_url harus menggunakan skema http:// atau https://")
+        return v
+
+    @field_validator("file_url")
+    @classmethod
+    def validate_file_url(cls, v: Optional[str]) -> Optional[str]:
+        if v is not None:
+            v = v.strip()
+            if not v:
+                return None
+        return v
+
+    @field_validator("nomor_dokumen", "penerbit")
+    @classmethod
+    def sanitize_strings(cls, v: Optional[str]) -> Optional[str]:
+        if v is not None:
+            v = v.strip()
+            if not v:
+                return None
+        return v
+
+    @field_validator("tanggal_terbit", mode="before")
+    @classmethod
+    def parse_tanggal_terbit(cls, v):
+        if not v:
+            return None
+        if isinstance(v, str):
+            v = v.strip()
+            if not v:
+                return None
+            m = re.match(r"^(\d{1,2})[/-](\d{1,2})[/-](\d{4})$", v)
+            if m:
+                day, month, year = m.groups()
+                return f"{year}-{int(month):02d}-{int(day):02d}"
         return v
 
     @field_validator("tanggal_terbit")
@@ -143,8 +227,18 @@ class PortfolioUpdate(BaseModel):
 
     @model_validator(mode="after")
     def validate_kategori_fields(self):
-        if self.kategori == "artikel_ilmiah" and self.nomor_dokumen:
-            self.nomor_dokumen = normalize_doi(self.nomor_dokumen)
+        if self.nomor_dokumen:
+            self.nomor_dokumen = self.nomor_dokumen.strip()
+            if not self.nomor_dokumen:
+                self.nomor_dokumen = None
+        if self.nomor_dokumen:
+            match = re.search(r"10\.\d{4,9}/[-._;()/:A-Za-z0-9<>+]+", self.nomor_dokumen)
+            if self.kategori == "artikel_ilmiah" and not match:
+                raise ValueError(
+                    "Format DOI tidak valid. Masukkan format resmi seperti '10.1145/1234567.1234568' atau 'https://doi.org/10.1145/...'. Kosongkan jika draf belum memiliki nomor DOI resmi."
+                )
+            if match:
+                self.nomor_dokumen = match.group(0).rstrip(".,;")
         return self
 
 
@@ -213,6 +307,8 @@ class PortfolioDetailResponse(BaseModel):
     created_at: datetime
     skills: List[SkillBriefResponse] = []
     author: Optional[PortfolioAuthorResponse] = None
+    is_complete: bool = False
+    missing_fields: List[str] = Field(default_factory=list)
 
     model_config = ConfigDict(from_attributes=True)
 

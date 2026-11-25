@@ -6,7 +6,7 @@ import { Image as ImageIcon, Users, X, Loader2, Send, Tag, AlertCircle } from "l
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/context/ToastContext";
 import { apiClient } from "@/lib/api";
-import { getInitials } from "@/lib/utils";
+import { getInitials, getApiErrorMessage } from "@/lib/utils";
 import { SkillSelector, SelectedSkill } from "@/components/features/SkillSelector";
 
 export interface CreatePostCardProps {
@@ -97,12 +97,6 @@ export function CreatePostCard({ onPostCreated }: CreatePostCardProps) {
       return;
     }
 
-    if (tipe === "cari_anggota" && selectedSkills.length === 0) {
-      setErrorMessage("Postingan rekrutmen tim wajib menyertakan minimal 1 tag keahlian.");
-      setShowSkillSelector(true);
-      return;
-    }
-
     if (isUploadingImage) {
       toast.warning("Mohon tunggu hingga proses unggah foto selesai.");
       return;
@@ -141,16 +135,15 @@ export function CreatePostCard({ onPostCreated }: CreatePostCardProps) {
       if (onPostCreated) {
         onPostCreated(newPost);
       }
-    } catch (err: any) {
-      const msg = err.response?.data?.detail || "Gagal membuat postingan";
+    } catch (err: unknown) {
+      const msg = getApiErrorMessage(err, "Gagal membuat postingan");
       setErrorMessage(msg);
-      toast.error(msg);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const canSubmit = isi.trim().length > 0 && !isUploadingImage && !isSubmitting && (tipe !== "cari_anggota" || selectedSkills.length > 0);
+  const canSubmit = isi.trim().length > 0 && !isUploadingImage && !isSubmitting;
 
   return (
     <div className="p-5 rounded-2xl bg-white border border-border-subtle shadow-sm space-y-4">
@@ -252,7 +245,7 @@ export function CreatePostCard({ onPostCreated }: CreatePostCardProps) {
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
               <Tag className="w-3.5 h-3.5 text-primary" />
-              <span>Keahlian yang Dibutuhkan {tipe === "cari_anggota" && <span className="text-rose-500">*</span>}</span>
+              <span>Keahlian yang Dibutuhkan {tipe === "cari_anggota" && <span className="text-slate-400 font-normal">(Disarankan)</span>}</span>
             </span>
             {tipe !== "cari_anggota" && (
               <button

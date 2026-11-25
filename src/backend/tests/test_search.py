@@ -282,7 +282,7 @@ def test_search_pagination_and_deterministic_order(client: TestClient, db_sessio
     assert ids_p1.isdisjoint(ids_p2)
 
 
-def test_search_mahasiswa_excludes_current_user(client: TestClient, db_session: Session):
+def test_search_mahasiswa_includes_self_with_is_self_flag(client: TestClient, db_session: Session):
     db = db_session
     u_me = User(nim="901099", nama="Diri Sendiri", email="dirisendiri@univ.ac.id", password_hash="hash", jurusan="Teknik Nuklir", role="mahasiswa")
     u_other = User(nim="901098", nama="Rekan Sekelas", email="rekansekelas@univ.ac.id", password_hash="hash", jurusan="Teknik Nuklir", role="mahasiswa")
@@ -292,17 +292,20 @@ def test_search_mahasiswa_excludes_current_user(client: TestClient, db_session: 
     token = create_access_token(subject=u_me.user_id)
     headers = {"Authorization": f"Bearer {token}"}
 
-    # 1. Cari berdasarkan nama sendiri -> tidak boleh muncul
+    # 1. Cari berdasarkan nama sendiri -> harus muncul dengan is_self=True dan friendship_status="self"
     res_self = client.get("/api/v1/search?tipe=mahasiswa&q=Diri%20Sendiri", headers=headers)
     assert res_self.status_code == 200
-    assert not any(it["user_id"] == u_me.user_id for it in res_self.json()["items"])
+    self_items = [it for it in res_self.json()["items"] if it["user_id"] == u_me.user_id]
+    assert len(self_items) == 1
+    assert self_items[0]["is_self"] is True
+    assert self_items[0]["friendship_status"] == "self"
 
-    # 2. Cari dengan filter jurusan yang sama -> hanya rekan yang muncul, bukan diri sendiri
+    # 2. Cari dengan filter jurusan yang sama -> rekan dan diri sendiri muncul
     res_jurusan = client.get("/api/v1/search?tipe=mahasiswa&jurusan=Teknik%20Nuklir", headers=headers)
     assert res_jurusan.status_code == 200
     items = res_jurusan.json()["items"]
-    assert any(it["user_id"] == u_other.user_id for it in items)
-    assert not any(it["user_id"] == u_me.user_id for it in items)
+    assert any(it["user_id"] == u_other.user_id and it["is_self"] is False for it in items)
+    assert any(it["user_id"] == u_me.user_id and it["is_self"] is True for it in items)
 
 
 def test_search_wildcard_escaping(client: TestClient, db_session: Session):

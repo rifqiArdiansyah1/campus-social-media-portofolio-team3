@@ -180,35 +180,45 @@ export function ExploreScreen({ onNavigateToUserProfile }: ExploreScreenProps) {
             ) : searchItems.length > 0 ? (
               <View style={styles.resultGroup}>
                 {searchCategory === 'mahasiswa' &&
-                  (searchItems as StudentSearchResult[]).map((student) => (
-                    <TouchableOpacity
-                      key={student.user_id}
-                      style={styles.studentCard}
-                      activeOpacity={0.7}
-                      onPress={() => onNavigateToUserProfile(student.user_id)}
-                    >
-                      <View style={styles.studentAvatar}>
-                        <Text style={styles.studentAvatarText}>
-                          {getInitials(student.nama)}
-                        </Text>
-                      </View>
-                      <View style={styles.studentInfo}>
-                        <Text style={styles.studentName}>{student.nama}</Text>
-                        <Text style={styles.studentProdi}>
-                          {student.jurusan || 'Mahasiswa'} {student.angkatan ? `• ${student.angkatan}` : ''}
-                        </Text>
-                        {Boolean(student.skills && student.skills.length > 0) && (
-                          <View style={styles.studentSkillChips}>
-                            {student.skills!.slice(0, 3).map((s, idx) => (
-                              <Text key={idx} style={styles.studentSkillChip}>
-                                #{s.nama}
-                              </Text>
-                            ))}
+                  (searchItems as StudentSearchResult[]).map((student) => {
+                    const isSelf = Boolean(student.is_self || student.friendship_status === 'self');
+                    return (
+                      <TouchableOpacity
+                        key={student.user_id}
+                        style={styles.studentCard}
+                        activeOpacity={0.7}
+                        onPress={() => onNavigateToUserProfile(student.user_id)}
+                      >
+                        <View style={styles.studentAvatar}>
+                          <Text style={styles.studentAvatarText}>
+                            {getInitials(student.nama)}
+                          </Text>
+                        </View>
+                        <View style={styles.studentInfo}>
+                          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <Text style={styles.studentName}>{student.nama}</Text>
+                            {isSelf && (
+                              <View style={styles.selfBadge}>
+                                <Text style={styles.selfBadgeText}>Anda</Text>
+                              </View>
+                            )}
                           </View>
-                        )}
-                      </View>
-                    </TouchableOpacity>
-                  ))}
+                          <Text style={styles.studentProdi}>
+                            {student.jurusan || 'Mahasiswa'} {student.angkatan ? `• ${student.angkatan}` : ''}
+                          </Text>
+                          {Boolean(student.skills && student.skills.length > 0) && (
+                            <View style={styles.studentSkillChips}>
+                              {student.skills!.slice(0, 3).map((s, idx) => (
+                                <Text key={idx} style={styles.studentSkillChip}>
+                                  #{s.nama}
+                                </Text>
+                              ))}
+                            </View>
+                          )}
+                        </View>
+                      </TouchableOpacity>
+                    );
+                  })}
 
                 {searchCategory === 'postingan' &&
                   (searchItems as PostSearchResult[]).map((post) => (
@@ -503,5 +513,17 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: colors.onSurface,
     lineHeight: 18,
+  },
+  selfBadge: {
+    backgroundColor: '#EEF2FF',
+    paddingHorizontal: 6,
+    paddingVertical: 1,
+    borderRadius: 6,
+    marginLeft: 6,
+  },
+  selfBadgeText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: colors.primary,
   },
 });

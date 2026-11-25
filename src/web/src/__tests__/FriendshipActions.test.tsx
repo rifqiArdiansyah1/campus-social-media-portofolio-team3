@@ -1,6 +1,6 @@
 import React from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, within } from "@testing-library/react";
 import { FriendRequestWidget, FriendRequestItem } from "@/components/features/FriendRequestWidget";
 import ProfileDetailPage from "@/app/(app)/profile/[id]/page";
 import FriendsPage from "@/app/(app)/friends/page";
@@ -131,6 +131,9 @@ describe("M06 Friendship & Social Interactions Tests", () => {
           friendship_status: "none",
           friendship_id: null,
           blocked_by_me: false,
+          can_friend: true,
+          can_block: true,
+          can_unblock: false,
           nim: null,
           email: null,
           is_visible: true,
@@ -173,6 +176,9 @@ describe("M06 Friendship & Social Interactions Tests", () => {
           friendship_status: "friends",
           friendship_id: 88,
           blocked_by_me: false,
+          can_friend: false,
+          can_block: true,
+          can_unblock: false,
           nim: null,
           email: null,
           is_visible: true,
@@ -211,6 +217,9 @@ describe("M06 Friendship & Social Interactions Tests", () => {
           friendship_status: "none",
           friendship_id: null,
           blocked_by_me: false,
+          can_block: true,
+          can_friend: true,
+          can_unblock: false,
           nim: null,
           email: null,
           is_visible: true,
@@ -241,6 +250,106 @@ describe("M06 Friendship & Social Interactions Tests", () => {
       });
     });
 
+    it("renders unblock banner and executes unblock in dialog on blocked profile", async () => {
+      let isBlocked = true;
+
+      (apiClient.get as any).mockImplementation((url: string) => {
+        if (url === "/users/202") {
+          if (isBlocked) {
+            return Promise.resolve({
+              data: {
+                user_id: 202,
+                nama: "Budi Yang Diblokir",
+                jurusan: null,
+                angkatan: null,
+                bio: null,
+                kontak_url: null,
+                role: "mahasiswa",
+                created_at: new Date().toISOString(),
+                skills: [],
+                friendship_status: "blocked",
+                friendship_id: null,
+                blocked_by_me: true,
+                can_block: false,
+                can_friend: false,
+                can_unblock: true,
+                nim: null,
+                email: null,
+                is_visible: false,
+              },
+            });
+          } else {
+            return Promise.resolve({
+              data: {
+                user_id: 202,
+                nama: "Budi Yang Diblokir",
+                jurusan: "Teknik Informatika",
+                angkatan: 2022,
+                bio: "Sudah berdamai",
+                kontak_url: null,
+                role: "mahasiswa",
+                created_at: new Date().toISOString(),
+                skills: [],
+                friendship_status: "none",
+                friendship_id: null,
+                blocked_by_me: false,
+                can_block: true,
+                can_friend: true,
+                can_unblock: false,
+                nim: null,
+                email: null,
+                is_visible: true,
+              },
+            });
+          }
+        }
+        if (url.startsWith("/portfolio")) {
+          return Promise.resolve({ data: [] });
+        }
+        if (url.includes("/skpi-summary")) {
+          return Promise.resolve({ data: null });
+        }
+        return Promise.resolve({ data: {} });
+      });
+
+      (apiClient.delete as any).mockImplementation(async (url: string) => {
+        if (url === "/blocks/202") {
+          isBlocked = false;
+        }
+        return { data: {} };
+      });
+
+      render(<ProfileDetailPage />);
+
+      expect(await screen.findByText("Budi Yang Diblokir")).toBeInTheDocument();
+      expect(screen.getByText(/Anda telah memblokir pengguna ini/i)).toBeInTheDocument();
+
+      const unblockBtn = screen.getByRole("button", { name: /Buka Blokir/i });
+      fireEvent.click(unblockBtn);
+
+      expect(screen.getByText(/Buka Blokir Budi Yang Diblokir\?/i)).toBeInTheDocument();
+      const confirmUnblockBtn = within(screen.getByRole("dialog")).getByRole("button", { name: "Buka Blokir" });
+      fireEvent.click(confirmUnblockBtn);
+
+      await waitFor(() => {
+        expect(apiClient.delete).toHaveBeenCalledWith("/blocks/202");
+        expect(screen.getByRole("button", { name: /Tambah Teman/i })).toBeInTheDocument();
+      });
+    });
+
+    it("renders neutral 'Profil Tidak Tersedia' on 404 (mutual block) without action CTA", async () => {
+      (apiClient.get as any).mockRejectedValueOnce({
+        response: { status: 404, data: { detail: "Pengguna tidak ditemukan" } },
+      });
+
+      render(<ProfileDetailPage />);
+
+      expect(await screen.findByText("Profil Tidak Tersedia")).toBeInTheDocument();
+      expect(screen.getByText("Profil tidak dapat ditemukan atau tidak tersedia saat ini.")).toBeInTheDocument();
+      expect(screen.queryByRole("button", { name: /Tambah Teman/i })).not.toBeInTheDocument();
+      expect(screen.queryByRole("button", { name: /Buka Blokir/i })).not.toBeInTheDocument();
+    });
+
     it("hides 'Tambah Teman' and renders academic supervisor badge when Kaprodi (moderator) views a student profile", async () => {
       mockCurrentUser = {
         id: 999,
@@ -266,6 +375,9 @@ describe("M06 Friendship & Social Interactions Tests", () => {
           friendship_status: "none",
           friendship_id: null,
           blocked_by_me: false,
+          can_friend: true,
+          can_block: true,
+          can_unblock: false,
           nim: null,
           email: null,
           is_visible: true,
@@ -311,6 +423,63 @@ describe("M06 Friendship & Social Interactions Tests", () => {
       expect(screen.getByText(/Sistem Informasi/i)).toBeInTheDocument();
       expect(screen.getByRole("tab", { name: /Permohonan Masuk/i })).toBeInTheDocument();
       expect(screen.getByRole("tab", { name: /Daftar Blokir/i })).toBeInTheDocument();
+    });
+
+    it("handles unblock in FriendsPage blocks tab with accessible inline action row", async () => {
+      // 1. Initial friends list fetch
+      (apiClient.get as any).mockResolvedValueOnce({
+        data: { items: [], total: 0, page: 1, limit: 20, total_pages: 1 },
+      });
+
+      render(<FriendsPage />);
+
+      // 2. Click "Daftar Blokir" tab
+      (apiClient.get as any).mockResolvedValueOnce({
+        data: {
+          items: [
+            {
+              block_id: 88,
+              blocked_id: 303,
+              nama: "Andi Terblokir",
+              jurusan: "Teknik Informatika",
+              angkatan: 2022,
+              alasan: "Spam",
+              created_at: new Date().toISOString(),
+            },
+          ],
+          total: 1,
+          page: 1,
+          limit: 20,
+          total_pages: 1,
+        },
+      });
+
+      const blocksTab = screen.getByRole("tab", { name: /Daftar Blokir/i });
+      fireEvent.click(blocksTab);
+
+      expect(await screen.findByText("Andi Terblokir")).toBeInTheDocument();
+      expect(screen.getByText(/Alasan: Spam/i)).toBeInTheDocument();
+
+      // 3. Click "Buka Blokir" button on the item
+      const unblockBtn = screen.getByRole("button", { name: /Buka blokir untuk Andi Terblokir/i });
+      fireEvent.click(unblockBtn);
+
+      // 4. Confirm in dialog
+      (apiClient.delete as any).mockResolvedValueOnce({});
+      // Probe target profile returns 200 with can_friend: true
+      (apiClient.get as any).mockResolvedValueOnce({
+        data: { can_friend: true },
+      });
+
+      const confirmBtn = screen.getByRole("button", { name: "Buka Blokir" });
+      fireEvent.click(confirmBtn);
+
+      await waitFor(() => {
+        expect(apiClient.delete).toHaveBeenCalledWith("/blocks/303");
+        expect(screen.getByRole("status")).toBeInTheDocument();
+        expect(screen.getByText(/Blokir terhadap/i)).toBeInTheDocument();
+        expect(screen.getByRole("button", { name: /Kirim Permintaan Teman/i })).toBeInTheDocument();
+      });
     });
   });
 });

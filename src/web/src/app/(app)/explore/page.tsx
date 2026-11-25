@@ -351,6 +351,7 @@ export default function ExplorePage() {
                       student={s}
                       onSkillClick={handleSkillClick}
                       onCollaborationInvite={(stud) => {
+                        if (stud.is_self || stud.user_id === user?.user_id) return;
                         setCollaborationCandidate({
                           user_id: String(stud.user_id),
                           name: stud.nama,

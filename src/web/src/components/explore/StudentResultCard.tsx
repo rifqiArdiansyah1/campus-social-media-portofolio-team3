@@ -22,6 +22,7 @@ export const StudentResultCard: React.FC<StudentResultCardProps> = ({
   const { user } = useAuth();
   const toast = useToast();
   const isStudent = user?.role === "mahasiswa";
+  const isSelf = Boolean(student.is_self || student.friendship_status === "self" || (user && user.user_id === student.user_id));
   const [friendStatus, setFriendStatus] = useState<string | null>(student.friendship_status);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -35,6 +36,7 @@ export const StudentResultCard: React.FC<StudentResultCardProps> = ({
     : "CF";
 
   const handleSendFriendRequest = async () => {
+    if (isSelf) return;
     try {
       setIsSubmitting(true);
       await apiClient.post("/friendships", {
@@ -80,7 +82,13 @@ export const StudentResultCard: React.FC<StudentResultCardProps> = ({
                 >
                   {student.nama}
                 </Link>
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                {isSelf ? (
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary/10 text-primary border border-primary/20">
+                    Anda
+                  </span>
+                ) : (
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                )}
               </div>
               <p className="text-xs text-slate-500 font-body truncate">
                 {student.jurusan || "Program Studi Kampus"}
@@ -130,11 +138,15 @@ export const StudentResultCard: React.FC<StudentResultCardProps> = ({
           href={`/profile/${student.user_id}`}
           className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
         >
-          <span>Lihat Portofolio</span>
+          <span>{isSelf ? "Lihat Profil Saya" : "Lihat Portofolio"}</span>
           <ExternalLink className="w-3.5 h-3.5" />
         </Link>
 
-        {isStudent ? (
+        {isSelf ? (
+          <span className="inline-flex items-center gap-1 text-xs text-primary bg-primary/10 px-2.5 py-1 rounded-lg border border-primary/20 font-semibold">
+            Profil Anda
+          </span>
+        ) : isStudent ? (
           friendStatus === "diterima" ? (
             <span className="inline-flex items-center gap-1 text-xs text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200 font-medium">
               <Check className="w-3.5 h-3.5" />

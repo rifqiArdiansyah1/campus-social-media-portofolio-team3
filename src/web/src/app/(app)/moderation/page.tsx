@@ -29,6 +29,7 @@ import {
 } from "lucide-react";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import { apiClient } from "@/lib/api";
+import { getApiErrorMessage } from "@/lib/utils";
 import { useToast } from "@/context/ToastContext";
 import { TakedownPostModal } from "@/components/features/TakedownPostModal";
 import { PortfolioStatusBadge } from "@/components/common/PortfolioStatusBadge";
@@ -299,7 +300,7 @@ function ModerationAuditPageContent() {
       const res = await apiClient.get<ModerationQueueItem[]>("/moderation/queue");
       setQueue(res.data);
     } catch (err: any) {
-      toast.error(err.response?.data?.detail || "Gagal memuat antrean tinjauan.");
+      toast.error(getApiErrorMessage(err, "Gagal memuat antrean tinjauan."));
     } finally {
       setIsLoadingQueue(false);
     }
@@ -334,7 +335,7 @@ function ModerationAuditPageContent() {
         setHasMoreReports(res.data.length === REPORT_LIMIT);
         setReportOffset(offset);
       } catch (err: any) {
-        toast.error(err.response?.data?.detail || "Gagal memuat daftar laporan pengguna.");
+        toast.error(getApiErrorMessage(err, "Gagal memuat daftar laporan pengguna."));
       } finally {
         setIsLoadingReports(false);
         setIsLoadingMore(false);
@@ -357,7 +358,7 @@ function ModerationAuditPageContent() {
       setPortfolioList(res.data.items);
       setTargetJurusan(res.data.jurusan || null);
     } catch (err: any) {
-      toast.error(err.response?.data?.detail || "Gagal memuat data tinjauan SKPI.");
+      toast.error(getApiErrorMessage(err, "Gagal memuat data tinjauan SKPI."));
     } finally {
       setIsLoadingPortfolio(false);
     }
@@ -431,13 +432,17 @@ function ModerationAuditPageContent() {
 
       toast.success(`Postingan #${decisionModal.post.post_id} berhasil ${actionLabels[decisionModal.action]}.`);
       setQueue((prev) => prev.filter((p) => p.post_id !== decisionModal.post?.post_id));
+      setReports((prev) => prev.filter((r) => r.post_id !== decisionModal.post?.post_id));
       setDecisionModal((prev) => ({ ...prev, isOpen: false }));
       fetchSummary();
+      if (activeTab === "reports") {
+        fetchReports(0, false);
+      }
     } catch (err: any) {
       setDecisionModal((prev) => ({
         ...prev,
         isSubmitting: false,
-        error: err.response?.data?.detail || "Gagal menyimpan keputusan moderasi.",
+        error: getApiErrorMessage(err, "Gagal menyimpan keputusan moderasi."),
       }));
     }
   };
@@ -460,7 +465,7 @@ function ModerationAuditPageContent() {
       setReports((prev) => prev.filter((r) => r.report_id !== reportId));
       fetchSummary();
     } catch (err: any) {
-      toast.error(err.response?.data?.detail || "Gagal memperbarui status laporan.");
+      toast.error(getApiErrorMessage(err, "Gagal memperbarui status laporan."));
     }
   };
 
@@ -473,8 +478,25 @@ function ModerationAuditPageContent() {
   };
 
   const handleTakedownSuccess = (takedownPostId: number) => {
-    setReports((prev) => prev.filter((r) => r.post_id !== takedownPostId));
+    setQueue((prev) => prev.filter((p) => p.post_id !== takedownPostId));
+    if (reportStatusFilter === "baru" || reportStatusFilter === "diproses") {
+      setReports((prev) => prev.filter((r) => r.post_id !== takedownPostId));
+    } else {
+      setReports((prev) =>
+        prev.map((r) =>
+          r.post_id === takedownPostId
+            ? {
+                ...r,
+                status: "selesai",
+                tindakan_diambil: "postingan_dihapus",
+                post: r.post ? { ...r.post, status: "dihapus", gambar_url: null } : null,
+              }
+            : r
+        )
+      );
+    }
     fetchSummary();
+    fetchReports(0, false);
   };
 
   // ==========================================
@@ -770,7 +792,7 @@ function ModerationAuditPageContent() {
             }`}
           >
             <Flag className="w-3.5 h-3.5" />
-            <span>Laporan Sivitas ({reports.length})</span>
+            <span>Laporan Sivitas ({activeTab === "reports" ? reports.length : metrics.laporan_baru})</span>
           </button>
 
           <button
@@ -1060,8 +1082,40 @@ function ModerationAuditPageContent() {
                       </p>
                     </div>
 
-                    {/* Full Context Post Preview */}
-                    {report.post ? (
+                    {/* Takedown Post Banner or Full Context Post Preview */}
+                    {report.post?.status === "dihapus" || report.tindakan_diambil === "postingan_dihapus" ? (
+                      <div className="p-4 rounded-xl border border-rose-200 bg-rose-50/60 space-y-2.5">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                          <div className="flex items-center gap-2 text-rose-800 font-bold text-xs">
+                            <AlertOctagon className="w-4 h-4 text-rose-600 flex-shrink-0" />
+                            <span>Konten Postingan Telah Di-takedown</span>
+                          </div>
+                          <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-rose-100 text-rose-800 self-start sm:self-auto">
+                            Status Post: dihapus
+                          </span>
+                        </div>
+
+                        <p className="text-xs text-slate-600 leading-relaxed">
+                          Konten postingan ini telah di-takedown oleh tim moderasi kampus dan disembunyikan secara permanen dari linimasa publik. Berkas media terkait telah dicabut dari penyimpanan.
+                        </p>
+
+                        {report.catatan_tinjauan && (
+                          <div className="p-2.5 rounded-lg bg-white/80 border border-rose-100 text-xs text-slate-700">
+                            <span className="font-semibold text-slate-800">Catatan Tindakan: </span>
+                            <span className="italic">{report.catatan_tinjauan}</span>
+                          </div>
+                        )}
+
+                        <details className="text-[11px] text-slate-500 cursor-pointer pt-1">
+                          <summary className="hover:text-slate-800 font-medium select-none">
+                            Lihat kutipan teks terarsip
+                          </summary>
+                          <div className="mt-2 p-2.5 rounded-lg bg-white border border-slate-200 text-slate-600 italic">
+                            &quot;{report.post?.isi || report.post_isi_snippet || "Kutipan tidak tersedia."}&quot;
+                          </div>
+                        </details>
+                      </div>
+                    ) : report.post ? (
                       <div className="p-4 rounded-xl border border-slate-200 bg-white space-y-3">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
@@ -1082,8 +1136,6 @@ function ModerationAuditPageContent() {
                             className={`text-[10px] font-semibold px-2 py-0.5 rounded ${
                               report.post.status === "tayang"
                                 ? "bg-emerald-100 text-emerald-800"
-                                : report.post.status === "dihapus"
-                                ? "bg-rose-100 text-rose-800"
                                 : "bg-amber-100 text-amber-800"
                             }`}
                           >
@@ -1117,7 +1169,7 @@ function ModerationAuditPageContent() {
 
                     {/* Actions */}
                     <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-100">
-                      {report.status !== "selesai" && (
+                      {report.status !== "selesai" && report.post?.status !== "dihapus" && report.tindakan_diambil !== "postingan_dihapus" && (
                         <button
                           type="button"
                           onClick={() => handleOpenTakedownForReport(report)}
@@ -1128,7 +1180,14 @@ function ModerationAuditPageContent() {
                         </button>
                       )}
 
-                      {report.status === "baru" && (
+                      {(report.post?.status === "dihapus" || report.tindakan_diambil === "postingan_dihapus") && (
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-rose-50 border border-rose-200 text-rose-700">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-rose-600" />
+                          <span>Konten Sudah Di-takedown</span>
+                        </span>
+                      )}
+
+                      {report.status === "baru" && report.post?.status !== "dihapus" && report.tindakan_diambil !== "postingan_dihapus" && (
                         <button
                           type="button"
                           onClick={() =>
@@ -1141,7 +1200,7 @@ function ModerationAuditPageContent() {
                         </button>
                       )}
 
-                      {report.status !== "diabaikan" && report.status !== "selesai" && (
+                      {report.status !== "diabaikan" && report.status !== "selesai" && report.post?.status !== "dihapus" && report.tindakan_diambil !== "postingan_dihapus" && (
                         <button
                           type="button"
                           onClick={() =>

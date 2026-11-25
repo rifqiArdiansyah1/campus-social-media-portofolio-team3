@@ -94,7 +94,6 @@ def search_entities(
             )
             .filter(
                 User.role == "mahasiswa",
-                User.user_id != current_user.user_id,
             )
         )
 
@@ -167,6 +166,8 @@ def search_entities(
                                 tipe=us.skill.tipe or "skill",
                             )
                         )
+            is_self = (u.user_id == current_user.user_id)
+            friendship_status = "self" if is_self else friendship_map.get(u.user_id)
             student_items.append(
                 StudentSearchResult(
                     user_id=u.user_id,
@@ -177,7 +178,8 @@ def search_entities(
                     bio=u.bio,
                     kontak_url=u.kontak_url,
                     skills=skills_list,
-                    friendship_status=friendship_map.get(u.user_id),
+                    friendship_status=friendship_status,
+                    is_self=is_self,
                     created_at=u.created_at,
                 )
             )

@@ -93,12 +93,25 @@ apiClient.interceptors.response.use(
       triggerUnauthorized();
     }
 
-    const detail = error.response?.data?.detail;
-    if (typeof detail === 'string') {
-      error.message = detail;
-    } else if (Array.isArray(detail)) {
-      error.message = detail
-        .map((d: any) => d.msg || JSON.stringify(d))
+    const data = error.response?.data;
+    if (data && Array.isArray(data.errors) && data.errors.length > 0) {
+      error.message = data.errors
+        .map((d: any) => {
+          const field = Array.isArray(d.loc) && d.loc.length > 0 ? String(d.loc[d.loc.length - 1]) : '';
+          const rawMsg = d.msg || 'Format data tidak valid';
+          const cleanMsg = rawMsg.replace(/^Value error,\s*/i, '');
+          return field ? `${field}: ${cleanMsg}` : cleanMsg;
+        })
+        .filter(Boolean)
+        .join('; ');
+    } else if (typeof data?.detail === 'string') {
+      error.message = data.detail;
+    } else if (Array.isArray(data?.detail)) {
+      error.message = data.detail
+        .map((d: any) => {
+          const rawMsg = d.msg || JSON.stringify(d);
+          return rawMsg.replace(/^Value error,\s*/i, '');
+        })
         .filter(Boolean)
         .join(', ');
     } else if (error.message === 'Network Error' || !error.response) {

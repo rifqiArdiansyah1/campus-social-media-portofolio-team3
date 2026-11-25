@@ -1,5 +1,6 @@
 import logging
 import os
+import re
 from contextlib import asynccontextmanager
 
 from fastapi import Depends, FastAPI, Request
@@ -77,12 +78,25 @@ async def app_error_handler(request: Request, exc: AppError):
 
 @app.exception_handler(RequestValidationError)
 async def validation_error_handler(request: Request, exc: RequestValidationError):
+    errors = exc.errors()
+    messages = []
+    for err in errors:
+        loc = [str(x) for x in err.get("loc", []) if x != "body"]
+        field_name = loc[-1] if loc else ""
+        raw_msg = err.get("msg", "Format data tidak valid")
+        clean_msg = re.sub(r"^Value error,\s*", "", raw_msg, flags=re.IGNORECASE)
+        if field_name:
+            messages.append(f"{field_name}: {clean_msg}")
+        else:
+            messages.append(clean_msg)
+    
+    error_detail = "; ".join(messages) if messages else "Validasi input gagal"
     return JSONResponse(
         status_code=422,
         content={
-            "detail": "Validasi input gagal",
+            "detail": error_detail,
             "code": "VALIDATION_ERROR",
-            "errors": jsonable_encoder(exc.errors())
+            "errors": jsonable_encoder(errors)
         }
     )
 

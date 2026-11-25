@@ -883,3 +883,266 @@ def test_portfolio_reviews_history_and_duplicate_check(client, db_session: Sessi
     assert match_admin["author_nama"] == mhs_ti_1.nama
 
 
+def test_draft_portfolio_lifecycle_and_completeness(client, db_session: Session):
+    student = create_user(db_session, nama="Draft User", role="mahasiswa")
+
+    # 1. Create minimal draft
+    payload = {
+        "judul": "Draft Sertifikat Pelatihan",
+        "kategori": "sertifikat",
+    }
+    res = client.post("/api/v1/portfolio", json=payload, headers=auth_headers(student))
+    assert res.status_code == 201
+    item = res.json()
+    assert item["status_verifikasi"] == "draft"
+    assert item["is_complete"] is False
+    assert set(item["missing_fields"]) == {"nomor_dokumen", "penerbit", "tanggal_terbit", "file_url"}
+    item_id = item["portfolio_id"]
+
+    # 2. Premature submit fails with 422
+    res_submit = client.post(f"/api/v1/portfolio/{item_id}/submit", headers=auth_headers(student))
+    assert res_submit.status_code == 422
+    assert "INCOMPLETE_DOCUMENT_FIELDS" in res_submit.text
+
+    # 3. Incremental update (e.g. title and deskripsi only)
+    res_update1 = client.patch(
+        f"/api/v1/portfolio/{item_id}",
+        json={"judul": "Draft Sertifikat Cloud Computing", "deskripsi": "Pelatihan intensif 40 jam"},
+        headers=auth_headers(student),
+    )
+    assert res_update1.status_code == 200
+    assert res_update1.json()["judul"] == "Draft Sertifikat Cloud Computing"
+    assert res_update1.json()["is_complete"] is False
+
+    # 4. Upload valid PDF document
+    pdf_bytes = b"%PDF-1.4\n1 0 obj\n<<>>\nendobj\ntrailer\n<<>>\n%%EOF"
+    up_res = client.post(
+        "/api/v1/uploads/portfolio-doc",
+        files={"file": ("cert.pdf", pdf_bytes, "application/pdf")},
+        headers=auth_headers(student),
+    )
+    assert up_res.status_code in (200, 201)
+    file_path = up_res.json()["path"]
+
+    # 5. Complete all fields
+    res_update2 = client.patch(
+        f"/api/v1/portfolio/{item_id}",
+        json={
+            "nomor_dokumen": "CERT-AWS-999",
+            "penerbit": "Amazon Web Services",
+            "tanggal_terbit": "2024-02-10",
+            "file_url": file_path,
+        },
+        headers=auth_headers(student),
+    )
+    assert res_update2.status_code == 200
+    completed = res_update2.json()
+    assert completed["is_complete"] is True
+    assert completed["missing_fields"] == []
+
+    # 6. Update draft again with unchanged file_url (should not fail)
+    res_update3 = client.patch(
+        f"/api/v1/portfolio/{item_id}",
+        json={"deskripsi": "Deskripsi diperbarui", "file_url": file_path},
+        headers=auth_headers(student),
+    )
+    assert res_update3.status_code == 200
+    assert res_update3.json()["deskripsi"] == "Deskripsi diperbarui"
+
+    # 7. Submit now succeeds
+    res_submit_ok = client.post(f"/api/v1/portfolio/{item_id}/submit", headers=auth_headers(student))
+    assert res_submit_ok.status_code == 200
+    assert res_submit_ok.json()["status_verifikasi"] == "menunggu_review"
+
+
+def test_edit_draft_proyek_and_rejection_edit(client, db_session: Session):
+    student = create_user(db_session, role="mahasiswa", jurusan="Teknik Informatika")
+    kaprodi = create_user(db_session, role="moderator", jurusan="Teknik Informatika")
+
+    # 1. Create proyek item
+    res = client.post(
+        "/api/v1/portfolio",
+        json={
+            "judul": "Proyek Sistem Informasi Akademik",
+            "kategori": "proyek",
+            "deskripsi": "Aplikasi berbasis web",
+            "tautan_url": "https://github.com/student/sia",
+        },
+        headers=auth_headers(student),
+    )
+    assert res.status_code == 201
+    item = res.json()
+    assert item["kategori"] == "proyek"
+    pid = item["portfolio_id"]
+
+    # 2. Edit draft proyek: change category to sertifikat and update title
+    res_edit = client.patch(
+        f"/api/v1/portfolio/{pid}",
+        json={
+            "judul": "Sertifikat Pelatihan Web",
+            "kategori": "sertifikat",
+            "deskripsi": "Pelatihan intensif",
+        },
+        headers=auth_headers(student),
+    )
+    assert res_edit.status_code == 200
+    updated = res_edit.json()
+    assert updated["judul"] == "Sertifikat Pelatihan Web"
+    assert updated["kategori"] == "sertifikat"
+    assert updated["is_complete"] is False
+
+    # 3. Complete fields and upload file, submit to review
+    pdf_bytes = b"%PDF-1.4\n1 0 obj\n<<>>\nendobj\ntrailer\n<<>>\n%%EOF"
+    up_res = client.post(
+        "/api/v1/uploads/portfolio-doc",
+        files={"file": ("cert.pdf", pdf_bytes, "application/pdf")},
+        headers=auth_headers(student),
+    )
+    assert up_res.status_code in (200, 201)
+    file_path = up_res.json()["path"]
+
+    client.patch(
+        f"/api/v1/portfolio/{pid}",
+        json={
+            "nomor_dokumen": "CERT-WEB-123",
+            "penerbit": "Dicoding Indonesia",
+            "tanggal_terbit": "2024-03-01",
+            "file_url": file_path,
+        },
+        headers=auth_headers(student),
+    )
+    submit_res = client.post(f"/api/v1/portfolio/{pid}/submit", headers=auth_headers(student))
+    assert submit_res.status_code == 200
+
+    # 4. Kaprodi rejects with note
+    reject_res = client.patch(
+        f"/api/v1/portfolio/{pid}/review",
+        json={"status_verifikasi": "ditolak", "catatan_verifikasi": "Mohon perbaiki nomor sertifikat."},
+        headers=auth_headers(kaprodi),
+    )
+    assert reject_res.status_code == 200
+    assert reject_res.json()["status_verifikasi"] == "ditolak"
+
+    # 5. Student can edit rejected item (e.g. fix nomor_dokumen)
+    fix_res = client.patch(
+        f"/api/v1/portfolio/{pid}",
+        json={"nomor_dokumen": "CERT-WEB-123-REV", "file_url": file_path},
+        headers=auth_headers(student),
+    )
+    assert fix_res.status_code == 200
+    assert fix_res.json()["nomor_dokumen"] == "CERT-WEB-123-REV"
+
+
+def test_draft_artikel_ilmiah_partial_doi_and_completeness(client, db_session: Session):
+    student = create_user(db_session, role="mahasiswa", jurusan="Teknik Informatika")
+
+    # 1. Create artikel_ilmiah without DOI during drafting
+    res = client.post(
+        "/api/v1/portfolio",
+        json={
+            "judul": "Studi Komparasi Algoritma Penjadwalan",
+            "kategori": "artikel_ilmiah",
+        },
+        headers=auth_headers(student),
+    )
+    assert res.status_code == 201
+    item = res.json()
+    assert item["kategori"] == "artikel_ilmiah"
+    assert item["is_complete"] is False
+    assert "nomor_dokumen" in item["missing_fields"]
+    pid = item["portfolio_id"]
+
+    # 2. Premature submit is blocked by completeness
+    res_submit = client.post(f"/api/v1/portfolio/{pid}/submit", headers=auth_headers(student))
+    assert res_submit.status_code == 422
+    assert "INCOMPLETE_DOCUMENT_FIELDS" in res_submit.text
+
+    # 3. Invalid DOI patch returns 422
+    res_bad_doi = client.patch(
+        f"/api/v1/portfolio/{pid}",
+        json={"nomor_dokumen": "bukan-format-doi"},
+        headers=auth_headers(student),
+    )
+    assert res_bad_doi.status_code == 422
+
+    # 4. Patch draft with valid DOI format and complete other required fields
+    pdf_bytes = b"%PDF-1.4\n1 0 obj\n<<>>\nendobj\ntrailer\n<<>>\n%%EOF"
+    up_res = client.post(
+        "/api/v1/uploads/portfolio-doc",
+        files={"file": ("paper.pdf", pdf_bytes, "application/pdf")},
+        headers=auth_headers(student),
+    )
+    assert up_res.status_code in (200, 201)
+    file_path = up_res.json()["path"]
+
+    res_patch = client.patch(
+        f"/api/v1/portfolio/{pid}",
+        json={
+            "nomor_dokumen": "https://doi.org/10.1145/3372278.3390678",
+            "penerbit": "ACM SIGCSE 2024",
+            "tanggal_terbit": "2024-05-15",
+            "file_url": file_path,
+        },
+        headers=auth_headers(student),
+    )
+    assert res_patch.status_code == 200
+    patched = res_patch.json()
+    assert patched["nomor_dokumen"] == "10.1145/3372278.3390678"
+    assert patched["is_complete"] is True
+    assert patched["missing_fields"] == []
+
+    # 5. Now submit succeeds
+    res_submit_ok = client.post(f"/api/v1/portfolio/{pid}/submit", headers=auth_headers(student))
+    assert res_submit_ok.status_code == 200
+    assert res_submit_ok.json()["status_verifikasi"] == "menunggu_review"
+
+
+def test_save_artikel_ilmiah_various_formats_and_error_detail(client, db_session: Session):
+    student = create_user(db_session, role="mahasiswa", jurusan="Teknik Informatika")
+
+    # 1. Valid tautan_url & date parsing DD/MM/YYYY
+    res = client.post(
+        "/api/v1/portfolio",
+        json={
+            "judul": "Publikasi Riset LLM Kampus",
+            "kategori": "artikel_ilmiah",
+            "tautan_url": "https://journal.campus.ac.id/paper/123",
+            "tanggal_terbit": "15/01/2024",
+        },
+        headers=auth_headers(student),
+    )
+    assert res.status_code == 201
+    data = res.json()
+    assert data["tautan_url"] == "https://journal.campus.ac.id/paper/123"
+    assert data["tanggal_terbit"] == "2024-01-15"
+    assert data["kategori"] == "artikel_ilmiah"
+
+    # 2. DOI with 'doi: ' and trailing dot is canonicalized
+    pid = data["portfolio_id"]
+    res_patch = client.patch(
+        f"/api/v1/portfolio/{pid}",
+        json={"nomor_dokumen": "doi: 10.1145/3372278.3390678."},
+        headers=auth_headers(student),
+    )
+    assert res_patch.status_code == 200
+    assert res_patch.json()["nomor_dokumen"] == "10.1145/3372278.3390678"
+
+    # 3. Invalid DOI returns descriptive detail with field name
+    res_bad = client.post(
+        "/api/v1/portfolio",
+        json={
+            "judul": "Paper Cacat Format",
+            "kategori": "artikel_ilmiah",
+            "nomor_dokumen": "SK-102/KEM/2024",
+        },
+        headers=auth_headers(student),
+    )
+    assert res_bad.status_code == 422
+    err_body = res_bad.json()
+    assert "Format DOI tidak valid" in err_body["detail"]
+    assert err_body["detail"] != "Validasi input gagal"
+
+
+
+
+

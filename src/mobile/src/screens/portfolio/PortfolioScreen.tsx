@@ -34,6 +34,7 @@ export function PortfolioScreen({ onNavigateToDetail }: PortfolioScreenProps) {
   const queryClient = useQueryClient();
   const [selectedStatus, setSelectedStatus] = useState<StatusFilter>('all');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState<PortfolioDetailResponse | null>(null);
 
   // 1. Fetch SKPI Summary
   const { data: skpiSummary, refetch: refetchSummary } = useQuery<SkpiSummaryResponse>({
@@ -92,6 +93,40 @@ export function PortfolioScreen({ onNavigateToDetail }: PortfolioScreenProps) {
     );
   };
 
+  // 4. Delete Portfolio Mutation
+  const deletePortfolioMutation = useMutation({
+    mutationFn: async (id: number) => {
+      await apiClient.delete(`/portfolio/${id}`);
+    },
+    onSuccess: () => {
+      Alert.alert('Berhasil', 'Portofolio berhasil dihapus.');
+      queryClient.invalidateQueries({ queryKey: ['portfolio'] });
+    },
+    onError: (err: any) => {
+      Alert.alert('Gagal Menghapus', err?.message || 'Terjadi kesalahan saat menghapus portofolio.');
+    },
+  });
+
+  const handleDeleteItem = (item: PortfolioDetailResponse) => {
+    Alert.alert(
+      'Hapus Portofolio',
+      `Hapus karya "${item.judul}"? Tindakan ini tidak dapat dibatalkan.`,
+      [
+        { text: 'Batal', style: 'cancel' },
+        {
+          text: 'Hapus',
+          style: 'destructive',
+          onPress: () => deletePortfolioMutation.mutate(item.portfolio_id),
+        },
+      ]
+    );
+  };
+
+  const handleEditItem = (item: PortfolioDetailResponse) => {
+    setEditingItem(item);
+    setIsModalOpen(true);
+  };
+
   const statusFilters: { key: StatusFilter; label: string }[] = [
     { key: 'all', label: 'Semua' },
     { key: 'terverifikasi', label: 'Terverifikasi' },
@@ -136,7 +171,10 @@ export function PortfolioScreen({ onNavigateToDetail }: PortfolioScreenProps) {
       {/* Action Add Button */}
       <Button
         title="+ Tambah Karya Portofolio"
-        onPress={() => setIsModalOpen(true)}
+        onPress={() => {
+          setEditingItem(null);
+          setIsModalOpen(true);
+        }}
         style={styles.addPortBtn}
       />
 
@@ -180,6 +218,8 @@ export function PortfolioScreen({ onNavigateToDetail }: PortfolioScreenProps) {
             item={item}
             onPress={() => onNavigateToDetail?.(item.portfolio_id)}
             onSubmitReview={handleSubmitForReview}
+            onEdit={handleEditItem}
+            onDelete={handleDeleteItem}
           />
         )}
         ListHeaderComponent={renderHeader()}
@@ -189,7 +229,10 @@ export function PortfolioScreen({ onNavigateToDetail }: PortfolioScreenProps) {
               title="Belum Ada Karya Portofolio"
               description="Catat prestasi lomba, sertifikasi keahlian, atau proyek aplikasi untuk mengumpulkan poin SKPI Anda!"
               actionTitle="Tambah Portofolio Sekarang"
-              onAction={() => setIsModalOpen(true)}
+              onAction={() => {
+                setEditingItem(null);
+                setIsModalOpen(true);
+              }}
             />
           ) : (
             <View style={styles.loadingContainer}>
@@ -210,17 +253,25 @@ export function PortfolioScreen({ onNavigateToDetail }: PortfolioScreenProps) {
         }
       />
 
-      {/* Modal Tambah Portofolio */}
+      {/* Modal Tambah/Ubah Portofolio */}
       <Modal
         visible={isModalOpen}
         animationType="slide"
         transparent
-        onRequestClose={() => setIsModalOpen(false)}
+        onRequestClose={() => {
+          setIsModalOpen(false);
+          setEditingItem(null);
+        }}
       >
         <CreatePortfolioModal
-          onClose={() => setIsModalOpen(false)}
+          initialItem={editingItem}
+          onClose={() => {
+            setIsModalOpen(false);
+            setEditingItem(null);
+          }}
           onSuccess={() => {
             setIsModalOpen(false);
+            setEditingItem(null);
             queryClient.invalidateQueries({ queryKey: ['portfolio'] });
           }}
         />

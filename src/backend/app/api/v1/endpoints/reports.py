@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from typing import List, Literal, Optional
 
 from fastapi import APIRouter, Depends, Query, status
-from sqlalchemy import func
+from sqlalchemy import func, or_
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session, joinedload
 
@@ -43,9 +43,11 @@ def format_reported_post_brief(post: Optional[Post]) -> Optional[ReportedPostBri
             jurusan=post.user.jurusan,
             role=post.user.role,
         )
-    gambar_url = post.gambar_url
-    if gambar_url and not (gambar_url.startswith("http://") or gambar_url.startswith("https://")):
-        gambar_url = storage_service.get_public_url(settings.POST_IMAGES_BUCKET, gambar_url)
+    gambar_url = None
+    if not (post.is_deleted or post.status == "dihapus"):
+        gambar_url = post.gambar_url
+        if gambar_url and not (gambar_url.startswith("http://") or gambar_url.startswith("https://")):
+            gambar_url = storage_service.get_public_url(settings.POST_IMAGES_BUCKET, gambar_url)
 
     return ReportedPostBrief(
         post_id=post.post_id,
@@ -170,6 +172,38 @@ def create_report(
     )
 
 
+def cleanup_dangling_reports(db: Session) -> int:
+    """
+    Idempotent cleanup: resolves active reports pointing to deleted posts.
+    """
+    now = datetime.utcnow()
+    subq = (
+        db.query(Post.post_id)
+        .filter(or_(Post.is_deleted == True, Post.status == "dihapus"))
+        .scalar_subquery()
+    )  # noqa: E712
+    updated = (
+        db.query(Report)
+        .filter(
+            Report.post_id.in_(subq),
+            Report.status.in_(["baru", "diproses"]),
+        )
+        .update(
+            {
+                Report.status: "selesai",
+                Report.tindakan_diambil: "postingan_dihapus",
+                Report.catatan_tinjauan: "Postingan terkait telah dihapus.",
+                Report.resolved_at: now,
+                Report.ditinjau_oleh: None,
+            },
+            synchronize_session="fetch",
+        )
+    )
+    if updated > 0:
+        db.commit()
+    return updated
+
+
 @router.get(
     "",
     response_model=List[ReportResponse],
@@ -187,6 +221,8 @@ def get_reports(
     db: Session = Depends(get_db),
     current_user: User = Depends(require_roles("moderator", "admin")),
 ):
+    cleanup_dangling_reports(db)
+
     query = (
         db.query(Report)
         .join(Post, Report.post_id == Post.post_id)
@@ -199,6 +235,9 @@ def get_reports(
 
     # Scoping by jurusan
     query = apply_moderation_scope(query, User, current_user)
+
+    if not status_filter or status_filter in ("baru", "diproses"):
+        query = query.filter(Post.is_deleted == False, Post.status != "dihapus")  # noqa: E712
 
     if status_filter:
         query = query.filter(Report.status == status_filter)

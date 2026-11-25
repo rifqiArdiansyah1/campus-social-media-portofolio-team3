@@ -51,6 +51,9 @@ vi.mock("@/lib/api", () => ({
     patch: vi.fn(),
     delete: vi.fn(),
   },
+  getApiErrorMessage: vi.fn((err: any, fallback = "Terjadi kesalahan pada sistem.") =>
+    err?.response?.data?.detail || fallback
+  ),
 }));
 
 describe("M08 Moderation & Reports Frontend Tests", () => {
@@ -205,6 +208,59 @@ describe("M08 Moderation & Reports Frontend Tests", () => {
     expect(await screen.findByText(/Laporan #88/i)).toBeInTheDocument();
     expect(screen.getByText(/Spam komersial jualan pulsa ilegal/i)).toBeInTheDocument();
     expect(screen.getByText("Pelapor Aktif")).toBeInTheDocument();
+  });
+
+  it("renders takedown banner and hides active post UI when report post is deleted", async () => {
+    mockAuthRole = "moderator";
+
+    (apiClient.get as any).mockImplementation((url: string) => {
+      if (url === "/moderation/summary") {
+        return Promise.resolve({
+          data: { post_menunggu: 0, laporan_baru: 1, portofolio_menunggu: 0 },
+        });
+      }
+      if (url === "/reports") {
+        return Promise.resolve({
+          data: [
+            {
+              report_id: 99,
+              post_id: 30,
+              pelapor_id: 105,
+              pelapor_nama: "Pelapor Kampus",
+              post_isi_snippet: "Teks pelanggaran berat",
+              alasan: "Ujaran kebencian SARA",
+              kategori_laporan: "konten_tidak_pantas",
+              status: "selesai",
+              tindakan_diambil: "postingan_dihapus",
+              catatan_tinjauan: "Takedown staf: Melanggar aturan etika.",
+              created_at: "2026-11-09T08:30:00Z",
+              post: {
+                post_id: 30,
+                isi: "Teks postingan yang telah dihapus",
+                gambar_url: null,
+                status: "dihapus",
+                created_at: "2026-11-09T08:00:00Z",
+                author: { nama: "Pelanggar", nim: "123", jurusan: "Teknik Informatika" },
+              },
+            },
+          ],
+        });
+      }
+      return Promise.resolve({ data: [] });
+    });
+
+    render(<ModerationAuditPage />);
+
+    const reportsTab = await screen.findByRole("button", { name: /Laporan Sivitas/i });
+    fireEvent.click(reportsTab);
+
+    expect(await screen.findByText(/Laporan #99/i)).toBeInTheDocument();
+    expect(screen.getByText("Konten Postingan Telah Di-takedown")).toBeInTheDocument();
+    expect(screen.getByText(/Catatan Tindakan:/i)).toBeInTheDocument();
+    expect(screen.getByText(/Takedown staf: Melanggar aturan etika./i)).toBeInTheDocument();
+    expect(screen.getByText("Konten Sudah Di-takedown")).toBeInTheDocument();
+    // Active takedown button should not be rendered
+    expect(screen.queryByRole("button", { name: /Tinjau & Takedown/i })).not.toBeInTheDocument();
   });
 
   it("switches to portfolio tab and loads pending SKPI portfolio items", async () => {

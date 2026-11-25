@@ -59,7 +59,7 @@
 | **FR-04** | Tinjauan & validasi berkas portofolio/SKPI oleh Kaprodi dan Admin. | Moderator, Admin | US-15 |
 | **FR-05** | Publikasi postingan feed berfokus pada kombinasi Foto + Teks. | Mahasiswa | US-04 |
 | **FR-06** | Kirim, terima, dan batalkan permintaan pertemanan mahasiswa. | Mahasiswa | US-13 |
-| **FR-07** | Fitur blokir profil untuk menyembunyikan interaksi & aktivitas pengguna yang diblokir. | Mahasiswa | US-14 |
+| **FR-07** | Fitur blokir dan buka blokir profil pengguna secara mandiri, pengelolaan daftar akun diblokir (dengan paginasi), serta isolasi visibilitas postingan, pencarian, dan rekomendasi secara timbal balik. | Mahasiswa | US-14 |
 | **FR-08** | Pelaporan postingan melanggar oleh mahasiswa. | Mahasiswa | US-11 |
 | **FR-09** | Tinjauan konten postingan dan antrean laporan oleh Moderator & Admin. | Moderator, Admin | US-10, US-16 |
 | **FR-10** | Fitur hapus/takedown postingan pelanggar oleh Moderator & Admin. | Moderator, Admin | US-17 |

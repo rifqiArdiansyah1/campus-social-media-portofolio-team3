@@ -16,6 +16,7 @@ export interface StudentSearchResult {
   kontak_url: string | null;
   skills: SearchSkillItem[];
   friendship_status: string | null;
+  is_self?: boolean;
   created_at: string;
 }
 

@@ -141,10 +141,13 @@ class PublicProfileResponse(BaseModel):
     role: str
     created_at: datetime
     skills: List[UserSkillResponse] = []
-    friendship_status: Literal["none", "pending_sent", "pending_received", "friends"] = "none"
+    friendship_status: Literal["none", "pending_sent", "pending_received", "friends", "blocked"] = "none"
     friendship_id: Optional[int] = None
     friendship_direction: Optional[Literal["incoming", "outgoing"]] = None
     blocked_by_me: bool = False
+    can_friend: bool = False
+    can_block: bool = False
+    can_unblock: bool = False
     nim: Optional[str] = None
     email: Optional[str] = None
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { FileText, ExternalLink, Calendar } from 'lucide-react-native';
+import { FileText, ExternalLink, Calendar, Edit3, Trash2, Send } from 'lucide-react-native';
 import { colors } from '../../theme/colors';
 import { PortfolioDetailResponse } from '../../api/types';
 import { SkpiBadge } from './SkpiBadge';
@@ -9,14 +9,19 @@ export interface PortfolioItemCardProps {
   item: PortfolioDetailResponse;
   onPress?: () => void;
   onSubmitReview?: (id: number) => void;
+  onEdit?: (item: PortfolioDetailResponse) => void;
+  onDelete?: (item: PortfolioDetailResponse) => void;
 }
 
 export function PortfolioItemCard({
   item,
   onPress,
   onSubmitReview,
+  onEdit,
+  onDelete,
 }: PortfolioItemCardProps) {
   const isDraft = item.status_verifikasi === 'draft';
+  const isRejected = item.status_verifikasi === 'ditolak';
 
   return (
     <TouchableOpacity
@@ -63,14 +68,45 @@ export function PortfolioItemCard({
         </View>
       )}
 
-      {isDraft && Boolean(onSubmitReview) && (
+      {(isDraft || isRejected) && (
         <View style={styles.footer}>
-          <TouchableOpacity
-            style={styles.submitBtn}
-            onPress={() => onSubmitReview?.(item.portfolio_id)}
-          >
-            <Text style={styles.submitBtnText}>Ajukan Verifikasi SKPI</Text>
-          </TouchableOpacity>
+          {isDraft && item.kategori !== 'proyek' && Boolean(onSubmitReview) && (
+            <TouchableOpacity
+              style={[
+                styles.submitBtn,
+                item.is_complete === false && styles.submitBtnDisabled,
+              ]}
+              disabled={item.is_complete === false}
+              onPress={() => onSubmitReview?.(item.portfolio_id)}
+            >
+              <Send size={13} color="#FFFFFF" style={{ marginRight: 6 }} />
+              <Text style={styles.submitBtnText}>Ajukan Verifikasi SKPI</Text>
+            </TouchableOpacity>
+          )}
+
+          <View style={styles.actionsRow}>
+            {Boolean(onEdit) && (
+              <TouchableOpacity
+                style={styles.actionBtnSecondary}
+                onPress={() => onEdit?.(item)}
+              >
+                <Edit3 size={13} color={colors.onSurface} style={{ marginRight: 4 }} />
+                <Text style={styles.actionBtnTextSecondary}>
+                  {isRejected ? 'Perbaiki' : 'Ubah Draf'}
+                </Text>
+              </TouchableOpacity>
+            )}
+
+            {Boolean(onDelete) && (
+              <TouchableOpacity
+                style={styles.actionBtnDanger}
+                onPress={() => onDelete?.(item)}
+              >
+                <Trash2 size={13} color={colors.danger} style={{ marginRight: 4 }} />
+                <Text style={styles.actionBtnTextDanger}>Hapus</Text>
+              </TouchableOpacity>
+            )}
+          </View>
         </View>
       )}
     </TouchableOpacity>
@@ -156,16 +192,58 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     borderTopWidth: 1,
     borderTopColor: '#F1F5F9',
+    gap: 8,
   },
   submitBtn: {
     backgroundColor: colors.primary,
     borderRadius: 8,
     paddingVertical: 8,
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
+  },
+  submitBtnDisabled: {
+    backgroundColor: '#CBD5E1',
   },
   submitBtnText: {
     color: '#FFFFFF',
     fontSize: 13,
     fontWeight: '600',
+  },
+  actionsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    gap: 8,
+  },
+  actionBtnSecondary: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: colors.borderSubtle,
+    backgroundColor: '#F8FAFC',
+  },
+  actionBtnTextSecondary: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: colors.onSurface,
+  },
+  actionBtnDanger: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#FECACA',
+    backgroundColor: '#FEF2F2',
+  },
+  actionBtnTextDanger: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: colors.danger,
   },
 });

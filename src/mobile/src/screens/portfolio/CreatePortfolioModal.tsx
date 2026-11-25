@@ -13,13 +13,16 @@ import {
 import * as DocumentPicker from 'expo-document-picker';
 import { X, UploadCloud, FileText, CheckCircle2 } from 'lucide-react-native';
 import { colors } from '../../theme/colors';
+import { buildPortfolioPayload } from '../../utils/portfolioPayload';
 import { apiClient } from '../../api/client';
 import { Input } from '../../components/common/Input';
 import { Button } from '../../components/common/Button';
+import { PortfolioDetailResponse } from '../../api/types';
 
 export interface CreatePortfolioModalProps {
   onClose: () => void;
   onSuccess: () => void;
+  initialItem?: PortfolioDetailResponse | null;
 }
 
 const CATEGORIES: { key: 'proyek' | 'skpi' | 'sertifikat' | 'artikel_ilmiah'; label: string }[] = [
@@ -29,16 +32,20 @@ const CATEGORIES: { key: 'proyek' | 'skpi' | 'sertifikat' | 'artikel_ilmiah'; la
   { key: 'artikel_ilmiah', label: 'Artikel Ilmiah / Riset' },
 ];
 
-export function CreatePortfolioModal({ onClose, onSuccess }: CreatePortfolioModalProps) {
-  const [judul, setJudul] = useState('');
-  const [kategori, setKategori] = useState<'proyek' | 'skpi' | 'sertifikat' | 'artikel_ilmiah'>('skpi');
-  const [deskripsi, setDeskripsi] = useState('');
-  const [penerbit, setPenerbit] = useState('');
-  const [nomorDokumen, setNomorDokumen] = useState('');
-  const [tanggalTerbit, setTanggalTerbit] = useState('');
-  const [tautanUrl, setTautanUrl] = useState('');
+export function CreatePortfolioModal({ onClose, onSuccess, initialItem }: CreatePortfolioModalProps) {
+  const isEditing = Boolean(initialItem);
+  const [judul, setJudul] = useState(initialItem?.judul || '');
+  const [kategori, setKategori] = useState<'proyek' | 'skpi' | 'sertifikat' | 'artikel_ilmiah'>(
+    (initialItem?.kategori as any) || 'skpi'
+  );
+  const [deskripsi, setDeskripsi] = useState(initialItem?.deskripsi || '');
+  const [penerbit, setPenerbit] = useState(initialItem?.penerbit || '');
+  const [nomorDokumen, setNomorDokumen] = useState(initialItem?.nomor_dokumen || '');
+  const [tanggalTerbit, setTanggalTerbit] = useState(initialItem?.tanggal_terbit || '');
+  const [tautanUrl, setTautanUrl] = useState(initialItem?.tautan_url || '');
 
   const [documentAsset, setDocumentAsset] = useState<{ uri: string; name: string } | null>(null);
+  const [existingFilePath, setExistingFilePath] = useState<string | null>(initialItem?.file_url || null);
   const [isUploadingDoc, setIsUploadingDoc] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
@@ -60,16 +67,24 @@ export function CreatePortfolioModal({ onClose, onSuccess }: CreatePortfolioModa
   };
 
   const handleSubmit = async () => {
-    if (!judul.trim()) {
-      setErrorMsg('Judul karya wajib diisi');
+    if (!judul.trim() || judul.trim().length < 3) {
+      setErrorMsg('Judul karya minimal 3 karakter');
       return;
+    }
+
+    if (kategori === 'artikel_ilmiah' && nomorDokumen.trim()) {
+      const match = nomorDokumen.trim().match(/10\.\d{4,9}\/[-._;()/:A-Za-z0-9<>+]+/);
+      if (!match) {
+        setErrorMsg('Format DOI tidak valid. Gunakan format 10.xxxx/... atau kosongkan jika draf belum memiliki DOI resmi.');
+        return;
+      }
     }
 
     setIsSubmitting(true);
     setErrorMsg('');
 
     try {
-      let uploadedFilePath: string | null = null;
+      let uploadedFilePath: string | null = existingFilePath;
 
       // 1. If document attached, upload first
       if (documentAsset) {
@@ -88,19 +103,26 @@ export function CreatePortfolioModal({ onClose, onSuccess }: CreatePortfolioModa
         setIsUploadingDoc(false);
       }
 
-      // 2. Submit Portfolio
-      await apiClient.post('/portfolio', {
-        judul: judul.trim(),
+      // 2. Submit Portfolio (Create or Patch)
+      const payload = buildPortfolioPayload({
+        judul,
         kategori,
-        deskripsi: deskripsi.trim() || null,
-        penerbit: penerbit.trim() || null,
-        nomor_dokumen: nomorDokumen.trim() || null,
-        tanggal_terbit: tanggalTerbit.trim() || null,
-        tautan_url: tautanUrl.trim() || null,
+        deskripsi,
+        penerbit,
+        nomor_dokumen: nomorDokumen,
+        tanggal_terbit: tanggalTerbit,
+        tautan_url: tautanUrl,
         file_url: uploadedFilePath,
       });
 
-      Alert.alert('Berhasil', 'Karya portofolio berhasil ditambahkan!');
+      if (isEditing && initialItem) {
+        await apiClient.patch(`/portfolio/${initialItem.portfolio_id}`, payload);
+        Alert.alert('Berhasil', 'Karya portofolio berhasil diperbarui!');
+      } else {
+        await apiClient.post('/portfolio', payload);
+        Alert.alert('Berhasil', 'Karya portofolio berhasil ditambahkan!');
+      }
+
       onSuccess();
     } catch (err: any) {
       setErrorMsg(err?.message || 'Gagal menyimpan karya portofolio.');
@@ -119,7 +141,7 @@ export function CreatePortfolioModal({ onClose, onSuccess }: CreatePortfolioModa
       <View style={styles.modalCard}>
         {/* Modal Header */}
         <View style={styles.header}>
-          <Text style={styles.title}>Tambah Karya Portofolio</Text>
+          <Text style={styles.title}>{isEditing ? 'Ubah Karya Portofolio' : 'Tambah Karya Portofolio'}</Text>
           <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
             <X size={20} color={colors.onSurface} />
           </TouchableOpacity>
@@ -149,11 +171,17 @@ export function CreatePortfolioModal({ onClose, onSuccess }: CreatePortfolioModa
             <View style={styles.categoryGrid}>
               {CATEGORIES.map((cat) => {
                 const isSelected = kategori === cat.key;
+                const isCategoryDisabled = Boolean(isEditing && initialItem?.status_verifikasi && initialItem.status_verifikasi !== 'draft');
                 return (
                   <TouchableOpacity
                     key={cat.key}
-                    style={[styles.categoryBtn, isSelected && styles.categoryBtnActive]}
-                    onPress={() => setKategori(cat.key)}
+                    disabled={isCategoryDisabled}
+                    style={[
+                      styles.categoryBtn,
+                      isSelected && styles.categoryBtnActive,
+                      isCategoryDisabled && { opacity: 0.5 },
+                    ]}
+                    onPress={() => !isCategoryDisabled && setKategori(cat.key)}
                   >
                     <Text
                       style={[
@@ -170,18 +198,35 @@ export function CreatePortfolioModal({ onClose, onSuccess }: CreatePortfolioModa
           </View>
 
           <Input
-            label="Penerbit / Penyelenggara"
-            placeholder="Contoh: Kemendikbudristek / IEEE"
+            label={kategori === 'artikel_ilmiah' ? 'Nama Jurnal / Konferensi' : 'Penerbit / Penyelenggara'}
+            placeholder={
+              kategori === 'artikel_ilmiah'
+                ? 'Contoh: IEEE Transactions / Jurnal Nasional'
+                : 'Contoh: Kemendikbudristek / IEEE'
+            }
             value={penerbit}
             onChangeText={setPenerbit}
           />
 
           <Input
-            label="Nomor Dokumen / Sertifikat"
-            placeholder="Contoh: SK-102/KEM/2024"
+            label={
+              kategori === 'artikel_ilmiah'
+                ? 'Nomor DOI (Digital Object Identifier)'
+                : 'Nomor Dokumen / Sertifikat'
+            }
+            placeholder={
+              kategori === 'artikel_ilmiah'
+                ? 'Contoh: 10.1145/1234567.1234568 (Kosongkan jika draf)'
+                : 'Contoh: SK-102/KEM/2024'
+            }
             value={nomorDokumen}
             onChangeText={setNomorDokumen}
           />
+          {kategori === 'artikel_ilmiah' && (
+            <Text style={styles.helperText}>
+              Format resmi: 10.xxxx/... atau tautan https://doi.org/... Kosongkan jika draf belum memiliki DOI resmi.
+            </Text>
+          )}
 
           <Input
             label="Tanggal Terbit / Kegiatan"
@@ -191,8 +236,16 @@ export function CreatePortfolioModal({ onClose, onSuccess }: CreatePortfolioModa
           />
 
           <Input
-            label="Tautan Proyek / Demo (Opsional)"
-            placeholder="https://github.com/..."
+            label={
+              kategori === 'artikel_ilmiah'
+                ? 'Tautan Artikel / Publikasi (Opsional)'
+                : 'Tautan Proyek / Demo (Opsional)'
+            }
+            placeholder={
+              kategori === 'artikel_ilmiah'
+                ? 'https://doi.org/... atau tautan jurnal'
+                : 'https://github.com/...'
+            }
             value={tautanUrl}
             onChangeText={setTautanUrl}
             keyboardType="url"
@@ -230,6 +283,16 @@ export function CreatePortfolioModal({ onClose, onSuccess }: CreatePortfolioModa
                     <Text style={styles.fileSelectedSub}>Ketuk untuk mengganti berkas PDF</Text>
                   </View>
                 </View>
+              ) : existingFilePath ? (
+                <View style={styles.fileSelectedRow}>
+                  <FileText size={24} color={colors.primary} />
+                  <View style={styles.fileSelectedInfo}>
+                    <Text style={styles.fileName} numberOfLines={1}>
+                      {existingFilePath.split('/').pop()}
+                    </Text>
+                    <Text style={styles.fileSelectedSub}>Berkas tersimpan. Ketuk untuk mengganti.</Text>
+                  </View>
+                </View>
               ) : (
                 <View style={styles.uploadPrompt}>
                   <UploadCloud size={28} color={colors.primary} />
@@ -238,6 +301,19 @@ export function CreatePortfolioModal({ onClose, onSuccess }: CreatePortfolioModa
                 </View>
               )}
             </TouchableOpacity>
+            {Boolean(documentAsset || existingFilePath) && (
+              <TouchableOpacity
+                style={{ alignSelf: 'flex-start', marginTop: 6, paddingVertical: 2, paddingHorizontal: 4 }}
+                onPress={() => {
+                  setDocumentAsset(null);
+                  setExistingFilePath(null);
+                }}
+              >
+                <Text style={{ fontSize: 12, color: colors.dangerText, fontWeight: '600' }}>
+                  Hapus Berkas Dokumen
+                </Text>
+              </TouchableOpacity>
+            )}
           </View>
 
           <Button
@@ -246,6 +322,8 @@ export function CreatePortfolioModal({ onClose, onSuccess }: CreatePortfolioModa
                 ? 'Mengunggah Dokumen Bukti...'
                 : isSubmitting
                 ? 'Menyimpan Karya...'
+                : isEditing
+                ? 'Simpan Perubahan'
                 : 'Simpan Portofolio'
             }
             onPress={handleSubmit}
@@ -386,5 +464,12 @@ const styles = StyleSheet.create({
   submitBtn: {
     marginTop: 10,
     marginBottom: 20,
+  },
+  helperText: {
+    fontSize: 11,
+    color: colors.onSurfaceVariant,
+    marginTop: -8,
+    marginBottom: 12,
+    lineHeight: 15,
   },
 });

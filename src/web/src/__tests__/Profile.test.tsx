@@ -184,7 +184,7 @@ describe("M04 Profile & Skills Frontend Components", () => {
       render(<ProfileDetailPage />);
 
       expect(
-        await screen.findByText("Profil Pengguna Tidak Ditemukan")
+        await screen.findByText("Profil Tidak Tersedia")
       ).toBeInTheDocument();
     });
 

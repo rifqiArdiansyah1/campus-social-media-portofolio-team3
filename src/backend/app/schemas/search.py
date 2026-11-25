@@ -19,7 +19,8 @@ class StudentSearchResult(BaseModel):
     bio: Optional[str] = None
     kontak_url: Optional[str] = None
     skills: List[SearchSkillItem] = Field(default_factory=list)
-    friendship_status: Optional[str] = None  # None, 'menunggu', 'diterima'
+    friendship_status: Optional[str] = None  # None, 'menunggu', 'diterima', 'self'
+    is_self: bool = False
     created_at: datetime
 
 

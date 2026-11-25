@@ -1,7 +1,7 @@
 from datetime import datetime
-from typing import Literal, Optional
+from typing import Any, Literal, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 class FriendUserSummary(BaseModel):
@@ -60,6 +60,21 @@ class FriendListResponse(BaseModel):
 class UserBlockRequest(BaseModel):
     blocked_id: int = Field(..., description="User ID yang ingin diblokir")
     alasan: Optional[str] = Field(None, max_length=500, description="Alasan pemblokiran (opsional, maks 500 karakter)")
+
+    @model_validator(mode="before")
+    @classmethod
+    def normalize_block_payload(cls, data: Any) -> Any:
+        if isinstance(data, dict):
+            if "blocked_id" not in data or data["blocked_id"] is None:
+                for alt in ("blocked_user_id", "user_id", "target_user_id"):
+                    if alt in data and data[alt] is not None:
+                        data["blocked_id"] = data[alt]
+                        break
+            if "blocked_id" in data and isinstance(data["blocked_id"], str) and data["blocked_id"].isdigit():
+                data["blocked_id"] = int(data["blocked_id"])
+            if "alasan" in data and isinstance(data["alasan"], str):
+                data["alasan"] = data["alasan"].strip() or None
+        return data
 
 
 class UserBlockResponse(BaseModel):

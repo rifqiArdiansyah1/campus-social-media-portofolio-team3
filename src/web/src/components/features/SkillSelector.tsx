@@ -226,17 +226,23 @@ export function SkillSelector({
                 )}
 
                 {!isLoading && suggestions.length === 0 && !isExactMatch && query.trim().length >= 2 && (
-                  <li
-                    role="option"
-                    aria-selected={focusedIndex === 0}
-                    className="px-4 py-2.5 text-xs text-slate-700 hover:bg-slate-50 cursor-pointer flex items-center justify-between"
-                    onClick={() => handleAddSkill({ nama: query.trim(), tipe: selectedTipe })}
-                  >
-                    <span>
-                      Tambah <strong className="text-primary font-semibold">&ldquo;{query.trim()}&rdquo;</strong> sebagai tag kustom
-                    </span>
-                    <Plus className="w-4 h-4 text-primary" />
-                  </li>
+                  allowCreate ? (
+                    <li
+                      role="option"
+                      aria-selected={focusedIndex === 0}
+                      className="px-4 py-2.5 text-xs text-slate-700 hover:bg-slate-50 cursor-pointer flex items-center justify-between"
+                      onClick={() => handleAddSkill({ nama: query.trim(), tipe: selectedTipe })}
+                    >
+                      <span>
+                        Tambah <strong className="text-primary font-semibold">&ldquo;{query.trim()}&rdquo;</strong> sebagai tag kustom
+                      </span>
+                      <Plus className="w-4 h-4 text-primary" />
+                    </li>
+                  ) : (
+                    <li className="px-4 py-2.5 text-xs text-slate-500 italic">
+                      Keahlian tidak ditemukan di katalog resmi kampus. Silakan pilih keahlian terdaftar dari rekomendasi.
+                    </li>
+                  )
                 )}
 
                 {suggestions.map((item, idx) => {

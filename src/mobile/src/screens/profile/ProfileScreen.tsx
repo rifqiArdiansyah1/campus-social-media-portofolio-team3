@@ -15,8 +15,10 @@ import {
   UserPlus,
   UserCheck,
   UserX,
+  Shield,
   ShieldAlert,
   ShieldCheck,
+  ChevronRight,
   Mail,
   GraduationCap,
   Calendar,
@@ -41,6 +43,8 @@ import { getInitials } from '../../utils/formatting';
 import { Button } from '../../components/common/Button';
 import { Badge } from '../../components/common/Badge';
 import { Input } from '../../components/common/Input';
+import { BlockedUsersModal } from '../../components/features/BlockedUsersModal';
+import { invalidateSocialGraph } from '../../utils/socialSync';
 
 export interface ProfileScreenProps {
   targetUserId?: number | null;
@@ -57,6 +61,9 @@ export function ProfileScreen({ targetUserId, onBack }: ProfileScreenProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [bioInput, setBioInput] = useState(currentUser?.bio || '');
   const [kontakUrlInput, setKontakUrlInput] = useState(currentUser?.kontak_url || '');
+
+  // Blocked Users Modal State
+  const [isBlockedModalOpen, setIsBlockedModalOpen] = useState(false);
 
   // 1. Fetch Profile Data
   const {
@@ -147,17 +154,39 @@ export function ProfileScreen({ targetUserId, onBack }: ProfileScreenProps) {
   const blockUserMutation = useMutation({
     mutationFn: async (blockedId: number) => {
       await apiClient.post('/blocks', {
-        blocked_user_id: blockedId,
+        blocked_id: blockedId,
         alasan: 'Pemblokiran melalui aplikasi mobile',
       });
+      return blockedId;
     },
-    onSuccess: () => {
+    onSuccess: async (_, blockedId) => {
       Alert.alert('Pengguna Diblokir', 'Pengguna ini tidak dapat melihat karya atau berinteraksi dengan Anda.');
       refetch();
-      queryClient.invalidateQueries({ queryKey: ['posts'] });
+      await invalidateSocialGraph(queryClient, { targetUserId: blockedId });
     },
     onError: (err: any) => {
-      Alert.alert('Gagal Memblokir', err?.message || 'Terjadi kesalahan.');
+      const msg = err?.response?.data?.detail || err?.message || 'Terjadi kesalahan.';
+      Alert.alert('Gagal Memblokir', typeof msg === 'string' ? msg : 'Terjadi kesalahan validasi input.');
+    },
+  });
+
+  // 3b. User Unblock Mutation (US-14)
+  const unblockUserMutation = useMutation({
+    mutationFn: async (blockedId: number) => {
+      await apiClient.delete(`/blocks/${blockedId}`);
+      return blockedId;
+    },
+    onSuccess: async (_, blockedId) => {
+      Alert.alert(
+        'Blokir Dibuka',
+        'Pengguna ini dapat melihat profil Anda kembali. Pertemanan tidak otomatis aktif.'
+      );
+      refetch();
+      await invalidateSocialGraph(queryClient, { targetUserId: blockedId });
+    },
+    onError: (err: any) => {
+      const msg = err?.response?.data?.detail || err?.message || 'Gagal membuka blokir.';
+      Alert.alert('Gagal Membuka Blokir', typeof msg === 'string' ? msg : 'Terjadi kesalahan.');
     },
   });
 
@@ -199,7 +228,7 @@ export function ProfileScreen({ targetUserId, onBack }: ProfileScreenProps) {
   const handleBlockConfirmation = () => {
     if (!targetUserId) return;
     Alert.alert(
-      'Blokir Pengguna',
+      `Blokir ${userObj?.nama || 'Pengguna'}?`,
       'Pengguna ini tidak akan dapat mengirim pertemanan atau melihat linimasa Anda. Lanjutkan?',
       [
         { text: 'Batal', style: 'cancel' },
@@ -207,6 +236,22 @@ export function ProfileScreen({ targetUserId, onBack }: ProfileScreenProps) {
           text: 'Blokir',
           style: 'destructive',
           onPress: () => blockUserMutation.mutate(targetUserId),
+        },
+      ]
+    );
+  };
+
+  const handleUnblockConfirmation = () => {
+    if (!targetUserId) return;
+    Alert.alert(
+      `Buka Blokir ${userObj?.nama || 'Pengguna'}?`,
+      'Pengguna ini akan dapat melihat linimasa karya dan profil publik Anda kembali (kecuali jika pengguna tersebut juga memblokir Anda).\n\nPertemanan tidak dipulihkan secara otomatis (Bukan Teman).\n\nPihak yang bersangkutan tidak akan menerima pemberitahuan.\n\nAnda dapat memblokir kembali akun ini kapan saja jika diperlukan.',
+      [
+        { text: 'Batal', style: 'cancel' },
+        {
+          text: 'Buka Blokir',
+          style: 'default',
+          onPress: () => unblockUserMutation.mutate(targetUserId),
         },
       ]
     );
@@ -318,11 +363,28 @@ export function ProfileScreen({ targetUserId, onBack }: ProfileScreenProps) {
             </TouchableOpacity>
           ) : null}
 
-          {/* Other Profile Actions (Friendship for Students, Academic Notice for Staff) */}
+          {/* Other Profile Actions (Friendship for Students, Block Banner for Blocked, Academic Notice for Staff) */}
           {!isOwnProfile && (
-            canFriendship ? (
+            otherProfile?.can_unblock ? (
+              <View style={styles.blockedBanner}>
+                <View style={styles.blockedBannerContent}>
+                  <ShieldAlert size={18} color="#D97706" />
+                  <Text style={styles.blockedBannerText}>
+                    Anda memblokir pengguna ini. Data detail dan linimasa karya disembunyikan.
+                  </Text>
+                </View>
+                <TouchableOpacity
+                  onPress={handleUnblockConfirmation}
+                  style={styles.unblockBannerBtn}
+                  accessibilityLabel="Buka blokir akun ini"
+                  disabled={unblockUserMutation.isPending}
+                >
+                  <Text style={styles.unblockBannerBtnText}>Buka Blokir</Text>
+                </TouchableOpacity>
+              </View>
+            ) : canFriendship ? (
               <View style={styles.otherActionsRow}>
-                {friendshipStatus === 'none' && (
+                {otherProfile?.can_friend && (
                   <Button
                     title="Tambah Teman"
                     size="sm"
@@ -367,13 +429,16 @@ export function ProfileScreen({ targetUserId, onBack }: ProfileScreenProps) {
                 )}
 
                 {/* Block Button (US-14) */}
-                <TouchableOpacity
-                  onPress={handleBlockConfirmation}
-                  style={styles.blockBtn}
-                  activeOpacity={0.7}
-                >
-                  <ShieldAlert size={16} color={colors.danger} />
-                </TouchableOpacity>
+                {otherProfile?.can_block && (
+                  <TouchableOpacity
+                    onPress={handleBlockConfirmation}
+                    style={styles.blockBtn}
+                    activeOpacity={0.7}
+                    accessibilityLabel="Blokir pengguna ini"
+                  >
+                    <ShieldAlert size={16} color={colors.danger} />
+                  </TouchableOpacity>
+                )}
               </View>
             ) : (
               <View style={styles.roleNoticeBanner}>
@@ -513,6 +578,28 @@ export function ProfileScreen({ targetUserId, onBack }: ProfileScreenProps) {
           </View>
         )}
 
+        {/* Own Profile Privacy & Settings Section */}
+        {isOwnProfile && (
+          <View style={styles.settingsSection}>
+            <TouchableOpacity
+              style={styles.settingsItem}
+              onPress={() => setIsBlockedModalOpen(true)}
+              accessibilityLabel="Buka daftar pengguna yang diblokir"
+            >
+              <View style={styles.settingsItemLeft}>
+                <View style={styles.settingsIconWrapper}>
+                  <Shield size={18} color={colors.primary} />
+                </View>
+                <View>
+                  <Text style={styles.settingsItemTitle}>Pengguna yang Diblokir</Text>
+                  <Text style={styles.settingsItemSub}>Kelola akun yang Anda batasi</Text>
+                </View>
+              </View>
+              <ChevronRight size={18} color={colors.onSurfaceVariant} />
+            </TouchableOpacity>
+          </View>
+        )}
+
         {/* Own Profile Logout Button */}
         {isOwnProfile && (
           <View style={styles.logoutWrapper}>
@@ -572,6 +659,11 @@ export function ProfileScreen({ targetUserId, onBack }: ProfileScreenProps) {
           </View>
         </View>
       </Modal>
+      {/* Blocked Users Modal (US-14) */}
+      <BlockedUsersModal
+        visible={isBlockedModalOpen}
+        onClose={() => setIsBlockedModalOpen(false)}
+      />
     </View>
   );
 }
@@ -930,5 +1022,79 @@ const styles = StyleSheet.create({
   modalActionsRow: {
     flexDirection: 'row',
     marginTop: 10,
+  },
+  blockedBanner: {
+    backgroundColor: '#FEF3C7',
+    borderWidth: 1,
+    borderColor: '#FDE68A',
+    borderRadius: 14,
+    padding: 12,
+    marginTop: 6,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 8,
+  },
+  blockedBannerContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    flex: 1,
+  },
+  blockedBannerText: {
+    fontSize: 12,
+    color: '#92400E',
+    fontWeight: '500',
+    flex: 1,
+  },
+  unblockBannerBtn: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#F59E0B',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+  },
+  unblockBannerBtnText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#B45309',
+  },
+  settingsSection: {
+    marginTop: 14,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: colors.borderSubtle,
+    overflow: 'hidden',
+  },
+  settingsItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 14,
+  },
+  settingsItemLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  settingsIconWrapper: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    backgroundColor: colors.surfaceContainer,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  settingsItemTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.onSurface,
+  },
+  settingsItemSub: {
+    fontSize: 12,
+    color: colors.onSurfaceVariant,
+    marginTop: 1,
   },
 });

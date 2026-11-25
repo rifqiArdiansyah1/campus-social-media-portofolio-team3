@@ -69,7 +69,7 @@ describe("M05 Feed & Post Creation Frontend Tests", () => {
       expect(screen.getByRole("button", { name: /Publikasikan/i })).toBeInTheDocument();
     });
 
-    it("disables submit button and shows required skill indicator when type is 'cari_anggota'", () => {
+    it("enables submit button and shows required skill indicator when type is 'cari_anggota'", () => {
       render(<CreatePostCard onPostCreated={vi.fn()} />);
 
       const textarea = screen.getByPlaceholderText(/Bagikan progres riset/i);
@@ -79,7 +79,7 @@ describe("M05 Feed & Post Creation Frontend Tests", () => {
       fireEvent.click(cariTimBtn);
 
       const submitBtn = screen.getByRole("button", { name: /Publikasikan/i });
-      expect(submitBtn).toBeDisabled();
+      expect(submitBtn).toBeEnabled();
       expect(screen.getByText(/Keahlian yang Dibutuhkan/i)).toBeInTheDocument();
       expect(apiClient.post).not.toHaveBeenCalled();
     });

@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "CampusFolio API",
-    "description": "Backend API & Layanan AI untuk CampusFolio — Campus Social Media & Portfolio (Team 3)",
+    "description": "Backend API & Layanan AI untuk CampusFolio \u2014 Campus Social Media & Portfolio (Team 3)",
     "version": "0.1.0"
   },
   "paths": {
@@ -1482,8 +1482,11 @@
             "required": true,
             "schema": {
               "type": "integer",
+              "exclusiveMinimum": 0,
+              "description": "User ID yang ingin dibuka blokirnya",
               "title": "Blocked Id"
-            }
+            },
+            "description": "User ID yang ingin dibuka blokirnya"
           }
         ],
         "responses": {
@@ -1503,12 +1506,109 @@
         }
       }
     },
+    "/api/v1/portfolio/reviews": {
+      "get": {
+        "tags": [
+          "Portfolio & SKPI (M07)"
+        ],
+        "summary": "Daftar Antrean dan Riwayat Peninjauan Portofolio Staf",
+        "operationId": "get_portfolio_reviews_api_v1_portfolio_reviews_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter status verifikasi (menunggu_review, terverifikasi, ditolak, atau semua)",
+              "title": "Status"
+            },
+            "description": "Filter status verifikasi (menunggu_review, terverifikasi, ditolak, atau semua)"
+          },
+          {
+            "name": "jurusan",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter jurusan (khusus Admin)",
+              "title": "Jurusan"
+            },
+            "description": "Filter jurusan (khusus Admin)"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewQueueListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/portfolio/review-queue": {
       "get": {
         "tags": [
           "Portfolio & SKPI (M07)"
         ],
-        "summary": "Antrean Verifikasi Portofolio FIFO Kaprodi & Admin",
+        "summary": "Antrean Verifikasi Portofolio FIFO Kaprodi & Admin (Alias untuk /reviews)",
         "operationId": "get_review_queue_api_v1_portfolio_review_queue_get",
         "security": [
           {
@@ -1750,6 +1850,133 @@
             }
           }
         }
+      }
+    },
+    "/api/v1/portfolio/me": {
+      "get": {
+        "tags": [
+          "Portfolio & SKPI (M07)"
+        ],
+        "summary": "Daftar Portofolio Milik Pengguna Aktif (Self)",
+        "operationId": "get_my_portfolios_api_v1_portfolio_me_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "kategori",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter kategori (proyek, skpi, sertifikat, artikel_ilmiah)",
+              "title": "Kategori"
+            },
+            "description": "Filter kategori (proyek, skpi, sertifikat, artikel_ilmiah)"
+          },
+          {
+            "name": "status_verifikasi",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter status verifikasi",
+              "title": "Status Verifikasi"
+            },
+            "description": "Filter status verifikasi"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PortfolioDetailResponse"
+                  },
+                  "title": "Response Get My Portfolios Api V1 Portfolio Me Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/portfolio/skpi-summary": {
+      "get": {
+        "tags": [
+          "Portfolio & SKPI (M07)"
+        ],
+        "summary": "Ringkasan Poin SKPI Resmi Milik Pengguna Aktif",
+        "operationId": "get_my_portfolio_skpi_summary_api_v1_portfolio_skpi_summary_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SkpiSummaryResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       }
     },
     "/api/v1/portfolio/{id}": {
@@ -2096,6 +2323,53 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PortfolioDetailResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/portfolio/{id}/duplicate-check": {
+      "get": {
+        "tags": [
+          "Portfolio & SKPI (M07)"
+        ],
+        "summary": "Pemeriksaan Duplikasi Dokumen Berpelindung Privasi (Kaprodi & Admin)",
+        "operationId": "check_portfolio_duplicate_api_v1_portfolio__id__duplicate_check_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PortfolioDuplicateCheckResponse"
                 }
               }
             }
@@ -2564,6 +2838,24 @@
               "title": "Status"
             },
             "description": "Filter berdasarkan status laporan"
+          },
+          {
+            "name": "kategori",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter berdasarkan kategori pelanggaran",
+              "title": "Kategori"
+            },
+            "description": "Filter berdasarkan kategori pelanggaran"
           },
           {
             "name": "limit",
@@ -4498,6 +4790,18 @@
                 "type": "null"
               }
             ]
+          },
+          "is_complete": {
+            "type": "boolean",
+            "title": "Is Complete",
+            "default": false
+          },
+          "missing_fields": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Missing Fields"
           }
         },
         "type": "object",
@@ -4511,6 +4815,164 @@
         ],
         "title": "PortfolioDetailResponse",
         "description": "Lengkap untuk Pemilik, Kaprodi se-prodi, dan Admin"
+      },
+      "PortfolioDuplicateCheckResponse": {
+        "properties": {
+          "is_duplicate": {
+            "type": "boolean",
+            "title": "Is Duplicate"
+          },
+          "duplicate_count": {
+            "type": "integer",
+            "title": "Duplicate Count"
+          },
+          "matches_same_department": {
+            "items": {
+              "$ref": "#/components/schemas/PortfolioDuplicateMatchItem"
+            },
+            "type": "array",
+            "title": "Matches Same Department",
+            "default": []
+          },
+          "has_cross_department_matches": {
+            "type": "boolean",
+            "title": "Has Cross Department Matches",
+            "default": false
+          },
+          "cross_department_count": {
+            "type": "integer",
+            "title": "Cross Department Count",
+            "default": 0
+          },
+          "cross_department_message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cross Department Message"
+          },
+          "is_coauthor_doi": {
+            "type": "boolean",
+            "title": "Is Coauthor Doi",
+            "default": false
+          },
+          "notice": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notice"
+          }
+        },
+        "type": "object",
+        "required": [
+          "is_duplicate",
+          "duplicate_count"
+        ],
+        "title": "PortfolioDuplicateCheckResponse"
+      },
+      "PortfolioDuplicateMatchItem": {
+        "properties": {
+          "portfolio_id": {
+            "type": "integer",
+            "title": "Portfolio Id"
+          },
+          "judul": {
+            "type": "string",
+            "title": "Judul"
+          },
+          "nomor_dokumen": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nomor Dokumen"
+          },
+          "penerbit": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Penerbit"
+          },
+          "kategori": {
+            "type": "string",
+            "title": "Kategori"
+          },
+          "status_verifikasi": {
+            "type": "string",
+            "title": "Status Verifikasi"
+          },
+          "tanggal_terbit": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tanggal Terbit"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "author_nama": {
+            "type": "string",
+            "title": "Author Nama"
+          },
+          "author_nim": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Author Nim"
+          },
+          "author_jurusan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Author Jurusan"
+          }
+        },
+        "type": "object",
+        "required": [
+          "portfolio_id",
+          "judul",
+          "kategori",
+          "status_verifikasi",
+          "created_at",
+          "author_nama"
+        ],
+        "title": "PortfolioDuplicateMatchItem"
       },
       "PortfolioPublicResponse": {
         "properties": {
@@ -4648,7 +5110,8 @@
             "type": "string",
             "enum": [
               "terverifikasi",
-              "ditolak"
+              "ditolak",
+              "menunggu_review"
             ],
             "title": "Status Verifikasi"
           },
@@ -4662,7 +5125,7 @@
               }
             ],
             "title": "Catatan Verifikasi",
-            "description": "Catatan hasil verifikasi dari Kaprodi/Admin"
+            "description": "Catatan hasil verifikasi atau alasan koreksi dari Kaprodi/Admin"
           }
         },
         "type": "object",
@@ -5089,6 +5552,11 @@
             "type": "boolean",
             "title": "Can Edit",
             "default": false
+          },
+          "reported_by_me": {
+            "type": "boolean",
+            "title": "Reported By Me",
+            "default": false
           }
         },
         "type": "object",
@@ -5392,7 +5860,8 @@
               "none",
               "pending_sent",
               "pending_received",
-              "friends"
+              "friends",
+              "blocked"
             ],
             "title": "Friendship Status",
             "default": "none"
@@ -5426,6 +5895,21 @@
           "blocked_by_me": {
             "type": "boolean",
             "title": "Blocked By Me",
+            "default": false
+          },
+          "can_friend": {
+            "type": "boolean",
+            "title": "Can Friend",
+            "default": false
+          },
+          "can_block": {
+            "type": "boolean",
+            "title": "Can Block",
+            "default": false
+          },
+          "can_unblock": {
+            "type": "boolean",
+            "title": "Can Unblock",
             "default": false
           },
           "nim": {
@@ -5607,6 +6091,18 @@
             "type": "string",
             "title": "Reason",
             "description": "Penjelasan bahasa alami mengenai alasan kecocokan"
+          },
+          "friendship_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Friendship Status",
+            "description": "Status pertemanan dengan pemohon (menunggu, diterima, ditolak, atau null)"
           }
         },
         "type": "object",
@@ -5823,9 +6319,16 @@
             "title": "Post Id"
           },
           "alasan": {
-            "type": "string",
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Alasan",
-            "description": "Penjelasan detail pelanggaran (minimal 5 karakter)"
+            "description": "Penjelasan detail pelanggaran (opsional kecuali kategori lainnya)"
           },
           "kategori_laporan": {
             "type": "string",
@@ -5844,8 +6347,7 @@
         },
         "type": "object",
         "required": [
-          "post_id",
-          "alasan"
+          "post_id"
         ],
         "title": "ReportCreate"
       },
@@ -5946,6 +6448,16 @@
               }
             ],
             "title": "Resolved At"
+          },
+          "post": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ReportedPostBrief"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "type": "object",
@@ -5959,6 +6471,106 @@
           "created_at"
         ],
         "title": "ReportResponse"
+      },
+      "ReportedPostAuthor": {
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "nama": {
+            "type": "string",
+            "title": "Nama"
+          },
+          "nim": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nim"
+          },
+          "jurusan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jurusan"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "nama",
+          "role"
+        ],
+        "title": "ReportedPostAuthor"
+      },
+      "ReportedPostBrief": {
+        "properties": {
+          "post_id": {
+            "type": "integer",
+            "title": "Post Id"
+          },
+          "isi": {
+            "type": "string",
+            "title": "Isi"
+          },
+          "gambar_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gambar Url"
+          },
+          "tipe": {
+            "type": "string",
+            "title": "Tipe"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "author": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ReportedPostAuthor"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "post_id",
+          "isi",
+          "tipe",
+          "status",
+          "created_at"
+        ],
+        "title": "ReportedPostBrief"
       },
       "ReviewQueueItemResponse": {
         "properties": {
@@ -6479,6 +7091,11 @@
               }
             ],
             "title": "Friendship Status"
+          },
+          "is_self": {
+            "type": "boolean",
+            "title": "Is Self",
+            "default": false
           },
           "created_at": {
             "type": "string",

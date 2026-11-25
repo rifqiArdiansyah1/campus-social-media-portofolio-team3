@@ -87,3 +87,6 @@ apiClient.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+export { getApiErrorMessage } from "./utils";
+

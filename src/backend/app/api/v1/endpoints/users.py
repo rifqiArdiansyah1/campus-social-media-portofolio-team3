@@ -23,7 +23,7 @@ from app.schemas.profile import (
     UpdateUserSkillsRequest,
     UserSkillResponse,
 )
-from app.services.friendship import get_friendship_relation
+from app.services.friendship import get_friendship_relation, is_friendship_cooldown_active
 from app.services.skpi_calculator import calculate_skpi_summary
 from app.services.visibility import is_target_blocking_viewer, is_viewer_blocking_target
 
@@ -222,10 +222,13 @@ def get_user_public_profile(
             nama=target_user.nama,
             role=target_user.role,
             created_at=target_user.created_at,
-            friendship_status="none",
+            friendship_status="blocked",
             friendship_id=None,
             friendship_direction=None,
             blocked_by_me=True,
+            can_friend=False,
+            can_block=False,
+            can_unblock=True,
             skills=[],
             bio=None,
             kontak_url=None,
@@ -242,11 +245,39 @@ def get_user_public_profile(
         db, viewer_id=current_user.user_id, target_id=id
     )
 
+    is_viewer_student = current_user.role == "mahasiswa"
+    is_target_student = target_user.role == "mahasiswa"
+    is_self = current_user.user_id == target_user.user_id
+    target_is_staff = target_user.role in ("moderator", "admin")
+
+    # can_friend: student vs student, not self, status == 'none', not in 24h cooldown
+    cooldown_active = False
+    if is_viewer_student and is_target_student and not is_self and friendship_status == "none":
+        cooldown_active = is_friendship_cooldown_active(
+            db, requester_id=current_user.user_id, addressee_id=target_user.user_id
+        )
+
+    can_friend = (
+        is_viewer_student
+        and is_target_student
+        and not is_self
+        and friendship_status == "none"
+        and not cooldown_active
+    )
+
+    # can_block: student viewer, not self, target not staff, not already blocked
+    can_block = (
+        is_viewer_student
+        and not is_self
+        and not target_is_staff
+        and not blocked_by_me
+    )
+
+    can_unblock = blocked_by_me
+
     # Privacy Protection:
     # NIM & Email are ONLY visible to the owner themselves, Kaprodi of the same department, or Admin
-    can_view_sensitive = (current_user.user_id == target_user.user_id) or can_moderate(
-        current_user, target_user.jurusan
-    )
+    can_view_sensitive = is_self or can_moderate(current_user, target_user.jurusan)
 
     return PublicProfileResponse(
         user_id=target_user.user_id,
@@ -262,6 +293,9 @@ def get_user_public_profile(
         friendship_id=friendship_id,
         friendship_direction=friendship_direction,
         blocked_by_me=blocked_by_me,
+        can_friend=can_friend,
+        can_block=can_block,
+        can_unblock=can_unblock,
         nim=target_user.nim if can_view_sensitive else None,
         email=target_user.email if can_view_sensitive else None,
     )

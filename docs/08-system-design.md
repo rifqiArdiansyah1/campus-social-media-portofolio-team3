@@ -33,7 +33,7 @@ flowchart LR
         UC03(["UC-03: Kelola Profil & Skills"])
         UC04(["UC-04: Akses Home Dashboard"])
         UC05(["UC-05: Kelola Pertemanan"])
-        UC06(["UC-06: Blokir Profil Pengguna"])
+        UC06(["UC-06: Blokir & Buka Blokir Pengguna"])
         UC07(["UC-07: Upload Portofolio (SKPI/Sertifikat/Artikel)"])
         UC08(["UC-08: Buat Postingan (Foto + Teks)"])
         UC09(["UC-09: Klasifikasi Konten Awal (AI)"])
@@ -98,7 +98,7 @@ flowchart LR
 | **UC-03** | Kelola Profil & Skill/Minat | Mahasiswa | — | US-02 |
 | **UC-04** | Akses Home Dashboard Terpadu | Mahasiswa, Moderator, Admin | — | US-18 |
 | **UC-05** | Kelola Pertemanan (Kirim/Terima/Tolak) | Mahasiswa | — | US-13 |
-| **UC-06** | Blokir Profil Pengguna | Mahasiswa | — | US-14 |
+| **UC-06** | Blokir & Buka Blokir Pengguna (Kelola Daftar Blokir) | Mahasiswa | — | US-14 |
 | **UC-07** | Upload Portofolio (Karya, SKPI, Sertifikat, Artikel Ilmiah) | Mahasiswa | — | US-03, US-15 |
 | **UC-08** | Buat Postingan (Fokus Foto + Teks) | Mahasiswa | `«include»` UC-09 | US-04 |
 | **UC-09** | Klasifikasi Awal Konten Teks (AI) | Layanan AI | di-include UC-08 | US-09 |
@@ -408,7 +408,7 @@ erDiagram
 | **US-11** Laporkan Konten Melanggar | UC-14 | AD-01 | `reports` |
 | **US-12** Logout Akun | UC-02 | — | `users` |
 | **US-13** Tambah Pertemanan Mahasiswa | UC-05 | AD-02 | `friendships` |
-| **US-14** Blokir Profil Pengguna | UC-06 | AD-02 | `user_blocks` |
+| **US-14** Blokir & Buka Blokir Pengguna | UC-06 | AD-02 | `user_blocks` |
 | **US-15** Upload SKPI & Artikel Ilmiah | UC-07 | AD-03 | `portfolio_items` (`kategori`, `file_url`, `nomor_dokumen`) |
 | **US-16** Tinjauan Portofolio oleh Kaprodi | UC-16 | AD-03 | `portfolio_items` (`status_verifikasi`, `diverifikasi_oleh`) |
 | **US-17** Hapus / Takedown Postingan | UC-17 | AD-01 | `posts` (`is_deleted`, `deleted_by`, `alasan_hapus`) |

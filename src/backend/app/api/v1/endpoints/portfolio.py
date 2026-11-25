@@ -39,6 +39,24 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
+def compute_portfolio_completeness(item: PortfolioItem) -> tuple[bool, List[str]]:
+    if item.kategori == "proyek":
+        return True, []
+    missing: List[str] = []
+    if not item.nomor_dokumen or not str(item.nomor_dokumen).strip():
+        missing.append("nomor_dokumen")
+    elif item.kategori == "artikel_ilmiah":
+        if not re.search(r"10\.\d{4,9}/[-._;()/:A-Za-z0-9]+", str(item.nomor_dokumen)):
+            missing.append("nomor_dokumen (format DOI tidak valid)")
+    if not item.penerbit or not str(item.penerbit).strip():
+        missing.append("penerbit")
+    if not item.tanggal_terbit:
+        missing.append("tanggal_terbit")
+    if not item.file_url or not str(item.file_url).strip():
+        missing.append("file_url")
+    return len(missing) == 0, missing
+
+
 def _serialize_detail(item: PortfolioItem) -> PortfolioDetailResponse:
     skills = [
         SkillBriefResponse(
@@ -58,6 +76,7 @@ def _serialize_detail(item: PortfolioItem) -> PortfolioDetailResponse:
             jurusan=item.user.jurusan,
             avatar_url=getattr(item.user, "avatar_url", None),
         )
+    is_complete, missing_fields = compute_portfolio_completeness(item)
     return PortfolioDetailResponse(
         portfolio_id=item.portfolio_id,
         user_id=item.user_id,
@@ -79,6 +98,8 @@ def _serialize_detail(item: PortfolioItem) -> PortfolioDetailResponse:
         created_at=item.created_at,
         skills=skills,
         author=author,
+        is_complete=is_complete,
+        missing_fields=missing_fields,
     )
 
 
@@ -566,20 +587,37 @@ def update_portfolio_item(
     data = payload.model_dump(exclude_unset=True)
 
     # If file_url is being updated
-    if "file_url" in data and data["file_url"]:
+    if "file_url" in data:
         new_file = data["file_url"]
-        if ".." in new_file or "//" in new_file or "\\" in new_file:
-            raise InvalidInputError(code="INVALID_FILE_PATH", detail="Jalur berkas tidak valid.")
-        if not new_file.startswith(f"{current_user.user_id}/"):
+        if new_file:
+            new_file = new_file.strip()
+            data["file_url"] = new_file
+            if ".." in new_file or "//" in new_file or "\\" in new_file:
+                raise InvalidInputError(code="INVALID_FILE_PATH", detail="Jalur berkas tidak valid.")
+            if new_file != item.file_url:
+                if not new_file.startswith(f"{current_user.user_id}/"):
+                    raise InvalidInputError(
+                        code="INVALID_FILE_OWNERSHIP",
+                        detail="file_url harus berada dalam direktori pengguna Anda.",
+                    )
+                if not storage_service.object_exists(settings.PORTFOLIO_DOCS_BUCKET, new_file):
+                    raise InvalidInputError(
+                        code="FILE_NOT_FOUND_IN_STORAGE",
+                        detail="Berkas dokumen bukti tidak ditemukan di penyimpanan privat.",
+                    )
+        else:
+            data["file_url"] = None
+
+    # Normalization & validation for effective kategori
+    effective_kategori = data.get("kategori", item.kategori)
+    if effective_kategori == "artikel_ilmiah" and "nomor_dokumen" in data and data["nomor_dokumen"]:
+        match = re.search(r"10\.\d{4,9}/[-._;()/:A-Za-z0-9<>+]+", str(data["nomor_dokumen"]))
+        if not match:
             raise InvalidInputError(
-                code="INVALID_FILE_OWNERSHIP",
-                detail="file_url harus berada dalam direktori pengguna Anda.",
+                code="INVALID_DOI_FORMAT",
+                detail="Format DOI tidak valid. Masukkan format resmi seperti '10.1145/1234567.1234568' atau 'https://doi.org/10.1145/...'. Kosongkan jika draf belum memiliki nomor DOI resmi.",
             )
-        if not storage_service.object_exists(settings.PORTFOLIO_DOCS_BUCKET, new_file):
-            raise InvalidInputError(
-                code="FILE_NOT_FOUND_IN_STORAGE",
-                detail="Berkas dokumen bukti tidak ditemukan di penyimpanan privat.",
-            )
+        data["nomor_dokumen"] = match.group(0).rstrip(".,;")
 
     # If skill_ids are updated
     if "skill_ids" in data:
@@ -703,6 +741,12 @@ def submit_portfolio_for_review(
                 code="INCOMPLETE_DOCUMENT_FIELDS",
                 detail=f"Field berikut wajib diisi untuk artikel ilmiah: {', '.join(missing)}.",
             )
+
+    if item.file_url and not storage_service.object_exists(settings.PORTFOLIO_DOCS_BUCKET, item.file_url):
+        raise InvalidInputError(
+            code="FILE_NOT_FOUND_IN_STORAGE",
+            detail="Berkas dokumen bukti tidak ditemukan di penyimpanan privat. Silakan unggah ulang berkas dokumen.",
+        )
 
     item.status_verifikasi = "menunggu_review"
     item.submitted_at = datetime.utcnow()

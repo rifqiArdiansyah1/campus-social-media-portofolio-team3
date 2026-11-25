@@ -620,13 +620,23 @@ async def update_post(
 
 
 
-def takedown_post(db: Session, post: Post, actor: User, alasan_hapus: str) -> Post:
+def soft_delete_post(
+    db: Session,
+    post: Post,
+    actor: Optional[User],
+    alasan_hapus: str,
+    is_staff_takedown: bool = True,
+) -> Post:
     """
-    Core service to execute content takedown:
-    - Quarantines/deletes public media file so it immediately returns 404
+    Unified soft-delete helper used across:
+    1. Staff Takedown from Report / Post (/posts/{id}/takedown)
+    2. Staff Moderation Decision hapus_konten (/moderation/{id}/decision)
+    3. Author Self-Deletion (/posts/{id})
+
+    - Deletes public media file so it immediately returns 404
     - Sets soft-delete audit columns (is_deleted, status, deleted_by, deleted_at, alasan_hapus)
-    - Auto-resolves all active reports for this post to selesai + postingan_dihapus
-    - Notifies post author and reporters
+    - Auto-resolves all active reports for this post via bulk update with catatan_tinjauan & resolved_at
+    - Sends notifications to author and open reporters
     """
     if post.is_deleted:
         raise ConflictError(
@@ -641,45 +651,73 @@ def takedown_post(db: Session, post: Post, actor: User, alasan_hapus: str) -> Po
     now = datetime.utcnow()
     post.is_deleted = True
     post.status = "dihapus"
-    post.deleted_by = actor.user_id
+    post.deleted_by = actor.user_id if actor else post.user_id
     post.deleted_at = now
     post.alasan_hapus = alasan_hapus
 
-    # Auto-resolve active reports
-    active_reports = (
-        db.query(Report)
-        .filter(Report.post_id == post.post_id, Report.status.in_(["baru", "diproses"]))
+    # Fetch active reporter IDs first before bulk updating
+    open_reports = (
+        db.query(Report.report_id, Report.pelapor_id)
+        .filter(
+            Report.post_id == post.post_id,
+            Report.status.in_(["baru", "diproses"]),
+        )
         .all()
     )
-    for r in active_reports:
-        r.status = "selesai"
-        r.tindakan_diambil = "postingan_dihapus"
-        r.resolved_at = now
-        r.ditinjau_oleh = actor.user_id
-        create_notification(
-            db=db,
-            user_id=r.pelapor_id,
-            jenis="laporan_selesai",
-            judul="Laporan Anda Telah Selesai Ditinjau",
-            isi="Laporan Anda terhadap sebuah postingan telah selesai ditindaklanjuti oleh tim moderasi kampus. Terima kasih telah menjaga keamanan komunitas CampusFolio.",
-            ref_type="report",
-            ref_id=r.report_id,
+
+    catatan = (
+        f"Postingan telah di-takedown oleh tim moderasi: {alasan_hapus}"
+        if is_staff_takedown
+        else "Postingan dihapus oleh penulis secara mandiri."
+    )
+    ditinjau = actor.user_id if (actor and is_staff_takedown) else None
+
+    # Bulk update active reports
+    if open_reports:
+        db.query(Report).filter(
+            Report.post_id == post.post_id,
+            Report.status.in_(["baru", "diproses"]),
+        ).update(
+            {
+                Report.status: "selesai",
+                Report.tindakan_diambil: "postingan_dihapus",
+                Report.catatan_tinjauan: catatan,
+                Report.resolved_at: now,
+                Report.ditinjau_oleh: ditinjau,
+            },
+            synchronize_session="fetch",
         )
 
-    # Notify author
-    create_notification(
-        db=db,
-        user_id=post.user_id,
-        jenis="moderasi_takedown",
-        judul="Postingan Anda Telah Di-takedown",
-        isi=f"Postingan Anda telah dihapus oleh tim moderasi kampus karena melanggar pedoman: {alasan_hapus}",
-        ref_type="post",
-        ref_id=post.post_id,
-    )
+        for rep_id, pelapor_id in open_reports:
+            create_notification(
+                db=db,
+                user_id=pelapor_id,
+                jenis="laporan_selesai",
+                judul="Laporan Anda Telah Selesai Ditinjau",
+                isi="Laporan Anda terhadap sebuah postingan telah selesai ditindaklanjuti oleh tim moderasi kampus. Terima kasih telah menjaga keamanan komunitas CampusFolio.",
+                ref_type="report",
+                ref_id=rep_id,
+            )
+
+    # Notify author if staff takedown
+    if is_staff_takedown and actor and actor.user_id != post.user_id:
+        create_notification(
+            db=db,
+            user_id=post.user_id,
+            jenis="moderasi_takedown",
+            judul="Postingan Anda Telah Di-takedown",
+            isi=f"Postingan Anda telah dihapus oleh tim moderasi kampus karena melanggar pedoman: {alasan_hapus}",
+            ref_type="post",
+            ref_id=post.post_id,
+        )
 
     db.commit()
     db.refresh(post)
     return post
+
+
+def takedown_post(db: Session, post: Post, actor: User, alasan_hapus: str) -> Post:
+    return soft_delete_post(db, post, actor, alasan_hapus, is_staff_takedown=True)
 
 
 @router.post(
@@ -792,27 +830,11 @@ def delete_post(
             detail="Postingan yang sedang dalam peninjauan laporan aktif tidak dapat dihapus.",
         )
 
-    if post.gambar_url:
-        storage_service.delete_file(settings.POST_IMAGES_BUCKET, post.gambar_url)
-
-    now = datetime.utcnow()
-    post.is_deleted = True
-    post.status = "dihapus"
-    post.deleted_by = current_user.user_id
-    post.deleted_at = now
-    post.alasan_hapus = "Dihapus secara mandiri oleh penulis"
-
-    # Auto-resolve any remaining active reports
-    reports = (
-        db.query(Report)
-        .filter(Report.post_id == post.post_id, Report.status.in_(["baru", "diproses"]))
-        .all()
+    soft_delete_post(
+        db=db,
+        post=post,
+        actor=current_user,
+        alasan_hapus="Dihapus secara mandiri oleh penulis",
+        is_staff_takedown=False,
     )
-    for r in reports:
-        r.status = "selesai"
-        r.tindakan_diambil = "postingan_dihapus"
-        r.resolved_at = now
-        r.ditinjau_oleh = current_user.user_id
-
-    db.commit()
     return {"message": "Postingan berhasil dihapus.", "post_id": post.post_id}

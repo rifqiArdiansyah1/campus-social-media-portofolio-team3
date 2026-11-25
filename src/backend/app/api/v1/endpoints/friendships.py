@@ -24,6 +24,7 @@ from app.schemas.friendship import (
     FriendshipStatusUpdate,
     FriendUserSummary,
 )
+from app.services.friendship import acquire_social_pair_lock
 from app.services.notification import create_notification
 from app.services.visibility import (
     exclude_hidden,
@@ -88,6 +89,7 @@ def create_friendship_request(
         )
 
     now = get_system_now()
+    acquire_social_pair_lock(db, viewer_id, target_id)
 
     # 4. Check existing relationship pair using LEAST and GREATEST
     existing = (

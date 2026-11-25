@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import { AlertOctagon, Loader2, ShieldAlert, X } from "lucide-react";
 import { apiClient } from "@/lib/api";
+import { getApiErrorMessage } from "@/lib/utils";
 import { useToast } from "@/context/ToastContext";
 
 export interface TakedownPostModalProps {
@@ -57,8 +58,15 @@ export function TakedownPostModal({
       if (onSuccess) onSuccess(postId);
       onClose();
     } catch (err: any) {
-      const detail = err.response?.data?.detail;
-      setErrorMessage(detail || "Gagal melakukan takedown postingan.");
+      const status = err.response?.status;
+      if (status === 404 || status === 409) {
+        toast.info("Postingan sudah tidak aktif atau telah di-takedown sebelumnya.");
+        setAlasan("");
+        if (onSuccess) onSuccess(postId);
+        onClose();
+        return;
+      }
+      setErrorMessage(getApiErrorMessage(err, "Gagal melakukan takedown postingan."));
     } finally {
       setIsSubmitting(false);
     }

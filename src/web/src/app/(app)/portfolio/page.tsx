@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback, useId } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/context/ToastContext";
 import { apiClient } from "@/lib/api";
+import { getApiErrorMessage } from "@/lib/utils";
 import { PortfolioStatusBadge, PortfolioStatus } from "@/components/common/PortfolioStatusBadge";
 import { SkillSelector, SelectedSkill } from "@/components/features/SkillSelector";
 import {
@@ -50,6 +51,8 @@ interface PortfolioItem {
   submitted_at?: string | null;
   created_at: string;
   skills: SkillBrief[];
+  is_complete?: boolean;
+  missing_fields?: string[];
 }
 
 interface SkpiSummary {
@@ -226,7 +229,7 @@ export default function PortfolioPage() {
       setFileUrl(res.data.path);
       toast.success("Dokumen bukti berhasil diunggah!");
     } catch (err: any) {
-      toast.error(err.message || "Gagal mengunggah dokumen.");
+      toast.error(getApiErrorMessage(err, "Gagal mengunggah dokumen."));
     } finally {
       setTimeout(() => setUploadProgress(null), 1000);
     }
@@ -242,31 +245,17 @@ export default function PortfolioPage() {
       return;
     }
 
-    if (kategori !== "proyek") {
-      if (!nomorDokumen.trim()) {
-        setFormError(kategori === "artikel_ilmiah" ? "Nomor DOI wajib diisi." : "Nomor dokumen/sertifikat wajib diisi.");
-        return;
-      }
-      if (!penerbit.trim()) {
-        setFormError(kategori === "artikel_ilmiah" ? "Nama jurnal/konferensi wajib diisi." : "Penyelenggara/Penerbit wajib diisi.");
-        return;
-      }
-      if (!tanggalTerbit) {
-        setFormError("Tanggal terbit wajib diisi.");
-        return;
-      }
-      if (!fileUrl && !editingItem) {
-        setFormError("Berkas dokumen bukti wajib diunggah.");
-        return;
-      }
+    setIsSaving(true);
+    let cleanTautan = tautanUrl.trim();
+    if (cleanTautan && !cleanTautan.startsWith("http://") && !cleanTautan.startsWith("https://")) {
+      cleanTautan = `https://${cleanTautan}`;
     }
 
-    setIsSaving(true);
     const payload: any = {
       judul: judul.trim(),
       deskripsi: deskripsi.trim() || null,
       kategori,
-      tautan_url: tautanUrl.trim() || null,
+      tautan_url: cleanTautan || null,
       nomor_dokumen: nomorDokumen.trim() || null,
       penerbit: penerbit.trim() || null,
       tanggal_terbit: tanggalTerbit || null,
@@ -289,7 +278,7 @@ export default function PortfolioPage() {
       setIsModalOpen(false);
       await fetchData();
     } catch (err: any) {
-      setFormError(err.message || "Gagal menyimpan portofolio.");
+      setFormError(getApiErrorMessage(err, "Gagal menyimpan portofolio."));
     } finally {
       setIsSaving(false);
     }
@@ -470,6 +459,19 @@ export default function PortfolioPage() {
                   </div>
                 )}
 
+                {/* Incomplete Draft Banner */}
+                {item.status_verifikasi === "draft" && item.kategori !== "proyek" && item.is_complete === false && (
+                  <div className="mt-3 p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-[11px] text-amber-800 flex items-start gap-2">
+                    <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5 text-amber-600" />
+                    <div>
+                      <p className="font-semibold">Draf belum lengkap untuk pengajuan SKPI</p>
+                      <p className="mt-0.5 text-amber-700">
+                        Belum diisi: {item.missing_fields && item.missing_fields.length > 0 ? item.missing_fields.join(", ") : "berkas dokumen bukti"}. Edit untuk melengkapi.
+                      </p>
+                    </div>
+                  </div>
+                )}
+
                 {/* Rejected Revision Banner */}
                 {item.status_verifikasi === "ditolak" && item.catatan_verifikasi && (
                   <div className="mt-3 p-3 rounded-xl bg-red-50 border border-red-200 text-xs text-accent-danger-accessible flex items-start gap-2">
@@ -505,9 +507,20 @@ export default function PortfolioPage() {
                       {item.kategori !== "proyek" && (
                         <button
                           type="button"
-                          disabled={actionLoadingId === item.portfolio_id}
-                          onClick={() => handleSubmitReview(item)}
-                          className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-emerald-600 text-white text-[11px] font-semibold hover:bg-emerald-700 transition-colors"
+                          disabled={actionLoadingId === item.portfolio_id || item.is_complete === false}
+                          onClick={() => {
+                            if (item.is_complete === false) {
+                              toast.info("Lengkapi dokumen dan data pendukung sebelum mengajukan verifikasi SKPI.");
+                              return;
+                            }
+                            handleSubmitReview(item);
+                          }}
+                          className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold transition-colors ${
+                            item.is_complete === false
+                              ? "bg-slate-200 text-slate-400 cursor-not-allowed"
+                              : "bg-emerald-600 text-white hover:bg-emerald-700"
+                          }`}
+                          title={item.is_complete === false ? "Lengkapi data capaian sebelum mengajukan" : "Ajukan verifikasi ke Kaprodi"}
                         >
                           <Send className="w-3.5 h-3.5" />
                           <span>Ajukan SKPI</span>
@@ -518,6 +531,7 @@ export default function PortfolioPage() {
                         onClick={() => handleOpenModal(item)}
                         className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors"
                         title="Edit draf"
+                        aria-label={`Ubah draf ${item.judul}`}
                       >
                         <Edit3 className="w-4 h-4" />
                       </button>
@@ -607,7 +621,7 @@ export default function PortfolioPage() {
                 </label>
                 <select
                   value={kategori}
-                  disabled={Boolean(editingItem)}
+                  disabled={Boolean(editingItem && editingItem.status_verifikasi !== "draft")}
                   onChange={(e) => setKategori(e.target.value as any)}
                   className="w-full px-3 py-2 rounded-xl border border-border-subtle text-xs bg-white focus:outline-none focus:ring-2 focus:ring-primary/20"
                 >
@@ -647,17 +661,23 @@ export default function PortfolioPage() {
                 />
               </div>
 
-              {/* Proyek specific: Tautan URL */}
-              {kategori === "proyek" && (
+              {/* Tautan URL for Proyek & Artikel Ilmiah */}
+              {(kategori === "proyek" || kategori === "artikel_ilmiah") && (
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Tautan Karya (GitHub / Website Demo)
+                    {kategori === "artikel_ilmiah"
+                      ? "Tautan Artikel / Publikasi (Opsional)"
+                      : "Tautan Karya (GitHub / Website Demo)"}
                   </label>
                   <input
                     type="url"
                     value={tautanUrl}
                     onChange={(e) => setTautanUrl(e.target.value)}
-                    placeholder="https://github.com/..."
+                    placeholder={
+                      kategori === "artikel_ilmiah"
+                        ? "https://doi.org/... atau https://journal..."
+                        : "https://github.com/..."
+                    }
                     className="w-full px-3 py-2 rounded-xl border border-border-subtle text-xs focus:outline-none focus:ring-2 focus:ring-primary/20"
                   />
                 </div>
@@ -670,7 +690,7 @@ export default function PortfolioPage() {
                     <div>
                       <label className="block text-[11px] font-semibold text-slate-700 mb-1">
                         {kategori === "artikel_ilmiah" ? "Nomor DOI" : "Nomor Dokumen / Sertifikat"}{" "}
-                        <span className="text-red-500">*</span>
+                        <span className="text-slate-400 font-normal">(Wajib untuk SKPI)</span>
                       </label>
                       <input
                         type="text"
@@ -679,12 +699,17 @@ export default function PortfolioPage() {
                         placeholder={kategori === "artikel_ilmiah" ? "10.1145/..." : "CERT-2024-..."}
                         className="w-full px-3 py-2 rounded-xl border border-border-subtle text-xs bg-white focus:outline-none focus:ring-2 focus:ring-primary/20"
                       />
+                      {kategori === "artikel_ilmiah" && (
+                        <p className="mt-1 text-[10px] text-slate-500">
+                          Format resmi: 10.xxxx/... atau https://doi.org/... Kosongkan jika draf belum memiliki DOI resmi.
+                        </p>
+                      )}
                     </div>
 
                     <div>
                       <label className="block text-[11px] font-semibold text-slate-700 mb-1">
                         {kategori === "artikel_ilmiah" ? "Nama Jurnal/Konferensi" : "Penyelenggara / Penerbit"}{" "}
-                        <span className="text-red-500">*</span>
+                        <span className="text-slate-400 font-normal">(Wajib untuk SKPI)</span>
                       </label>
                       <input
                         type="text"
@@ -698,7 +723,8 @@ export default function PortfolioPage() {
 
                   <div>
                     <label className="block text-[11px] font-semibold text-slate-700 mb-1">
-                      Tanggal Terbit / Diselenggarakan <span className="text-red-500">*</span>
+                      Tanggal Terbit / Diselenggarakan{" "}
+                      <span className="text-slate-400 font-normal">(Wajib untuk SKPI)</span>
                     </label>
                     <input
                       type="date"
@@ -713,12 +739,12 @@ export default function PortfolioPage() {
                   <div>
                     <label className="block text-[11px] font-semibold text-slate-700 mb-1">
                       Berkas Dokumen Bukti (PDF maks 10MB atau Gambar maks 5MB){" "}
-                      {!editingItem && <span className="text-red-500">*</span>}
+                      <span className="text-slate-400 font-normal">(Wajib untuk SKPI)</span>
                     </label>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 flex-wrap">
                       <label className="cursor-pointer inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-border-subtle bg-white text-xs font-semibold text-slate-700 hover:bg-slate-100 transition-colors">
                         <Upload className="w-4 h-4 text-slate-500" />
-                        <span>Pilih Berkas</span>
+                        <span>{fileUrl ? "Ganti Berkas" : "Pilih Berkas"}</span>
                         <input
                           type="file"
                           accept=".pdf,image/jpeg,image/png,image/webp"
@@ -726,6 +752,15 @@ export default function PortfolioPage() {
                           className="hidden"
                         />
                       </label>
+                      {fileUrl && (
+                        <button
+                          type="button"
+                          onClick={() => setFileUrl("")}
+                          className="text-[11px] text-red-500 hover:text-red-700 hover:underline"
+                        >
+                          Hapus Berkas
+                        </button>
+                      )}
                       <span className="text-[11px] text-slate-500 truncate max-w-xs">
                         {fileUrl ? fileUrl.split("/").pop() : "Belum ada berkas dipilih"}
                       </span>

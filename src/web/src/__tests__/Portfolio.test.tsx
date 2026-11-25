@@ -190,6 +190,56 @@ describe("M07 Portfolio & SKPI Verification Frontend Tests", () => {
         expect(mockToast.info).toHaveBeenCalledWith(expect.stringContaining("ditarik"));
       });
     });
+
+    it("allows editing a draft item and submitting PATCH request", async () => {
+      vi.mocked(apiClient.get).mockImplementation((url: string) => {
+        if (url.includes("/portfolio?user_id=")) {
+          return Promise.resolve({ data: mockItems }) as any;
+        }
+        if (url.includes("/skpi-summary")) {
+          return Promise.resolve({ data: mockSummary }) as any;
+        }
+        return Promise.resolve({ data: [] }) as any;
+      });
+      vi.mocked(apiClient.patch).mockResolvedValue({
+        data: {
+          ...mockItems[0],
+          judul: "Aplikasi Portofolio React v2",
+        },
+      } as any);
+
+      render(<PortfolioPage />);
+
+      await waitFor(() => {
+        expect(screen.getByText("Aplikasi Portofolio React")).toBeInTheDocument();
+      });
+
+      // Find and click the edit button for the draft item
+      const editBtn = screen.getByRole("button", { name: /Ubah draf Aplikasi Portofolio React/i });
+      fireEvent.click(editBtn);
+
+      // Verify modal opens with prefilled title
+      await waitFor(() => {
+        expect(screen.getByText("Ubah Portofolio")).toBeInTheDocument();
+      });
+
+      const titleInput = screen.getByDisplayValue("Aplikasi Portofolio React");
+      fireEvent.change(titleInput, { target: { value: "Aplikasi Portofolio React v2" } });
+
+      // Submit changes
+      fireEvent.click(screen.getByRole("button", { name: "Simpan Perubahan" }));
+
+      await waitFor(() => {
+        expect(apiClient.patch).toHaveBeenCalledWith(
+          "/portfolio/1",
+          expect.objectContaining({
+            judul: "Aplikasi Portofolio React v2",
+            kategori: "proyek",
+          })
+        );
+        expect(mockToast.success).toHaveBeenCalledWith("Portofolio berhasil diperbarui.");
+      });
+    });
   });
 
   describe("PortfolioReviewPage", () => {

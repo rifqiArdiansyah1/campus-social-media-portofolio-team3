@@ -414,6 +414,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/portfolio/reviews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Daftar Antrean dan Riwayat Peninjauan Portofolio Staf */
+        get: operations["get_portfolio_reviews_api_v1_portfolio_reviews_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/portfolio/review-queue": {
         parameters: {
             query?: never;
@@ -421,7 +438,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Antrean Verifikasi Portofolio FIFO Kaprodi & Admin */
+        /** Antrean Verifikasi Portofolio FIFO Kaprodi & Admin (Alias untuk /reviews) */
         get: operations["get_review_queue_api_v1_portfolio_review_queue_get"];
         put?: never;
         post?: never;
@@ -443,6 +460,40 @@ export interface paths {
         put?: never;
         /** Unggah/Buat Portofolio Baru (Draft atau Proyek) */
         post: operations["create_portfolio_item_api_v1_portfolio_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/portfolio/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Daftar Portofolio Milik Pengguna Aktif (Self) */
+        get: operations["get_my_portfolios_api_v1_portfolio_me_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/portfolio/skpi-summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ringkasan Poin SKPI Resmi Milik Pengguna Aktif */
+        get: operations["get_my_portfolio_skpi_summary_api_v1_portfolio_skpi_summary_get"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -530,6 +581,23 @@ export interface paths {
         put?: never;
         /** Cabut Status Verifikasi Portofolio Resmi (Admin Only) */
         post: operations["revoke_portfolio_verification_api_v1_portfolio__id__revoke_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/portfolio/{id}/duplicate-check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Pemeriksaan Duplikasi Dokumen Berpelindung Privasi (Kaprodi & Admin) */
+        get: operations["check_portfolio_duplicate_api_v1_portfolio__id__duplicate_check_get"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -1449,6 +1517,72 @@ export interface components {
              */
             skills: components["schemas"]["SkillBriefResponse"][];
             author?: components["schemas"]["PortfolioAuthorResponse"] | null;
+            /**
+             * Is Complete
+             * @default false
+             */
+            is_complete: boolean;
+            /** Missing Fields */
+            missing_fields?: string[];
+        };
+        /** PortfolioDuplicateCheckResponse */
+        PortfolioDuplicateCheckResponse: {
+            /** Is Duplicate */
+            is_duplicate: boolean;
+            /** Duplicate Count */
+            duplicate_count: number;
+            /**
+             * Matches Same Department
+             * @default []
+             */
+            matches_same_department: components["schemas"]["PortfolioDuplicateMatchItem"][];
+            /**
+             * Has Cross Department Matches
+             * @default false
+             */
+            has_cross_department_matches: boolean;
+            /**
+             * Cross Department Count
+             * @default 0
+             */
+            cross_department_count: number;
+            /** Cross Department Message */
+            cross_department_message?: string | null;
+            /**
+             * Is Coauthor Doi
+             * @default false
+             */
+            is_coauthor_doi: boolean;
+            /** Notice */
+            notice?: string | null;
+        };
+        /** PortfolioDuplicateMatchItem */
+        PortfolioDuplicateMatchItem: {
+            /** Portfolio Id */
+            portfolio_id: number;
+            /** Judul */
+            judul: string;
+            /** Nomor Dokumen */
+            nomor_dokumen?: string | null;
+            /** Penerbit */
+            penerbit?: string | null;
+            /** Kategori */
+            kategori: string;
+            /** Status Verifikasi */
+            status_verifikasi: string;
+            /** Tanggal Terbit */
+            tanggal_terbit?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Author Nama */
+            author_nama: string;
+            /** Author Nim */
+            author_nim?: string | null;
+            /** Author Jurusan */
+            author_jurusan?: string | null;
         };
         /**
          * PortfolioPublicResponse
@@ -1500,10 +1634,10 @@ export interface components {
              * Status Verifikasi
              * @enum {string}
              */
-            status_verifikasi: "terverifikasi" | "ditolak";
+            status_verifikasi: "terverifikasi" | "ditolak" | "menunggu_review";
             /**
              * Catatan Verifikasi
-             * @description Catatan hasil verifikasi dari Kaprodi/Admin
+             * @description Catatan hasil verifikasi atau alasan koreksi dari Kaprodi/Admin
              */
             catatan_verifikasi?: string | null;
         };
@@ -1657,6 +1791,11 @@ export interface components {
              * @default false
              */
             can_edit: boolean;
+            /**
+             * Reported By Me
+             * @default false
+             */
+            reported_by_me: boolean;
         };
         /** PostFeedResponse */
         PostFeedResponse: {
@@ -1767,7 +1906,7 @@ export interface components {
              * @default none
              * @enum {string}
              */
-            friendship_status: "none" | "pending_sent" | "pending_received" | "friends";
+            friendship_status: "none" | "pending_sent" | "pending_received" | "friends" | "blocked";
             /** Friendship Id */
             friendship_id?: number | null;
             /** Friendship Direction */
@@ -1777,6 +1916,21 @@ export interface components {
              * @default false
              */
             blocked_by_me: boolean;
+            /**
+             * Can Friend
+             * @default false
+             */
+            can_friend: boolean;
+            /**
+             * Can Block
+             * @default false
+             */
+            can_block: boolean;
+            /**
+             * Can Unblock
+             * @default false
+             */
+            can_unblock: boolean;
             /** Nim */
             nim?: string | null;
             /** Email */
@@ -1853,6 +2007,11 @@ export interface components {
              * @description Penjelasan bahasa alami mengenai alasan kecocokan
              */
             reason: string;
+            /**
+             * Friendship Status
+             * @description Status pertemanan dengan pemohon (menunggu, diterima, ditolak, atau null)
+             */
+            friendship_status?: string | null;
         };
         /** RecommendationMatchRequest */
         RecommendationMatchRequest: {
@@ -1955,9 +2114,9 @@ export interface components {
             post_id: number;
             /**
              * Alasan
-             * @description Penjelasan detail pelanggaran (minimal 5 karakter)
+             * @description Penjelasan detail pelanggaran (opsional kecuali kategori lainnya)
              */
-            alasan: string;
+            alasan?: string | null;
             /**
              * Kategori Laporan
              * @description Kategori pelanggaran
@@ -1997,6 +2156,39 @@ export interface components {
             created_at: string;
             /** Resolved At */
             resolved_at?: string | null;
+            post?: components["schemas"]["ReportedPostBrief"] | null;
+        };
+        /** ReportedPostAuthor */
+        ReportedPostAuthor: {
+            /** User Id */
+            user_id: number;
+            /** Nama */
+            nama: string;
+            /** Nim */
+            nim?: string | null;
+            /** Jurusan */
+            jurusan?: string | null;
+            /** Role */
+            role: string;
+        };
+        /** ReportedPostBrief */
+        ReportedPostBrief: {
+            /** Post Id */
+            post_id: number;
+            /** Isi */
+            isi: string;
+            /** Gambar Url */
+            gambar_url?: string | null;
+            /** Tipe */
+            tipe: string;
+            /** Status */
+            status: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            author?: components["schemas"]["ReportedPostAuthor"] | null;
         };
         /** ReviewQueueItemResponse */
         ReviewQueueItemResponse: {
@@ -2179,6 +2371,11 @@ export interface components {
             skills?: components["schemas"]["SearchSkillItem"][];
             /** Friendship Status */
             friendship_status?: string | null;
+            /**
+             * Is Self
+             * @default false
+             */
+            is_self: boolean;
             /**
              * Created At
              * Format: date-time
@@ -3310,6 +3507,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
+                /** @description User ID yang ingin dibuka blokirnya */
                 blocked_id: number;
             };
             cookie?: never;
@@ -3322,6 +3520,42 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_portfolio_reviews_api_v1_portfolio_reviews_get: {
+        parameters: {
+            query?: {
+                /** @description Filter status verifikasi (menunggu_review, terverifikasi, ditolak, atau semua) */
+                status?: string | null;
+                /** @description Filter jurusan (khusus Admin) */
+                jurusan?: string | null;
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewQueueListResponse"];
+                };
             };
             /** @description Validation Error */
             422: {
@@ -3435,6 +3669,62 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_my_portfolios_api_v1_portfolio_me_get: {
+        parameters: {
+            query?: {
+                /** @description Filter kategori (proyek, skpi, sertifikat, artikel_ilmiah) */
+                kategori?: string | null;
+                /** @description Filter status verifikasi */
+                status_verifikasi?: string | null;
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PortfolioDetailResponse"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_my_portfolio_skpi_summary_api_v1_portfolio_skpi_summary_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SkpiSummaryResponse"];
                 };
             };
         };
@@ -3655,6 +3945,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PortfolioDetailResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    check_portfolio_duplicate_api_v1_portfolio__id__duplicate_check_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PortfolioDuplicateCheckResponse"];
                 };
             };
             /** @description Validation Error */
@@ -3914,6 +4235,8 @@ export interface operations {
             query?: {
                 /** @description Filter berdasarkan status laporan */
                 status?: ("baru" | "diproses" | "selesai" | "diabaikan") | null;
+                /** @description Filter berdasarkan kategori pelanggaran */
+                kategori?: string | null;
                 /** @description Jumlah data per halaman (maksimal 50) */
                 limit?: number;
                 /** @description Offset pagination */

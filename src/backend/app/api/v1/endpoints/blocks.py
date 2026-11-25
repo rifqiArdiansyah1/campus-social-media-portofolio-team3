@@ -1,6 +1,6 @@
 import math
 
-from fastapi import APIRouter, Depends, Query, Response, status
+from fastapi import APIRouter, Depends, Path, Query, Response, status
 from sqlalchemy import and_, or_
 from sqlalchemy.orm import Session
 
@@ -14,6 +14,7 @@ from app.schemas.friendship import (
     UserBlockRequest,
     UserBlockResponse,
 )
+from app.services.friendship import acquire_social_pair_lock
 
 router = APIRouter()
 
@@ -63,6 +64,9 @@ def block_user(
     if existing:
         return existing
 
+    # Acquire advisory lock on ordered user pair
+    acquire_social_pair_lock(db, blocker_id, blocked_id)
+
     # 5. Atomic single-transaction block creation & friendship severance
     new_block = UserBlock(
         blocker_id=blocker_id,
@@ -71,7 +75,8 @@ def block_user(
     )
     db.add(new_block)
 
-    # Delete any friendship or pending request in both directions
+    # Delete active ('diterima') or pending ('menunggu') friendship in both directions.
+    # RETAIN 'ditolak' rows so 24-hour rejection cooldown cannot be bypassed!
     db.query(Friendship).filter(
         or_(
             and_(
@@ -82,7 +87,8 @@ def block_user(
                 Friendship.requester_id == blocked_id,
                 Friendship.addressee_id == blocker_id,
             ),
-        )
+        ),
+        Friendship.status.in_(["menunggu", "diterima"]),
     ).delete(synchronize_session=False)
 
     db.commit()
@@ -96,11 +102,14 @@ def block_user(
     summary="Buka Blokir Pengguna (US-14)",
 )
 def unblock_user(
-    blocked_id: int,
+    blocked_id: int = Path(..., gt=0, description="User ID yang ingin dibuka blokirnya"),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
     blocker_id = current_user.user_id
+
+    # Acquire advisory lock on ordered user pair
+    acquire_social_pair_lock(db, blocker_id, blocked_id)
 
     block_record = (
         db.query(UserBlock)
@@ -110,14 +119,11 @@ def unblock_user(
         )
         .first()
     )
-    if not block_record:
-        raise NotFoundError(
-            code="BLOCK_NOT_FOUND",
-            detail="Pengguna ini tidak sedang berada dalam daftar blokir Anda.",
-        )
+    # Idempotent: return 204 directly if already unblocked or record not found
+    if block_record:
+        db.delete(block_record)
+        db.commit()
 
-    db.delete(block_record)
-    db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 

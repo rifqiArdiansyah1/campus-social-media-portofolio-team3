@@ -31,7 +31,7 @@ import {
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/context/ToastContext";
 import { apiClient } from "@/lib/api";
-import { getInitials } from "@/lib/utils";
+import { getInitials, getApiErrorMessage } from "@/lib/utils";
 import { EmptyState } from "@/components/common/EmptyState";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 import { PortfolioStatusBadge, PortfolioStatus } from "@/components/common/PortfolioStatusBadge";
@@ -80,10 +80,13 @@ interface PublicProfileData {
   role: string;
   created_at: string;
   skills: UserSkillData[];
-  friendship_status: "none" | "pending_sent" | "pending_received" | "friends";
+  friendship_status: "none" | "pending_sent" | "pending_received" | "friends" | "blocked";
   friendship_id?: number | null;
   friendship_direction?: "incoming" | "outgoing" | null;
   blocked_by_me: boolean;
+  can_friend?: boolean;
+  can_block?: boolean;
+  can_unblock?: boolean;
   nim: string | null;
   email: string | null;
   is_visible: boolean;
@@ -141,7 +144,7 @@ export default function ProfileDetailPage() {
           setIsNotFound(true);
           return;
         }
-        toastRef.current.error(err?.response?.data?.detail || "Gagal memuat profil pengguna");
+        toastRef.current.error(getApiErrorMessage(err, "Gagal memuat profil pengguna"));
       }
 
       if (resPortfolios.status === "fulfilled") {
@@ -154,7 +157,7 @@ export default function ProfileDetailPage() {
       if (err.response?.status === 404) {
         setIsNotFound(true);
       } else {
-        toastRef.current.error(err.response?.data?.detail || "Gagal memuat profil pengguna");
+        toastRef.current.error(getApiErrorMessage(err, "Gagal memuat profil pengguna"));
       }
     } finally {
       setIsLoading(false);
@@ -226,7 +229,7 @@ export default function ProfileDetailPage() {
         );
         toast.info("Pengguna ini telah mengirim permohonan terlebih dahulu. Anda dapat langsung menerimanya.");
       } else {
-        toast.error(err.response?.data?.detail || "Gagal mengirim permohonan pertemanan.");
+        toast.error(getApiErrorMessage(err, "Gagal mengirim permohonan pertemanan."));
       }
     } finally {
       setIsFriendActionLoading(false);
@@ -251,7 +254,7 @@ export default function ProfileDetailPage() {
       );
       toast.info("Permohonan pertemanan dibatalkan.");
     } catch (err: any) {
-      toast.error(err.response?.data?.detail || "Gagal membatalkan permohonan.");
+      toast.error(getApiErrorMessage(err, "Gagal membatalkan permohonan."));
     } finally {
       setIsFriendActionLoading(false);
     }
@@ -273,7 +276,7 @@ export default function ProfileDetailPage() {
       );
       toast.success("Permohonan pertemanan diterima!");
     } catch (err: any) {
-      toast.error(err.response?.data?.detail || "Gagal menerima permohonan pertemanan.");
+      toast.error(getApiErrorMessage(err, "Gagal menerima permohonan pertemanan."));
     } finally {
       setIsFriendActionLoading(false);
     }
@@ -297,7 +300,7 @@ export default function ProfileDetailPage() {
       );
       toast.info("Permohonan pertemanan ditolak.");
     } catch (err: any) {
-      toast.error(err.response?.data?.detail || "Gagal menolak permohonan pertemanan.");
+      toast.error(getApiErrorMessage(err, "Gagal menolak permohonan pertemanan."));
     } finally {
       setIsFriendActionLoading(false);
     }
@@ -322,7 +325,7 @@ export default function ProfileDetailPage() {
       setUnfriendDialogOpen(false);
       toast.info(`Pertemanan dengan ${profile.nama} telah diputus.`);
     } catch (err: any) {
-      toast.error(err.response?.data?.detail || "Gagal memutuskan pertemanan.");
+      toast.error(getApiErrorMessage(err, "Gagal memutuskan pertemanan."));
     } finally {
       setIsFriendActionLoading(false);
     }
@@ -332,7 +335,7 @@ export default function ProfileDetailPage() {
   const handleBlockUser = async () => {
     if (!profile) return;
     try {
-      await apiClient.post("/blocks", { blocked_id: profile.user_id });
+      await apiClient.post("/blocks", { blocked_id: Number(profile.user_id) });
       setBlockDialogOpen(false);
       toast.warning(`Anda telah memblokir ${profile.nama}.`);
       setProfile((prev) =>
@@ -340,7 +343,10 @@ export default function ProfileDetailPage() {
           ? {
               ...prev,
               blocked_by_me: true,
-              friendship_status: "none",
+              friendship_status: "blocked",
+              can_block: false,
+              can_unblock: true,
+              can_friend: false,
               friendship_id: null,
               friendship_direction: null,
               skills: [],
@@ -350,7 +356,7 @@ export default function ProfileDetailPage() {
           : null
       );
     } catch (err: any) {
-      toast.error(err.response?.data?.detail || "Gagal memblokir pengguna.");
+      toast.error(getApiErrorMessage(err, "Gagal memblokir pengguna."));
     }
   };
 
@@ -363,7 +369,7 @@ export default function ProfileDetailPage() {
       toast.success(`Blokir terhadap ${profile.nama} telah dibuka.`);
       fetchProfile();
     } catch (err: any) {
-      toast.error(err.response?.data?.detail || "Gagal membuka blokir pengguna.");
+      toast.error(getApiErrorMessage(err, "Gagal membuka blokir pengguna."));
     }
   };
 
@@ -386,8 +392,8 @@ export default function ProfileDetailPage() {
     return (
       <div className="max-w-2xl mx-auto py-12">
         <EmptyState
-          title="Profil Pengguna Tidak Ditemukan"
-          description="Pengguna ini mungkin tidak terdaftar atau profil tidak dapat diakses."
+          title="Profil Tidak Tersedia"
+          description="Profil tidak dapat ditemukan atau tidak tersedia saat ini."
           icon={FolderOpen}
           actionText="Kembali ke Beranda"
           onAction={() => router.push("/home")}
@@ -399,12 +405,12 @@ export default function ProfileDetailPage() {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Blocked by Me Notification Banner */}
-      {profile.blocked_by_me && (
+      {(profile.can_unblock || profile.blocked_by_me) && (
         <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-800 flex items-center justify-between">
           <div className="flex items-center gap-2 text-xs">
             <ShieldAlert className="w-4 h-4 text-amber-600 flex-shrink-0" />
             <span>
-              Anda telah memblokir pengguna ini. Data detail dan aktivitas portofolio disembunyikan.
+              Anda telah memblokir pengguna ini. Data detail dan linimasa karya disembunyikan.
             </span>
           </div>
           <button
@@ -540,12 +546,12 @@ export default function ProfileDetailPage() {
                       <span>Tolak</span>
                     </button>
                   </div>
-                ) : (
+                ) : profile.can_friend ? (
                   /* 4. None State (Can Add Friend) */
                   <button
                     type="button"
                     onClick={handleSendFriendRequest}
-                    disabled={isFriendActionLoading || profile.blocked_by_me}
+                    disabled={isFriendActionLoading}
                     className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold text-white bg-primary hover:bg-primary-hover rounded-xl transition-colors shadow-sm disabled:opacity-50"
                   >
                     {isFriendActionLoading ? (
@@ -555,10 +561,10 @@ export default function ProfileDetailPage() {
                     )}
                     <span>Tambah Teman</span>
                   </button>
-                )}
+                ) : null}
 
                 {/* Block / Safety Action */}
-                {!profile.blocked_by_me && profile.role === "mahasiswa" && (
+                {profile.can_block && (
                   <button
                     type="button"
                     onClick={() => setBlockDialogOpen(true)}
@@ -949,8 +955,8 @@ export default function ProfileDetailPage() {
         isOpen={unblockDialogOpen}
         onClose={() => setUnblockDialogOpen(false)}
         onConfirm={handleUnblockUser}
-        title="Buka Blokir Pengguna?"
-        description={`Apakah Anda yakin ingin membuka blokir untuk ${profile.nama}? Catatan: Membuka blokir tidak memulihkan pertemanan secara otomatis. Anda dapat mengirimkan permohonan pertemanan kembali setelah blokir dibuka.`}
+        title={`Buka Blokir ${profile.nama}?`}
+        description={`Setelah blokir dibuka, ${profile.nama} akan dapat melihat linimasa karya dan profil publik Anda kembali (kecuali jika pengguna tersebut juga memblokir Anda). Pertemanan tidak dipulihkan secara otomatis (Bukan Teman). Pihak yang bersangkutan tidak akan menerima pemberitahuan bahwa blokir telah dibuka. Anda dapat memblokir kembali akun ini kapan saja jika diperlukan.`}
         confirmText="Buka Blokir"
         variant="primary"
       />
